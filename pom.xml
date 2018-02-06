@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>1.0.0-release</version>
+    <version>1.0.0-RELEASE</version>
 
     <dependencies>
         <dependency>
