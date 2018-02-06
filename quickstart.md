@@ -18,9 +18,9 @@
 
 ```
 <dependency>
-	<groupId>com.alibaba.shared</groupId>
+	<groupId>com.alibaba</groupId>
 	<artifactId>easyexcel</artifactId>
-    <version>1.2.16</version>
+    <version>1.0.0-RELEASE</version>
 </dependency>
 ```
 ## 读Excel

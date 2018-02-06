@@ -14,14 +14,14 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 
 ```
 <dependency>
-    <groupId>com.alibaba.shared</groupId>
+    <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
     <version>{latestVersion}</version>
 </dependency>
 ```
 
 # 最新版本
-## VERSION : 1.2.16
+## VERSION : 1.0.0-RELEASE
 
 # 维护者
 姬朋飞（玉霄）
