@@ -23,7 +23,7 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.ROW_TAG;
 
 /**
  * @author jipengfei
- * @date 2017/08/23
+ *
  */
 public class RowHandler extends DefaultHandler {
 

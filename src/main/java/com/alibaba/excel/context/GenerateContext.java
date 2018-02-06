@@ -24,26 +24,26 @@ public interface GenerateContext {
     /**
      *
      * 获取表头样式
-     * @return
+     * @return 当前行表头样式
      */
     CellStyle getCurrentHeadCellStyle();
 
     /**
      * 获取内容样式
-     * @return
+     * @return 当前行内容样式
      */
     CellStyle getCurrentContentStyle();
 
 
     /**
      * 返回WorkBook
-     * @return
+     * @return 返回文件book
      */
     Workbook getWorkbook();
 
     /**
      * 返回Io流
-     * @return
+     * @return 返回out流
      */
     OutputStream getOutputStream();
 
@@ -61,13 +61,13 @@ public interface GenerateContext {
 
     /**
      * 返回表头信息
-     * @return
+     * @return 返回表头信息
      */
     ExcelHeadProperty getExcelHeadProperty();
 
     /**
      *
-     * @return
+     * @return 是否需要表头
      */
     boolean needHead();
 }

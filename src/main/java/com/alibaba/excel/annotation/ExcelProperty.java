@@ -16,14 +16,14 @@ public @interface ExcelProperty {
 
      /**
       * 某列表头值
-      * @return
+      * @return 表头值
       */
      String[] value() default {""};
 
 
      /**
       * 列顺序，越小越靠前
-      * @return
+      * @return 列顺序
       */
      int index() default 99999;
 
@@ -32,7 +32,7 @@ public @interface ExcelProperty {
       * default @see com.alibaba.TypeUtil
       * if default is not  meet you can set format
       *
-      * @return
+      * @return 日期格式化
       */
      String format() default "";
 }

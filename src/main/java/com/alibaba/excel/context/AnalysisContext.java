@@ -33,7 +33,7 @@ public interface AnalysisContext {
     /**
      * 设置当前解析的Sheet
      *
-     * @param sheet
+     * @param sheet 入参
      */
     void setCurrentSheet(Sheet sheet);
 
@@ -54,28 +54,28 @@ public interface AnalysisContext {
     /**
      * 获取当前监听者
      *
-     * @return
+     * @return listener
      */
     AnalysisEventListener getEventListener();
 
     /**
      * 获取当前行数
      *
-     * @return
+     * @return 当前行
      */
     Integer getCurrentRowNum();
 
     /**
      * 设置当前行数
      *
-     * @param row
+     * @param row 设置行号
      */
     void setCurrentRowNum(Integer row);
 
     /**
      * 返回当前sheet共有多少行数据，仅限07版excel
      *
-     * @return
+     * @return 总行数
      */
     @Deprecated
     Integer getTotalCount();
@@ -83,57 +83,58 @@ public interface AnalysisContext {
     /**
      * 设置总条数
      *
-     * @param totalCount
+     * @param totalCount 总行数
      */
     void setTotalCount(Integer totalCount);
 
     /**
      * 返回表头信息
      *
-     * @return
+     * @return 表头信息
      */
     ExcelHeadProperty getExcelHeadProperty();
 
     /**
      * 构建 ExcelHeadProperty
      *
-     * @param clazz
-     * @param headOneRow
+     * @param clazz 自定义model
+     * @param headOneRow 表头内容
      */
     void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow);
 
     /**
      * 是否trim()
      *
-     * @return
+     * @return 是否trim
      */
     boolean trim();
 
     /**
      *
+     * @param result 解析结果
      */
     void setCurrentRowAnalysisResult(Object result);
 
-
     /**
      *
+     * @return 当前行解析结果
      */
     Object getCurrentRowAnalysisResult();
 
     /**
-     *
+     * 中断
      */
     void interrupt();
 
     /**
      *
-     * @return
+     * @return 是否use1904WindowDate
      */
     boolean  use1904WindowDate();
 
     /**
      *
-     * @param use1904WindowDate
+     * @param use1904WindowDate  是否use1904WindowDate
      */
     void setUse1904WindowDate(boolean use1904WindowDate);
 }

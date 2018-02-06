@@ -8,7 +8,6 @@ import com.alibaba.excel.support.ExcelTypeEnum;
  * 为方便使用废弃该入参。直接将outputStream，type传入{@link com.alibaba.excel.ExcelWriter}的构造器即可
  *
  * @author jipengfei
- * @date 2017/05/15
  */
 @Deprecated
 public class ExcelWriteParam {

@@ -6,7 +6,6 @@ import java.io.File;
  * 用于修复POI {@link org.apache.poi.util.DefaultTempFileCreationStrategy}在并发写，创建临时目录抛出异常的BUG。
  *
  * @author jipengfei
- * @date 2017/06/22
  */
 public class EasyExcelTempFile {
 
@@ -35,6 +34,7 @@ public class EasyExcelTempFile {
 
     /**
      * 获取环境变量的配置
+     * @return easyexcel临时目录
      */
     public static String getEasyExcelTmpDir() {
         String tmpDir = System.getProperty(JAVA_IO_TMPDIR);

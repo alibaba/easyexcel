@@ -4,7 +4,6 @@ package com.alibaba.excel.metadata;
  * 字体样式
  *
  * @author jipengfei
- * @date 2017/05/24
  */
 public class Font {
 

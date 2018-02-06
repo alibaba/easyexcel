@@ -26,14 +26,14 @@ public interface ExcelBuilder {
     /**
      * 向Excel增加的内容
      *
-     * @param data 数据格式 {@link List < String >} 或{@link List <? extends com.alibaba.excel.metadata.BaseRowModel>}
+     * @param data 数据格式
      */
     void addContent(List data);
 
     /**
      * 向Excel增加的内容
      *
-     * @param data       数据格式 {@link List < String >} 或{@link List <? extends com.alibaba.excel.metadata.BaseRowModel>}
+     * @param data       数据格式
      * @param sheetParam 数据写到某个sheet中
      */
     void addContent(List data, Sheet sheetParam);
@@ -41,7 +41,7 @@ public interface ExcelBuilder {
     /**
      * 向Excel增加的内容
      *
-     * @param data       数据格式 {@link List < String >} 或{@link List <? extends com.alibaba.excel.metadata.BaseRowModel>}
+     * @param data       数据格式
      * @param sheetParam 数据写到某个sheet中
      * @param table      写到某个sheet的某个Table
      */

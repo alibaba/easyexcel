@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * @author jipengfei
- * @date 2017/05/31
  */
 public class ExcelColumnProperty implements Comparable<ExcelColumnProperty> {
 

@@ -15,7 +15,6 @@ import com.alibaba.excel.annotation.ExcelProperty;
  * 表头信息
  *
  * @author jipengfei
- * @date 2017/05/31
  */
 public class ExcelHeadProperty {
 
@@ -120,8 +119,8 @@ public class ExcelHeadProperty {
     /**
      * 根据Excel中的列号，获取Excel的表头信息
      *
-     * @param columnNum
-     * @return
+     * @param columnNum 列号
+     * @return ExcelColumnProperty
      */
     public ExcelColumnProperty getExcelColumnProperty(int columnNum) {
         ExcelColumnProperty excelColumnProperty = excelColumnPropertyMap1.get(columnNum);

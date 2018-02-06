@@ -10,15 +10,15 @@ public interface AnalysisEventRegisterCenter {
 
     /**
      * 增加监听者
-     * @param name
-     * @param listener
+     * @param name 名称
+     * @param listener 监听器
      */
     void appendLister(String name, AnalysisEventListener listener);
 
 
     /**
      * 通知所有监听者
-     * @param event
+     * @param event 事件
      */
     void notifyListeners(OneRowAnalysisFinishEvent event);
 

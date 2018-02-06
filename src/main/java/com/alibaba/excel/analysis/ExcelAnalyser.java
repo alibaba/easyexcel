@@ -21,7 +21,7 @@ public interface ExcelAnalyser {
      * @param excelTypeEnum 解析文件类型
      * @param custom 用户自定义参数用户回调时候可以获取到
      * @param eventListener 解析器需要的监听器
-     * @param trim
+     * @param trim 是否去空格
      */
     void init(InputStream inputStream, ExcelTypeEnum excelTypeEnum, Object custom, AnalysisEventListener eventListener,
               boolean trim);
@@ -29,21 +29,21 @@ public interface ExcelAnalyser {
     /**
      * 解析指定sheet,{@link AnalysisEventListener}监听中使用
      *
-     * @param sheetParam
+     * @param sheetParam 入参
      */
     void analysis(Sheet sheetParam);
 
 
     /**
      *
-     * 默认解析第一个sheet，解析结果以List<String> 的格式在 {@link AnalysisEventListener}监听中使用
+     * 默认解析第一个sheet，解析结果在 {@link AnalysisEventListener}监听中使用
      */
     void analysis();
 
     /**
      * 返回excel中包含哪些sheet
      *
-     * @return
+     * @return 返回所有sheet
      */
     List<Sheet> getSheets();
 

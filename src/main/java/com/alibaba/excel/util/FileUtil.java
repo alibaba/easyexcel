@@ -14,7 +14,6 @@ import org.apache.commons.compress.utils.IOUtils;
 
 /**
  * @author jipengfei
- * @date 2017/10/10
  */
 public class FileUtil {
 

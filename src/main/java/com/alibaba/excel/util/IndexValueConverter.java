@@ -9,7 +9,6 @@ import com.alibaba.excel.metadata.IndexValue;
 /**
  * 去除空Cell
  * @author jipengfei
- * @date 2017/04/13
  */
 public class IndexValueConverter {
     public static List<String> converter(List<IndexValue> i_list) {

@@ -16,7 +16,6 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
  * 类型转换工具类
  *
  * @author jipengfei
- * @date 2017/03/15
  */
 public class TypeUtil {
 
