@@ -15,7 +15,7 @@ public class Sheet {
     private int headLineMun;
 
     /**
-     * sheet序号
+     * sheet序号 从0开始
      */
     private int sheetNo;
 

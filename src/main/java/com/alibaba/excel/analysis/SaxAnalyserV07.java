@@ -33,7 +33,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author jipengfei
- *
  */
 public class SaxAnalyserV07 extends BaseSaxAnalyser {
 
@@ -67,7 +66,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         try {
             Sheet sheet = analysisContext.getCurrentSheet();
             if (!isAnalysisAllSheets(sheet)) {
-                if (this.sheetSourceList.size() <= sheet.getSheetNo()) {
+                if (this.sheetSourceList.size() < sheet.getSheetNo() || sheet.getSheetNo() == 0) {
                     return;
                 }
                 InputStream sheetInputStream = this.sheetSourceList.get(sheet.getSheetNo() - 1).getInputStream();
@@ -93,7 +92,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         if (sheet == null) {
             return true;
         }
-        if (sheet.getSheetNo() <= 0) {
+        if (sheet.getSheetNo() < 0) {
             return true;
         }
         return false;
@@ -139,7 +138,6 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         return sheets;
     }
 
-
     private void start() throws IOException, XmlException, ParserConfigurationException, SAXException {
 
         createTmpFile();
@@ -175,7 +173,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
                         if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("name")) {
                             name = attrs.getValue(i);
                         } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("r:id")) {
-                            id = Integer.parseInt(attrs.getValue(i).replaceAll("rId",""));
+                            id = Integer.parseInt(attrs.getValue(i).replaceAll("rId", ""));
                             try {
                                 InputStream inputStream = new FileInputStream(XMLTempFile.getSheetFilePath(path, id));
                                 sheetSourceList.add(new SheetSource(id, name, inputStream));
@@ -269,6 +267,5 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
             }
         }
     }
-
 
 }
