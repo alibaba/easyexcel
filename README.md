@@ -87,3 +87,4 @@ public void test1() throws FileNotFoundException {
 # 联系我们
 
 有问题阿里同事可以通过钉钉找到我，阿里外同学可以通过git留言。其他技术非技术相关的也欢迎一起探讨。
+![img](https://github.com/alibaba/easyexcel/blob/master/img/wexin.png)
