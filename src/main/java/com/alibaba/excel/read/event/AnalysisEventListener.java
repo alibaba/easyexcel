@@ -1,6 +1,6 @@
-package com.alibaba.excel.event;
+package com.alibaba.excel.read.event;
 
-import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.context.AnalysisContext;
 
 /**
  * 监听Excel解析每行数据
@@ -14,15 +14,15 @@ import com.alibaba.excel.context.AnalysisContext;
 public abstract class AnalysisEventListener<T> {
 
     /**
-     * when analysis one row trigger invoke function
+     * when read one row trigger invoke function
      *
      * @param object  one row data
-     * @param context analysis context
+     * @param context read context
      */
     public abstract void invoke(T object, AnalysisContext context);
 
     /**
-     * if have something to do after all  analysis
+     * if have something to do after all  read
      *
      * @param context context
      */

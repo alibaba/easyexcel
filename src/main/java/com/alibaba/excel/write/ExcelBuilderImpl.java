@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import com.alibaba.excel.context.GenerateContext;
-import com.alibaba.excel.context.GenerateContextImpl;
+import com.alibaba.excel.write.context.GenerateContext;
+import com.alibaba.excel.write.context.GenerateContextImpl;
 import com.alibaba.excel.metadata.ExcelColumnProperty;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;

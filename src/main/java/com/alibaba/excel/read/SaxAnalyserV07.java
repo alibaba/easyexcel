@@ -1,4 +1,4 @@
-package com.alibaba.excel.analysis;
+package com.alibaba.excel.read;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,11 +13,11 @@ import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.alibaba.excel.analysis.v07.RowHandler;
-import com.alibaba.excel.analysis.v07.XmlParserFactory;
-import com.alibaba.excel.analysis.v07.XMLTempFile;
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.read.v07.RowHandler;
+import com.alibaba.excel.read.v07.XmlParserFactory;
+import com.alibaba.excel.read.v07.XMLTempFile;
+import com.alibaba.excel.read.context.AnalysisContext;
+import com.alibaba.excel.read.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.util.FileUtil;
 

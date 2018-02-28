@@ -1,4 +1,4 @@
-package com.alibaba.excel.context;
+package com.alibaba.excel.write.context;
 
 import java.io.OutputStream;
 
@@ -17,7 +17,7 @@ public interface GenerateContext {
 
     /**
      * 返回当前sheet
-     * @return current analysis sheet
+     * @return current read sheet
      */
     Sheet getCurrentSheet();
 

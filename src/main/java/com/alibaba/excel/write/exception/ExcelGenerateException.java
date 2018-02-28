@@ -1,4 +1,4 @@
-package com.alibaba.excel.exception;
+package com.alibaba.excel.write.exception;
 
 /**
  * 生成Excel封装的异常

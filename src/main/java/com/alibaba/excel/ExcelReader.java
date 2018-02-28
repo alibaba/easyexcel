@@ -3,10 +3,10 @@ package com.alibaba.excel;
 import java.io.InputStream;
 import java.util.List;
 
-import com.alibaba.excel.analysis.ExcelAnalyser;
-import com.alibaba.excel.analysis.ExcelAnalyserImpl;
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.ExcelAnalyser;
+import com.alibaba.excel.read.ExcelAnalyserImpl;
+import com.alibaba.excel.read.context.AnalysisContext;
+import com.alibaba.excel.read.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
