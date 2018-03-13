@@ -172,8 +172,9 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
                     for (int i = 0; i < attrs.getLength(); i++) {
                         if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("name")) {
                             name = attrs.getValue(i);
-                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("r:id")) {
-                            id = Integer.parseInt(attrs.getValue(i).replaceAll("rId", ""));
+                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("sheetid")) {
+                            //这里应该是获取sheetId而不是r:id属性。否则，下面拼接的sheet+id的xml找不到。
+                            id = Integer.parseInt(attrs.getValue(i));
                             try {
                                 InputStream inputStream = new FileInputStream(XMLTempFile.getSheetFilePath(path, id));
                                 sheetSourceList.add(new SheetSource(id, name, inputStream));
