@@ -7,19 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import com.alibaba.excel.read.v07.RowHandler;
-import com.alibaba.excel.read.v07.XmlParserFactory;
-import com.alibaba.excel.read.v07.XMLTempFile;
-import com.alibaba.excel.read.context.AnalysisContext;
-import com.alibaba.excel.read.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.util.FileUtil;
 
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.xmlbeans.XmlException;
@@ -30,6 +23,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.read.context.AnalysisContext;
+import com.alibaba.excel.read.exception.ExcelAnalysisException;
+import com.alibaba.excel.read.v07.RowHandler;
+import com.alibaba.excel.read.v07.XMLTempFile;
+import com.alibaba.excel.read.v07.XmlParserFactory;
+import com.alibaba.excel.util.FileUtil;
 
 /**
  * @author jipengfei
@@ -105,7 +106,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
     private void parseXmlSource(InputStream inputStream) {
         try {
             ContentHandler handler = new RowHandler(this, this.sharedStringsTable, this.analysisContext,
-                sharedStringList);
+                    sharedStringList);
             XmlParserFactory.parse(inputStream, handler);
             inputStream.close();
         } catch (Exception e) {
