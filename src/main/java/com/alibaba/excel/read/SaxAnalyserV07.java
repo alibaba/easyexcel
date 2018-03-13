@@ -189,7 +189,24 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
 
         });
         workbookXml.close();
-        Collections.sort(sheetSourceList);
+        /*这种排序方法底层实现是使用数组元素的排序方式，
+        进而调用java.util.ComparableTimSort.sort(Object[] a,int lo,int hi,@Nullable Object[] work,int workBase,int workLen)
+        再调用内部方法countRunAndMakeAscending(Object[] a, int lo, int hi),
+        问题就出现在这个私有方法，它是用后面的元素跟前面的元素进行对比，会导致倒序排列元素。本来是期望sheetList按照sheet号正序排列，
+        然后取第二个sheet，但是倒序后，变成取了第一个sheet。*/
+        //Collections.sort(sheetSourceList);
+        Collections.sort(sheetSourceList, new Comparator<SheetSource>() {
+            @Override
+            public int compare(SheetSource o1, SheetSource o2) {
+                if (o1.id == o2.id) {
+                    return 0;
+                } else if (o1.id > o2.id) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
     }
 
     private void initUse1904WindowDate() throws IOException, XmlException {
