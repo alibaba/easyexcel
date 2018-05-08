@@ -170,9 +170,10 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
                     String name = null;
                     int id = 0;
                     for (int i = 0; i < attrs.getLength(); i++) {
-                        if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("name")) {
+                    	//修改读取excel 2007 bug
+                        if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("name") || attrs.getQName(i).toLowerCase(Locale.US).equals("name")) {
                             name = attrs.getValue(i);
-                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("r:id")) {
+                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("r:id") || attrs.getQName(i).toLowerCase(Locale.US).equals("r:id")) {
                             id = Integer.parseInt(attrs.getValue(i).replaceAll("rId", ""));
                             try {
                                 InputStream inputStream = new FileInputStream(XMLTempFile.getSheetFilePath(path, id));
