@@ -84,6 +84,88 @@ public void test1() throws FileNotFoundException {
         }
     }
 ```
+# web下载实例写法
+package com.alibaba.china.pte.web.seller.dingtalk.rpc;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @author jipengfei
+ * @date 2018/05/25
+ */
+@RequestMapping("/api/dingtalk")
+@RestController
+public class Down {
+
+    @GetMapping("/a.htm")
+    public void cooperation(HttpServletRequest request, HttpServletResponse response) {
+        ServletOutputStream out = null;
+        try {
+            out = response.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
+        try {
+
+            String fileName = new String(("UserInfo " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
+                .getBytes(), "UTF-8");
+            Sheet sheet1 = new Sheet(1, 0);
+            sheet1.setSheetName("第一个sheet");
+            writer.write0(getListString(), sheet1);
+            response.setContentType("multipart/form-data");
+            response.setCharacterEncoding("utf-8");
+            response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
+            out.flush();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            writer.finish();
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private List<List<String>> getListString() {
+        List<String> list = new ArrayList<String>();
+        list.add("ooo1");
+        list.add("ooo2");
+        list.add("ooo3");
+        list.add("ooo4");
+        List<String> list1 = new ArrayList<String>();
+        list1.add("ooo1");
+        list1.add("ooo2");
+        list1.add("ooo3");
+        list1.add("ooo4");
+        List<List<String>> ll = new ArrayList<List<String>>();
+        ll.add(list);
+        ll.add(list1);
+        return ll;
+    }
+
+}
+
 # 联系我们
 
 有问题阿里同事可以通过钉钉找到我，阿里外同学可以通过git留言。其他技术非技术相关的也欢迎一起探讨。
