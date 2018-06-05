@@ -260,7 +260,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         public int compareTo(SheetSource o) {
             if (o.id == this.id) {
                 return 0;
-            } else if (o.id > this.id) {
+            } else if (o.id < this.id) {
                 return 1;
             } else {
                 return -1;
