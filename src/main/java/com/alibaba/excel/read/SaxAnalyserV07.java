@@ -188,7 +188,6 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
 
         });
         workbookXml.close();
-        Collections.sort(sheetSourceList);
     }
 
     private void initUse1904WindowDate() throws IOException, XmlException {
@@ -219,7 +218,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         inputStream.close();
     }
 
-    private class SheetSource implements Comparable<SheetSource> {
+    private class SheetSource {
 
         private int id;
 
@@ -255,16 +254,6 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
 
         public void setId(int id) {
             this.id = id;
-        }
-
-        public int compareTo(SheetSource o) {
-            if (o.id == this.id) {
-                return 0;
-            } else if (o.id > this.id) {
-                return 1;
-            } else {
-                return -1;
-            }
         }
     }
 
