@@ -7,19 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import com.alibaba.excel.read.v07.RowHandler;
-import com.alibaba.excel.read.v07.XmlParserFactory;
-import com.alibaba.excel.read.v07.XMLTempFile;
-import com.alibaba.excel.read.context.AnalysisContext;
-import com.alibaba.excel.read.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.util.FileUtil;
 
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.xmlbeans.XmlException;
@@ -30,6 +23,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.read.context.AnalysisContext;
+import com.alibaba.excel.read.exception.ExcelAnalysisException;
+import com.alibaba.excel.read.v07.RowHandler;
+import com.alibaba.excel.read.v07.XMLTempFile;
+import com.alibaba.excel.read.v07.XmlParserFactory;
+import com.alibaba.excel.util.FileUtil;
 
 /**
  * @author jipengfei
@@ -105,7 +106,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
     private void parseXmlSource(InputStream inputStream) {
         try {
             ContentHandler handler = new RowHandler(this, this.sharedStringsTable, this.analysisContext,
-                sharedStringList);
+                    sharedStringList);
             XmlParserFactory.parse(inputStream, handler);
             inputStream.close();
         } catch (Exception e) {
@@ -172,8 +173,9 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
                     for (int i = 0; i < attrs.getLength(); i++) {
                         if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("name")) {
                             name = attrs.getValue(i);
-                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("r:id")) {
-                            id = Integer.parseInt(attrs.getValue(i).replaceAll("rId", ""));
+                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("sheetid")) {
+                            //这里应该是获取sheetId而不是r:id属性。否则，下面拼接的sheet+id的xml找不到。
+                            id = Integer.parseInt(attrs.getValue(i));
                             try {
                                 InputStream inputStream = new FileInputStream(XMLTempFile.getSheetFilePath(path, id));
                                 sheetSourceList.add(new SheetSource(id, name, inputStream));
@@ -188,6 +190,24 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
 
         });
         workbookXml.close();
+        /*这种排序方法底层实现是使用数组元素的排序方式，
+        进而调用java.util.ComparableTimSort.sort(Object[] a,int lo,int hi,@Nullable Object[] work,int workBase,int workLen)
+        再调用内部方法countRunAndMakeAscending(Object[] a, int lo, int hi),
+        问题就出现在这个私有方法，它是用后面的元素跟前面的元素进行对比，会导致倒序排列元素。本来是期望sheetList按照sheet号正序排列，
+        然后取第二个sheet，但是倒序后，变成取了第一个sheet*/
+        //Collections.sort(sheetSourceList);
+        Collections.sort(sheetSourceList, new Comparator<SheetSource>() {
+            @Override
+            public int compare(SheetSource o1, SheetSource o2) {
+                if (o1.id == o2.id) {
+                    return 0;
+                } else if (o1.id > o2.id) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
     }
 
     private void initUse1904WindowDate() throws IOException, XmlException {
@@ -218,7 +238,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         inputStream.close();
     }
 
-    private class SheetSource {
+    private class SheetSource implements Comparable<SheetSource> {
 
         private int id;
 
@@ -254,6 +274,16 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
 
         public void setId(int id) {
             this.id = id;
+        }
+
+        public int compareTo(SheetSource o) {
+            if (o.id == this.id) {
+                return 0;
+            } else if (o.id > this.id) {
+                return 1;
+            } else {
+                return -1;
+            }
         }
     }
 

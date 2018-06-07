@@ -4,11 +4,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.excel.read.event.AnalysisEventListener;
-import com.alibaba.excel.read.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.read.event.AnalysisEventListener;
+import com.alibaba.excel.read.exception.ExcelAnalysisException;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -133,9 +133,17 @@ public class AnalysisContextImpl implements AnalysisContext {
     }
 
     public void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow) {
-        if (this.excelHeadProperty == null && (clazz != null || headOneRow != null)) {
-            this.excelHeadProperty = new ExcelHeadProperty(clazz, new ArrayList<List<String>>());
+        if (clazz != null) {
+            if (this.excelHeadProperty == null) {
+                this.excelHeadProperty = new ExcelHeadProperty(clazz, new ArrayList<List<String>>());
+            } else {
+//            rebulid
+                if (this.excelHeadProperty.getHeadClazz() != null && !this.excelHeadProperty.getHeadClazz().getName().equalsIgnoreCase(clazz.getName())) {
+                    this.excelHeadProperty = new ExcelHeadProperty(clazz, new ArrayList<List<String>>());
+                }
+            }
         }
+
         if (this.excelHeadProperty.getHead() == null && headOneRow != null) {
             this.excelHeadProperty.appendOneRow(headOneRow);
         }
