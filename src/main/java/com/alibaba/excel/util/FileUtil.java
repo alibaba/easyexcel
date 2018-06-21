@@ -103,6 +103,8 @@ public class FileUtil {
                     deletefile(delpath + File.separator + filelist[i]);
                 }
             }
+            //目录也要删除
+            file.delete();
         }
     }
 

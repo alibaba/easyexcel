@@ -5,11 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -84,6 +80,16 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
             stop();
             throw new ExcelAnalysisException(e);
         } finally {
+            //关闭列表中所有的inputstream
+            sheetSourceList.stream().forEach((e)->{
+                try {
+                    if(e.getInputStream()!=null)
+                        e.getInputStream().close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            });
+            stop();
         }
 
     }
@@ -172,8 +178,10 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
                     for (int i = 0; i < attrs.getLength(); i++) {
                         if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("name")) {
                             name = attrs.getValue(i);
-                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("r:id")) {
-                            id = Integer.parseInt(attrs.getValue(i).replaceAll("rId", ""));
+                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("sheetid")) {
+//                        } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("r:id")) {
+                            id = Integer.parseInt(attrs.getValue(i));
+//                            id = Integer.parseInt(attrs.getValue(i).replaceAll("rId", ""));
                             try {
                                 InputStream inputStream = new FileInputStream(XMLTempFile.getSheetFilePath(path, id));
                                 sheetSourceList.add(new SheetSource(id, name, inputStream));
@@ -188,7 +196,13 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
 
         });
         workbookXml.close();
-        Collections.sort(sheetSourceList);
+//        Collections.sort(sheetSourceList);
+        Collections.sort(sheetSourceList, new Comparator<SheetSource>() {
+            @Override
+            public int compare(SheetSource o1, SheetSource o2) {
+                return o1.id - o2.id;
+            }
+        });
     }
 
     private void initUse1904WindowDate() throws IOException, XmlException {
