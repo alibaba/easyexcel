@@ -76,9 +76,16 @@ public class ExcelHeadProperty {
         if (p != null) {
             excelHeadProperty = new ExcelColumnProperty();
             excelHeadProperty.setField(f);
-            excelHeadProperty.setHead(Arrays.asList(p.value()));
             excelHeadProperty.setIndex(p.index());
             excelHeadProperty.setFormat(p.format());
+            
+            //ExcelProperty annotation value为空时 取属性名
+            if( null==p.value() || 1 > p.value().length || ( 1==p.value().length && 0 == p.value()[0].length()))
+            	excelHeadProperty.setHead( Arrays.asList( new String[] { f.getName()}) ) ;
+            else
+            	excelHeadProperty.setHead(Arrays.asList(p.value()));
+            
+            
             excelColumnPropertyMap1.put(p.index(), excelHeadProperty);
         } else {
             ExcelColumnNum columnNum = f.getAnnotation(ExcelColumnNum.class);

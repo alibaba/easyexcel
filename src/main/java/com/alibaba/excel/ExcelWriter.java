@@ -94,4 +94,12 @@ public class ExcelWriter {
     public void finish() {
         excelBuilder.finish();
     }
+    
+    
+    
+    public ExcelWriter writeMergedData(List<? extends BaseRowModel> data, Sheet sheet,String columnName) 
+    {
+    	excelBuilder.addMergedContent(data, sheet,columnName);
+        return this;
+    }
 }

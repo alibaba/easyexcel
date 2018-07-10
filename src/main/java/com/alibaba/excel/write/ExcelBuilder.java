@@ -3,6 +3,7 @@ package com.alibaba.excel.write;
 import java.io.OutputStream;
 import java.util.List;
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -51,4 +52,6 @@ public interface ExcelBuilder {
      * 关闭资源
      */
     void finish();
+
+	void addMergedContent(List<? extends BaseRowModel> data, Sheet sheet, String columnName);
 }
