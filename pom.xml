@@ -12,6 +12,7 @@
     <url>https://github.com/alibaba/easyexcel</url>
     <inceptionYear>2018</inceptionYear>
 
+
     <properties>
         <!--<gpg.skip>true</gpg.skip>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
