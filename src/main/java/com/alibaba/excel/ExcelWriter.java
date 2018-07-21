@@ -20,7 +20,7 @@ public class ExcelWriter {
     private ExcelBuilder excelBuilder;
 
     /**
-     * 生成小Excel低于2000行
+     * 生成EXCEL
      *
      * @param outputStream 文件输出流
      * @param typeEnum     输出文件类型03或07，强烈建议使用07版（可以输出超大excel而不内存溢出）
@@ -30,7 +30,7 @@ public class ExcelWriter {
     }
 
     /**
-     * 生成小Excel低于2000行
+     * 生成EXCEL
      *
      * @param outputStream 文件输出流
      * @param typeEnum     输出文件类型03或07，强烈建议使用07版（可以输出超大excel而不内存溢出）

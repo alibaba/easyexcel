@@ -66,12 +66,23 @@ public class FileUtil {
         return (filePosi == -1) ? "" : filePath.substring(0, filePosi);
     }
 
+    /**
+     * 文件解压
+     * @param path
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public static boolean doUnZip(String path, File file) throws IOException {
         ZipFile zipFile = new ZipFile(file, "utf-8");
         Enumeration<ZipArchiveEntry> en = zipFile.getEntries();
         ZipArchiveEntry ze;
         while (en.hasMoreElements()) {
             ze = en.nextElement();
+            if(ze.getName().contains("../")){
+                //防止目录穿越
+                throw new IllegalStateException("unsecurity zipfile!");
+            }
             File f = new File(path, ze.getName());
             if (ze.isDirectory()) {
                 f.mkdirs();
@@ -103,11 +114,9 @@ public class FileUtil {
                     deletefile(delpath + File.separator + filelist[i]);
                 }
             }
+            file.delete();
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(File.separator);
-    }
 
 }

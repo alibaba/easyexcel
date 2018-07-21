@@ -84,6 +84,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
             stop();
             throw new ExcelAnalysisException(e);
         } finally {
+
         }
 
     }
@@ -99,6 +100,16 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
     }
 
     public void stop() {
+        for (SheetSource sheet : sheetSourceList) {
+            if (sheet.getInputStream() != null) {
+                try {
+                    sheet.getInputStream().close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         FileUtil.deletefile(path);
     }
 
@@ -164,16 +175,18 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         this.sheetSourceList = new ArrayList<SheetSource>();
         InputStream workbookXml = new FileInputStream(this.workBookXMLFilePath);
         XmlParserFactory.parse(workbookXml, new DefaultHandler() {
+
+            private int id = 0;
             @Override
             public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
                 if (qName.toLowerCase(Locale.US).equals("sheet")) {
                     String name = null;
-                    int id = 0;
+                    id++;
                     for (int i = 0; i < attrs.getLength(); i++) {
                         if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("name")) {
                             name = attrs.getValue(i);
                         } else if (attrs.getLocalName(i).toLowerCase(Locale.US).equals("r:id")) {
-                            id = Integer.parseInt(attrs.getValue(i).replaceAll("rId", ""));
+                            //id = Integer.parseInt(attrs.getValue(i).replaceAll("rId", ""));
                             try {
                                 InputStream inputStream = new FileInputStream(XMLTempFile.getSheetFilePath(path, id));
                                 sheetSourceList.add(new SheetSource(id, name, inputStream));
@@ -210,9 +223,28 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         //this.sharedStringsTable.readFrom(inputStream);
 
         XmlParserFactory.parse(inputStream, new DefaultHandler() {
+            int lastElementPosition = -1;
+
+            int lastHandledElementPosition = -1;
+
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes) {
+                if (hasSkippedEmptySharedString()) {
+                    sharedStringList.add("");
+                }
+                if ("t".equals(qName)) {
+                    lastElementPosition++;
+                }
+            }
+
+            private boolean hasSkippedEmptySharedString() {
+                return lastElementPosition > lastHandledElementPosition;
+            }
+
             @Override
             public void characters(char[] ch, int start, int length) {
                 sharedStringList.add(new String(ch, start, length));
+                lastHandledElementPosition++;
             }
 
         });
@@ -261,9 +293,9 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
             if (o.id == this.id) {
                 return 0;
             } else if (o.id > this.id) {
-                return 1;
-            } else {
                 return -1;
+            } else {
+                return 1;
             }
         }
     }

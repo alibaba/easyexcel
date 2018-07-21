@@ -107,6 +107,7 @@ public class Read2007Xlsx {
                 });
 
             reader.read();
+            //reader.finish();
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -148,6 +149,49 @@ public class Read2007Xlsx {
 
             reader.read(new Sheet(1, 2, ExcelRowJavaModel.class));
             reader.read(new Sheet(2, 1, ExcelRowJavaModel1.class));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    @Test
+    public void withModelMultipleSheet1() {
+        InputStream inputStream = getInputStream("sss.xlsx");
+        try {
+            ExcelReader reader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null,
+                new AnalysisEventListener() {
+                    @Override
+                    public void invoke(Object object, AnalysisContext context) {
+                        ExcelRowJavaModel1 obj = null;
+                        if (context.getCurrentSheet().getSheetNo() == 1) {
+                            obj = (ExcelRowJavaModel1)object;
+                        }
+                        //if (context.getCurrentSheet().getSheetNo() == 2) {
+                        //    obj = (ExcelRowJavaModel)object;
+                        //}
+                        System.out.println(
+                            "当前sheet:" + context.getCurrentSheet().getSheetNo() + " 当前行：" + context.getCurrentRowNum()
+                                + " data:" + obj);
+
+                    }
+
+                    @Override
+                    public void doAfterAllAnalysed(AnalysisContext context) {
+
+                    }
+                });
+
+            reader.read(new Sheet(1, 1, ExcelRowJavaModel1.class));
+           // reader.read(new Sheet(2, 1, ExcelRowJavaModel1.class));
 
         } catch (Exception e) {
             e.printStackTrace();
