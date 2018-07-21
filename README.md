@@ -21,7 +21,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 ```
 
 # 最新版本
-## VERSION : 1.0.1
+## VERSION : 1.0.2
 
 # 维护者
 姬朋飞（玉霄）
