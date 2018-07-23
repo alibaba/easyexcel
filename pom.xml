@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>1.0.2-bugfix</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
     <name>easyexcel</name>
     <description>easyexcel is a excel handle tools written in Java</description>
