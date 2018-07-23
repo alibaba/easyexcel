@@ -244,6 +244,7 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
                     beforeQName = currentQName;
                     currentQName = qName;
                 }
+
             }
             //@Override
             //public void endElement (String uri, String localName, String qName)
