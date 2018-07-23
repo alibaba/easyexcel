@@ -23,7 +23,6 @@ import static com.alibaba.excel.util.ExcelXmlConstants.ROW_TAG;
 
 /**
  * @author jipengfei
- *
  */
 public class RowHandler extends DefaultHandler {
 
@@ -108,7 +107,11 @@ public class RowHandler extends DefaultHandler {
             switch (currentCellType) {
                 case STRING:
                     int idx = Integer.parseInt(currentCellValue);
-                    currentCellValue = sharedStringList.get(idx);
+                    if (idx < sharedStringList.size()) {
+                        currentCellValue = sharedStringList.get(idx);
+                    } else {
+                        currentCellValue = "";
+                    }
                     currentCellType = FieldType.EMPTY;
                     break;
                 //case DATE:

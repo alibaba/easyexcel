@@ -24,7 +24,7 @@ public class Read2007Xlsx {
     //创建没有自定义模型,没有sheet的解析器,默认解析所有sheet解析结果以List<String>的方式通知监听者
     @Test
     public void noModel() {
-        InputStream inputStream = getInputStream("2007NoModelBigFile.xlsx");
+        InputStream inputStream = getInputStream("1.xlsx");
         try {
             ExcelReader reader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null,
                 new AnalysisEventListener<List<String>>() {
