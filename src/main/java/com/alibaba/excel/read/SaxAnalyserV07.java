@@ -224,57 +224,35 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         //this.sharedStringsTable.readFrom(inputStream);
 
         XmlParserFactory.parse(inputStream, new DefaultHandler() {
-            //int lastElementPosition = -1;
-            //
-            //int lastHandledElementPosition = -1;
+            private StringBuffer characters;
+        	private boolean tIsOpen;
 
-            String beforeQName = "";
+        	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
-            String currentQName = "";
+        		if ("sst".equals(qName)) {
+        			characters = new StringBuffer();
+        		} else if ("si".equals(qName)) {
+        			characters.setLength(0);
+        		} else if ("t".equals(qName)) {
+        			tIsOpen = true;
+        		}
+        	}
 
-            @Override
-            public void startElement(String uri, String localName, String qName, Attributes attributes) {
-                //if (hasSkippedEmptySharedString()) {
-                //    sharedStringList.add("");
-                //}
-                //if ("t".equals(qName)) {
-                //    lastElementPosition++;
-                //}
-                if ("si".equals(qName) || "t".equals(qName)) {
-                    beforeQName = currentQName;
-                    currentQName = qName;
-                }
+        	public void endElement(String uri, String localName, String qName) throws SAXException {
 
-            }
-            //@Override
-            //public void endElement (String uri, String localName, String qName)
-            //    throws SAXException
-            //{
-            //    if ("si".equals(qName) || "t".equals(qName)) {
-            //        beforeQName = qName;
-            //        currentQName = "";
-            //    }
-            //}
+        		if ("si".equals(qName)) {
+        			sharedStringList.add(characters.toString());
+        		} else if ("t".equals(qName)) {
+        			tIsOpen = false;
+        		}
+        	}
 
-            //private boolean hasSkippedEmptySharedString() {
-            //    return lastElementPosition > lastHandledElementPosition;
-            //}
+        	public void characters(char[] ch, int start, int length) throws SAXException {
 
-            @Override
-            public void characters(char[] ch, int start, int length) {
-                if ("t".equals(currentQName) && ("t".equals(beforeQName))) {
-                    String pre = sharedStringList.get(sharedStringList.size() - 1);
-                    String str = pre + new String(ch, start, length);
-                    sharedStringList.remove(sharedStringList.size() - 1);
-                    sharedStringList.add(str);
-                }else  if ("t".equals(currentQName) && ("si".equals(beforeQName))){
-                    sharedStringList.add(new String(ch, start, length));
-                }
-               // lastHandledElementPosition++;
-
-
-            }
-
+        		if (tIsOpen) {
+        			characters.append(ch, start, length);
+        		}
+        	}
         });
         inputStream.close();
     }
