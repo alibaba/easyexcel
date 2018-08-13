@@ -43,7 +43,7 @@ public class ModelBuildEventListener extends AnalysisEventListener {
         }
         if (excelHeadProperty != null) {
             for (int i = 0; i < stringList.size(); i++) {
-                ExcelColumnProperty columnProperty = excelHeadProperty.getExcelColumnProperty(i);
+                ExcelColumnProperty columnProperty = excelHeadProperty.getExcelColumnProperty1(i);
                 if (columnProperty != null) {
                     Object value = TypeUtil.convert(stringList.get(i), columnProperty.getField(),
                         columnProperty.getFormat(),context.use1904WindowDate());

@@ -138,6 +138,17 @@ public class ExcelHeadProperty {
     }
 
     /**
+     * 根据Excel中的列号，获取Excel的表头信息
+     *
+     * @param columnNum 列号
+     * @return ExcelColumnProperty
+     */
+    public ExcelColumnProperty getExcelColumnProperty1(int columnNum) {
+        return excelColumnPropertyMap1.get(columnNum);
+
+    }
+
+    /**
      * 判断表头是否相同
      *
      * @param columnHead
