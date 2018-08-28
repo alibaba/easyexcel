@@ -224,55 +224,33 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
         //this.sharedStringsTable.readFrom(inputStream);
 
         XmlParserFactory.parse(inputStream, new DefaultHandler() {
-            //int lastElementPosition = -1;
-            //
-            //int lastHandledElementPosition = -1;
 
             String beforeQName = "";
 
-            String currentQName = "";
+            String currentString = "";
+
+            Boolean include = false;
 
             @Override
             public void startElement(String uri, String localName, String qName, Attributes attributes) {
-                //if (hasSkippedEmptySharedString()) {
-                //    sharedStringList.add("");
-                //}
-                //if ("t".equals(qName)) {
-                //    lastElementPosition++;
-                //}
-                if ("si".equals(qName) || "t".equals(qName)) {
-                    beforeQName = currentQName;
-                    currentQName = qName;
+                if("si".equals(qName)){
+                    currentString = "";
                 }
-
+                include = "si".equals(beforeQName)&&"t".equals(qName);
+                beforeQName = qName;
             }
-            //@Override
-            //public void endElement (String uri, String localName, String qName)
-            //    throws SAXException
-            //{
-            //    if ("si".equals(qName) || "t".equals(qName)) {
-            //        beforeQName = qName;
-            //        currentQName = "";
-            //    }
-            //}
-
-            //private boolean hasSkippedEmptySharedString() {
-            //    return lastElementPosition > lastHandledElementPosition;
-            //}
 
             @Override
             public void characters(char[] ch, int start, int length) {
-                if ("t".equals(currentQName) && ("t".equals(beforeQName))) {
-                    String pre = sharedStringList.get(sharedStringList.size() - 1);
-                    String str = pre + new String(ch, start, length);
-                    sharedStringList.remove(sharedStringList.size() - 1);
-                    sharedStringList.add(str);
-                }else  if ("t".equals(currentQName) && ("si".equals(beforeQName))){
-                    sharedStringList.add(new String(ch, start, length));
+                if (include){
+                    currentString += new String(ch, start, length);
                 }
-               // lastHandledElementPosition++;
-
-
+            }
+            @Override
+            public void endElement(String uri, String localName, String qName){
+                if("si".equals(qName)){
+                    sharedStringList.add(currentString);
+                }
             }
 
         });
