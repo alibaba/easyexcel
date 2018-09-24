@@ -56,7 +56,7 @@ public class ExcelReader {
     }
 
     /**
-     * 读指定个sheet，没有模型映射
+     * 读指定sheet，没有模型映射
      *
      * @param sheet 需要解析的sheet
      */
