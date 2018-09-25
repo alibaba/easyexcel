@@ -168,7 +168,10 @@ public class SaxAnalyserV07 extends BaseSaxAnalyser {
     }
 
     private void unZipTempFile() throws IOException {
-        FileUtil.doUnZip(path, tmpFile);
+        boolean result = FileUtil.doUnZip(path, tmpFile);
+        if (!result) {
+        	throw new IOException("Can not unzip "+ tmpFile.getPath());
+        }
     }
 
     private void initSheetSourceList() throws IOException, ParserConfigurationException, SAXException {
