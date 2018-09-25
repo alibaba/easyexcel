@@ -85,6 +85,7 @@ public void test1() throws FileNotFoundException {
     }
 ```
 # web下载实例写法
+```
 package com.alibaba.china.pte.web.seller.dingtalk.rpc;
 
 import java.io.IOException;
@@ -165,6 +166,7 @@ public class Down {
     }
 
 }
+```
 
 # 联系我们
 
