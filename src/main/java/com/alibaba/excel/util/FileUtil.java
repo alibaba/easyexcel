@@ -74,30 +74,51 @@ public class FileUtil {
      * @throws IOException
      */
     public static boolean doUnZip(String path, File file) throws IOException {
-        ZipFile zipFile = new ZipFile(file, "utf-8");
-        Enumeration<ZipArchiveEntry> en = zipFile.getEntries();
-        ZipArchiveEntry ze;
-        while (en.hasMoreElements()) {
-            ze = en.nextElement();
-            if(ze.getName().contains("../")){
-                //防止目录穿越
-                throw new IllegalStateException("unsecurity zipfile!");
-            }
-            File f = new File(path, ze.getName());
-            if (ze.isDirectory()) {
-                f.mkdirs();
-                continue;
-            } else { f.getParentFile().mkdirs(); }
+		ZipFile zipFile = null;
+		try {
+			zipFile = new ZipFile(file, "utf-8");
+		} catch (IOException e) {
+			return false;
+		} finally {
+			zipFile.close();
+		}
+		Enumeration<ZipArchiveEntry> en = zipFile.getEntries();
+		ZipArchiveEntry ze;
+		while (en.hasMoreElements()) {
+			ze = en.nextElement();
+			if (ze.getName().contains("../")) {
+				// 防止目录穿越
+				throw new IllegalStateException("unsecurity zipfile!");
+			}
+			File f = new File(path, ze.getName());
+			if (ze.isDirectory()) {
+				f.mkdirs();
+				continue;
+			} else {
+				f.getParentFile().mkdirs();
+			}
 
-            InputStream is = zipFile.getInputStream(ze);
-            OutputStream os = new FileOutputStream(f);
-            IOUtils.copy(is, os, BUF);
-            is.close();
-            os.close();
-        }
-        zipFile.close();
-        return true;
-    }
+			InputStream is = null;
+			OutputStream os = null;
+			try {
+				is = zipFile.getInputStream(ze);
+				os = new FileOutputStream(f);
+				IOUtils.copy(is, os, BUF);
+			} catch (ZipException e) {
+				return false;
+			} catch (IOException e) {
+				return false;
+			} finally {
+				if (is != null) {
+					is.close();
+				}
+				if (os != null) {
+					os.close();
+				}
+			}
+		}
+		return true;
+	}
 
     public static void deletefile(String delpath) {
         File file = new File(delpath);
