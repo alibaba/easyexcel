@@ -19,12 +19,12 @@ public class XLS2003FunctionTest extends TestCase {
 
     @Test
     public void testExcel2003NoModel() {
-        InputStream inputStream = getInputStream("loan1.xls");
+        InputStream inputStream = getInputStream("2003.xls");
         try {
             // 解析每行结果在listener中处理
             ExcelListener listener = new ExcelListener();
 
-            ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLS, null, listener);
+            ExcelReader excelReader = new ExcelReader(inputStream,  null, listener);
             excelReader.read();
         } catch (Exception e) {
             e.printStackTrace();

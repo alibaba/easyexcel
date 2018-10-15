@@ -18,7 +18,6 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.*;
 
 /**
  * @author jipengfei
- * @date 2017/08/23
  */
 public class XlsxRowHandler extends DefaultHandler {
 

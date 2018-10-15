@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * @author jipengfei
- * @date 2017/05/16
  */
 public class Table {
     /**

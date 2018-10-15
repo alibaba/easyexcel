@@ -3,6 +3,7 @@ package com.alibaba.excel.context;
 import com.alibaba.excel.metadata.*;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Table;
+import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;

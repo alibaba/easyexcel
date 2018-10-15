@@ -5,7 +5,6 @@ import com.alibaba.excel.metadata.BaseRowModel;
 
 /**
  * @author jipengfei
- * @date 2017/05/31
  */
 public class ExcelPropertyIndexModel extends BaseRowModel {
 

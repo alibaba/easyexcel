@@ -31,9 +31,21 @@ public class ExcelReader {
      *                      }AnalysisContext
      * @param eventListener
      */
+    @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
                        AnalysisEventListener eventListener) {
         this(in, excelTypeEnum, customContent, eventListener, true);
+    }
+
+    /**
+     * @param in
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
+     *                      }AnalysisContext
+     * @param eventListener
+     */
+    public ExcelReader(InputStream in, Object customContent,
+                       AnalysisEventListener eventListener) {
+        this(in, customContent, eventListener, true);
     }
 
     /**
@@ -54,8 +66,23 @@ public class ExcelReader {
      * @param eventListener
      * @param trim
      */
+    @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
                        AnalysisEventListener eventListener, boolean trim) {
+        validateParam(in, excelTypeEnum, eventListener);
+        analyser.init(in, excelTypeEnum, customContent, eventListener, trim);
+    }
+
+    /**
+     * @param in
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
+     *                      }AnalysisContext
+     * @param eventListener
+     * @param trim
+     */
+    public ExcelReader(InputStream in, Object customContent,
+                       AnalysisEventListener eventListener, boolean trim) {
+        ExcelTypeEnum excelTypeEnum = ExcelTypeEnum.valueOf(in);
         validateParam(in, excelTypeEnum, eventListener);
         analyser.init(in, excelTypeEnum, customContent, eventListener, trim);
     }

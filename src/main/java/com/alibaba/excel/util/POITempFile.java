@@ -5,7 +5,6 @@ import java.io.File;
 /**
  *
  * @author jipengfei
- * @date 2017/06/22
  */
 public class POITempFile {
 

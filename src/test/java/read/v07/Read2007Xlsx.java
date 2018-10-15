@@ -23,11 +23,11 @@ public class Read2007Xlsx {
     //创建没有自定义模型,没有sheet的解析器,默认解析所有sheet解析结果以List<String>的方式通知监听者
     @Test
     public void noModel() {
-        InputStream inputStream = getInputStream("需要分批关闭客户名单 2018.8.24.xlsx");
+        InputStream inputStream = getInputStream("2007.xlsx");
 
        final List<List<String>> ll = new ArrayList<List<String>>();
         try {
-            ExcelReader reader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null,
+            ExcelReader reader = new ExcelReader(inputStream, null,
                 new AnalysisEventListener<List<String>>() {
                     @Override
                     public void invoke(List<String> object, AnalysisContext context) {

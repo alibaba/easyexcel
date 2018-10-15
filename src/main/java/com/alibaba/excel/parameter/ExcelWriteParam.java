@@ -8,7 +8,6 @@ import java.io.OutputStream;
  * {@link com.alibaba.excel.ExcelWriter}
  *
  * @author jipengfei
- * @date 2017/05/15
  */
 @Deprecated
 public class ExcelWriteParam {
