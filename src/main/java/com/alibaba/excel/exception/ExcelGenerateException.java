@@ -1,7 +1,6 @@
-package com.alibaba.excel.write.exception;
+package com.alibaba.excel.exception;
 
 /**
- * 生成Excel封装的异常
  * @author jipengfei
  */
 public class ExcelGenerateException extends RuntimeException {
@@ -18,4 +17,5 @@ public class ExcelGenerateException extends RuntimeException {
     public ExcelGenerateException(Throwable cause) {
         super(cause);
     }
+
 }

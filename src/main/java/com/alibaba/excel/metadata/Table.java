@@ -4,25 +4,22 @@ import java.util.List;
 
 /**
  * @author jipengfei
+ * @date 2017/05/16
  */
 public class Table {
     /**
-     * 对用的表头模型
      */
     private Class<? extends BaseRowModel> clazz;
 
     /**
-     * 对用的表头层级树,用于clazz不确定时候，动态生成表头
      */
     private List<List<String>> head;
 
     /**
-     * 第几个table,用于和其他table区分
      */
     private Integer tableNo;
 
     /**
-     * 支持表格简单样式自定义
      */
     private TableStyle tableStyle;
 

@@ -1,7 +1,6 @@
 package com.alibaba.excel.support;
 
 /**
- * 支持读写的数据格式
  *
  * @author jipengfei
  */

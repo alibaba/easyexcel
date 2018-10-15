@@ -1,18 +1,16 @@
-package com.alibaba.excel.read.modelbuild;
+package com.alibaba.excel.modelbuild;
 
-import java.util.List;
-
-import com.alibaba.excel.read.context.AnalysisContext;
-import com.alibaba.excel.read.event.AnalysisEventListener;
-import com.alibaba.excel.write.exception.ExcelGenerateException;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.ExcelColumnProperty;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.util.TypeUtil;
-
 import org.apache.commons.beanutils.BeanUtils;
 
+import java.util.List;
+
 /**
- * 监听POI Sax解析的每行结果
  *
  * @author jipengfei
  */
@@ -43,7 +41,7 @@ public class ModelBuildEventListener extends AnalysisEventListener {
         }
         if (excelHeadProperty != null) {
             for (int i = 0; i < stringList.size(); i++) {
-                ExcelColumnProperty columnProperty = excelHeadProperty.getExcelColumnProperty1(i);
+                ExcelColumnProperty columnProperty = excelHeadProperty.getExcelColumnProperty(i);
                 if (columnProperty != null) {
                     Object value = TypeUtil.convert(stringList.get(i), columnProperty.getField(),
                         columnProperty.getFormat(),context.use1904WindowDate());

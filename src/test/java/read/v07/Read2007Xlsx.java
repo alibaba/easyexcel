@@ -1,20 +1,19 @@
 package read.v07;
 
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import javamodel.ExcelRowJavaModel;
+import javamodel.ExcelRowJavaModel1;
+import javamodel.IdentificationExcel;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.read.context.AnalysisContext;
-import com.alibaba.excel.read.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.support.ExcelTypeEnum;
-
-import javamodel.ExcelRowJavaModel;
-import javamodel.ExcelRowJavaModel1;
-import org.junit.Test;
 
 /**
  * @author jipengfei
@@ -24,7 +23,9 @@ public class Read2007Xlsx {
     //创建没有自定义模型,没有sheet的解析器,默认解析所有sheet解析结果以List<String>的方式通知监听者
     @Test
     public void noModel() {
-        InputStream inputStream = getInputStream("1.xlsx");
+        InputStream inputStream = getInputStream("需要分批关闭客户名单 2018.8.24.xlsx");
+
+       final List<List<String>> ll = new ArrayList<List<String>>();
         try {
             ExcelReader reader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null,
                 new AnalysisEventListener<List<String>>() {
@@ -34,6 +35,7 @@ public class Read2007Xlsx {
                             "当前sheet:" + context.getCurrentSheet().getSheetNo() + " 当前行：" + context.getCurrentRowNum()
                                 + " data:" + object);
 
+                        ll.add(object);
                     }
 
                     @Override
@@ -42,6 +44,21 @@ public class Read2007Xlsx {
                 });
 
             reader.read();
+
+            String aa= "";
+            int i= 0;
+            for (List<String> strings:ll) {
+                i++;
+                aa = aa+","+ strings.get(1)+"";
+                if(i==25000){
+                    System.out.println(aa);
+                    aa="";
+                    i=0;
+                }
+
+            }
+            System.out.println(aa);
+
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -56,12 +73,12 @@ public class Read2007Xlsx {
 
     @Test
     public void withJavaModel() {
-        InputStream inputStream = getInputStream("2007WithModel.xlsx");
+        InputStream inputStream = getInputStream("2-拆分标识数据库.xlsx");
         try {
             ExcelReader reader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null,
-                new AnalysisEventListener<ExcelRowJavaModel>() {
+                new AnalysisEventListener<IdentificationExcel>() {
                     @Override
-                    public void invoke(ExcelRowJavaModel object, AnalysisContext context) {
+                    public void invoke(IdentificationExcel object, AnalysisContext context) {
                         System.out.println(
                             "当前sheet:" + context.getCurrentSheet().getSheetNo() + " 当前行：" + context.getCurrentRowNum()
                                 + " data:" + object);
@@ -73,7 +90,7 @@ public class Read2007Xlsx {
                     }
                 });
 
-            reader.read(new Sheet(1, 2, ExcelRowJavaModel.class));
+            reader.read(new Sheet(1, 1, IdentificationExcel.class));
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -375,14 +392,7 @@ public class Read2007Xlsx {
 
     }
 
-    public static void main(String[] args) {
-        List<String> mm = new ArrayList<String>();
-        mm.add(null);
-        mm.add(null);
-        mm.add(null);
-        mm.add(null);
-        mm.removeAll(Collections.singleton(null));
 
-        System.out.println(mm);
-    }
+
+
 }

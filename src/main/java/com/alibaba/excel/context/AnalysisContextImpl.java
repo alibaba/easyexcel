@@ -1,18 +1,17 @@
-package com.alibaba.excel.read.context;
+package com.alibaba.excel.context;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.excel.read.event.AnalysisEventListener;
-import com.alibaba.excel.read.exception.ExcelAnalysisException;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 解析Excel上线文默认实现
  *
  * @author jipengfei
  */

@@ -1,17 +1,16 @@
 package function.read;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.read.event.AnalysisEventListener;
+import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
 import function.listener.ExcelListener;
 import function.model.OneRowHeadExcelModel;
 import junit.framework.TestCase;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by jipengfei on 17/2/18.

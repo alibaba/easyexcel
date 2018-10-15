@@ -1,7 +1,6 @@
-package com.alibaba.excel.read.exception;
+package com.alibaba.excel.exception;
 
 /**
- * Excel解析时候封装的异常
  *
  * @author jipengfei
  */

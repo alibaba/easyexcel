@@ -1,5 +1,7 @@
 package com.alibaba.excel.util;
 
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -10,12 +12,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-
 /**
- * 类型转换工具类
- *
  * @author jipengfei
+ * @date 2017/03/15
  */
 public class TypeUtil {
 
@@ -26,16 +25,35 @@ public class TypeUtil {
         DATE_FORMAT_LIST.add(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     }
 
+    private static int getCountOfChar(String value, char c) {
+        int n = 0;
+        if (value == null) {
+            return 0;
+        }
+        char[] chars = value.toCharArray();
+        for (char cc : chars) {
+            if (cc == c) {
+                n++;
+            }
+        }
+        return n;
+    }
+
     public static Object convert(String value, Field field, String format, boolean us) {
         if (isNotEmpty(value)) {
             if (String.class.equals(field.getType())) {
-                return value;
+                return TypeUtil.formatFloat(value);
             }
             if (Integer.class.equals(field.getType()) || int.class.equals(field.getType())) {
                 return Integer.parseInt(value);
             }
             if (Double.class.equals(field.getType()) || double.class.equals(field.getType())) {
-                return Double.parseDouble(value);
+                if (null != format && !"".equals(format)) {
+                    int n = getCountOfChar(value, '0');
+                    return Double.parseDouble(TypeUtil.formatFloat0(value, n));
+                } else {
+                    return Double.parseDouble(TypeUtil.formatFloat(value));
+                }
             }
             if (Boolean.class.equals(field.getType()) || boolean.class.equals(field.getType())) {
                 String valueLower = value.toLowerCase();
@@ -66,6 +84,27 @@ public class TypeUtil {
 
         }
         return null;
+    }
+
+    public static Boolean isNum(Field field) {
+        if (field == null) {
+            return false;
+        }
+        if (Integer.class.equals(field.getType()) || int.class.equals(field.getType())) {
+            return true;
+        }
+        if (Double.class.equals(field.getType()) || double.class.equals(field.getType())) {
+            return true;
+        }
+
+        if (Long.class.equals(field.getType()) || long.class.equals(field.getType())) {
+            return true;
+        }
+
+        if (BigDecimal.class.equals(field.getType())) {
+            return true;
+        }
+        return false;
     }
 
     public static String getDefaultDateString(Date date) {
@@ -102,7 +141,7 @@ public class TypeUtil {
 
     }
 
-    private static Boolean isNotEmpty(String value) {
+    public static Boolean isNotEmpty(String value) {
         if (value == null) {
             return false;
         }
@@ -114,11 +153,25 @@ public class TypeUtil {
     }
 
     public static String formatFloat(String value) {
-        if (value.contains(".")) {
+        if (null != value && value.contains(".")) {
             if (isNumeric(value)) {
                 try {
                     BigDecimal decimal = new BigDecimal(value);
                     BigDecimal setScale = decimal.setScale(10, BigDecimal.ROUND_HALF_DOWN).stripTrailingZeros();
+                    return setScale.toPlainString();
+                } catch (Exception e) {
+                }
+            }
+        }
+        return value;
+    }
+
+    public static String formatFloat0(String value, int n) {
+        if (null != value && value.contains(".")) {
+            if (isNumeric(value)) {
+                try {
+                    BigDecimal decimal = new BigDecimal(value);
+                    BigDecimal setScale = decimal.setScale(n, BigDecimal.ROUND_HALF_DOWN);
                     return setScale.toPlainString();
                 } catch (Exception e) {
                 }
@@ -137,5 +190,13 @@ public class TypeUtil {
         return true;
     }
 
+    public static String formatDate(Date cellValue, String format) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
 
+        return simpleDateFormat.format(cellValue);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Date().toString());
+    }
 }

@@ -1,18 +1,17 @@
 package function.read;
 
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import function.listener.ExcelListener;
+import org.junit.Test;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
-import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.read.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.support.ExcelTypeEnum;
-
-import function.listener.ExcelListener;
-import org.junit.Test;
 
 /**
  * Created by jipengfei on 17/3/22.

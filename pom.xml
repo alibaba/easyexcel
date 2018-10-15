@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
     <name>easyexcel</name>
     <description>easyexcel is a excel handle tools written in Java</description>
@@ -118,18 +118,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.sonatype.plugins</groupId>-->
-                <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
-                <!--<version>1.6.7</version>-->
-                <!--<extensions>true</extensions>-->
-                <!--<configuration>-->
-                    <!--<serverId>ossrh</serverId>-->
-                    <!--<nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-                    <!--<autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-            <!-- GPG -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>

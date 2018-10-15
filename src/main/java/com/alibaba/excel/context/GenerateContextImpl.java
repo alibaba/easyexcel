@@ -1,34 +1,26 @@
-package com.alibaba.excel.write.context;
+package com.alibaba.excel.context;
 
+import com.alibaba.excel.metadata.*;
+import com.alibaba.excel.metadata.CellRange;
+import com.alibaba.excel.metadata.Table;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.metadata.CellRange;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
-import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.TableStyle;
-import com.alibaba.excel.support.ExcelTypeEnum;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-
 /**
- * 生成Excel上下文
  *
  * @author jipengfei
  */
@@ -58,11 +50,20 @@ public class GenerateContextImpl implements GenerateContext {
 
     private boolean needHead = true;
 
-    public GenerateContextImpl(OutputStream out, ExcelTypeEnum excelType, boolean needHead) {
+    public GenerateContextImpl(InputStream templateInputStream, OutputStream out, ExcelTypeEnum excelType,
+                               boolean needHead) throws IOException {
         if (ExcelTypeEnum.XLS.equals(excelType)) {
-            this.workbook = new HSSFWorkbook();
+            if(templateInputStream == null) {
+                this.workbook = new HSSFWorkbook();
+            }else {
+                this.workbook = new HSSFWorkbook(new POIFSFileSystem(templateInputStream));
+            }
         } else {
-            this.workbook = new SXSSFWorkbook(500);
+            if(templateInputStream == null) {
+                this.workbook = new SXSSFWorkbook(500);
+            }else {
+                this.workbook = new SXSSFWorkbook(new XSSFWorkbook(templateInputStream));
+            }
         }
         this.outputStream = out;
         this.defaultCellStyle = buildDefaultCellStyle();
@@ -91,9 +92,22 @@ public class GenerateContextImpl implements GenerateContext {
         if (sheetMap.containsKey(sheet.getSheetNo())) {
             this.currentSheet = sheetMap.get(sheet.getSheetNo());
         } else {
-            this.currentSheet = workbook.createSheet(
-                sheet.getSheetName() != null ? sheet.getSheetName() : sheet.getSheetNo() + "");
-            this.currentSheet.setDefaultColumnWidth(20);
+            Sheet sheet1 = null;
+            try {
+                sheet1 = workbook.getSheetAt(sheet.getSheetNo());
+            }catch (Exception e){
+
+            }
+            if(sheet1 == null) {
+                this.currentSheet = workbook.createSheet(
+                    sheet.getSheetName() != null ? sheet.getSheetName() : sheet.getSheetNo() + "");
+                this.currentSheet.setDefaultColumnWidth(20);
+                for (Map.Entry<Integer, Integer> entry : sheet.getColumnWidthMap().entrySet()) {
+                    currentSheet.setColumnWidth(entry.getKey(), entry.getValue());
+                }
+            }else {
+                this.currentSheet = sheet1;
+            }
             sheetMap.put(sheet.getSheetNo(), this.currentSheet);
             buildHead(sheet.getHead(), sheet.getClazz());
             buildTableStyle(sheet.getTableStyle());

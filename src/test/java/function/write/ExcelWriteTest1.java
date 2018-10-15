@@ -1,25 +1,20 @@
 package function.write;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.read.event.AnalysisEventListener;
+import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
 import function.listener.ExcelListener;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.junit.Test;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author jipengfei

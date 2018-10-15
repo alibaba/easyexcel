@@ -1,7 +1,8 @@
-package com.alibaba.excel.read.event;
+package com.alibaba.excel.event;
 
 /**
  * @author jipengfei
+ * @date 2017/07/21
  */
 public class OneRowAnalysisFinishEvent {
 

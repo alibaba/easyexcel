@@ -1,24 +1,21 @@
 package com.alibaba.excel.metadata;
 
 /**
- * 字体样式
  *
  * @author jipengfei
+ * @date 2017/05/24
  */
 public class Font {
 
     /**
-     * 字体名称，如：宋体、黑体
      */
     private String fontName;
 
     /**
-     * 字体大小
      */
     private short fontHeightInPoints;
 
     /**
-     * 是否加粗
      */
     private boolean bold;
 

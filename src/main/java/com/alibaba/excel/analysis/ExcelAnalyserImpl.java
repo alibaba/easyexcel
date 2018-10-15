@@ -1,14 +1,17 @@
-package com.alibaba.excel.read;
+package com.alibaba.excel.analysis;
+
+import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
+import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.context.AnalysisContextImpl;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.modelbuild.ModelBuildEventListener;
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 import java.io.InputStream;
 import java.util.List;
-
-import com.alibaba.excel.read.context.AnalysisContext;
-import com.alibaba.excel.read.context.AnalysisContextImpl;
-import com.alibaba.excel.read.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.read.modelbuild.ModelBuildEventListener;
-import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * @author jipengfei
@@ -21,14 +24,15 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
     private BaseSaxAnalyser getSaxAnalyser() {
         if (saxAnalyser == null) {
-            if (ExcelTypeEnum.XLS.equals(analysisContext.getExcelType())) {
-                this.saxAnalyser = new SaxAnalyserV03(analysisContext);
-            } else {
-                try {
-                    this.saxAnalyser = new SaxAnalyserV07(analysisContext);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            try {
+                if (ExcelTypeEnum.XLS.equals(analysisContext.getExcelType())) {
+                    this.saxAnalyser = new XlsSaxAnalyser(analysisContext);
+                } else {
+                    this.saxAnalyser = new XlsxSaxAnalyser(analysisContext);
                 }
+            } catch (Exception e) {
+                throw new ExcelAnalysisException("Analyse excel occur file error fileType " + analysisContext.getExcelType(),
+                    e);
             }
         }
         return this.saxAnalyser;
@@ -59,10 +63,6 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         return saxAnalyser.getSheets();
     }
 
-    public void stop() {
-        saxAnalyser.stop();
-    }
-
     private void appendListeners(BaseSaxAnalyser saxAnalyser) {
         if (analysisContext.getCurrentSheet() != null && analysisContext.getCurrentSheet().getClazz() != null) {
             saxAnalyser.appendLister("model_build_listener", new ModelBuildEventListener());
@@ -70,10 +70,6 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         if (analysisContext.getEventListener() != null) {
             saxAnalyser.appendLister("user_define_listener", analysisContext.getEventListener());
         }
-    }
-
-    protected void finalize() throws Throwable {
-        stop();
     }
 
 }

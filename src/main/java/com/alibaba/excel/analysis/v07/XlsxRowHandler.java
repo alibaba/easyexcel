@@ -1,30 +1,26 @@
-package com.alibaba.excel.read.v07;
-
-import java.util.Arrays;
-import java.util.List;
+package com.alibaba.excel.analysis.v07;
 
 import com.alibaba.excel.annotation.FieldType;
-import com.alibaba.excel.util.ExcelXmlConstants;
-import com.alibaba.excel.read.context.AnalysisContext;
-import com.alibaba.excel.read.event.AnalysisEventRegisterCenter;
-import com.alibaba.excel.read.event.OneRowAnalysisFinishEvent;
+import com.alibaba.excel.constant.ExcelXmlConstants;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventRegisterCenter;
+import com.alibaba.excel.event.OneRowAnalysisFinishEvent;
 import com.alibaba.excel.util.PositionUtils;
-
 import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import static com.alibaba.excel.util.ExcelXmlConstants.CELL_VALUE_TAG;
-import static com.alibaba.excel.util.ExcelXmlConstants.CELL_VALUE_TAG_1;
-import static com.alibaba.excel.util.ExcelXmlConstants.DIMENSION;
-import static com.alibaba.excel.util.ExcelXmlConstants.DIMENSION_REF;
-import static com.alibaba.excel.util.ExcelXmlConstants.ROW_TAG;
+import java.util.Arrays;
+
+import static com.alibaba.excel.constant.ExcelXmlConstants.*;
 
 /**
  * @author jipengfei
+ * @date 2017/08/23
  */
-public class RowHandler extends DefaultHandler {
+public class XlsxRowHandler extends DefaultHandler {
 
     private String currentCellIndex;
 
@@ -44,14 +40,11 @@ public class RowHandler extends DefaultHandler {
 
     private AnalysisEventRegisterCenter registerCenter;
 
-    private List<String> sharedStringList;
-
-    public RowHandler(AnalysisEventRegisterCenter registerCenter, SharedStringsTable sst,
-                      AnalysisContext analysisContext, List<String> sharedStringList) {
+    public XlsxRowHandler(AnalysisEventRegisterCenter registerCenter, SharedStringsTable sst,
+                          AnalysisContext analysisContext) {
         this.registerCenter = registerCenter;
         this.analysisContext = analysisContext;
         this.sst = sst;
-        this.sharedStringList = sharedStringList;
 
     }
 
@@ -107,11 +100,7 @@ public class RowHandler extends DefaultHandler {
             switch (currentCellType) {
                 case STRING:
                     int idx = Integer.parseInt(currentCellValue);
-                    if (idx < sharedStringList.size()) {
-                        currentCellValue = sharedStringList.get(idx);
-                    } else {
-                        currentCellValue = "";
-                    }
+                    currentCellValue = new XSSFRichTextString(sst.getEntryAt(idx)).toString();
                     currentCellType = FieldType.EMPTY;
                     break;
                 //case DATE:
@@ -140,6 +129,7 @@ public class RowHandler extends DefaultHandler {
         currentCellValue += new String(ch, start, length);
 
     }
+
 
     private void setTotalRowCount(String name, Attributes attributes) {
         if (DIMENSION.equals(name)) {

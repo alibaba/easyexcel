@@ -1,40 +1,31 @@
 package com.alibaba.excel.metadata;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.excel.annotation.ExcelColumnNum;
 import com.alibaba.excel.annotation.ExcelProperty;
 
+import java.lang.reflect.Field;
+import java.util.*;
+
 /**
- * 表头信息
  *
  * @author jipengfei
+ * @date 2017/05/31
  */
 public class ExcelHeadProperty {
 
     /**
-     * 表头数据对应的Class
      */
     private Class<? extends BaseRowModel> headClazz;
 
     /**
-     * 表头名称
      */
     private List<List<String>> head = new ArrayList<List<String>>();
 
     /**
-     * Excel每列表头数据
      */
     private List<ExcelColumnProperty> columnPropertyList = new ArrayList<ExcelColumnProperty>();
 
     /**
-     * key:Excel列号，value:表头数据
      */
     private Map<Integer, ExcelColumnProperty> excelColumnPropertyMap1 = new HashMap<Integer, ExcelColumnProperty>();
 
@@ -45,7 +36,6 @@ public class ExcelHeadProperty {
     }
 
     /**
-     * 初始化每列
      */
     private void initColumnProperties() {
         if (this.headClazz != null) {
@@ -66,7 +56,6 @@ public class ExcelHeadProperty {
     }
 
     /**
-     * 初始化一列
      *
      * @param f
      */
@@ -97,9 +86,7 @@ public class ExcelHeadProperty {
     }
 
     /**
-     * 将表头的一行数据，转换为一列一列形式，组成表头
      *
-     * @param row 表头中的一行数据
      */
     public void appendOneRow(List<String> row) {
 
@@ -117,10 +104,9 @@ public class ExcelHeadProperty {
     }
 
     /**
-     * 根据Excel中的列号，获取Excel的表头信息
      *
-     * @param columnNum 列号
-     * @return ExcelColumnProperty
+     * @param columnNum
+     * @return
      */
     public ExcelColumnProperty getExcelColumnProperty(int columnNum) {
         ExcelColumnProperty excelColumnProperty = excelColumnPropertyMap1.get(columnNum);
@@ -138,18 +124,6 @@ public class ExcelHeadProperty {
     }
 
     /**
-     * 根据Excel中的列号，获取Excel的表头信息
-     *
-     * @param columnNum 列号
-     * @return ExcelColumnProperty
-     */
-    public ExcelColumnProperty getExcelColumnProperty1(int columnNum) {
-        return excelColumnPropertyMap1.get(columnNum);
-
-    }
-
-    /**
-     * 判断表头是否相同
      *
      * @param columnHead
      * @param head
