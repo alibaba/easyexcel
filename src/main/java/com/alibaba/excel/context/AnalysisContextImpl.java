@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author jipengfei
  */
 public class AnalysisContextImpl implements AnalysisContext {
@@ -69,10 +68,18 @@ public class AnalysisContextImpl implements AnalysisContext {
     }
 
     public void setCurrentSheet(Sheet currentSheet) {
+        clearCurrentSheet();
         this.currentSheet = currentSheet;
         if (currentSheet.getClazz() != null) {
             buildExcelHeadProperty(currentSheet.getClazz(), null);
         }
+    }
+
+    private void clearCurrentSheet() {
+        this.currentSheet = null;
+        this.excelHeadProperty = null;
+        this.currentRowNum = null;
+        this.totalCount = null;
     }
 
     public ExcelTypeEnum getExcelType() {
