@@ -28,7 +28,8 @@ public enum ExcelTypeEnum {
     }
     public static ExcelTypeEnum valueOf(InputStream inputStream){
         try {
-            FileMagic fileMagic =  FileMagic.valueOf(inputStream);
+            InputStream in = FileMagic.prepareToCheckMagic(inputStream);
+            FileMagic fileMagic =  FileMagic.valueOf(in);
             if(FileMagic.OLE2.equals(fileMagic)){
                 return XLS;
             }
