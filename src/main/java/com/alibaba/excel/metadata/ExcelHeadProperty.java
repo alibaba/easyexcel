@@ -2,6 +2,7 @@ package com.alibaba.excel.metadata;
 
 import com.alibaba.excel.annotation.ExcelColumnNum;
 import com.alibaba.excel.annotation.ExcelProperty;
+import org.apache.commons.compress.utils.Lists;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -38,9 +39,20 @@ public class ExcelHeadProperty {
      */
     private void initColumnProperties() {
         if (this.headClazz != null) {
+            List<Field> fieldList = Lists.newArrayList();
+            //递归处理父类中的属性
+            Class objectClazz = headClazz.getSuperclass();
+            while (objectClazz != null && !objectClazz.getName().toLowerCase().equals("java.lang.object")) {
+                fieldList.addAll(Arrays.asList(objectClazz.getDeclaredFields()));
+                objectClazz = objectClazz.getSuperclass();
+            }
+            //子类中的属性
             Field[] fields = this.headClazz.getDeclaredFields();
+            if (fields != null) {
+                fieldList.addAll(Arrays.asList(fields));
+            }
             List<List<String>> headList = new ArrayList<List<String>>();
-            for (Field f : fields) {
+            for (Field f : fieldList) {
                 initOneColumnProperty(f);
             }
             //对列排序
