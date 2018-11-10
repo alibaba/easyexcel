@@ -9,6 +9,7 @@ import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.parameter.AnalysisParam;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -81,6 +82,7 @@ public class ExcelReader {
      */
     public ExcelReader(InputStream in, Object customContent,
                        AnalysisEventListener eventListener, boolean trim) {
+        in = in.markSupported() ? in : new BufferedInputStream(in);
         ExcelTypeEnum excelTypeEnum = ExcelTypeEnum.valueOf(in);
         validateParam(in, excelTypeEnum, eventListener);
         analyser.init(in, excelTypeEnum, customContent, eventListener, trim);
