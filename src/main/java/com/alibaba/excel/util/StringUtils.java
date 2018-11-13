@@ -549,7 +549,7 @@ public abstract class StringUtils {
 
     /**
      * Extract the filename extension from the given Java resource path,
-     * e.g. "mypath/myfile.txt" -> "txt".
+     *
      * @param path the file path (may be {@code null})
      * @return the extracted filename extension, or {@code null} if none
      */
@@ -573,7 +573,7 @@ public abstract class StringUtils {
 
     /**
      * Strip the filename extension from the given Java resource path,
-     * e.g. "mypath/myfile.txt" -> "mypath/myfile".
+     *
      * @param path the file path
      * @return the path with stripped filename extension
      */

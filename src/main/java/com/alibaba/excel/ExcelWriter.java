@@ -17,7 +17,7 @@ import java.util.List;
  * This object can perform the following two functions.
  * <pre>
  *    1. Create a new empty Excel workbook, write the data to the stream after the data is filled.
- *    2. Edit existing Excel, write the original Excel file, or write it to other places.{@link ExcelWriter(InputStream , OutputStream , ExcelTypeEnum , boolean )}
+ *    2. Edit existing Excel, write the original Excel file, or write it to other places.
  * </pre>
  * @author jipengfei
  */
@@ -39,7 +39,7 @@ public class ExcelWriter {
 
     /**
      * @param generateParam
-     * @since easyexcel 0.0.1  Use {@link new ExcelWrite(int, int, int)
+     * @since easyexcel 0.0.1
      */
     @Deprecated
     public ExcelWriter(GenerateParam generateParam) {
@@ -69,7 +69,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data(List<? extends BaseRowModel>) to a sheet
+     * Write data to a sheet
      * @param data Data to be written
      * @param sheet Write to this sheet
      * @return this current writer
@@ -97,7 +97,7 @@ public class ExcelWriter {
 
     /**
      *
-     * Write data(List<List<String>>) to a sheet
+     * Write data to a sheet
      * @param data Data to be written
      * @param sheet Write to this sheet
      * @return this
@@ -108,7 +108,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data(List<List<String>>) to a sheet
+     * Write data to a sheet
      * @param data  Data to be written
      * @param sheet Write to this sheet
      * @return this
@@ -119,7 +119,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data(List<? extends BaseRowModel>) to a sheet
+     * Write data  to a sheet
      * @param data  Data to be written
      * @param sheet Write to this sheet
      * @param table Write to this table
@@ -131,7 +131,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data(List<List<String>>) to a sheet
+     * Write data to a sheet
      * @param data  Data to be written
      * @param sheet Write to this sheet
      * @param table Write to this table
@@ -156,7 +156,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data(List<List<Object>>) to a sheet
+     * Write data to a sheet
      * @param data  Data to be written
      * @param sheet Write to this sheet
      * @param table Write to this table

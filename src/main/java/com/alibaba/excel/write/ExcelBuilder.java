@@ -10,11 +10,10 @@ import java.util.List;
  */
 public interface ExcelBuilder {
 
-
     /**
      * workBook increase data
      *
-     * @param data     List<List<String>> or List<? extends BaseRowModel>
+     * @param data     java basic type or java model extend BaseModel
      * @param startRow Start row number
      */
     void addContent(List data, int startRow);
@@ -22,7 +21,7 @@ public interface ExcelBuilder {
     /**
      * WorkBook increase data
      *
-     * @param data       List<List<String>> or List<? extends BaseRowModel>
+     * @param data       java basic type or java model extend BaseModel
      * @param sheetParam Write the sheet
      */
     void addContent(List data, Sheet sheetParam);
@@ -30,7 +29,7 @@ public interface ExcelBuilder {
     /**
      * WorkBook increase data
      *
-     * @param data       List<List<String>> or List<? extends BaseRowModel>
+     * @param data       java basic type or java model extend BaseModel
      * @param sheetParam Write the sheet
      * @param table      Write the table
      */
