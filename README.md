@@ -14,7 +14,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
     <version>{latestVersion}</version>
 </dependency>
 
-## 最新版本：1.1.2-beat1
+## 最新版本：1.1.2-beat2
 ## 维护者
 姬朋飞（玉霄）
 ## 快速开始
