@@ -13,23 +13,24 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * Excel thread unsafe
+ * Excel readers are all read in event mode.
  *
  * @author jipengfei
  */
 public class ExcelReader {
 
     /**
-     * analyser
+     * Analyser
      */
-    private ExcelAnalyser analyser = new ExcelAnalyserImpl();
+    private ExcelAnalyser analyser ;
 
     /**
-     * @param in
-     * @param excelTypeEnum 0307
-     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
-     *                      }AnalysisContext
-     * @param eventListener
+     * Create new reader
+     *
+     * @param in            the POI filesystem that contains the Workbook stream
+     * @param excelTypeEnum 03 or 07
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
+     * @param eventListener Callback method after each row is parsed.
      */
     @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
@@ -38,10 +39,11 @@ public class ExcelReader {
     }
 
     /**
-     * @param in
-     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
-     *                      }AnalysisContext
-     * @param eventListener
+     * Create new reader
+     *
+     * @param in            the POI filesystem that contains the Workbook stream
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
+     * @param eventListener Callback method after each row is parsed
      */
     public ExcelReader(InputStream in, Object customContent,
                        AnalysisEventListener eventListener) {
@@ -49,8 +51,10 @@ public class ExcelReader {
     }
 
     /**
-     * @param param
-     * @param eventListener
+     * Create new reader
+     *
+     * @param param         old param Deprecated
+     * @param eventListener Callback method after each row is parsed.
      */
     @Deprecated
     public ExcelReader(AnalysisParam param, AnalysisEventListener eventListener) {
@@ -58,75 +62,88 @@ public class ExcelReader {
     }
 
     /**
-     * @param in
-     * @param excelTypeEnum 03 07
-     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
-     *                      }AnalysisContext
-     * @param eventListener
-     * @param trim
+     * Create new reader
+     *
+     * @param in            the POI filesystem that contains the Workbook stream
+     * @param excelTypeEnum 03 or 07
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
+     * @param eventListener Callback method after each row is parsed.
+     * @param trim          The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant,
+     *                      because there are often table contents with spaces that can not be converted into custom
+     *                      types. For example: '1234 ' contain a space cannot be converted to int.
      */
     @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
                        AnalysisEventListener eventListener, boolean trim) {
-        validateParam(in, excelTypeEnum, eventListener);
-        analyser.init(in, excelTypeEnum, customContent, eventListener, trim);
+        validateParam(in, eventListener);
+        analyser = new ExcelAnalyserImpl(in, excelTypeEnum, customContent, eventListener, trim);
     }
 
     /**
+     * Create new reader
+     *
      * @param in
-     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext)
-     *                      }AnalysisContext
+     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
      * @param eventListener
-     * @param trim
+     * @param trim          The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant,
+     *                      because there are often table contents with spaces that can not be converted into custom
+     *                      types. For example: '1234 ' contain a space cannot be converted to int.
      */
     public ExcelReader(InputStream in, Object customContent,
                        AnalysisEventListener eventListener, boolean trim) {
         ExcelTypeEnum excelTypeEnum = ExcelTypeEnum.valueOf(in);
-        validateParam(in, excelTypeEnum, eventListener);
-        analyser.init(in, excelTypeEnum, customContent, eventListener, trim);
+        validateParam(in, eventListener);
+        analyser =new ExcelAnalyserImpl(in, excelTypeEnum, customContent, eventListener, trim);
     }
 
     /**
+     * Parse all sheet content by default
      */
     public void read() {
         analyser.analysis();
     }
 
     /**
+     * Parse the specified sheet，SheetNo start from 1
      *
-     * @param sheet
+     * @param sheet Read sheet
      */
     public void read(Sheet sheet) {
         analyser.analysis(sheet);
     }
 
+    /**
+     * Parse the specified sheet
+     *
+     * @param sheet  Read sheet
+     * @param clazz object parsed into each row of data
+     */
     @Deprecated
-    public void read(Sheet sheet,Class<? extends BaseRowModel> clazz){
+    public void read(Sheet sheet, Class<? extends BaseRowModel> clazz) {
         sheet.setClazz(clazz);
         analyser.analysis(sheet);
     }
 
     /**
+     * Parse the workBook get all sheets
      *
-     * @return
+     * @return workBook all sheets
      */
     public List<Sheet> getSheets() {
         return analyser.getSheets();
     }
 
     /**
+     * validate param
      *
      * @param in
-     * @param excelTypeEnum
      * @param eventListener
      */
-    private void validateParam(InputStream in, ExcelTypeEnum excelTypeEnum, AnalysisEventListener eventListener) {
+    private void validateParam(InputStream in,  AnalysisEventListener eventListener) {
         if (eventListener == null) {
             throw new IllegalArgumentException("AnalysisEventListener can not null");
         } else if (in == null) {
             throw new IllegalArgumentException("InputStream can not null");
-        } else if (excelTypeEnum == null) {
-            throw new IllegalArgumentException("excelTypeEnum can not null");
         }
     }
 }

@@ -22,41 +22,61 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
     private BaseSaxAnalyser saxAnalyser;
 
-    private BaseSaxAnalyser getSaxAnalyser() {
-        if (saxAnalyser == null) {
-            try {
-                if (ExcelTypeEnum.XLS.equals(analysisContext.getExcelType())) {
-                    this.saxAnalyser = new XlsSaxAnalyser(analysisContext);
-                } else {
-                    this.saxAnalyser = new XlsxSaxAnalyser(analysisContext);
-                }
-            } catch (Exception e) {
-                throw new ExcelAnalysisException("Analyse excel occur file error fileType " + analysisContext.getExcelType(),
-                    e);
-            }
-        }
-        return this.saxAnalyser;
-    }
-
-    public void init(InputStream inputStream, ExcelTypeEnum excelTypeEnum, Object custom,
-                     AnalysisEventListener eventListener, boolean trim) {
+    public ExcelAnalyserImpl(InputStream inputStream, ExcelTypeEnum excelTypeEnum, Object custom,
+                             AnalysisEventListener eventListener, boolean trim) {
         analysisContext = new AnalysisContextImpl(inputStream, excelTypeEnum, custom,
             eventListener, trim);
     }
 
+
+    private BaseSaxAnalyser getSaxAnalyser() {
+        if (saxAnalyser != null) {
+            return this.saxAnalyser;
+        }
+        try {
+            if (analysisContext.getExcelType() != null) {
+                switch (analysisContext.getExcelType()) {
+                    case XLS:
+                        this.saxAnalyser = new XlsSaxAnalyser(analysisContext);
+                        break;
+                    case XLSX:
+                        this.saxAnalyser = new XlsxSaxAnalyser(analysisContext);
+                        break;
+                }
+            } else {
+                try {
+                    this.saxAnalyser = new XlsxSaxAnalyser(analysisContext);
+                } catch (Exception e) {
+                    if (!analysisContext.getInputStream().markSupported()) {
+                        throw new ExcelAnalysisException(
+                            "Xls must be available markSupported,you can do like this <code> new "
+                                + "BufferedInputStream(new FileInputStream(\"/xxxx/xxx/77.xlsx\"))</code> ");
+                    }
+                    this.saxAnalyser = new XlsSaxAnalyser(analysisContext);
+                }
+            }
+        } catch (Exception e) {
+            throw new ExcelAnalysisException("File type error，io must be available markSupported,you can do like "
+                + "this <code> new BufferedInputStream(new FileInputStream(\\\"/xxxx/xxx/77.xlsx\\\"))</code> \"", e);
+        }
+        return this.saxAnalyser;
+    }
+
+    @Override
     public void analysis(Sheet sheetParam) {
         analysisContext.setCurrentSheet(sheetParam);
         analysis();
     }
 
+    @Override
     public void analysis() {
         BaseSaxAnalyser saxAnalyser = getSaxAnalyser();
         appendListeners(saxAnalyser);
         saxAnalyser.execute();
-
         analysisContext.getEventListener().doAfterAllAnalysed(analysisContext);
     }
 
+    @Override
     public List<Sheet> getSheets() {
         BaseSaxAnalyser saxAnalyser = getSaxAnalyser();
         saxAnalyser.cleanAllListeners();
@@ -64,6 +84,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     }
 
     private void appendListeners(BaseSaxAnalyser saxAnalyser) {
+        saxAnalyser.cleanAllListeners();
         if (analysisContext.getCurrentSheet() != null && analysisContext.getCurrentSheet().getClazz() != null) {
             saxAnalyser.appendLister("model_build_listener", new ModelBuildEventListener());
         }

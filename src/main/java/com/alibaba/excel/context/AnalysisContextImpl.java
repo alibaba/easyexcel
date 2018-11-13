@@ -37,22 +37,27 @@ public class AnalysisContextImpl implements AnalysisContext {
 
     private boolean use1904WindowDate = false;
 
+    @Override
     public void setUse1904WindowDate(boolean use1904WindowDate) {
         this.use1904WindowDate = use1904WindowDate;
     }
 
+    @Override
     public Object getCurrentRowAnalysisResult() {
         return currentRowAnalysisResult;
     }
 
+    @Override
     public void interrupt() {
         throw new ExcelAnalysisException("interrupt error");
     }
 
+    @Override
     public boolean use1904WindowDate() {
         return use1904WindowDate;
     }
 
+    @Override
     public void setCurrentRowAnalysisResult(Object currentRowAnalysisResult) {
         this.currentRowAnalysisResult = currentRowAnalysisResult;
     }
@@ -68,13 +73,24 @@ public class AnalysisContextImpl implements AnalysisContext {
         this.trim = trim;
     }
 
+    @Override
     public void setCurrentSheet(Sheet currentSheet) {
+        cleanCurrentSheet();
         this.currentSheet = currentSheet;
         if (currentSheet.getClazz() != null) {
             buildExcelHeadProperty(currentSheet.getClazz(), null);
         }
     }
 
+    private void cleanCurrentSheet() {
+        this.currentSheet = null;
+        this.excelHeadProperty = null;
+        this.totalCount = 0;
+        this.currentRowAnalysisResult = null;
+        this.currentRowNum =0;
+    }
+
+    @Override
     public ExcelTypeEnum getExcelType() {
         return excelType;
     }
@@ -91,10 +107,12 @@ public class AnalysisContextImpl implements AnalysisContext {
         this.custom = custom;
     }
 
+    @Override
     public Sheet getCurrentSheet() {
         return currentSheet;
     }
 
+    @Override
     public InputStream getInputStream() {
         return inputStream;
     }
@@ -103,6 +121,7 @@ public class AnalysisContextImpl implements AnalysisContext {
         this.inputStream = inputStream;
     }
 
+    @Override
     public AnalysisEventListener getEventListener() {
         return eventListener;
     }
@@ -111,26 +130,32 @@ public class AnalysisContextImpl implements AnalysisContext {
         this.eventListener = eventListener;
     }
 
+    @Override
     public Integer getCurrentRowNum() {
         return this.currentRowNum;
     }
 
+    @Override
     public void setCurrentRowNum(Integer row) {
         this.currentRowNum = row;
     }
 
+    @Override
     public Integer getTotalCount() {
         return totalCount;
     }
 
+    @Override
     public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
     }
 
+    @Override
     public ExcelHeadProperty getExcelHeadProperty() {
         return this.excelHeadProperty;
     }
 
+    @Override
     public void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow) {
         if (this.excelHeadProperty == null && (clazz != null || headOneRow != null)) {
             this.excelHeadProperty = new ExcelHeadProperty(clazz, new ArrayList<List<String>>());
@@ -140,6 +165,7 @@ public class AnalysisContextImpl implements AnalysisContext {
         }
     }
 
+    @Override
     public boolean trim() {
         return this.trim;
     }

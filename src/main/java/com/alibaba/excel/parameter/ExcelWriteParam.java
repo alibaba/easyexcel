@@ -1,13 +1,14 @@
 package com.alibaba.excel.parameter;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
-
 import java.io.OutputStream;
+
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * {@link com.alibaba.excel.ExcelWriter}
  *
  * @author jipengfei
+ * @date 2017/05/15
  */
 @Deprecated
 public class ExcelWriteParam {

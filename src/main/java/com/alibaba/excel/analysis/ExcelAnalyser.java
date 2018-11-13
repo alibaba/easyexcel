@@ -1,30 +1,33 @@
 package com.alibaba.excel.analysis;
 
-import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.support.ExcelTypeEnum;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
+ * Excel file analyser
  *
  * @author jipengfei
  */
 public interface ExcelAnalyser {
 
-    void init(InputStream inputStream, ExcelTypeEnum excelTypeEnum, Object custom, AnalysisEventListener eventListener,
-              boolean trim);
-
+    /**
+     * parse one sheet
+     *
+     * @param sheetParam
+     */
     void analysis(Sheet sheetParam);
 
-
-
+    /**
+     * parse all sheets
+     */
     void analysis();
 
-
+    /**
+     * get all sheet of workbook
+     *
+     * @return all sheets
+     */
     List<Sheet> getSheets();
-
-
 
 }

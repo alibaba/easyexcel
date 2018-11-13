@@ -17,7 +17,7 @@ public class AnalysisParam {
     private ExcelTypeEnum excelTypeEnum;
 
     /**
-     * file in
+     * the POI filesystem that contains the Workbook stream
      */
     private InputStream in;
 

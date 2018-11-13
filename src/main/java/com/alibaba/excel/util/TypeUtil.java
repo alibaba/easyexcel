@@ -1,27 +1,30 @@
 package com.alibaba.excel.util;
 
+import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.ExcelHeadProperty;
+import net.sf.cglib.beans.BeanMap;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * @author jipengfei
+ * @date 2017/03/15
  */
 public class TypeUtil {
 
-    private static List<SimpleDateFormat> DATE_FORMAT_LIST = new ArrayList<SimpleDateFormat>(4);
+    private static List<String> DATE_FORMAT_LIST = new ArrayList<String>(4);
 
     static {
-        DATE_FORMAT_LIST.add(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"));
-        DATE_FORMAT_LIST.add(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        DATE_FORMAT_LIST.add("yyyy/MM/dd HH:mm:ss");
+        DATE_FORMAT_LIST.add("yyyy-MM-dd HH:mm:ss");
+        DATE_FORMAT_LIST.add("yyyyMMdd HH:mm:ss");
     }
 
     private static int getCountOfChar(String value, char c) {
@@ -39,9 +42,9 @@ public class TypeUtil {
     }
 
     public static Object convert(String value, Field field, String format, boolean us) {
-        if (isNotEmpty(value)) {
-            if (String.class.equals(field.getType())) {
-                return TypeUtil.formatFloat(value);
+        if (!StringUtils.isEmpty(value)) {
+            if (Float.class.equals(field.getType())) {
+                return Float.parseFloat(value);
             }
             if (Integer.class.equals(field.getType()) || int.class.equals(field.getType())) {
                 return Integer.parseInt(value);
@@ -80,6 +83,9 @@ public class TypeUtil {
             if (BigDecimal.class.equals(field.getType())) {
                 return new BigDecimal(value);
             }
+            if(String.class.equals(field.getType())){
+                return formatFloat(value);
+            }
 
         }
         return null;
@@ -106,6 +112,18 @@ public class TypeUtil {
         return false;
     }
 
+    public static Boolean isNum(Object cellValue) {
+        if (cellValue instanceof Integer
+            || cellValue instanceof Double
+            || cellValue instanceof Short
+            || cellValue instanceof Long
+            || cellValue instanceof Float
+            || cellValue instanceof BigDecimal) {
+            return true;
+        }
+        return false;
+    }
+
     public static String getDefaultDateString(Date date) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(date);
@@ -113,9 +131,9 @@ public class TypeUtil {
     }
 
     public static Date getSimpleDateFormatDate(String value, String format) {
-        if (isNotEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             Date date = null;
-            if (isNotEmpty(format)) {
+            if (!StringUtils.isEmpty(format)) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
                 try {
                     date = simpleDateFormat.parse(value);
@@ -123,9 +141,10 @@ public class TypeUtil {
                 } catch (ParseException e) {
                 }
             }
-            for (SimpleDateFormat dateFormat : DATE_FORMAT_LIST) {
+            for (String dateFormat : DATE_FORMAT_LIST) {
                 try {
-                    date = dateFormat.parse(value);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+                    date = simpleDateFormat.parse(value);
                 } catch (ParseException e) {
                 }
                 if (date != null) {
@@ -140,16 +159,6 @@ public class TypeUtil {
 
     }
 
-    public static Boolean isNotEmpty(String value) {
-        if (value == null) {
-            return false;
-        }
-        if (value.trim().equals("")) {
-            return false;
-        }
-        return true;
-
-    }
 
     public static String formatFloat(String value) {
         if (null != value && value.contains(".")) {
@@ -190,12 +199,40 @@ public class TypeUtil {
     }
 
     public static String formatDate(Date cellValue, String format) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
-
+        SimpleDateFormat simpleDateFormat;
+        if(!StringUtils.isEmpty(format)) {
+             simpleDateFormat = new SimpleDateFormat(format);
+        }else {
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
         return simpleDateFormat.format(cellValue);
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Date().toString());
+    public static String getFieldStringValue(BeanMap beanMap, String fieldName, String format) {
+        String cellValue = null;
+        Object value = beanMap.get(fieldName);
+        if (value != null) {
+            if (value instanceof Date) {
+                cellValue = TypeUtil.formatDate((Date)value, format);
+            } else {
+                cellValue = value.toString();
+            }
+        }
+        return cellValue;
+    }
+
+    public static Map getFieldValues(List<String> stringList, ExcelHeadProperty excelHeadProperty, Boolean use1904WindowDate) {
+        Map map = new HashMap();
+        for (int i = 0; i < stringList.size(); i++) {
+            ExcelColumnProperty columnProperty = excelHeadProperty.getExcelColumnProperty(i);
+            if (columnProperty != null) {
+                Object value = TypeUtil.convert(stringList.get(i), columnProperty.getField(),
+                    columnProperty.getFormat(), use1904WindowDate);
+                if (value != null) {
+                    map.put(columnProperty.getField().getName(),value);
+                }
+            }
+        }
+        return map;
     }
 }

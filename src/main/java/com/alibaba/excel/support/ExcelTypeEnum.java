@@ -6,16 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
  * @author jipengfei
  */
 public enum ExcelTypeEnum {
-    XLS(".xls"),
-    XLSX(".xlsx");
-    //    CSV(".csv");
+
+    XLS(".xls"), XLSX(".xlsx");
+
     private String value;
 
-    private ExcelTypeEnum(String value) {
+    ExcelTypeEnum(String value) {
         this.setValue(value);
     }
 
@@ -26,18 +25,20 @@ public enum ExcelTypeEnum {
     public void setValue(String value) {
         this.value = value;
     }
+
     public static ExcelTypeEnum valueOf(InputStream inputStream){
         try {
-            InputStream in = FileMagic.prepareToCheckMagic(inputStream);
-            FileMagic fileMagic =  FileMagic.valueOf(in);
+            if (!inputStream.markSupported()) {
+                return null;
+            }
+            FileMagic fileMagic =  FileMagic.valueOf(inputStream);
             if(FileMagic.OLE2.equals(fileMagic)){
                 return XLS;
             }
             if(FileMagic.OOXML.equals(fileMagic)){
                 return XLSX;
             }
-            throw new IllegalArgumentException("excelTypeEnum can not null");
-
+            return null;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

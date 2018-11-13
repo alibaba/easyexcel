@@ -2,6 +2,7 @@ package com.alibaba.excel.metadata;
 
 /**
  * @author jipengfei
+ * @date 2017/06/02
  */
 public class CellRange {
 

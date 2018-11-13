@@ -24,7 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
  * @author jipengfei
+ * @date 2017/08/27
  */
 public class XlsxSaxAnalyser extends BaseSaxAnalyser {
 
@@ -33,7 +35,6 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
     private SharedStringsTable sharedStringsTable;
 
     private List<SheetSource> sheetSourceList = new ArrayList<SheetSource>();
-
 
     private boolean use1904WindowDate = false;
 
@@ -66,6 +67,7 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
 
     }
 
+    @Override
     protected void execute() {
         Sheet sheetParam = analysisContext.getCurrentSheet();
         if (sheetParam != null && sheetParam.getSheetNo() > 0 && sheetSourceList.size() >= sheetParam.getSheetNo()) {
@@ -91,16 +93,17 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
             saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             SAXParser saxParser = saxFactory.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
-
             ContentHandler handler = new XlsxRowHandler(this, sharedStringsTable, analysisContext);
             xmlReader.setContentHandler(handler);
             xmlReader.parse(sheetSource);
             inputStream.close();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ExcelAnalysisException(e);
         }
     }
 
+    @Override
     public List<Sheet> getSheets() {
         List<Sheet> sheets = new ArrayList<Sheet>();
         int i = 1;

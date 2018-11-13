@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * @author jipengfei
+ * @date 2017/05/16
  */
 public class Table {
     /**
@@ -16,7 +17,7 @@ public class Table {
 
     /**
      */
-    private Integer tableNo;
+    private int tableNo;
 
     /**
      */
@@ -50,11 +51,11 @@ public class Table {
         this.head = head;
     }
 
-    public Integer getTableNo() {
+    public int getTableNo() {
         return tableNo;
     }
 
-    public void setTableNo(Integer tableNo) {
+    public void setTableNo(int tableNo) {
         this.tableNo = tableNo;
     }
 }
