@@ -7,13 +7,11 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 * [更新记事](/update.md)
 * [English-README](/easyexcel_en.md)
 ## 二方包 
-```
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
     <version>{latestVersion}</version>
 </dependency>
-```
 ## 最新版本：1.1.2-beat1
 ## 维护者
 姬朋飞（玉霄）
@@ -21,18 +19,22 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 ### 读Excel
 测试代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/test/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/ReadTest.java)
 读07版小于1000行数据返回List<List<String>>
-```List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(1, 0));
+```
+List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(1, 0));
 ```
 读07版小于1000行数据返回List<? extend BaseRowModel>
-```List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(2, 1,JavaModel.class));
+```
+List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(2, 1,JavaModel.class));
 ```
 读07版大于1000行数据返回List<List<String>>
-```ExcelListener excelListener = new ExcelListener();
+```
+ExcelListener excelListener = new ExcelListener();
 EasyExcelFactory.readBySax(inputStream, new Sheet(1, 1), excelListener);
 ```
 
 读07版大于1000行数据返回List<? extend BaseRowModel>
-```ExcelListener excelListener = new ExcelListener();
+```
+ExcelListener excelListener = new ExcelListener();
 EasyExcelFactory.readBySax(inputStream, new Sheet(2, 1,JavaModel.class), excelListener);
 ```
 读03版方法同上
