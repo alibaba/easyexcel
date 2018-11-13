@@ -44,9 +44,16 @@ public class ExcelHeadProperty {
      */
     private void initColumnProperties() {
         if (this.headClazz != null) {
-            Field[] fields = this.headClazz.getDeclaredFields();
+            List<Field> fieldList = new ArrayList<Field>();
+            Class tempClass = this.headClazz;
+            //当父类为null的时候说明到达了最上层的父类(Object类).
+            while (tempClass != null) {
+                fieldList.addAll(Arrays.asList(tempClass .getDeclaredFields()));
+                tempClass = tempClass.getSuperclass();
+                //得到父类,然后赋给自己
+            }
             List<List<String>> headList = new ArrayList<List<String>>();
-            for (Field f : fields) {
+            for (Field f : fieldList) {
                 initOneColumnProperty(f);
             }
             //对列排序

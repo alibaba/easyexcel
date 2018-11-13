@@ -1,8 +1,8 @@
 package com.alibaba.easyexcel.test;
 
 import com.alibaba.easyexcel.test.listen.ExcelListener;
-import com.alibaba.easyexcel.test.model.JavaModel;
-import com.alibaba.easyexcel.test.model.JavaModel2;
+import com.alibaba.easyexcel.test.model.ReadModel;
+import com.alibaba.easyexcel.test.model.ReadModel2;
 import com.alibaba.easyexcel.test.util.FileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
@@ -38,7 +38,7 @@ public class ReadTest {
     @Test
     public void simpleReadJavaModelV2007() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("2007.xlsx");
-        List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(2, 1,JavaModel.class));
+        List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(2, 1, ReadModel.class));
         inputStream.close();
         print(data);
     }
@@ -65,7 +65,7 @@ public class ReadTest {
     public void saxReadJavaModelV2007() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("2007.xlsx");
         ExcelListener excelListener = new ExcelListener();
-        EasyExcelFactory.readBySax(inputStream, new Sheet(2, 1,JavaModel.class), excelListener);
+        EasyExcelFactory.readBySax(inputStream, new Sheet(2, 1, ReadModel.class), excelListener);
         inputStream.close();
     }
 
@@ -87,11 +87,11 @@ public class ReadTest {
                 excelReader.read(sheet);
             }else if(sheet.getSheetNo() ==2){
                 sheet.setHeadLineMun(1);
-                sheet.setClazz(JavaModel.class);
+                sheet.setClazz(ReadModel.class);
                 excelReader.read(sheet);
             }else if(sheet.getSheetNo() ==3){
                 sheet.setHeadLineMun(1);
-                sheet.setClazz(JavaModel2.class);
+                sheet.setClazz(ReadModel2.class);
                 excelReader.read(sheet);
             }
         }
@@ -121,7 +121,7 @@ public class ReadTest {
     @Test
     public void simpleReadJavaModelV2003() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("2003.xls");
-        List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(2, 1, JavaModel.class));
+        List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(2, 1, ReadModel.class));
         inputStream.close();
         print(data);
     }
@@ -148,7 +148,7 @@ public class ReadTest {
     public void saxReadJavaModelV2003() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("2003.xls");
         ExcelListener excelListener = new ExcelListener();
-        EasyExcelFactory.readBySax(inputStream, new Sheet(2, 1, JavaModel.class), excelListener);
+        EasyExcelFactory.readBySax(inputStream, new Sheet(2, 1, ReadModel.class), excelListener);
         inputStream.close();
     }
 
@@ -169,7 +169,7 @@ public class ReadTest {
                 excelReader.read(sheet);
             }else {
                 sheet.setHeadLineMun(2);
-                sheet.setClazz(JavaModel.class);
+                sheet.setClazz(ReadModel.class);
                 excelReader.read(sheet);
             }
         }

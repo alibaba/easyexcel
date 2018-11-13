@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test;
 
-import com.alibaba.easyexcel.test.model.JavaModel1;
+import com.alibaba.easyexcel.test.model.WriteModel;
+import com.alibaba.easyexcel.test.util.FileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
@@ -34,7 +35,7 @@ public class WriteTest {
         writer.write1(createTestListObject(), sheet1);
 
         //写第二个sheet sheet2  模型上打有表头的注解，合并单元格
-        Sheet sheet2 = new Sheet(2, 3, JavaModel1.class, "第二个sheet", null);
+        Sheet sheet2 = new Sheet(2, 3, WriteModel.class, "第二个sheet", null);
         sheet2.setTableStyle(createTableStyle());
         //writer.write1(null, sheet2);
         writer.write(createTestListJavaMode(), sheet2);
@@ -51,7 +52,7 @@ public class WriteTest {
         //写sheet2  模型上打有表头的注解
         Table table2 = new Table(2);
         table2.setTableStyle(createTableStyle());
-        table2.setClazz(JavaModel1.class);
+        table2.setClazz(WriteModel.class);
         writer.write(createTestListJavaMode(), sheet3, table2);
 
         writer.finish();
@@ -62,7 +63,7 @@ public class WriteTest {
 
     @Test
     public void writeV2007WithTemplate() throws IOException {
-        InputStream inputStream = new BufferedInputStream(new FileInputStream("/Users/jipengfei/temp.xlsx"));
+        InputStream inputStream = FileUtil.getResourcesFileInputStream("temp.xlsx");
         OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
         ExcelWriter writer = EasyExcelFactory.getWriterWithTemp(inputStream,out,ExcelTypeEnum.XLSX,true);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
@@ -80,7 +81,7 @@ public class WriteTest {
         writer.write1(createTestListObject(), sheet1);
 
         //写第二个sheet sheet2  模型上打有表头的注解，合并单元格
-        Sheet sheet2 = new Sheet(2, 3, JavaModel1.class, "第二个sheet", null);
+        Sheet sheet2 = new Sheet(2, 3, WriteModel.class, "第二个sheet", null);
         sheet2.setTableStyle(createTableStyle());
         sheet2.setStartRow(20);
         writer.write(createTestListJavaMode(), sheet2);
@@ -96,7 +97,7 @@ public class WriteTest {
         //写sheet2  模型上打有表头的注解
         Table table2 = new Table(2);
         table2.setTableStyle(createTableStyle());
-        table2.setClazz(JavaModel1.class);
+        table2.setClazz(WriteModel.class);
         writer.write(createTestListJavaMode(), sheet3, table2);
 
         writer.finish();
@@ -123,7 +124,7 @@ public class WriteTest {
         writer.write1(createTestListObject(), sheet1);
 
         //写第二个sheet sheet2  模型上打有表头的注解，合并单元格
-        Sheet sheet2 = new Sheet(2, 3, JavaModel1.class, "第二个sheet", null);
+        Sheet sheet2 = new Sheet(2, 3, WriteModel.class, "第二个sheet", null);
         sheet2.setTableStyle(createTableStyle());
         writer.write(createTestListJavaMode(), sheet2);
 
@@ -137,7 +138,7 @@ public class WriteTest {
         //写sheet2  模型上打有表头的注解
         Table table2 = new Table(2);
         table2.setTableStyle(createTableStyle());
-        table2.setClazz(JavaModel1.class);
+        table2.setClazz(WriteModel.class);
         writer.write(createTestListJavaMode(), sheet3, table2);
 
         writer.finish();

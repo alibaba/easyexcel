@@ -6,13 +6,9 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class JavaModel1 extends BaseRowModel {
+public class WriteModel extends BaseWriteModel {
 
-    @ExcelProperty(value = {"表头1","表头1","表头31"},index = 0)
-    private String p1;
 
-    @ExcelProperty(value = {"表头1","表头1","表头32"},index = 1)
-    private String p2;
 
     @ExcelProperty(value = {"表头3","表头3","表头3"},index = 2)
     private int p3;

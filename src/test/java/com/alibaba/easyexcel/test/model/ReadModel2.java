@@ -6,7 +6,7 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class JavaModel extends BaseRowModel {
+public class ReadModel2 extends BaseRowModel {
     @ExcelProperty(index = 0)
     private String str;
 
@@ -120,7 +120,7 @@ public class JavaModel extends BaseRowModel {
 
     @Override
     public String toString() {
-        return "JavaModel{" +
+        return "JavaModel2{" +
             "str='" + str + '\'' +
             ", ff=" + ff +
             ", mm=" + mm +

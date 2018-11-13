@@ -1,17 +1,11 @@
 package com.alibaba.easyexcel.test.model;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class JavaModel2 extends BaseRowModel {
-    @ExcelProperty(index = 0)
-    private String str;
-
-    @ExcelProperty(index = 1)
-    private Float ff;
+public class ReadModel extends BaseReadModel {
 
     @ExcelProperty(index = 2)
     private Integer mm;
@@ -37,22 +31,6 @@ public class JavaModel2 extends BaseRowModel {
     @ExcelProperty(index = 18)
     private String kk;
 
-    public String getStr() {
-        return str;
-    }
-
-
-    public void setStr(String str) {
-        this.str = str;
-    }
-
-    public Float getFf() {
-        return ff;
-    }
-
-    public void setFf(Float ff) {
-        this.ff = ff;
-    }
 
     public Integer getMm() {
         return mm;
@@ -120,7 +98,7 @@ public class JavaModel2 extends BaseRowModel {
 
     @Override
     public String toString() {
-        return "JavaModel2{" +
+        return "JavaModel{" +
             "str='" + str + '\'' +
             ", ff=" + ff +
             ", mm=" + mm +

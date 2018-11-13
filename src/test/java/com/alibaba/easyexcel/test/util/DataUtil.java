@@ -1,6 +1,6 @@
 package com.alibaba.easyexcel.test.util;
 
-import com.alibaba.easyexcel.test.model.JavaModel1;
+import com.alibaba.easyexcel.test.model.WriteModel;
 import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.metadata.TableStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -54,10 +54,10 @@ public class DataUtil {
         return head;
     }
 
-    public static List<JavaModel1> createTestListJavaMode(){
-        List<JavaModel1> model1s = new ArrayList<JavaModel1>();
+    public static List<WriteModel> createTestListJavaMode(){
+        List<WriteModel> model1s = new ArrayList<WriteModel>();
         for (int i = 0; i <10000 ; i++) {
-            JavaModel1 model1 = new JavaModel1();
+            WriteModel model1 = new WriteModel();
             model1.setP1("第一列，第行");
             model1.setP2("121212jjj");
             model1.setP3(33+i);
