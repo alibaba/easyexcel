@@ -11,7 +11,6 @@ import java.lang.annotation.Target;
  * Field column num at excel head
  *
  * @author jipengfei
- * @date 2017/03/19
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

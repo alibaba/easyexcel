@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author jipengfei
- * @date 2017/03/15
  */
 public class TypeUtil {
 

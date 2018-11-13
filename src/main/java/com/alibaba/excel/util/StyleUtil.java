@@ -6,7 +6,6 @@ import java.util.Map;
 
 /**
  * @author jipengfei
- * @date 2017/03/15
  */
 public class StyleUtil {
 

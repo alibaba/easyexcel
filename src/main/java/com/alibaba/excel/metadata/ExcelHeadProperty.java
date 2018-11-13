@@ -11,7 +11,6 @@ import java.util.*;
  * Define the header attribute of excel
  *
  * @author jipengfei
- * @date 2017/05/31
  */
 public class ExcelHeadProperty {
 
