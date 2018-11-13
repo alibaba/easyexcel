@@ -58,8 +58,8 @@ public class DataUtil {
         List<JavaModel1> model1s = new ArrayList<JavaModel1>();
         for (int i = 0; i <10000 ; i++) {
             JavaModel1 model1 = new JavaModel1();
-            model1.setP1("第一列，第"+i+"行");
-            model1.setP2("222"+i);
+            model1.setP1("第一列，第行");
+            model1.setP2("121212jjj");
             model1.setP3(33+i);
             model1.setP4(44);
             model1.setP5("555");

@@ -80,6 +80,7 @@ public class ReadTest {
         ExcelListener excelListener = new ExcelListener();
         ExcelReader excelReader = EasyExcelFactory.getReader(inputStream,excelListener);
         List<Sheet> sheets = excelReader.getSheets();
+        System.out.println("llll****"+sheets);
         System.out.println();
         for (Sheet sheet:sheets) {
             if(sheet.getSheetNo() ==1) {
