@@ -31,11 +31,7 @@ public class WriteTest {
         sheet1.setHead(createTestListStringHead());
         //or 设置自适应宽度
         //sheet1.setAutoWidth(Boolean.TRUE);
-
         writer.write1(createTestListObject(), sheet1);
-
-
-
 
 
         //写第二个sheet sheet2  模型上打有表头的注解，合并单元格
@@ -43,6 +39,7 @@ public class WriteTest {
         sheet2.setTableStyle(createTableStyle());
         //writer.write1(null, sheet2);
         writer.write(createTestListJavaMode(), sheet2);
+        //需要合并单元格
         writer.merge(5,20,1,1);
 
 
