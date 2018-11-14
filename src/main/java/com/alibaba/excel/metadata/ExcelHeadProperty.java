@@ -2,30 +2,35 @@ package com.alibaba.excel.metadata;
 
 import com.alibaba.excel.annotation.ExcelColumnNum;
 import com.alibaba.excel.annotation.ExcelProperty;
-import org.apache.commons.compress.utils.Lists;
+import com.alibaba.excel.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
 /**
+ * Define the header attribute of excel
  *
  * @author jipengfei
  */
 public class ExcelHeadProperty {
 
     /**
+     * Custom class
      */
     private Class<? extends BaseRowModel> headClazz;
 
     /**
+     * A two-dimensional array describing the header
      */
     private List<List<String>> head = new ArrayList<List<String>>();
 
     /**
+     * Attributes described by the header
      */
     private List<ExcelColumnProperty> columnPropertyList = new ArrayList<ExcelColumnProperty>();
 
     /**
+     * Attributes described by the header
      */
     private Map<Integer, ExcelColumnProperty> excelColumnPropertyMap1 = new HashMap<Integer, ExcelColumnProperty>();
 
@@ -39,17 +44,13 @@ public class ExcelHeadProperty {
      */
     private void initColumnProperties() {
         if (this.headClazz != null) {
-            List<Field> fieldList = Lists.newArrayList();
-            //递归处理父类中的属性
-            Class objectClazz = headClazz.getSuperclass();
-            while (objectClazz != null && !objectClazz.getName().toLowerCase().equals("java.lang.object")) {
-                fieldList.addAll(Arrays.asList(objectClazz.getDeclaredFields()));
-                objectClazz = objectClazz.getSuperclass();
-            }
-            //子类中的属性
-            Field[] fields = this.headClazz.getDeclaredFields();
-            if (fields != null) {
-                fieldList.addAll(Arrays.asList(fields));
+            List<Field> fieldList = new ArrayList<Field>();
+            Class tempClass = this.headClazz;
+            //当父类为null的时候说明到达了最上层的父类(Object类).
+            while (tempClass != null) {
+                fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
+                tempClass = tempClass.getSuperclass();
+                //得到父类,然后赋给自己
             }
             List<List<String>> headList = new ArrayList<List<String>>();
             for (Field f : fieldList) {
@@ -67,7 +68,6 @@ public class ExcelHeadProperty {
     }
 
     /**
-     *
      * @param f
      */
     private void initOneColumnProperty(Field f) {
@@ -115,44 +115,11 @@ public class ExcelHeadProperty {
     }
 
     /**
-     *
      * @param columnNum
      * @return
      */
     public ExcelColumnProperty getExcelColumnProperty(int columnNum) {
-        ExcelColumnProperty excelColumnProperty = excelColumnPropertyMap1.get(columnNum);
-        if (excelColumnProperty == null) {
-            if (head != null && head.size() > columnNum) {
-                List<String> columnHead = head.get(columnNum);
-                for (ExcelColumnProperty columnProperty : columnPropertyList) {
-                    if (headEquals(columnHead, columnProperty.getHead())) {
-                        return columnProperty;
-                    }
-                }
-            }
-        }
-        return excelColumnProperty;
-    }
-
-    /**
-     *
-     * @param columnHead
-     * @param head
-     * @return
-     */
-    private boolean headEquals(List<String> columnHead, List<String> head) {
-        boolean result = true;
-        if (columnHead == null || head == null || columnHead.size() != head.size()) {
-            return false;
-        } else {
-            for (int i = 0; i < head.size(); i++) {
-                if (!head.get(i).equals(columnHead.get(i))) {
-                    result = false;
-                    break;
-                }
-            }
-        }
-        return result;
+        return excelColumnPropertyMap1.get(columnNum);
     }
 
     public Class getHeadClazz() {
@@ -179,20 +146,24 @@ public class ExcelHeadProperty {
         this.columnPropertyList = columnPropertyList;
     }
 
+    /**
+     * Calculate all cells that need to be merged
+     *
+     * @return cells that need to be merged
+     */
     public List<CellRange> getCellRangeModels() {
-        List<CellRange> rangs = new ArrayList<CellRange>();
+        List<CellRange> cellRanges = new ArrayList<CellRange>();
         for (int i = 0; i < head.size(); i++) {
-            List<String> columnvalues = head.get(i);
-            for (int j = 0; j < columnvalues.size(); j++) {
-                int lastRow = getLastRangRow(j, columnvalues.get(j), columnvalues);
-                int lastColumn = getLastRangColumn(columnvalues.get(j), getHeadByRowNum(j), i);
-                if (lastRow >= 0 && lastColumn >= 0 && (lastRow > j || lastColumn > i)) {
-                    rangs.add(new CellRange(j, lastRow, i, lastColumn));
+            List<String> columnValues = head.get(i);
+            for (int j = 0; j < columnValues.size(); j++) {
+                int lastRow = getLastRangNum(j, columnValues.get(j), columnValues);
+                int lastColumn = getLastRangNum(i, columnValues.get(j), getHeadByRowNum(j));
+                if ((lastRow > j || lastColumn > i) && lastRow >= 0 && lastColumn >= 0) {
+                    cellRanges.add(new CellRange(j, lastRow, i, lastColumn));
                 }
-
             }
         }
-        return rangs;
+        return cellRanges;
     }
 
     public List<String> getHeadByRowNum(int rowNum) {
@@ -208,29 +179,36 @@ public class ExcelHeadProperty {
     }
 
     /**
-     * @param value
-     * @param headByRowNum
-     * @param i
-     * @return
+     * Get the last consecutive string position
+     *
+     * @param j      current value position
+     * @param value  value content
+     * @param values values
+     * @return the last consecutive string position
      */
-    private int getLastRangColumn(String value, List<String> headByRowNum, int i) {
-        if (headByRowNum.indexOf(value) < i) {
-            return -1;
-        } else {
-            return headByRowNum.lastIndexOf(value);
-        }
-    }
-
-    private int getLastRangRow(int j, String value, List<String> columnvalue) {
-
-        if (columnvalue.indexOf(value) < j) {
+    private int getLastRangNum(int j, String value, List<String> values) {
+        int lastRow = -1;
+        if (StringUtils.isEmpty(value)) {
             return -1;
         }
-        if (value != null && value.equals(columnvalue.get(columnvalue.size() - 1))) {
-            return getRowNum() - 1;
-        } else {
-            return columnvalue.lastIndexOf(value);
+        for (int i = 0; i < values.size(); i++) {
+            String current = values.get(i);
+            if (value.equals(current)) {
+                if (i >= j) {
+                    lastRow = i;
+                } else {
+                    //if i<j && value.equals(current) Indicates that a merger has occurred
+                    return -1;
+                }
+            } else {
+                // if i>j && !value.equals(current) Indicates that the continuous range is exceeded
+                if (i > j) {
+                    break;
+                }
+            }
         }
+        return lastRow;
+
     }
 
     public int getRowNum() {

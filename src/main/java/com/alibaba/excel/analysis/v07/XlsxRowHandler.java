@@ -17,6 +17,7 @@ import java.util.Arrays;
 import static com.alibaba.excel.constant.ExcelXmlConstants.*;
 
 /**
+ *
  * @author jipengfei
  */
 public class XlsxRowHandler extends DefaultHandler {
@@ -81,11 +82,6 @@ public class XlsxRowHandler extends DefaultHandler {
             if (cellType != null && cellType.equals("s")) {
                 currentCellType = FieldType.STRING;
             }
-            //if ("6".equals(attributes.getValue("s"))) {
-            //    // date
-            //    currentCellType = FieldType.DATE;
-            //}
-
         }
     }
 
@@ -102,12 +98,6 @@ public class XlsxRowHandler extends DefaultHandler {
                     currentCellValue = new XSSFRichTextString(sst.getEntryAt(idx)).toString();
                     currentCellType = FieldType.EMPTY;
                     break;
-                //case DATE:
-                //    Date dateVal = HSSFDateUtil.getJavaDate(Double.parseDouble(currentCellValue),
-                //        analysisContext.use1904WindowDate());
-                //    currentCellValue = TypeUtil.getDefaultDateString(dateVal);
-                //    currentCellType = FieldType.EMPTY;
-                //    break;
             }
             curRowContent[curCol] = currentCellValue;
         } else if (CELL_VALUE_TAG_1.equals(name)) {
@@ -117,16 +107,13 @@ public class XlsxRowHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String name) throws SAXException {
-
         endRow(name);
         endCellValue(name);
     }
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-
         currentCellValue += new String(ch, start, length);
-
     }
 
 
@@ -142,7 +129,7 @@ public class XlsxRowHandler extends DefaultHandler {
 
     private void endRow(String name) {
         if (name.equals(ROW_TAG)) {
-            registerCenter.notifyListeners(new OneRowAnalysisFinishEvent(Arrays.asList(curRowContent)));
+            registerCenter.notifyListeners(new OneRowAnalysisFinishEvent(curRowContent,curCol));
             curRowContent = new String[20];
         }
     }

@@ -13,7 +13,12 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
- *
+ * Excel Writer This tool is used to write data out to Excel via POI.
+ * This object can perform the following two functions.
+ * <pre>
+ *    1. Create a new empty Excel workbook, write the data to the stream after the data is filled.
+ *    2. Edit existing Excel, write the original Excel file, or write it to other places.
+ * </pre>
  * @author jipengfei
  */
 public class ExcelWriter {
@@ -21,66 +26,65 @@ public class ExcelWriter {
     private ExcelBuilder excelBuilder;
 
     /**
-     *
-     *
+     * Create new writer
+     * @param outputStream the java OutputStream you wish to write the data to
+     * @param typeEnum 03 or 07
      */
     public ExcelWriter(OutputStream outputStream, ExcelTypeEnum typeEnum) {
         this(outputStream, typeEnum, true);
     }
 
+    @Deprecated
     private Class<? extends BaseRowModel> objectClass;
 
-    private String sheetName;
-
+    /**
+     * @param generateParam
+     * @since easyexcel 0.0.1
+     */
+    @Deprecated
     public ExcelWriter(GenerateParam generateParam) {
-
         this(generateParam.getOutputStream(), generateParam.getType(), true);
         this.objectClass = generateParam.getClazz();
-        this.sheetName = generateParam.getSheetName();
     }
 
     /**
      *
-     *
-     * @param outputStream
-     * @param typeEnum
+     * Create new writer
+     * @param outputStream the java OutputStream you wish to write the data to
+     * @param typeEnum 03 or 07
+     * @param needHead Do you need to write the header to the file?
      */
     public ExcelWriter(OutputStream outputStream, ExcelTypeEnum typeEnum, boolean needHead) {
-        excelBuilder = new ExcelBuilderImpl();
-        excelBuilder.init(null, outputStream, typeEnum, needHead);
+        excelBuilder = new ExcelBuilderImpl(null, outputStream, typeEnum, needHead);
     }
 
     /**
-     *
-     * @param templateInputStream
-     * @param outputStream
-     * @param typeEnum
+     *  Create new writer
+     * @param templateInputStream Append data after a POI file ,Can be null（the template POI filesystem that contains the Workbook stream)
+     * @param outputStream the java OutputStream you wish to write the data to
+     * @param typeEnum 03 or 07
      */
-    public ExcelWriter(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum typeEnum, boolean needHead) {
-        excelBuilder = new ExcelBuilderImpl();
-        excelBuilder.init(templateInputStream,outputStream, typeEnum, needHead);
+    public ExcelWriter(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum typeEnum,Boolean needHead) {
+        excelBuilder = new ExcelBuilderImpl(templateInputStream,outputStream, typeEnum, needHead);
     }
 
     /**
-     *
-     * @param data
-     * @param sheet
-     * @return this
+     * Write data to a sheet
+     * @param data Data to be written
+     * @param sheet Write to this sheet
+     * @return this current writer
      */
     public ExcelWriter write(List<? extends BaseRowModel> data, Sheet sheet) {
         excelBuilder.addContent(data, sheet);
         return this;
     }
 
-    //public Sheet(int sheetNo, int headLineMun, Class<? extends BaseRowModel> clazz, String sheetName,
-    //             List<List<String>> head) {
-    //    this.sheetNo = sheetNo;
-    //    this.clazz = clazz;
-    //    this.headLineMun = headLineMun;
-    //    this.sheetName = sheetName;
-    //    this.head = head;
-    //}
 
+    /**
+     * Write data to a sheet
+     * @param data Data to be written
+     * @return this current writer
+     */
     @Deprecated
     public ExcelWriter write(List data) {
         if (objectClass != null) {
@@ -93,9 +97,9 @@ public class ExcelWriter {
 
     /**
      *
-     *
-     * @param data
-     * @param sheet
+     * Write data to a sheet
+     * @param data Data to be written
+     * @param sheet Write to this sheet
      * @return this
      */
     public ExcelWriter write1(List<List<Object>> data, Sheet sheet) {
@@ -104,9 +108,9 @@ public class ExcelWriter {
     }
 
     /**
-     *
-     * @param data
-     * @param sheet
+     * Write data to a sheet
+     * @param data  Data to be written
+     * @param sheet Write to this sheet
      * @return this
      */
     public ExcelWriter write0(List<List<String>> data, Sheet sheet) {
@@ -114,25 +118,58 @@ public class ExcelWriter {
         return this;
     }
 
-
-
+    /**
+     * Write data  to a sheet
+     * @param data  Data to be written
+     * @param sheet Write to this sheet
+     * @param table Write to this table
+     * @return this
+     */
     public ExcelWriter write(List<? extends BaseRowModel> data, Sheet sheet, Table table) {
         excelBuilder.addContent(data, sheet, table);
         return this;
     }
 
-
+    /**
+     * Write data to a sheet
+     * @param data  Data to be written
+     * @param sheet Write to this sheet
+     * @param table Write to this table
+     * @return this
+     */
     public ExcelWriter write0(List<List<String>> data, Sheet sheet, Table table) {
         excelBuilder.addContent(data, sheet, table);
         return this;
     }
 
+    /**
+     * Merge Cells，Indexes are zero-based.
+     *
+     * @param firstRow Index of first row
+     * @param lastRow Index of last row (inclusive), must be equal to or larger than {@code firstRow}
+     * @param firstCol Index of first column
+     * @param lastCol Index of last column (inclusive), must be equal to or larger than {@code firstCol}
+     */
+    public ExcelWriter merge(int firstRow, int lastRow, int firstCol, int lastCol){
+        excelBuilder.merge(firstRow,lastRow,firstCol,lastCol);
+        return this;
+    }
 
+    /**
+     * Write data to a sheet
+     * @param data  Data to be written
+     * @param sheet Write to this sheet
+     * @param table Write to this table
+     * @return
+     */
     public ExcelWriter write1(List<List<Object>> data, Sheet sheet, Table table) {
         excelBuilder.addContent(data, sheet, table);
         return this;
     }
 
+    /**
+     * Close IO
+     */
     public void finish() {
         excelBuilder.finish();
     }

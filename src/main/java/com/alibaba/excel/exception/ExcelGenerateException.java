@@ -17,5 +17,4 @@ public class ExcelGenerateException extends RuntimeException {
     public ExcelGenerateException(Throwable cause) {
         super(cause);
     }
-
 }

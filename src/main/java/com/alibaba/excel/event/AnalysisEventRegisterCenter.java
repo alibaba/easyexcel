@@ -1,25 +1,29 @@
 package com.alibaba.excel.event;
 
-
 /**
+ * Event center.
  *
  * @author jipengfei
  */
 public interface AnalysisEventRegisterCenter {
 
     /**
-     * @param name 监听名定义
-     * @param listener 具体实现
+     * Append listener
+     *
+     * @param name     listener name.
+     * @param listener Callback method after each row is parsed.
      */
     void appendLister(String name, AnalysisEventListener listener);
 
-
     /**
-     * @param event 事件
+     * Parse one row to notify all event listeners
+     *
+     * @param event parse event
      */
     void notifyListeners(OneRowAnalysisFinishEvent event);
 
     /**
+     * Clean all listeners.
      */
     void cleanAllListeners();
 }

@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * /** * A text extractor for Excel files. * <p> * Returns the textual content of the file, suitable for *  indexing by
+ * something like Lucene, but not really *  intended for display to the user. * </p> * <p> * To turn an excel file into
+ * a CSV or similar, then see *  the XLS2CSVmra example * </p> * * @see
+ * <a href="http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/hssf/eventusermodel/examples/XLS2CSVmra.java">XLS2CSVmra</a>
  *
  * @author jipengfei
  */
@@ -36,6 +40,7 @@ public class XlsSaxAnalyser extends BaseSaxAnalyser implements HSSFListener {
 
     }
 
+    @Override
     public List<Sheet> getSheets() {
         execute();
         return sheets;
@@ -104,27 +109,19 @@ public class XlsSaxAnalyser extends BaseSaxAnalyser implements HSSFListener {
      */
     private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
     private HSSFWorkbook stubWorkbook;
-
-    // Records we pick up as we process
     private SSTRecord sstRecord;
     private FormatTrackingHSSFListener formatListener;
 
     /**
      * So we known which sheet we're on
      */
-    // private BoundSheetRecord[] orderedBSRs;
 
-    // @SuppressWarnings("rawtypes")
-    // private ArrayList boundSheetRecords = new ArrayList();
-
-    // For handling formulas with string results
     private int nextRow;
     private int nextColumn;
     private boolean outputNextStringRecord;
 
     /**
-     * Main HSSFListener method, processes events, and outputs the CSV as the
-     * file is processed.
+     * Main HSSFListener method, processes events, and outputs the CSV as the file is processed.
      */
 
     private int sheetIndex;
@@ -281,10 +278,7 @@ public class XlsSaxAnalyser extends BaseSaxAnalyser implements HSSFListener {
 
         // If we got something to print out, do so
         if (thisStr != null) {
-            //if (thisColumn > 1) {
-            //    // output.print(',');
-            //}
-            //if (thisStr != null) {
+
             if (analysisContext.trim()) {
                 thisStr = thisStr.trim();
             }
@@ -292,7 +286,6 @@ public class XlsSaxAnalyser extends BaseSaxAnalyser implements HSSFListener {
                 notAllEmpty = true;
             }
             //            }
-            // output.print(thisStr);
             records.add(thisStr);
         }
 
@@ -307,9 +300,7 @@ public class XlsSaxAnalyser extends BaseSaxAnalyser implements HSSFListener {
         // Handle end of row
         if (record instanceof LastCellOfRowDummyRecord) {
             thisRow = ((LastCellOfRowDummyRecord)record).getRow();
-            // thisColumn = ((LastCellOfRowDummyRecord)
-            // record).getLastColumnNumber();
-            // Columns are 0 based
+
             if (lastColumnNumber == -1) {
                 lastColumnNumber = 0;
             }
@@ -317,26 +308,11 @@ public class XlsSaxAnalyser extends BaseSaxAnalyser implements HSSFListener {
             Sheet sheet = analysisContext.getCurrentSheet();
 
             if ((sheet == null || sheet.getSheetNo() == sheetIndex) && notAllEmpty) {
-                notifyListeners(new OneRowAnalysisFinishEvent(copyList(records)));
+                notifyListeners(new OneRowAnalysisFinishEvent(records));
             }
-            // System.out.println(records);
             records.clear();
             lastColumnNumber = -1;
             notAllEmpty = false;
-
         }
     }
-
-    private List<String> copyList(List<String> data) {
-        if (data == null) {
-            return null;
-        }
-        List<String> list = new ArrayList<String>();
-        for (String str : data) {
-            list.add(new String(str));
-        }
-        return list;
-
-    }
-
 }

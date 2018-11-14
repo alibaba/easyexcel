@@ -1,8 +1,8 @@
 package com.alibaba.excel.parameter;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
-
 import java.io.OutputStream;
+
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * {@link com.alibaba.excel.ExcelWriter}
