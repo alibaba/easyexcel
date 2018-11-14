@@ -46,11 +46,12 @@ public class ExcelHeadProperty {
         if (this.headClazz != null) {
             List<Field> fieldList = new ArrayList<Field>();
             Class tempClass = this.headClazz;
-            //当父类为null的时候说明到达了最上层的父类(Object类).
+            //When the parent class is null, it indicates that the parent class (Object class) has reached the top
+            // level.
             while (tempClass != null) {
-                fieldList.addAll(Arrays.asList(tempClass .getDeclaredFields()));
+                fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
+                //Get the parent class and give it to yourself
                 tempClass = tempClass.getSuperclass();
-                //得到父类,然后赋给自己
             }
             List<List<String>> headList = new ArrayList<List<String>>();
             for (Field f : fieldList) {
@@ -187,19 +188,20 @@ public class ExcelHeadProperty {
      * @return the last consecutive string position
      */
     private int getLastRangNum(int j, String value, List<String> values) {
-        int lastRow = -1;
-        if (StringUtils.isEmpty(value)) {
+        if (value == null) {
             return -1;
         }
-        for (int i = 0; i < values.size(); i++) {
+        if (j > 0) {
+            String preValue = values.get(j - 1);
+            if (value.equals(preValue)) {
+                return -1;
+            }
+        }
+        int last = j;
+        for (int i = last + 1; i < values.size(); i++) {
             String current = values.get(i);
             if (value.equals(current)) {
-                if (i >= j) {
-                    lastRow = i;
-                } else {
-                    //if i<j && value.equals(current) Indicates that a merger has occurred
-                    return -1;
-                }
+                last = i;
             } else {
                 // if i>j && !value.equals(current) Indicates that the continuous range is exceeded
                 if (i > j) {
@@ -207,7 +209,7 @@ public class ExcelHeadProperty {
                 }
             }
         }
-        return lastRow;
+        return last;
 
     }
 

@@ -28,7 +28,6 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             eventListener, trim);
     }
 
-
     private BaseSaxAnalyser getSaxAnalyser() {
         if (saxAnalyser != null) {
             return this.saxAnalyser;
@@ -50,14 +49,14 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                     if (!analysisContext.getInputStream().markSupported()) {
                         throw new ExcelAnalysisException(
                             "Xls must be available markSupported,you can do like this <code> new "
-                                + "BufferedInputStream(new FileInputStream(\"/xxxx/xxx/77.xlsx\"))</code> ");
+                                + "BufferedInputStream(new FileInputStream(\"/xxxx\"))</code> ");
                     }
                     this.saxAnalyser = new XlsSaxAnalyser(analysisContext);
                 }
             }
         } catch (Exception e) {
             throw new ExcelAnalysisException("File type error，io must be available markSupported,you can do like "
-                + "this <code> new BufferedInputStream(new FileInputStream(\\\"/xxxx/xxx/77.xlsx\\\"))</code> \"", e);
+                + "this <code> new BufferedInputStream(new FileInputStream(\\\"/xxxx\\\"))</code> \"", e);
         }
         return this.saxAnalyser;
     }
