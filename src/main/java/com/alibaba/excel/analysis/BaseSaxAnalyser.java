@@ -61,10 +61,11 @@ public abstract class BaseSaxAnalyser implements AnalysisEventRegisterCenter, Ex
                     (List<String>)analysisContext.getCurrentRowAnalysisResult());
             }
         } else {
+            List<String> content = converter((List<String>)event.getData());
             /** Parsing Analyze the body content **/
-            analysisContext.setCurrentRowAnalysisResult(event.getData());
+            analysisContext.setCurrentRowAnalysisResult(content);
             if (listeners.size() == 1) {
-                analysisContext.setCurrentRowAnalysisResult(converter((List<String>)event.getData()));
+                analysisContext.setCurrentRowAnalysisResult(content);
             }
             /**  notify all event listeners **/
             for (Map.Entry<String, AnalysisEventListener> entry : listeners.entrySet()) {
