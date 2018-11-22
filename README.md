@@ -20,6 +20,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 ## 快速开始
 ### 读Excel
 测试代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/test/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/ReadTest.java)
+
 读07版小于1000行数据返回List<List<String>>
 ```
 List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(1, 0));
@@ -132,10 +133,11 @@ public class Down {
         Sheet sheet1 = new Sheet(1, 0);
         sheet1.setSheetName("第一个sheet");
         writer.write0(getListString(), sheet1);
+        writer.finish();
         response.setContentType("multipart/form-data");
         response.setCharacterEncoding("utf-8");
         response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
-         out.flush();
+        out.flush();
         }
     }
 }
