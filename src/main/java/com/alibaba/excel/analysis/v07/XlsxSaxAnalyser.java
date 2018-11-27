@@ -45,8 +45,7 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
         this.sharedStringsTable = this.xssfReader.getSharedStringsTable();
 
         InputStream workbookXml = xssfReader.getWorkbookData();
-        WorkbookDocument ctWorkbook = WorkbookDocument.Factory.parse(workbookXml);
-        CTWorkbook wb = ctWorkbook.getWorkbook();
+        CTWorkbook wb = CTWorkbook.Factory.parse(workbookXml);
         CTWorkbookPr prefix = wb.getWorkbookPr();
         if (prefix != null) {
             this.use1904WindowDate = prefix.getDate1904();
