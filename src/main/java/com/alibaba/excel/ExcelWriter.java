@@ -1,5 +1,6 @@
 package com.alibaba.excel;
 
+import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
@@ -17,7 +18,7 @@ import java.util.List;
  * This object can perform the following two functions.
  * <pre>
  *    1. Create a new empty Excel workbook, write the data to the stream after the data is filled.
- *    2. Edit existing Excel, write the original Excel file, or write it to other places.
+ *    2. Edit existing Excel, write the original Excel file, or write it to other places.{@link ExcelWriter(InputStream , OutputStream , ExcelTypeEnum , boolean )}
  * </pre>
  * @author jipengfei
  */
@@ -39,7 +40,7 @@ public class ExcelWriter {
 
     /**
      * @param generateParam
-     * @since easyexcel 0.0.1
+     * @since easyexcel 0.0.1  Use {@link new ExcelWrite(int, int, int)
      */
     @Deprecated
     public ExcelWriter(GenerateParam generateParam) {
@@ -55,7 +56,7 @@ public class ExcelWriter {
      * @param needHead Do you need to write the header to the file?
      */
     public ExcelWriter(OutputStream outputStream, ExcelTypeEnum typeEnum, boolean needHead) {
-        excelBuilder = new ExcelBuilderImpl(null, outputStream, typeEnum, needHead);
+        excelBuilder = new ExcelBuilderImpl(null, outputStream, typeEnum, needHead, null);
     }
 
     /**
@@ -65,11 +66,24 @@ public class ExcelWriter {
      * @param typeEnum 03 or 07
      */
     public ExcelWriter(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum typeEnum,Boolean needHead) {
-        excelBuilder = new ExcelBuilderImpl(templateInputStream,outputStream, typeEnum, needHead);
+        excelBuilder = new ExcelBuilderImpl(templateInputStream,outputStream, typeEnum, needHead, null);
+    }
+
+
+    /**
+     *  Create new writer
+     * @param templateInputStream Append data after a POI file ,Can be null（the template POI filesystem that contains the Workbook stream)
+     * @param outputStream the java OutputStream you wish to write the data to
+     * @param typeEnum 03 or 07
+     * @param writeHandler User-defined callback
+     */
+    public ExcelWriter(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum typeEnum, Boolean needHead,
+                       WriteHandler writeHandler) {
+        excelBuilder = new ExcelBuilderImpl(templateInputStream,outputStream, typeEnum, needHead,writeHandler);
     }
 
     /**
-     * Write data to a sheet
+     * Write data(List<? extends BaseRowModel>) to a sheet
      * @param data Data to be written
      * @param sheet Write to this sheet
      * @return this current writer
@@ -97,7 +111,7 @@ public class ExcelWriter {
 
     /**
      *
-     * Write data to a sheet
+     * Write data(List<List<String>>) to a sheet
      * @param data Data to be written
      * @param sheet Write to this sheet
      * @return this
@@ -108,7 +122,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data to a sheet
+     * Write data(List<List<String>>) to a sheet
      * @param data  Data to be written
      * @param sheet Write to this sheet
      * @return this
@@ -119,7 +133,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data  to a sheet
+     * Write data(List<? extends BaseRowModel>) to a sheet
      * @param data  Data to be written
      * @param sheet Write to this sheet
      * @param table Write to this table
@@ -131,7 +145,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data to a sheet
+     * Write data(List<List<String>>) to a sheet
      * @param data  Data to be written
      * @param sheet Write to this sheet
      * @param table Write to this table
@@ -156,7 +170,7 @@ public class ExcelWriter {
     }
 
     /**
-     * Write data to a sheet
+     * Write data(List<List<Object>>) to a sheet
      * @param data  Data to be written
      * @param sheet Write to this sheet
      * @param table Write to this table

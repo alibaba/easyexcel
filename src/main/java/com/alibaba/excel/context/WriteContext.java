@@ -1,5 +1,6 @@
 package com.alibaba.excel.context;
 
+import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Table;
@@ -7,10 +8,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.util.WorkBookUtil;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.IOException;
@@ -91,12 +89,20 @@ public class WriteContext {
 
     private boolean needHead = Boolean.TRUE;
 
+    private WriteHandler afterWriteHandler;
+
+    public WriteHandler getAfterWriteHandler() {
+        return afterWriteHandler;
+    }
+
     public WriteContext(InputStream templateInputStream, OutputStream out, ExcelTypeEnum excelType,
-                        boolean needHead) throws IOException {
+                        boolean needHead, WriteHandler afterWriteHandler) throws IOException {
         this.needHead = needHead;
         this.outputStream = out;
+        this.afterWriteHandler = afterWriteHandler;
         this.workbook = WorkBookUtil.createWorkBook(templateInputStream, excelType);
         this.defaultCellStyle = StyleUtil.buildDefaultCellStyle(this.workbook);
+
     }
 
     /**
@@ -110,6 +116,9 @@ public class WriteContext {
                 this.currentSheet = workbook.getSheetAt(sheet.getSheetNo() - 1);
             } catch (Exception e) {
                 this.currentSheet = WorkBookUtil.createSheet(workbook, sheet);
+                if (null != afterWriteHandler) {
+                    this.afterWriteHandler.sheet(sheet.getSheetNo(), currentSheet);
+                }
             }
             buildSheetStyle(currentSheet, sheet.getColumnWidthMap());
             /** **/
@@ -154,13 +163,16 @@ public class WriteContext {
             int startRow = currentSheet.getLastRowNum();
             if (startRow > 0) {
                 startRow += 4;
-            }else {
+            } else {
                 startRow = currentSheetParam.getStartRow();
             }
             addMergedRegionToCurrentSheet(startRow);
             int i = startRow;
             for (; i < this.excelHeadProperty.getRowNum() + startRow; i++) {
                 Row row = WorkBookUtil.createRow(currentSheet, i);
+                if (null != afterWriteHandler) {
+                    this.afterWriteHandler.row(i, row);
+                }
                 addOneRowOfHeadDataToExcel(row, this.excelHeadProperty.getHeadByRowNum(i - startRow));
             }
         }
@@ -177,7 +189,10 @@ public class WriteContext {
     private void addOneRowOfHeadDataToExcel(Row row, List<String> headByRowNum) {
         if (headByRowNum != null && headByRowNum.size() > 0) {
             for (int i = 0; i < headByRowNum.size(); i++) {
-                WorkBookUtil.createCell(row, i, getCurrentHeadCellStyle(), headByRowNum.get(i));
+                Cell cell = WorkBookUtil.createCell(row, i, getCurrentHeadCellStyle(), headByRowNum.get(i));
+                if (null != afterWriteHandler) {
+                    this.afterWriteHandler.cell(i, cell);
+                }
             }
         }
     }

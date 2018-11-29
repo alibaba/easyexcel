@@ -2,6 +2,7 @@ package com.alibaba.excel;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
@@ -95,6 +96,25 @@ public class EasyExcelFactory {
     public static ExcelWriter getWriterWithTemp(InputStream temp, OutputStream outputStream, ExcelTypeEnum typeEnum,
                                                 boolean needHead) {
         return new ExcelWriter(temp, outputStream, typeEnum, needHead);
+    }
+
+    /**
+     * Get ExcelWriter with a template file
+     *
+     * @param temp         Append data after a POI file , Can be null（the template POI filesystem that contains the
+     *                     Workbook stream)
+     * @param outputStream the java OutputStream you wish to write the data to
+     * @param typeEnum     03 or 07
+     * @param needHead
+     * @param handler      User-defined callback
+     * @return new  ExcelWriter
+     */
+    public static ExcelWriter getWriterWithTempAndHandler(InputStream temp,
+                                                          OutputStream outputStream,
+                                                          ExcelTypeEnum typeEnum,
+                                                          boolean needHead,
+                                                          WriteHandler handler) {
+        return new ExcelWriter(temp, outputStream, typeEnum, needHead, handler);
     }
 
 }

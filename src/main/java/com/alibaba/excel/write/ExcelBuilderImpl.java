@@ -1,6 +1,7 @@
 package com.alibaba.excel.write;
 
 import com.alibaba.excel.context.WriteContext;
+import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.ExcelColumnProperty;
@@ -12,6 +13,7 @@ import com.alibaba.excel.util.POITempFile;
 import com.alibaba.excel.util.TypeUtil;
 import com.alibaba.excel.util.WorkBookUtil;
 import net.sf.cglib.beans.BeanMap;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -23,6 +25,7 @@ import java.util.List;
 
 /**
  * @author jipengfei
+ * @date 2017/05/27
  */
 public class ExcelBuilderImpl implements ExcelBuilder {
 
@@ -31,11 +34,11 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     public ExcelBuilderImpl(InputStream templateInputStream,
                             OutputStream out,
                             ExcelTypeEnum excelType,
-                            boolean needHead) {
+                            boolean needHead, WriteHandler writeHandler) {
         try {
             //初始化时候创建临时缓存目录，用于规避POI在并发写bug
             POITempFile.createPOIFilesDirectory();
-            context = new WriteContext(templateInputStream, out, excelType, needHead);
+            context = new WriteContext(templateInputStream, out, excelType, needHead, writeHandler);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -99,10 +102,13 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         }
         for (int i = 0; i < oneRowData.size(); i++) {
             Object cellValue = oneRowData.get(i);
-            WorkBookUtil.createCell(row, i, context.getCurrentContentStyle(), cellValue, TypeUtil.isNum(cellValue));
+            Cell cell = WorkBookUtil.createCell(row, i, context.getCurrentContentStyle(), cellValue,
+                TypeUtil.isNum(cellValue));
+            if (null != context.getAfterWriteHandler()) {
+                context.getAfterWriteHandler().cell(i, cell);
+            }
         }
     }
-
 
     private void addJavaObjectToExcel(Object oneRowData, Row row) {
         int i = 0;
@@ -113,7 +119,11 @@ public class ExcelBuilderImpl implements ExcelBuilder {
                 excelHeadProperty.getFormat());
             CellStyle cellStyle = baseRowModel.getStyle(i) != null ? baseRowModel.getStyle(i)
                 : context.getCurrentContentStyle();
-            WorkBookUtil.createCell(row, i, cellStyle, cellValue, TypeUtil.isNum(excelHeadProperty.getField()));
+            Cell cell = WorkBookUtil.createCell(row, i, cellStyle, cellValue,
+                TypeUtil.isNum(excelHeadProperty.getField()));
+            if (null != context.getAfterWriteHandler()) {
+                context.getAfterWriteHandler().cell(i, cell);
+            }
             i++;
         }
 
@@ -121,6 +131,9 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     private void addOneRowOfDataToExcel(Object oneRowData, int n) {
         Row row = WorkBookUtil.createRow(context.getCurrentSheet(), n);
+        if (null != context.getAfterWriteHandler()) {
+            context.getAfterWriteHandler().row(n, row);
+        }
         if (oneRowData instanceof List) {
             addBasicTypeToExcel((List)oneRowData, row);
         } else {
