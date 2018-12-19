@@ -20,7 +20,7 @@ public class WriteTest {
 
     @Test
     public void writeV2007() throws IOException {
-        OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
+        OutputStream out = new FileOutputStream("/Users/didi/Desktop/2007.xlsx");
         ExcelWriter writer = EasyExcelFactory.getWriter(out);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);
@@ -40,6 +40,15 @@ public class WriteTest {
         sheet2.setTableStyle(createTableStyle());
         //writer.write1(null, sheet2);
         writer.write(createTestListJavaMode(), sheet2);
+        //需要合并单元格
+        writer.merge(5,20,1,1);
+
+
+        //写第4个sheet sheet2  模型上打有表头的注解，合并单元格
+        Sheet sheet4 = new Sheet(4, 3, WriteModel.class, "第四个sheet", null);
+        sheet4.setTableStyle(createTableStyle());
+        //writer.write1(null, sheet2);
+        writer.write(createTestListJavaModeWithConvertor(), sheet4);
         //需要合并单元格
         writer.merge(5,20,1,1);
 

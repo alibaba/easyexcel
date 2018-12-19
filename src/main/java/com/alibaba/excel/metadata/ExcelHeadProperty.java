@@ -2,9 +2,12 @@ package com.alibaba.excel.metadata;
 
 import com.alibaba.excel.annotation.ExcelColumnNum;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.util.StringUtils;
+import com.alibaba.excel.metadata.typeconvertor.TypeConvertor;
+
+import sun.reflect.misc.ReflectUtil;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
@@ -80,6 +83,7 @@ public class ExcelHeadProperty {
             excelHeadProperty.setHead(Arrays.asList(p.value()));
             excelHeadProperty.setIndex(p.index());
             excelHeadProperty.setFormat(p.format());
+            addConvertor(p, excelHeadProperty);
             excelColumnPropertyMap1.put(p.index(), excelHeadProperty);
         } else {
             ExcelColumnNum columnNum = f.getAnnotation(ExcelColumnNum.class);
@@ -88,13 +92,25 @@ public class ExcelHeadProperty {
                 excelHeadProperty.setField(f);
                 excelHeadProperty.setIndex(columnNum.value());
                 excelHeadProperty.setFormat(columnNum.format());
+                addConvertor(p, excelHeadProperty);
                 excelColumnPropertyMap1.put(columnNum.value(), excelHeadProperty);
             }
         }
         if (excelHeadProperty != null) {
             this.columnPropertyList.add(excelHeadProperty);
         }
-
+    }
+    private void addConvertor(ExcelProperty p, ExcelColumnProperty excelHeadProperty){
+        try {
+            if (!p.convertor().equals(TypeConvertor.class) && (p.convertor().isInterface() || Modifier.isAbstract(p.convertor().getModifiers())))
+                throw new RuntimeException("convertor type is wrong");
+            else if (!p.convertor().equals(TypeConvertor.class))
+                excelHeadProperty.setConverter((TypeConvertor) ReflectUtil.newInstance(p.convertor()));
+        } catch (InstantiationException e) {
+            throw new RuntimeException("InstantiationException is happen : {}" , e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("IllegalAccessException is happen : {}" , e);
+        }
     }
 
     /**

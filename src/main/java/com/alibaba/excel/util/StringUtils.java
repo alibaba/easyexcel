@@ -41,7 +41,7 @@ import java.util.TimeZone;
  *
  * <p>This class delivers some simple functionality that should really be
  * provided by the core Java {@link String} and {@link StringBuilder}
- * classes. It also provides easy-to-use methods to convert between
+ * classes. It also provides easy-to-use methods to serialize between
  * delimited strings, such as CSV strings, and collections and arrays.
  *
  * @author Rod Johnson
@@ -1049,7 +1049,7 @@ public abstract class StringUtils {
     }
 
     /**
-     * Take a {@code String} that is a delimited list and convert it into a
+     * Take a {@code String} that is a delimited list and serialize it into a
      * {@code String} array.
      * <p>A single {@code delimiter} may consist of more than one character,
      * but it will still be considered as a single delimiter string, rather
@@ -1066,7 +1066,7 @@ public abstract class StringUtils {
     }
 
     /**
-     * Take a {@code String} that is a delimited list and convert it into
+     * Take a {@code String} that is a delimited list and serialize it into
      * a {@code String} array.
      * <p>A single {@code delimiter} may consist of more than one character,
      * but it will still be considered as a single delimiter string, rather
@@ -1139,7 +1139,7 @@ public abstract class StringUtils {
     /**
      * Convert a {@link Collection} to a delimited {@code String} (e.g. CSV).
      * <p>Useful for {@code toString()} implementations.
-     * @param coll the {@code Collection} to convert
+     * @param coll the {@code Collection} to serialize
      * @param delim the delimiter to use (typically a ",")
      * @param prefix the {@code String} to start each element with
      * @param suffix the {@code String} to end each element with
@@ -1164,7 +1164,7 @@ public abstract class StringUtils {
     /**
      * Convert a {@code Collection} into a delimited {@code String} (e.g. CSV).
      * <p>Useful for {@code toString()} implementations.
-     * @param coll the {@code Collection} to convert
+     * @param coll the {@code Collection} to serialize
      * @param delim the delimiter to use (typically a ",")
      * @return the delimited {@code String}
      */
@@ -1175,7 +1175,7 @@ public abstract class StringUtils {
     /**
      * Convert a {@code Collection} into a delimited {@code String} (e.g., CSV).
      * <p>Useful for {@code toString()} implementations.
-     * @param coll the {@code Collection} to convert
+     * @param coll the {@code Collection} to serialize
      * @return the delimited {@code String}
      */
     public static String collectionToCommaDelimitedString(Collection<?> coll) {

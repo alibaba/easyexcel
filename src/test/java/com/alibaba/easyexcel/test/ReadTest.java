@@ -3,10 +3,13 @@ package com.alibaba.easyexcel.test;
 import com.alibaba.easyexcel.test.listen.ExcelListener;
 import com.alibaba.easyexcel.test.model.ReadModel;
 import com.alibaba.easyexcel.test.model.ReadModel2;
+import com.alibaba.easyexcel.test.model.ReadModel3;
 import com.alibaba.easyexcel.test.util.FileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.fastjson.JSONObject;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,6 +42,18 @@ public class ReadTest {
     public void simpleReadJavaModelV2007() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("2007.xlsx");
         List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(2, 1, ReadModel.class));
+        inputStream.close();
+        print(data);
+    }
+
+    @Test
+    public void simpleReadJavaModelV2007WithTypeConvertor() throws IOException {
+
+        JSONObject test = new JSONObject();
+        test.put("name",123);
+        test.put("code",123);
+        InputStream inputStream = FileUtil.getResourcesFileInputStream("2007convertor.xlsx");
+        List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(2, 1, ReadModel3.class));
         inputStream.close();
         print(data);
     }

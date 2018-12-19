@@ -1,5 +1,7 @@
 package com.alibaba.excel.metadata;
 
+import com.alibaba.excel.metadata.typeconvertor.TypeConvertor;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,8 @@ public class ExcelColumnProperty implements Comparable<ExcelColumnProperty> {
     /**
      */
     private String format;
+
+    private TypeConvertor converter;
 
     public String getFormat() {
         return format;
@@ -55,6 +59,14 @@ public class ExcelColumnProperty implements Comparable<ExcelColumnProperty> {
 
     public void setHead(List<String> head) {
         this.head = head;
+    }
+
+    public TypeConvertor getConverter() {
+        return converter;
+    }
+
+    public void setConverter(TypeConvertor converter) {
+        this.converter = converter;
     }
 
     public int compareTo(ExcelColumnProperty o) {

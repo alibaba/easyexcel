@@ -2,11 +2,14 @@ package com.alibaba.excel.util;
 
 import com.alibaba.excel.metadata.ExcelColumnProperty;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.typeconvertor.TypeConvertor;
+
 import net.sf.cglib.beans.BeanMap;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -40,8 +43,11 @@ public class TypeUtil {
         return n;
     }
 
-    public static Object convert(String value, Field field, String format, boolean us) {
+    public static Object convert(String value, Field field, String format, boolean us, TypeConvertor typeConvertor) {
         if (!StringUtils.isEmpty(value)) {
+            if (!ObjectUtils.isEmpty(typeConvertor)){
+                return typeConvertor.serialize(value);
+            }
             if (Float.class.equals(field.getType())) {
                 return Float.parseFloat(value);
             }
@@ -207,11 +213,14 @@ public class TypeUtil {
         return simpleDateFormat.format(cellValue);
     }
 
-    public static String getFieldStringValue(BeanMap beanMap, String fieldName, String format) {
+
+    public static String getFieldStringValue(BeanMap beanMap, String fieldName, String format, TypeConvertor typeConvertor) {
         String cellValue = null;
         Object value = beanMap.get(fieldName);
         if (value != null) {
-            if (value instanceof Date) {
+            if (!ObjectUtils.isEmpty(typeConvertor) && typeConvertor.getClass().equals(TypeConvertor.class)){
+                cellValue = typeConvertor.deserialize(value);
+            }else if (value instanceof Date) {
                 cellValue = TypeUtil.formatDate((Date)value, format);
             } else {
                 cellValue = value.toString();
@@ -226,7 +235,7 @@ public class TypeUtil {
             ExcelColumnProperty columnProperty = excelHeadProperty.getExcelColumnProperty(i);
             if (columnProperty != null) {
                 Object value = TypeUtil.convert(stringList.get(i), columnProperty.getField(),
-                    columnProperty.getFormat(), use1904WindowDate);
+                    columnProperty.getFormat(), use1904WindowDate, columnProperty.getConverter());
                 if (value != null) {
                     map.put(columnProperty.getField().getName(),value);
                 }
