@@ -12,6 +12,7 @@ import org.apache.poi.hssf.model.HSSFFormulaParser;
 import org.apache.poi.hssf.record.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.CellType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -193,7 +194,9 @@ public class XlsSaxAnalyser extends BaseSaxAnalyser implements HSSFListener {
                 thisColumn = frec.getColumn();
 
                 if (outputFormulaValues) {
-                    if (Double.isNaN(frec.getValue())) {
+                    //                    if (Double.isNaN(frec.getValue())) {
+                    // fixbug string judgment
+                    if (frec.getCachedResultType() == CellType.STRING.getCode()) {
                         // Formula result is a string
                         // This is stored in the next record
                         outputNextStringRecord = true;
