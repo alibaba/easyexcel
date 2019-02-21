@@ -61,7 +61,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             rowNum = startRow;
         }
         for (int i = 0; i < data.size(); i++) {
-            int n = i + rowNum + 1;
+            int n = i + rowNum;
             addOneRowOfDataToExcel(data.get(i), n);
         }
     }
