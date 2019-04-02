@@ -1,17 +1,31 @@
 package com.alibaba.excel.constant;
 
 /**
- * @author jipengfei
+ * All rights Reserved, Designed By DSL
+ *
+ * @author DSL
+ * @version V1.0
+ * @package com.alibaba.excel.constant
+ * @className ExcelXmlConstants
+ * @date 2019/4/2 15:54
+ * @description Constant ENUM
  */
-public class ExcelXmlConstants {
-    public static final String DIMENSION = "dimension";
-    public static final String DIMENSION_REF = "ref";
-    public static final String POSITION = "r";
+public enum ExcelXmlConstants {
+  DIMENSION("dimension"),
+  DIMENSION_REF("ref"),
+  POSITION("r"),
+  ROW_TAG("row"),
+  CELL_TAG("c"),
+  CELL_VALUE_TAG("v"),
+  CELL_VALUE_TAG_1("t");
 
-    public static final String ROW_TAG = "row";
-    public static final String CELL_TAG = "c";
-    public static final String CELL_VALUE_TAG = "v";
+  private String value;
 
-    public static final String CELL_VALUE_TAG_1 = "t";
+  ExcelXmlConstants(String value) {
+    this.value = value;
+  }
 
+  public String getValue() {
+    return this.value;
+  }
 }
