@@ -2,9 +2,14 @@ package com.alibaba.excel.metadata;
 
 import com.alibaba.excel.annotation.ExcelColumnNum;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.util.StringUtils;
+import com.alibaba.excel.annotation.FieldIgnore;
+import com.alibaba.excel.annotation.SimpleExcel;
+import com.alibaba.excel.support.LanguageAdapter;
+import com.alibaba.excel.support.LanguageAdapterHolder;
 
+import com.alibaba.excel.util.StringUtils;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
@@ -44,18 +49,11 @@ public class ExcelHeadProperty {
      */
     private void initColumnProperties() {
         if (this.headClazz != null) {
-            List<Field> fieldList = new ArrayList<Field>();
-            Class tempClass = this.headClazz;
-            //When the parent class is null, it indicates that the parent class (Object class) has reached the top
-            // level.
-            while (tempClass != null) {
-                fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
-                //Get the parent class and give it to yourself
-                tempClass = tempClass.getSuperclass();
-            }
+            List<Field> fieldList = getFieldList(this.headClazz);
             List<List<String>> headList = new ArrayList<List<String>>();
-            for (Field f : fieldList) {
-                initOneColumnProperty(f);
+            for (int i = 0; i < fieldList.size(); i++) {
+                Field f = fieldList.get(i);
+                initOneColumnProperty(f,i);
             }
             //对列排序
             Collections.sort(columnPropertyList);
@@ -68,20 +66,46 @@ public class ExcelHeadProperty {
         }
     }
 
+    private List<Field> getFieldList(Class type) {
+        List<Field> fieldList = new ArrayList<Field>();
+        boolean simpleMode = type.isAnnotationPresent(SimpleExcel.class);
+        Class tempClass = type;
+        while (tempClass != null && !tempClass.equals(BaseRowModel.class)) {
+            List<Field> distField = new ArrayList<Field>();
+            for (Field field : tempClass.getDeclaredFields()) {
+                if (simpleMode) {
+                    if (!Modifier.isStatic(field.getModifiers()) && !Modifier
+                        .isFinal(field.getModifiers()) && !field
+                        .isAnnotationPresent(FieldIgnore.class)) {
+                        distField.add(field);
+                    }
+                } else {
+                    distField.add(field);
+                }
+            }
+            distField.addAll(fieldList);
+            //Get the parent class and give it to yourself
+            tempClass = tempClass.getSuperclass();
+            fieldList = distField;
+        }
+        return fieldList;
+    }
+
     /**
      * @param f
      */
-    private void initOneColumnProperty(Field f) {
+    private void initOneColumnProperty(Field f,int defaultIndex) {
         ExcelProperty p = f.getAnnotation(ExcelProperty.class);
         ExcelColumnProperty excelHeadProperty = null;
         if (p != null) {
+            List<String> headList = translateHead(Arrays.asList(p.value()));
             excelHeadProperty = new ExcelColumnProperty();
             excelHeadProperty.setField(f);
-            excelHeadProperty.setHead(Arrays.asList(p.value()));
+            excelHeadProperty.setHead(headList);
             excelHeadProperty.setIndex(p.index());
             excelHeadProperty.setFormat(p.format());
             excelColumnPropertyMap1.put(p.index(), excelHeadProperty);
-        } else {
+        } else if(f.isAnnotationPresent(ExcelColumnNum.class)){
             ExcelColumnNum columnNum = f.getAnnotation(ExcelColumnNum.class);
             if (columnNum != null) {
                 excelHeadProperty = new ExcelColumnProperty();
@@ -90,11 +114,37 @@ public class ExcelHeadProperty {
                 excelHeadProperty.setFormat(columnNum.format());
                 excelColumnPropertyMap1.put(columnNum.value(), excelHeadProperty);
             }
+        } else if(headClazz.isAnnotationPresent(SimpleExcel.class)) {
+            SimpleExcel annotation = headClazz.getAnnotation(SimpleExcel.class);
+            String langPrefix=annotation.langPrefix();
+            if(StringUtils.hasText(langPrefix)){
+                langPrefix=langPrefix.endsWith(".")?langPrefix:(langPrefix+".");
+            }
+            List<String> strings = translateHead(Arrays.asList(langPrefix + f.getName()));
+            translateHead(strings);
+            excelHeadProperty = new ExcelColumnProperty();
+            excelHeadProperty.setField(f);
+            excelHeadProperty.setHead(strings);
+            excelHeadProperty.setIndex(defaultIndex);
+            excelHeadProperty.setFormat("");
+            excelColumnPropertyMap1.put(defaultIndex, excelHeadProperty);
         }
         if (excelHeadProperty != null) {
             this.columnPropertyList.add(excelHeadProperty);
         }
 
+    }
+
+    private List<String> translateHead( List<String> headList){
+        LanguageAdapter languageAdapter = LanguageAdapterHolder.getLanguageAdapter();
+        if(languageAdapter!=null){
+            List<String> translateList = new ArrayList<String>(headList.size());
+            for(String head:headList){
+                translateList.add(languageAdapter.translate(head));
+            }
+            return translateList;
+        }
+        return headList;
     }
 
     /**

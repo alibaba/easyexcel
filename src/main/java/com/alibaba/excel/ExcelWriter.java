@@ -6,6 +6,8 @@ import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.parameter.GenerateParam;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.support.LanguageAdapter;
+import com.alibaba.excel.support.LanguageAdapterHolder;
 import com.alibaba.excel.write.ExcelBuilder;
 import com.alibaba.excel.write.ExcelBuilderImpl;
 
@@ -185,5 +187,6 @@ public class ExcelWriter {
      */
     public void finish() {
         excelBuilder.finish();
+        LanguageAdapterHolder.remove();
     }
 }
