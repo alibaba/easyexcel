@@ -1,6 +1,6 @@
 # easyexcel核心功能
 
-## *读任意大小的03、07版Excel不会OO]<br />
+## *读任意大小的03、07版Excel不会OOP<br />
 ## *读Excel自动通过注解，把结果映射为java模型<br />
 ## *读Excel支持多sheet<br />
 ## *读Excel时候是否对Excel内容做trim()增加容错<br />
