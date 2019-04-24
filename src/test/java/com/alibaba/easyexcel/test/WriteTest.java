@@ -20,7 +20,7 @@ public class WriteTest {
 
     @Test
     public void writeV2007() throws IOException {
-        OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
+        OutputStream out = new FileOutputStream("D:\\Desktop\\临时文件\\2007.xlsx");
         ExcelWriter writer = EasyExcelFactory.getWriter(out);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);
@@ -28,7 +28,10 @@ public class WriteTest {
 
         //设置列宽 设置每列的宽度
         Map columnWidth = new HashMap();
-        columnWidth.put(0,10000);columnWidth.put(1,40000);columnWidth.put(2,10000);columnWidth.put(3,10000);
+        columnWidth.put(0, 10000);
+        columnWidth.put(1, 40000);
+        columnWidth.put(2, 10000);
+        columnWidth.put(3, 10000);
         sheet1.setColumnWidthMap(columnWidth);
         sheet1.setHead(createTestListStringHead());
         //or 设置自适应宽度
@@ -41,7 +44,7 @@ public class WriteTest {
         //writer.write1(null, sheet2);
         writer.write(createTestListJavaMode(), sheet2);
         //需要合并单元格
-        writer.merge(5,20,1,1);
+        writer.merge(5, 20, 1, 1);
 
         //写第三个sheet包含多个table情况
         Sheet sheet3 = new Sheet(3, 0);
@@ -66,7 +69,7 @@ public class WriteTest {
     public void writeV2007WithTemplate() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("temp.xlsx");
         OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
-        ExcelWriter writer = EasyExcelFactory.getWriterWithTemp(inputStream,out,ExcelTypeEnum.XLSX,true);
+        ExcelWriter writer = EasyExcelFactory.getWriterWithTemp(inputStream, out, ExcelTypeEnum.XLSX, true);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);
         sheet1.setSheetName("第一个sheet");
@@ -74,7 +77,10 @@ public class WriteTest {
 
         //设置列宽 设置每列的宽度
         Map columnWidth = new HashMap();
-        columnWidth.put(0,10000);columnWidth.put(1,40000);columnWidth.put(2,10000);columnWidth.put(3,10000);
+        columnWidth.put(0, 10000);
+        columnWidth.put(1, 40000);
+        columnWidth.put(2, 10000);
+        columnWidth.put(3, 10000);
         sheet1.setColumnWidthMap(columnWidth);
         sheet1.setHead(createTestListStringHead());
         //or 设置自适应宽度
@@ -110,8 +116,8 @@ public class WriteTest {
     public void writeV2007WithTemplateAndHandler() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("temp.xlsx");
         OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
-        ExcelWriter writer = EasyExcelFactory.getWriterWithTempAndHandler(inputStream,out,ExcelTypeEnum.XLSX,true,
-            new AfterWriteHandlerImpl());
+        ExcelWriter writer = EasyExcelFactory.getWriterWithTempAndHandler(inputStream, out, ExcelTypeEnum.XLSX, true,
+                new AfterWriteHandlerImpl());
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);
         sheet1.setSheetName("第一个sheet");
@@ -119,7 +125,10 @@ public class WriteTest {
 
         //设置列宽 设置每列的宽度
         Map columnWidth = new HashMap();
-        columnWidth.put(0,10000);columnWidth.put(1,40000);columnWidth.put(2,10000);columnWidth.put(3,10000);
+        columnWidth.put(0, 10000);
+        columnWidth.put(1, 40000);
+        columnWidth.put(2, 10000);
+        columnWidth.put(3, 10000);
         sheet1.setColumnWidthMap(columnWidth);
         sheet1.setHead(createTestListStringHead());
         //or 设置自适应宽度
@@ -152,18 +161,20 @@ public class WriteTest {
     }
 
 
-
     @Test
     public void writeV2003() throws IOException {
-        OutputStream out = new FileOutputStream("/Users/jipengfei/2003.xls");
-        ExcelWriter writer = EasyExcelFactory.getWriter(out, ExcelTypeEnum.XLS,true);
+        OutputStream out = new FileOutputStream("D:\\Desktop\\临时文件\\2003.xls");
+        ExcelWriter writer = EasyExcelFactory.getWriter(out, ExcelTypeEnum.XLS, true);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);
         sheet1.setSheetName("第一个sheet");
 
         //设置列宽 设置每列的宽度
         Map columnWidth = new HashMap();
-        columnWidth.put(0,10000);columnWidth.put(1,40000);columnWidth.put(2,10000);columnWidth.put(3,10000);
+        columnWidth.put(0, 10000);
+        columnWidth.put(1, 40000);
+        columnWidth.put(2, 10000);
+        columnWidth.put(3, 10000);
         sheet1.setColumnWidthMap(columnWidth);
         sheet1.setHead(createTestListStringHead());
         //or 设置自适应宽度

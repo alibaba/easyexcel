@@ -19,16 +19,27 @@ public @interface ExcelColumnNum {
 
     /**
      * col num
+     *
      * @return
      */
     int value();
 
     /**
-     *
      * Default @see com.alibaba.excel.util.TypeUtil
      * if default is not  meet you can set format
      *
      * @return
      */
     String format() default "";
+
+    /**
+     * according the JSON convert key to value;
+     * =====================================
+     * Default JSON format: {'k1':'v1','k2':'v2'}
+     *
+     * @return java.lang.String
+     * @author Muscleape
+     * @date 2019/4/24 22:50
+     */
+    String keyValue() default "";
 }

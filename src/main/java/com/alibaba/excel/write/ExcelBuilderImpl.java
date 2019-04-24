@@ -102,7 +102,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         for (int i = 0; i < oneRowData.size(); i++) {
             Object cellValue = oneRowData.get(i);
             Cell cell = WorkBookUtil.createCell(row, i, context.getCurrentContentStyle(), cellValue,
-                TypeUtil.isNum(cellValue));
+                    TypeUtil.isNum(cellValue));
             if (null != context.getAfterWriteHandler()) {
                 context.getAfterWriteHandler().cell(i, cell);
             }
@@ -113,16 +113,19 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         int i = 0;
         BeanMap beanMap = BeanMap.create(oneRowData);
         for (ExcelColumnProperty excelHeadProperty : context.getExcelHeadProperty().getColumnPropertyList()) {
-            BaseRowModel baseRowModel = (BaseRowModel)oneRowData;
-            String cellValue = TypeUtil.getFieldStringValue(beanMap, excelHeadProperty.getField().getName(),
-                excelHeadProperty.getFormat());
-            CellStyle cellStyle = baseRowModel.getStyle(i) != null ? baseRowModel.getStyle(i)
-                : context.getCurrentContentStyle();
-            Cell cell = WorkBookUtil.createCell(row, i, cellStyle, cellValue,
-                TypeUtil.isNum(excelHeadProperty.getField()));
+
+            BaseRowModel baseRowModel = (BaseRowModel) oneRowData;
+
+            String cellValue = TypeUtil.getFieldStringValue(beanMap, excelHeadProperty.getField().getName(), excelHeadProperty.getFormat(), excelHeadProperty.getKeyValue());
+
+            CellStyle cellStyle = baseRowModel.getStyle(i) != null ? baseRowModel.getStyle(i) : context.getCurrentContentStyle();
+
+            Cell cell = WorkBookUtil.createCell(row, i, cellStyle, cellValue, TypeUtil.isNum(excelHeadProperty.getField()), TypeUtil.isEmptyJsonObject(excelHeadProperty.getKeyValue()));
+
             if (null != context.getAfterWriteHandler()) {
                 context.getAfterWriteHandler().cell(i, cell);
             }
+
             i++;
         }
 
@@ -134,7 +137,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             context.getAfterWriteHandler().row(n, row);
         }
         if (oneRowData instanceof List) {
-            addBasicTypeToExcel((List)oneRowData, row);
+            addBasicTypeToExcel((List) oneRowData, row);
         } else {
             addJavaObjectToExcel(oneRowData, row);
         }
