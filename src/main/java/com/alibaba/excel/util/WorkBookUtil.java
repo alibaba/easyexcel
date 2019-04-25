@@ -13,7 +13,6 @@ import java.io.InputStream;
 import static com.alibaba.excel.util.StyleUtil.buildSheetStyle;
 
 /**
- * 
  * @author jipengfei
  */
 public class WorkBookUtil {
@@ -22,10 +21,10 @@ public class WorkBookUtil {
         Workbook workbook;
         if (ExcelTypeEnum.XLS.equals(excelType)) {
             workbook = (templateInputStream == null) ? new HSSFWorkbook() : new HSSFWorkbook(
-                new POIFSFileSystem(templateInputStream));
+                    new POIFSFileSystem(templateInputStream));
         } else {
             workbook = (templateInputStream == null) ? new SXSSFWorkbook(500) : new SXSSFWorkbook(
-                new XSSFWorkbook(templateInputStream));
+                    new XSSFWorkbook(templateInputStream));
         }
         return workbook;
     }
@@ -34,12 +33,12 @@ public class WorkBookUtil {
         Sheet sheet1 = null;
         try {
             try {
-                sheet1 = workbook.getSheetAt(sheet.getSheetNo()-1);
+                sheet1 = workbook.getSheetAt(sheet.getSheetNo() - 1);
             } catch (Exception e) {
             }
             if (null == sheet1) {
                 sheet1 = createSheet(workbook, sheet);
-                buildSheetStyle(sheet1,sheet.getColumnWidthMap());
+                buildSheetStyle(sheet1, sheet.getColumnWidthMap());
             }
         } catch (Exception e) {
             throw new RuntimeException("constructCurrentSheet error", e);
@@ -64,6 +63,19 @@ public class WorkBookUtil {
         cell.setCellStyle(cellStyle);
         if (null != cellValue) {
             if (isNum) {
+                cell.setCellValue(Double.parseDouble(cellValue.toString()));
+            } else {
+                cell.setCellValue(cellValue.toString());
+            }
+        }
+        return cell;
+    }
+
+    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum, Boolean isEmptyJsonObject) {
+        Cell cell = row.createCell(colNum);
+        cell.setCellStyle(cellStyle);
+        if (null != cellValue) {
+            if (isNum && isEmptyJsonObject) {
                 cell.setCellValue(Double.parseDouble(cellValue.toString()));
             } else {
                 cell.setCellValue(cellValue.toString());

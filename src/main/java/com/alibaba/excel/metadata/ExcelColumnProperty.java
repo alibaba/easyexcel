@@ -10,20 +10,31 @@ import java.util.List;
 public class ExcelColumnProperty implements Comparable<ExcelColumnProperty> {
 
     /**
+     *
      */
     private Field field;
 
     /**
+     *
      */
     private int index = 99999;
 
     /**
+     *
      */
     private List<String> head = new ArrayList<String>();
 
     /**
+     *
      */
     private String format;
+
+    /**
+     * according the JSON convert key to value;
+     * =====================================
+     * Default JSON format: {'k1':'v1','k2':'v2'}
+     */
+    private String keyValue;
 
     public String getFormat() {
         return format;
@@ -61,5 +72,13 @@ public class ExcelColumnProperty implements Comparable<ExcelColumnProperty> {
         int x = this.index;
         int y = o.getIndex();
         return (x < y) ? -1 : ((x == y) ? 0 : 1);
+    }
+
+    public String getKeyValue() {
+        return keyValue;
+    }
+
+    public void setKeyValue(String keyValue) {
+        this.keyValue = keyValue;
     }
 }
