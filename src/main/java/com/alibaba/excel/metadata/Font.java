@@ -1,5 +1,7 @@
 package com.alibaba.excel.metadata;
 
+import org.apache.poi.ss.usermodel.IndexedColors;
+
 /**
  *
  * @author jipengfei
@@ -17,6 +19,11 @@ public class Font {
     /**
      */
     private boolean bold;
+
+    /**
+     *
+     */
+    private IndexedColors color=IndexedColors.BLACK;
 
     public String getFontName() {
         return fontName;
@@ -40,5 +47,13 @@ public class Font {
 
     public void setBold(boolean bold) {
         this.bold = bold;
+    }
+
+    public IndexedColors getColor() {
+        return color;
+    }
+
+    public void setColor(IndexedColors color) {
+        this.color = color;
     }
 }

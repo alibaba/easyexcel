@@ -47,6 +47,7 @@ public class StyleUtil {
             font.setFontName(f.getFontName());
             font.setFontHeightInPoints(f.getFontHeightInPoints());
             font.setBold(f.isBold());
+            font.setColor(f.getColor().getIndex());
             cellStyle.setFont(font);
         }
         if (indexedColors != null) {

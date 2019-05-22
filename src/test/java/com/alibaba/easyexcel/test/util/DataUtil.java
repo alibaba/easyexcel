@@ -86,6 +86,7 @@ public class DataUtil {
         contentFont.setBold(true);
         contentFont.setFontHeightInPoints((short)22);
         contentFont.setFontName("黑体");
+        contentFont.setColor(IndexedColors.RED);
         tableStyle.setTableContentFont(contentFont);
         tableStyle.setTableContentBackGroundColor(IndexedColors.GREEN);
         return tableStyle;
