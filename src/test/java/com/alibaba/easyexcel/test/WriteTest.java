@@ -20,7 +20,7 @@ public class WriteTest {
 
     @Test
     public void writeV2007() throws IOException {
-        OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
+        OutputStream out = new FileOutputStream("/tmp/2007.xlsx");
         ExcelWriter writer = EasyExcelFactory.getWriter(out);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);
@@ -65,7 +65,7 @@ public class WriteTest {
     @Test
     public void writeV2007WithTemplate() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("temp.xlsx");
-        OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
+        OutputStream out = new FileOutputStream("/tmp/2007.xlsx");
         ExcelWriter writer = EasyExcelFactory.getWriterWithTemp(inputStream,out,ExcelTypeEnum.XLSX,true);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);
@@ -109,7 +109,7 @@ public class WriteTest {
     @Test
     public void writeV2007WithTemplateAndHandler() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("temp.xlsx");
-        OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
+        OutputStream out = new FileOutputStream("/tmp/2007.xlsx");
         ExcelWriter writer = EasyExcelFactory.getWriterWithTempAndHandler(inputStream,out,ExcelTypeEnum.XLSX,true,
             new AfterWriteHandlerImpl());
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
@@ -155,7 +155,7 @@ public class WriteTest {
 
     @Test
     public void writeV2003() throws IOException {
-        OutputStream out = new FileOutputStream("/Users/jipengfei/2003.xls");
+        OutputStream out = new FileOutputStream("/tmp/2003.xls");
         ExcelWriter writer = EasyExcelFactory.getWriter(out, ExcelTypeEnum.XLS,true);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);

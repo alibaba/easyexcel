@@ -42,6 +42,13 @@ public class ReadTest {
         inputStream.close();
         print(data);
     }
+    @Test
+    public void simpleReadJavaModelV20072() throws IOException {
+        InputStream inputStream = FileUtil.getResourcesFileInputStream("2007.xlsx");
+        List<ReadModel> data = EasyExcelFactory.read2(inputStream, new Sheet(2, 1, ReadModel.class));
+        inputStream.close();
+        print2(data);
+    }
 
     /**
      * 07版本excel读数据量大于1千行，内部采用回调方法.
@@ -178,6 +185,13 @@ public class ReadTest {
 
 
     public void print(List<Object> datas){
+        int i=0;
+        for (Object ob:datas) {
+            System.out.println(i++);
+            System.out.println(ob);
+        }
+    }
+    public <T>void print2(List<T> datas){
         int i=0;
         for (Object ob:datas) {
             System.out.println(i++);

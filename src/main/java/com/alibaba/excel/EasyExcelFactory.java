@@ -25,6 +25,7 @@ public class EasyExcelFactory {
      * @param sheet read sheet.
      * @return analysis result.
      */
+    @Deprecated
     public static List<Object> read(InputStream in, Sheet sheet) {
         final List<Object> rows = new ArrayList<Object>();
         new ExcelReader(in, null, new AnalysisEventListener() {
@@ -39,7 +40,26 @@ public class EasyExcelFactory {
         }, false).read(sheet);
         return rows;
     }
-
+    /**
+     * Quickly read small files，no more than 10,000 lines.
+     *
+     * @param in    the POI filesystem that contains the Workbook stream.
+     * @param sheet read sheet.
+     * @return analysis result.
+     */
+    public static<T> List<T> read2(InputStream in, Sheet sheet) {
+        final List<T> rows = new ArrayList<T>();
+        new ExcelReader(in, null, new AnalysisEventListener<T>() {
+            @Override
+            public void invoke(T object, AnalysisContext context) {
+                rows.add(object);
+            }
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+            }
+        }, false).read(sheet);
+        return rows;
+    }
     /**
      * Parsing large file
      *
