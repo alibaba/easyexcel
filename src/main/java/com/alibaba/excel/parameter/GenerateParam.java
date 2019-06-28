@@ -17,6 +17,8 @@ public class GenerateParam {
 
     private ExcelTypeEnum type;
 
+    private boolean needHead = true;
+
     public GenerateParam(String sheetName, Class clazz, OutputStream outputStream) {
         this.outputStream = outputStream;
         this.sheetName = sheetName;
@@ -54,5 +56,13 @@ public class GenerateParam {
 
     public void setType(ExcelTypeEnum type) {
         this.type = type;
+    }
+
+    public boolean isNeedHead() {
+        return needHead;
+    }
+
+    public void setNeedHead(boolean needHead) {
+        this.needHead = needHead;
     }
 }

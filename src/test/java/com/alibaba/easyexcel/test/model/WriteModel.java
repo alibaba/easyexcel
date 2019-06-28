@@ -25,7 +25,7 @@ public class WriteModel extends BaseWriteModel {
     @ExcelProperty(value = {"表头6","表头61","表头612"},index = 6)
     private BigDecimal p7;
 
-    @ExcelProperty(value = {"表头6","表头62","表头621"},index = 7)
+    @ExcelProperty(value = {"表头6","表头62","表头621"},index = 7, format = "yyyy-MM-dd")
     private Date p8;
 
     @ExcelProperty(value = {"表头6","表头62","表头622"},index = 8)

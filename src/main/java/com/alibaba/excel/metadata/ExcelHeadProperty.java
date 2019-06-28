@@ -123,11 +123,11 @@ public class ExcelHeadProperty {
         return excelColumnPropertyMap1.get(columnNum);
     }
 
-    public Class getHeadClazz() {
+    public Class<? extends BaseRowModel> getHeadClazz() {
         return headClazz;
     }
 
-    public void setHeadClazz(Class headClazz) {
+    public void setHeadClazz(Class<? extends BaseRowModel> headClazz) {
         this.headClazz = headClazz;
     }
 
@@ -224,5 +224,13 @@ public class ExcelHeadProperty {
         }
         return headRowNum;
     }
-
+    public static ExcelHeadProperty buildExcelHeadProperty(ExcelHeadProperty excelHeadProperty, Class<? extends BaseRowModel> clazz, List<String> headOneRow) {
+        if (excelHeadProperty == null && (clazz != null || headOneRow != null)) {
+            excelHeadProperty = new ExcelHeadProperty(clazz, new ArrayList<List<String>>());
+        }
+        if (excelHeadProperty.getHead() == null && headOneRow != null) {
+            excelHeadProperty.appendOneRow(headOneRow);
+        }
+        return excelHeadProperty;
+    }
 }

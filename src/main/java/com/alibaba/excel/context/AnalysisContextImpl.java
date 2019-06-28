@@ -1,15 +1,13 @@
 package com.alibaba.excel.context;
 
+import java.io.InputStream;
+
+import com.alibaba.excel.converters.ConverterRegistryCenter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -25,7 +23,7 @@ public class AnalysisContextImpl implements AnalysisContext {
 
     private InputStream inputStream;
 
-    private AnalysisEventListener eventListener;
+    private AnalysisEventListener<Object> eventListener;
 
     private Integer currentRowNum;
 
@@ -36,6 +34,8 @@ public class AnalysisContextImpl implements AnalysisContext {
     private boolean trim;
 
     private boolean use1904WindowDate = false;
+    
+    private ConverterRegistryCenter converterRegistryCenter;
 
     @Override
     public void setUse1904WindowDate(boolean use1904WindowDate) {
@@ -65,20 +65,22 @@ public class AnalysisContextImpl implements AnalysisContext {
     private Object currentRowAnalysisResult;
 
     public AnalysisContextImpl(InputStream inputStream, ExcelTypeEnum excelTypeEnum, Object custom,
-                               AnalysisEventListener listener, boolean trim) {
+                               AnalysisEventListener<Object> listener, ConverterRegistryCenter converterRegistryCenter, boolean trim) {
         this.custom = custom;
         this.eventListener = listener;
         this.inputStream = inputStream;
         this.excelType = excelTypeEnum;
         this.trim = trim;
+        this.converterRegistryCenter = converterRegistryCenter;
     }
 
+    
     @Override
     public void setCurrentSheet(Sheet currentSheet) {
         cleanCurrentSheet();
         this.currentSheet = currentSheet;
         if (currentSheet.getClazz() != null) {
-            buildExcelHeadProperty(currentSheet.getClazz(), null);
+            ExcelHeadProperty.buildExcelHeadProperty(this.excelHeadProperty, currentSheet.getClazz(), null);
         }
     }
 
@@ -122,11 +124,11 @@ public class AnalysisContextImpl implements AnalysisContext {
     }
 
     @Override
-    public AnalysisEventListener getEventListener() {
+    public AnalysisEventListener<Object> getEventListener() {
         return eventListener;
     }
 
-    public void setEventListener(AnalysisEventListener eventListener) {
+    public void setEventListener(AnalysisEventListener<Object> eventListener) {
         this.eventListener = eventListener;
     }
 
@@ -154,19 +156,20 @@ public class AnalysisContextImpl implements AnalysisContext {
     public ExcelHeadProperty getExcelHeadProperty() {
         return this.excelHeadProperty;
     }
+    
 
     @Override
-    public void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow) {
-        if (this.excelHeadProperty == null && (clazz != null || headOneRow != null)) {
-            this.excelHeadProperty = new ExcelHeadProperty(clazz, new ArrayList<List<String>>());
-        }
-        if (this.excelHeadProperty.getHead() == null && headOneRow != null) {
-            this.excelHeadProperty.appendOneRow(headOneRow);
-        }
+    public void setExcelHeadProperty(ExcelHeadProperty excelHeadProperty) {
+        this.excelHeadProperty = excelHeadProperty;
     }
 
     @Override
     public boolean trim() {
         return this.trim;
+    }
+
+    @Override
+    public ConverterRegistryCenter getConverterRegistryCenter() {
+        return converterRegistryCenter;
     }
 }

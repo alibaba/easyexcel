@@ -1,17 +1,20 @@
 package com.alibaba.excel.analysis;
 
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+
 import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
+import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterRegistryCenter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.modelbuild.ModelBuildEventListener;
+import com.alibaba.excel.event.ModelBuildEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * @author jipengfei
@@ -23,9 +26,21 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     private BaseSaxAnalyser saxAnalyser;
 
     public ExcelAnalyserImpl(InputStream inputStream, ExcelTypeEnum excelTypeEnum, Object custom,
-                             AnalysisEventListener eventListener, boolean trim) {
+                             AnalysisEventListener<Object> eventListener, boolean trim) {
+        ConverterRegistryCenter center = new ConverterRegistryCenter() {
+            @Override
+            public void register(Converter converter) {
+                saxAnalyser.register(converter);
+            }
+
+            @Override
+            public Collection<Converter> getConverters() {
+                return saxAnalyser.getConverters();
+            }
+        };
         analysisContext = new AnalysisContextImpl(inputStream, excelTypeEnum, custom,
-            eventListener, trim);
+            eventListener, center, trim);
+        this.saxAnalyser = getSaxAnalyser();
     }
 
     private BaseSaxAnalyser getSaxAnalyser() {
@@ -60,36 +75,40 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
         return this.saxAnalyser;
     }
-
+    
     @Override
     public void analysis(Sheet sheetParam) {
         analysisContext.setCurrentSheet(sheetParam);
         analysis();
     }
-
+    @Override
+    public AnalysisContext getAnalysisContext() {
+        return analysisContext;
+    }
     @Override
     public void analysis() {
-        BaseSaxAnalyser saxAnalyser = getSaxAnalyser();
-        appendListeners(saxAnalyser);
         saxAnalyser.execute();
         analysisContext.getEventListener().doAfterAllAnalysed(analysisContext);
     }
 
     @Override
     public List<Sheet> getSheets() {
-        BaseSaxAnalyser saxAnalyser = getSaxAnalyser();
-        saxAnalyser.cleanAllListeners();
-        return saxAnalyser.getSheets();
+        return this.saxAnalyser.getSheets();
     }
 
-    private void appendListeners(BaseSaxAnalyser saxAnalyser) {
+    private void registerListeners(BaseSaxAnalyser saxAnalyser) {
         saxAnalyser.cleanAllListeners();
         if (analysisContext.getCurrentSheet() != null && analysisContext.getCurrentSheet().getClazz() != null) {
-            saxAnalyser.appendLister("model_build_listener", new ModelBuildEventListener());
+            saxAnalyser.register("model_build_listener", new ModelBuildEventListener(this.saxAnalyser.getConverters()));
         }
         if (analysisContext.getEventListener() != null) {
-            saxAnalyser.appendLister("user_define_listener", analysisContext.getEventListener());
+            saxAnalyser.register("user_define_listener", analysisContext.getEventListener());
         }
     }
 
+    @Override
+    public void beforeAnalysis() {
+        BaseSaxAnalyser saxAnalyser = getSaxAnalyser();
+        registerListeners(saxAnalyser);
+    }
 }

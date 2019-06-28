@@ -1,13 +1,12 @@
 package com.alibaba.excel.context;
 
+import java.io.InputStream;
+
+import com.alibaba.excel.converters.ConverterRegistryCenter;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
-import java.io.InputStream;
-import java.util.List;
 
 /**
  *
@@ -52,8 +51,13 @@ public interface AnalysisContext {
      * custom listener
      * @return listener
      */
-    AnalysisEventListener getEventListener();
+    AnalysisEventListener<Object> getEventListener();
 
+    /**
+     * get the converter registry center.
+     * @return converter registry center.
+     */
+    ConverterRegistryCenter getConverterRegistryCenter();
     /**
      * get current row
      * @return
@@ -87,11 +91,10 @@ public interface AnalysisContext {
     ExcelHeadProperty getExcelHeadProperty();
 
     /**
-     *
-     * @param clazz
-     * @param headOneRow
+     * set the excel head property
+     * @param excelHeadProperty the excel property to set.
      */
-    void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow);
+    void setExcelHeadProperty(ExcelHeadProperty excelHeadProperty);
 
     /**
      *

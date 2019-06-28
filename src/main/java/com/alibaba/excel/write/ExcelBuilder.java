@@ -11,7 +11,7 @@ import java.util.List;
 public interface ExcelBuilder {
 
     /**
-     * workBook increase data
+     * workBook increase value
      *
      * @param data     java basic type or java model extend BaseModel
      * @param startRow Start row number
@@ -19,7 +19,7 @@ public interface ExcelBuilder {
     void addContent(List data, int startRow);
 
     /**
-     * WorkBook increase data
+     * WorkBook increase value
      *
      * @param data       java basic type or java model extend BaseModel
      * @param sheetParam Write the sheet
@@ -27,7 +27,7 @@ public interface ExcelBuilder {
     void addContent(List data, Sheet sheetParam);
 
     /**
-     * WorkBook increase data
+     * WorkBook increase value
      *
      * @param data       java basic type or java model extend BaseModel
      * @param sheetParam Write the sheet
@@ -38,12 +38,9 @@ public interface ExcelBuilder {
     /**
      * Creates new cell range. Indexes are zero-based.
      *
-     * @param firstRow Index of first row
-     * @param lastRow  Index of last row (inclusive), must be equal to or larger than {@code firstRow}
-     * @param firstCol Index of first column
-     * @param lastCol  Index of last column (inclusive), must be equal to or larger than {@code firstCol}
+     * @param strategies the merge strategy
      */
-    void merge(int firstRow, int lastRow, int firstCol, int lastCol);
+    void merge(List<MergeStrategy> strategies);
 
     /**
      * Close io

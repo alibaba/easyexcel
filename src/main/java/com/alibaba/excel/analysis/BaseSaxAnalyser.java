@@ -1,41 +1,85 @@
 package com.alibaba.excel.analysis;
 
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.event.AnalysisEventRegisterCenter;
-import com.alibaba.excel.event.OneRowAnalysisFinishEvent;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.util.TypeUtil;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
+
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.converters.BooleanConverter;
+import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterRegistryCenter;
+import com.alibaba.excel.converters.DateConverter;
+import com.alibaba.excel.converters.DoubleConverter;
+import com.alibaba.excel.converters.FloatConverter;
+import com.alibaba.excel.converters.IntegerConverter;
+import com.alibaba.excel.converters.LongConverter;
+import com.alibaba.excel.converters.StringConverter;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.event.AnalysisEventRegistryCenter;
+import com.alibaba.excel.event.AnalysisFinishEvent;
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.Sheet;
 
 /**
  * @author jipengfei
  */
-public abstract class BaseSaxAnalyser implements AnalysisEventRegisterCenter, ExcelAnalyser {
+public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, AnalysisEventRegistryCenter, ExcelAnalyser {
 
     protected AnalysisContext analysisContext;
 
-    private LinkedHashMap<String, AnalysisEventListener> listeners = new LinkedHashMap<String, AnalysisEventListener>();
+    private LinkedHashMap<String, AnalysisEventListener<Object>> listeners =
+                    new LinkedHashMap<String, AnalysisEventListener<Object>>();
 
+    private LinkedHashMap<String, Converter> converters = new LinkedHashMap<String, Converter>();
     /**
      * execute method
      */
     protected abstract void execute();
 
-
     @Override
-    public void appendLister(String name, AnalysisEventListener listener) {
+    public void register(String name, AnalysisEventListener<Object> listener) {
         if (!listeners.containsKey(name)) {
             listeners.put(name, listener);
         }
     }
 
     @Override
+    public void register(Converter converter) {
+        converters.put(converter.getName(), converter);
+    }
+    
+    @Override
+    public void beforeAnalysis() {
+        registerDefaultConverters();
+    }
+    
+    private void registerDefaultConverters() {
+        StringConverter s = new StringConverter();
+        converters.put(s.getName(), s);
+        DateConverter d = new DateConverter(this.analysisContext);
+        converters.put(d.getName(), d);
+        IntegerConverter i = new IntegerConverter();
+        converters.put(i.getName(), i);
+        DoubleConverter dc = new DoubleConverter();
+        converters.put(dc.getName(), dc);
+        LongConverter l = new LongConverter();
+        converters.put(l.getName(), l);
+        FloatConverter f = new FloatConverter();
+        converters.put(f.getName(), f);
+        BooleanConverter b = new BooleanConverter();
+        converters.put(b.getName(), b);
+    }
+
+    @Override
+    public Collection<Converter> getConverters() {
+        return converters.values();
+    }
+    @Override
     public void analysis(Sheet sheetParam) {
+        analysisContext.setCurrentSheet(sheetParam);
         execute();
     }
 
@@ -44,44 +88,42 @@ public abstract class BaseSaxAnalyser implements AnalysisEventRegisterCenter, Ex
         execute();
     }
 
+    @Override
+    public AnalysisContext getAnalysisContext() {
+        return analysisContext;
+    }
     /**
      */
     @Override
     public void cleanAllListeners() {
-        listeners = new LinkedHashMap<String, AnalysisEventListener>();
+        listeners.clear();
     }
 
     @Override
-    public void notifyListeners(OneRowAnalysisFinishEvent event) {
-        analysisContext.setCurrentRowAnalysisResult(event.getData());
+    public void cleanListener(String name) {
+        listeners.remove(name);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void notify(AnalysisFinishEvent event) {
+        analysisContext.setCurrentRowAnalysisResult(event.getAnalysisResult());
         /** Parsing header content **/
         if (analysisContext.getCurrentRowNum() < analysisContext.getCurrentSheet().getHeadLineMun()) {
             if (analysisContext.getCurrentRowNum() <= analysisContext.getCurrentSheet().getHeadLineMun() - 1) {
-                analysisContext.buildExcelHeadProperty(null,
-                    (List<String>)analysisContext.getCurrentRowAnalysisResult());
+                buildExcelHeadProperty(null, (List<String>) analysisContext.getCurrentRowAnalysisResult());
             }
         } else {
-            List<String> content = converter((List<String>)event.getData());
-            /** Parsing Analyze the body content **/
-            analysisContext.setCurrentRowAnalysisResult(content);
-            if (listeners.size() == 1) {
-                analysisContext.setCurrentRowAnalysisResult(content);
-            }
-            /**  notify all event listeners **/
-            for (Map.Entry<String, AnalysisEventListener> entry : listeners.entrySet()) {
+            for (Entry<String, AnalysisEventListener<Object>> entry : listeners.entrySet()) {
                 entry.getValue().invoke(analysisContext.getCurrentRowAnalysisResult(), analysisContext);
             }
         }
     }
 
-    private List<String> converter(List<String> data) {
-        List<String> list = new ArrayList<String>();
-        if (data != null) {
-            for (String str : data) {
-                list.add(TypeUtil.formatFloat(str));
-            }
-        }
-        return list;
-    }
 
+    private void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow) {
+        ExcelHeadProperty excelHeadProperty = ExcelHeadProperty
+                        .buildExcelHeadProperty(this.analysisContext.getExcelHeadProperty(), clazz, headOneRow);
+        this.analysisContext.setExcelHeadProperty(excelHeadProperty);
+    }
 }

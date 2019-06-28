@@ -1,8 +1,9 @@
 package com.alibaba.excel.analysis;
 
-import com.alibaba.excel.metadata.Sheet;
-
 import java.util.List;
+
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.metadata.Sheet;
 
 /**
  * Excel file analyser
@@ -10,7 +11,9 @@ import java.util.List;
  * @author jipengfei
  */
 public interface ExcelAnalyser {
-
+    
+    void beforeAnalysis();
+    
     /**
      * parse one sheet
      *
@@ -29,5 +32,11 @@ public interface ExcelAnalyser {
      * @return all sheets
      */
     List<Sheet> getSheets();
+    
+    /**
+     * get the analysis context.
+     * @return analysis context
+     */
+    AnalysisContext getAnalysisContext();
 
 }

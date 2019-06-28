@@ -27,7 +27,7 @@ public class EasyExcelFactory {
      */
     public static List<Object> read(InputStream in, Sheet sheet) {
         final List<Object> rows = new ArrayList<Object>();
-        new ExcelReader(in, null, new AnalysisEventListener() {
+        new ExcelReader(in, null, new AnalysisEventListener<Object>() {
             @Override
             public void invoke(Object object, AnalysisContext context) {
                 rows.add(object);
@@ -65,7 +65,7 @@ public class EasyExcelFactory {
     /**
      * Get ExcelWriter
      *
-     * @param outputStream the java OutputStream you wish to write the data to.
+     * @param outputStream the java OutputStream you wish to write the value to.
      * @return new ExcelWriter.
      */
     public static ExcelWriter getWriter(OutputStream outputStream) {
@@ -75,7 +75,7 @@ public class EasyExcelFactory {
     /**
      * Get ExcelWriter
      *
-     * @param outputStream the java OutputStream you wish to write the data to.
+     * @param outputStream the java OutputStream you wish to write the value to.
      * @param typeEnum     03 or 07
      * @param needHead     Do you need to write the header to the file?
      * @return new  ExcelWriter
@@ -87,9 +87,9 @@ public class EasyExcelFactory {
     /**
      * Get ExcelWriter with a template file
      *
-     * @param temp         Append data after a POI file , Can be null（the template POI filesystem that contains the
+     * @param temp         Append value after a POI file , Can be null（the template POI filesystem that contains the
      *                     Workbook stream)
-     * @param outputStream the java OutputStream you wish to write the data to
+     * @param outputStream the java OutputStream you wish to write the value to
      * @param typeEnum     03 or 07
      * @return new  ExcelWriter
      */
@@ -101,9 +101,9 @@ public class EasyExcelFactory {
     /**
      * Get ExcelWriter with a template file
      *
-     * @param temp         Append data after a POI file , Can be null（the template POI filesystem that contains the
+     * @param temp         Append value after a POI file , Can be null（the template POI filesystem that contains the
      *                     Workbook stream)
-     * @param outputStream the java OutputStream you wish to write the data to
+     * @param outputStream the java OutputStream you wish to write the value to
      * @param typeEnum     03 or 07
      * @param needHead
      * @param handler      User-defined callback
