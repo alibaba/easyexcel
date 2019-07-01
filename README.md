@@ -148,5 +148,8 @@ public class Down {
 ### 招聘&交流
 阿里巴巴新零售事业部--诚招JAVA资深开发、技术专家。有意向可以微信联系，简历可以发我邮箱jipengfei.jpf@alibaba-inc.com
 或者加微信：18042000709
+#### 微信
+<img src="https://github.com/alibaba/easyexcel/blob/master/img/readme/wechat.png" width="30%" height="30%" />
 
-<img src="https://github.com/alibaba/easyexcel/blob/master/img/WechatIMG8.png" width="30%" height="30%" />
+#### QQ交流群
+<img src="https://github.com/alibaba/easyexcel/blob/master/img/readme/qq.jpg" width="30%" height="30%" />
