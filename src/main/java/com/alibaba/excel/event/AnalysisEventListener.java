@@ -12,7 +12,7 @@ public abstract class AnalysisEventListener<T> {
     /**
      * when analysis one row trigger invoke function
      *
-     * @param object  one row data
+     * @param object  one row value
      * @param context analysis context
      */
     public abstract void invoke(T object, AnalysisContext context);

@@ -5,7 +5,7 @@ package com.alibaba.excel.event;
  *
  * @author jipengfei
  */
-public interface AnalysisEventRegisterCenter {
+public interface AnalysisEventRegistryCenter {
 
     /**
      * Append listener
@@ -13,17 +13,23 @@ public interface AnalysisEventRegisterCenter {
      * @param name     listener name.
      * @param listener Callback method after each row is parsed.
      */
-    void appendLister(String name, AnalysisEventListener listener);
+    void register(String name, AnalysisEventListener<Object> listener);
 
     /**
      * Parse one row to notify all event listeners
      *
      * @param event parse event
      */
-    void notifyListeners(OneRowAnalysisFinishEvent event);
+    void notify(AnalysisFinishEvent event);
 
     /**
      * Clean all listeners.
      */
     void cleanAllListeners();
+    
+    /**
+     * clean listener by name
+     * @param name the listener name
+     */
+    void cleanListener(String name);
 }

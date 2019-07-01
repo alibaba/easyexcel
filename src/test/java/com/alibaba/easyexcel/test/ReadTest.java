@@ -161,13 +161,13 @@ public class ReadTest {
     public void saxReadSheetsV2003() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("2003.xls");
         ExcelListener excelListener = new ExcelListener();
-        ExcelReader excelReader = EasyExcelFactory.getReader(inputStream,excelListener);
+        ExcelReader excelReader = EasyExcelFactory.getReader(inputStream, excelListener);
         List<Sheet> sheets = excelReader.getSheets();
         System.out.println();
-        for (Sheet sheet:sheets) {
-            if(sheet.getSheetNo() == 1) {
+        for (Sheet sheet : sheets) {
+            if (sheet.getSheetNo() == 1) {
                 excelReader.read(sheet);
-            }else {
+            } else {
                 sheet.setHeadLineMun(2);
                 sheet.setClazz(ReadModel.class);
                 excelReader.read(sheet);

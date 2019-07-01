@@ -54,22 +54,16 @@ public class WorkBookUtil {
     public static Row createRow(Sheet sheet, int rowNum) {
         return sheet.createRow(rowNum);
     }
-
-    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, String cellValue) {
-        return createCell(row, colNum, cellStyle, cellValue, false);
-    }
-
-    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum) {
+    
+    public static Cell createCell(Row row, int colNum, CellStyle cellStyle) {
         Cell cell = row.createCell(colNum);
         cell.setCellStyle(cellStyle);
-        if (null != cellValue) {
-            if (isNum) {
-                cell.setCellValue(Double.parseDouble(cellValue.toString()));
-            } else {
-                cell.setCellValue(cellValue.toString());
-            }
-        }
         return cell;
     }
-
+    
+    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, String cellValue) {
+        Cell cell = createCell(row, colNum, cellStyle);
+        cell.setCellValue(cellValue);
+        return cell;
+    }
 }
