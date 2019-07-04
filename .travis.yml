@@ -2,4 +2,8 @@ language: java
 jdk: oraclejdk8
 before_install:
   - chmod +x mvnw
-script: "./mvnw install -B -V"
+script:
+  - "./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+  - "./mvnw pmd:check -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+  - "./mvnw install -B -V"
+
