@@ -1,3 +1,5 @@
 language: java
 jdk: oraclejdk8
+before_install:
+  - chmod +x mvnw
 script: "./mvnw install -B -V"
