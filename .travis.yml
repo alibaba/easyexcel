@@ -6,8 +6,7 @@ cache:
 before_install:
   - chmod +x mvnw
 install:
-  - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
+  - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -Dpmd.skip=true -B -V
 script:
-  - ./mvnw pmd:check -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
   - ./mvnw install -Dgpg.skip -B -V
 
