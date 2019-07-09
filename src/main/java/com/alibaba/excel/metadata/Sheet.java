@@ -4,6 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.TableStyle;
+
+import com.alibaba.excel.write.style.CellStyleStrategy;
+import com.alibaba.excel.write.style.column.ColumnWihtStyleStrategy;
+import com.alibaba.excel.write.style.column.ColumnWithStyleStrategy;
+import com.oracle.webservices.internal.api.databinding.DatabindingMode;
+
 /**
  *
  * @author jipengfei
@@ -34,11 +41,13 @@ public class Sheet {
     /**
      *
      */
+    @Deprecated
     private TableStyle tableStyle;
 
     /**
      * column with
      */
+    @Deprecated
     private Map<Integer,Integer> columnWidthMap = new HashMap<Integer, Integer>();
 
     /**
@@ -51,6 +60,17 @@ public class Sheet {
      */
     private int startRow = 0;
 
+    private CellStyleStrategy cellStyleStrategy;
+
+    private ColumnWithStyleStrategy columnWithStyleStrategy;
+
+    public ColumnWithStyleStrategy getColumnWithStyleStrategy() {
+        return columnWithStyleStrategy;
+    }
+
+    public void setColumnWithStyleStrategy(ColumnWithStyleStrategy columnWithStyleStrategy) {
+        this.columnWithStyleStrategy = columnWithStyleStrategy;
+    }
 
     public Sheet(int sheetNo) {
         this.sheetNo = sheetNo;
@@ -164,5 +184,13 @@ public class Sheet {
 
     public void setStartRow(int startRow) {
         this.startRow = startRow;
+    }
+
+    public CellStyleStrategy getCellStyleStrategy() {
+        return cellStyleStrategy;
+    }
+
+    public void setCellStyleStrategy(CellStyleStrategy cellStyleStrategy) {
+        this.cellStyleStrategy = cellStyleStrategy;
     }
 }

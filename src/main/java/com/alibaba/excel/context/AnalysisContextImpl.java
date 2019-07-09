@@ -34,7 +34,7 @@ public class AnalysisContextImpl implements AnalysisContext {
     private boolean trim;
 
     private boolean use1904WindowDate = false;
-    
+
     private ConverterRegistryCenter converterRegistryCenter;
 
     @Override
@@ -74,13 +74,14 @@ public class AnalysisContextImpl implements AnalysisContext {
         this.converterRegistryCenter = converterRegistryCenter;
     }
 
-    
+
     @Override
     public void setCurrentSheet(Sheet currentSheet) {
         cleanCurrentSheet();
         this.currentSheet = currentSheet;
         if (currentSheet.getClazz() != null) {
-            ExcelHeadProperty.buildExcelHeadProperty(this.excelHeadProperty, currentSheet.getClazz(), null);
+            excelHeadProperty =
+                ExcelHeadProperty.buildExcelHeadProperty(this.excelHeadProperty, currentSheet.getClazz(), null);
         }
     }
 
@@ -156,7 +157,7 @@ public class AnalysisContextImpl implements AnalysisContext {
     public ExcelHeadProperty getExcelHeadProperty() {
         return this.excelHeadProperty;
     }
-    
+
 
     @Override
     public void setExcelHeadProperty(ExcelHeadProperty excelHeadProperty) {

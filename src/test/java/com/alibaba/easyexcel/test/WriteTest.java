@@ -25,13 +25,13 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.MergeStrategy;
+import com.alibaba.excel.write.merge.MergeStrategy;
 
 public class WriteTest {
 
     @Test
     public void writeV2007() throws IOException {
-        OutputStream out = new FileOutputStream(new File(FileUtil.getPath(), "write_2007.xlsx"));
+        OutputStream out = new FileOutputStream(new File(FileUtil.getPath(), "write_2007"+System.currentTimeMillis()+".xlsx"));
         ExcelWriter writer = EasyExcelFactory.getWriter(out);
         // 写第一个sheet, sheet1 数据全是List<String> 无模型映射关系
         Sheet sheet1 = new Sheet(1, 3);

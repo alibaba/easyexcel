@@ -21,7 +21,7 @@ import com.alibaba.excel.parameter.GenerateParam;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.ExcelBuilder;
 import com.alibaba.excel.write.ExcelBuilderImpl;
-import com.alibaba.excel.write.MergeStrategy;
+import com.alibaba.excel.write.merge.MergeStrategy;
 
 /**
  * Excel Writer This tool is used to write value out to Excel via POI. This object can perform the

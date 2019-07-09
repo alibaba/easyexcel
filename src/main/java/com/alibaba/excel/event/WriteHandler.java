@@ -4,11 +4,17 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.alibaba.excel.write.handler.ExcelWriteHandler;
+
 /**
  *
+ * @deprecated Separate implementations
+ * @see com.alibaba.excel.write.handler.SheetExcelWriteHandler
+ * @see com.alibaba.excel.write.handler.RowExcelWriteHandler
+ * @see com.alibaba.excel.write.handler.CellExcelWriteHandler
  * @author jipengfei
  */
-public interface WriteHandler {
+public interface WriteHandler extends ExcelWriteHandler {
 
     /**
      * Custom operation after creating each sheet
@@ -28,6 +34,7 @@ public interface WriteHandler {
 
     /**
      * Custom operation after creating each cell
+     * 
      * @param cellNum
      * @param cell
      */

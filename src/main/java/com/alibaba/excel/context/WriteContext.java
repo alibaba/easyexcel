@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.alibaba.excel.converters.ConverterRegistryCenter;
 import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.SheetHolder;
 import com.alibaba.excel.metadata.Table;
 
 public interface WriteContext {
@@ -26,7 +27,8 @@ public interface WriteContext {
     OutputStream getOutputStream();
 
     Workbook getWorkbook();
-    
+
+    @Deprecated
     WriteHandler getWriteHandler();
 
     CellStyle getCurrentContentStyle();

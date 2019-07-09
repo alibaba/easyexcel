@@ -24,8 +24,8 @@ import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.POITempFile;
-import com.alibaba.excel.util.TypeUtil;
 import com.alibaba.excel.util.WorkBookUtil;
+import com.alibaba.excel.write.merge.MergeStrategy;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -33,6 +33,7 @@ import net.sf.cglib.beans.BeanMap;
  * @author jipengfei
  */
 public class ExcelBuilderImpl implements ExcelBuilder, ConverterRegistryCenter {
+
 
     private WriteContext context;
     private final List<Converter> converters = new ArrayList<Converter>();
@@ -88,6 +89,7 @@ public class ExcelBuilderImpl implements ExcelBuilder, ConverterRegistryCenter {
         context.currentTable(table);
         addContent(data, sheetParam.getStartRow());
     }
+
 
     @Override
     public void merge(List<MergeStrategy> strategies)  {

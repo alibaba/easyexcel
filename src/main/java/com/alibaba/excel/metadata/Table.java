@@ -2,6 +2,8 @@ package com.alibaba.excel.metadata;
 
 import java.util.List;
 
+import com.alibaba.excel.write.style.CellStyleStrategy;
+
 /**
  * @author jipengfei
  */
@@ -20,7 +22,18 @@ public class Table {
 
     /**
      */
+    @Deprecated
     private TableStyle tableStyle;
+
+    private CellStyleStrategy cellStyleStrategy;
+
+    public CellStyleStrategy getCellStyleStrategy() {
+        return cellStyleStrategy;
+    }
+
+    public void setCellStyleStrategy(CellStyleStrategy cellStyleStrategy) {
+        this.cellStyleStrategy = cellStyleStrategy;
+    }
 
     public TableStyle getTableStyle() {
         return tableStyle;
