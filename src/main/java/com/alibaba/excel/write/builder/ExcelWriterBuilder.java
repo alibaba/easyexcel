@@ -14,6 +14,7 @@ import java.util.Map;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.metadata.Workbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.WriteHandler;
 
@@ -47,6 +48,13 @@ public class ExcelWriterBuilder {
      * Custom type handler override the default
      */
     private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
+    /**
+     * Write handler
+     *
+     * @deprecated please use {@link WriteHandler}
+     */
+    @Deprecated
+    private com.alibaba.excel.event.WriteHandler writeHandler;
 
     public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
         this.excelType = excelType;
@@ -113,8 +121,26 @@ public class ExcelWriterBuilder {
         return this;
     }
 
+    /**
+     * Write handler
+     *
+     * @deprecated please use {@link WriteHandler}
+     */
+    @Deprecated
+    public ExcelWriterBuilder registerWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
+        this.writeHandler = writeHandler;
+        return this;
+    }
+
     public ExcelWriter build() {
-        return new ExcelWriter(templateInputStream, outputStream, excelType, needHead, customConverterMap,
-            customWriteHandlerList);
+        Workbook workbook = new Workbook();
+        workbook.setTemplateInputStream(templateInputStream);
+        workbook.setOutputStream(outputStream);
+        workbook.setExcelType(excelType);
+        workbook.setNeedHead(needHead);
+        workbook.setCustomConverterMap(customConverterMap);
+        workbook.setCustomWriteHandlerList(customWriteHandlerList);
+        workbook.setWriteHandler(writeHandler);
+        return new ExcelWriter(workbook);
     }
 }

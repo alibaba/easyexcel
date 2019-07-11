@@ -33,7 +33,7 @@ public class ExcelWriter {
 
     /**
      * Create new writer
-     * 
+     *
      * @param templateInputStream
      *            Append value after a POI file ,Can be null（the template POI filesystem that contains the Workbook
      *            stream)
@@ -54,6 +54,15 @@ public class ExcelWriter {
         workbook.setNeedHead(needHead);
         workbook.setCustomConverterMap(customConverterMap);
         workbook.setCustomWriteHandlerList(customWriteHandlerList);
+        excelBuilder = new ExcelBuilderImpl(workbook);
+    }
+
+    /**
+     * Create new writer
+     * 
+     * @param workbook
+     */
+    public ExcelWriter(Workbook workbook) {
         excelBuilder = new ExcelBuilderImpl(workbook);
     }
 
@@ -184,9 +193,8 @@ public class ExcelWriter {
      * @deprecated please use {@link ExcelWriter#write(List, Sheet)}
      */
     @Deprecated
-    public ExcelWriter write1(List<List<Object>> data, Sheet sheet) {
-        excelBuilder.addContent(data, sheet);
-        return this;
+    public ExcelWriter write1(List data, Sheet sheet) {
+        return write(data, sheet);
     }
 
     /**
@@ -199,9 +207,8 @@ public class ExcelWriter {
      * @deprecated please use {@link ExcelWriter#write(List, Sheet)}
      */
     @Deprecated
-    public ExcelWriter write0(List<List<String>> data, Sheet sheet) {
-        excelBuilder.addContent(data, sheet);
-        return this;
+    public ExcelWriter write0(List data, Sheet sheet) {
+        return write(data, sheet);
     }
 
     /**
@@ -216,9 +223,9 @@ public class ExcelWriter {
      * @deprecated please use {@link ExcelWriter#write(List, Sheet,Table)}
      */
     @Deprecated
-    public ExcelWriter write0(List<List<String>> data, Sheet sheet, Table table) {
-        excelBuilder.addContent(data, sheet, table);
-        return this;
+    public ExcelWriter write0(List data, Sheet sheet, Table table) {
+        return write(data, sheet, table);
+
     }
 
     /**
@@ -233,9 +240,9 @@ public class ExcelWriter {
      * @deprecated please use {@link ExcelWriter#write(List, Sheet,Table)}
      */
     @Deprecated
-    public ExcelWriter write1(List<List<Object>> data, Sheet sheet, Table table) {
-        excelBuilder.addContent(data, sheet, table);
-        return this;
+    public ExcelWriter write1(List data, Sheet sheet, Table table) {
+        return write(data, sheet, table);
+
     }
 
     /**

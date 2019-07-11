@@ -8,21 +8,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.converters.BooleanConverter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.converters.ConverterRegistryCenter;
-import com.alibaba.excel.converters.DateConverter;
-import com.alibaba.excel.converters.Double2Converter;
-import com.alibaba.excel.converters.DoubleConverter;
-import com.alibaba.excel.converters.FloatConverter;
-import com.alibaba.excel.converters.IntegerConverter;
-import com.alibaba.excel.converters.LongConverter;
-import com.alibaba.excel.converters.StringConverter;
+import com.alibaba.excel.converters.DefaultConverterBuilder;
+import com.alibaba.excel.converters.bigdecimal.BigDecimalBooleanConverter;
+import com.alibaba.excel.converters.bigdecimal.BigDecimalNumberConverter;
+import com.alibaba.excel.converters.string.StringStringConverter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.event.AnalysisEventRegistryCenter;
 import com.alibaba.excel.event.AnalysisFinishEvent;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Sheet;
 
@@ -52,7 +47,7 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
 
     @Override
     public void register(Converter converter) {
-        converters.put(converter.getName(), converter);
+        converters.put(new ConverterKey(converter.supportJavaTypeKey(),converter.supportExcelTypeKey()), converter);
     }
 
     @Override
@@ -61,29 +56,12 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
     }
 
     private void registerDefaultConverters() {
-        Double2Converter double2Converter = new Double2Converter();
-        converters.put(ConverterKey.buildConverterKey(double2Converter.supportJavaTypeKey(),
-            double2Converter.supportExcelTypeKey()), double2Converter);
-
-        StringConverter s = new StringConverter();
-        converters.put(s.getName(), s);
-        DateConverter d = new DateConverter(this.analysisContext);
-        converters.put(d.getName(), d);
-        IntegerConverter i = new IntegerConverter();
-        converters.put(i.getName(), i);
-        DoubleConverter dc = new DoubleConverter();
-        converters.put(dc.getName(), dc);
-        LongConverter l = new LongConverter();
-        converters.put(l.getName(), l);
-        FloatConverter f = new FloatConverter();
-        converters.put(f.getName(), f);
-        BooleanConverter b = new BooleanConverter();
-        converters.put(b.getName(), b);
+        converters.putAll(DefaultConverterBuilder.loadDefaultReadConverter());
     }
 
     @Override
-    public Collection<Converter> getConverters() {
-        return converters.values();
+    public Map<ConverterKey, Converter> getConverters() {
+        return converters;
     }
 
     @Override
@@ -130,7 +108,7 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
         }
     }
 
-    private void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow) {
+    private void buildExcelHeadProperty(Class clazz, List<String> headOneRow) {
         ExcelHeadProperty excelHeadProperty =
             ExcelHeadProperty.buildExcelHeadProperty(this.analysisContext.getExcelHeadProperty(), clazz, headOneRow);
         this.analysisContext.setExcelHeadProperty(excelHeadProperty);

@@ -51,4 +51,10 @@ public class WorkBookUtil {
         cell.setCellValue(cellValue);
         return cell;
     }
+
+    public static Cell createCell(Row row, int colNum, String cellValue) {
+        Cell cell = row.createCell(colNum);
+        cell.setCellValue(cellValue);
+        return cell;
+    }
 }

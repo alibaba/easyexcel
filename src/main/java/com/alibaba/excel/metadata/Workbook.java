@@ -61,6 +61,13 @@ public class Workbook {
      * Custom type handler override the default
      */
     private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
+    /**
+     * Write handler
+     * 
+     * @deprecated please use {@link WriteHandler}
+     */
+    @Deprecated
+    private com.alibaba.excel.event.WriteHandler writeHandler;
 
     public ExcelTypeEnum getExcelType() {
         return excelType;
@@ -140,5 +147,13 @@ public class Workbook {
 
     public void setCustomWriteHandlerList(List<WriteHandler> customWriteHandlerList) {
         this.customWriteHandlerList = customWriteHandlerList;
+    }
+
+    public com.alibaba.excel.event.WriteHandler getWriteHandler() {
+        return writeHandler;
+    }
+
+    public void setWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
+        this.writeHandler = writeHandler;
     }
 }

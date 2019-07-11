@@ -1,7 +1,6 @@
 package com.alibaba.easyexcel.test.model;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 
 import java.math.BigDecimal;
 import java.util.Date;

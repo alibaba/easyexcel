@@ -1,18 +1,18 @@
 package com.alibaba.excel.event;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.converters.ConverterKey;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.ExcelColumnProperty;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
-import com.alibaba.excel.util.TypeUtil;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -20,8 +20,8 @@ import net.sf.cglib.beans.BeanMap;
  * @author jipengfei
  */
 public class ModelBuildEventListener extends AnalysisEventListener<Object> {
-    private final Collection<Converter> converters;
-    public ModelBuildEventListener(Collection<Converter> converters) {
+    private final Map<ConverterKey, Converter> converters;
+    public ModelBuildEventListener(Map<ConverterKey, Converter> converters) {
         this.converters = converters;
     }
     
@@ -46,10 +46,14 @@ public class ModelBuildEventListener extends AnalysisEventListener<Object> {
             return resultModel;
         }
         Map map = new HashMap();
-        for (int i = 0; i < stringList.size(); i++) {
+        for (int i = 0; i < cellDataList.size(); i++) {
             ExcelColumnProperty columnProperty = excelHeadProperty.getExcelColumnProperty(i);
             if (columnProperty != null) {
-                Object value = convertValue(stringList.get(i), columnProperty);
+                CellData cellData = cellDataList.get(i);
+                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
+                    continue;
+                }
+                Object value = convertValue(cellDataList.get(i), columnProperty.getField().getClass(), columnProperty);
                 if (value != null) {
                     map.put(columnProperty.getField().getName(), value);
                 }
@@ -59,19 +63,17 @@ public class ModelBuildEventListener extends AnalysisEventListener<Object> {
         return resultModel;
     }
 
-    private Object convertValue(CellData cellData, ExcelColumnProperty columnProperty) {
-
-//        columnProperty.getField().getClass(), cellData.getType();
-
-
-        for (Converter c : converters) {
-//            c.convertToJavaData(cellData,columnProperty);
-
-            if (c.support(columnProperty)) {
-                return c.convert(value, columnProperty);
-            }
+    private Object convertValue(CellData cellData, Class clazz, ExcelColumnProperty columnProperty) {
+        Converter converter = converters.get(ConverterKey.buildConverterKey(clazz, cellData.getType()));
+        if (converter == null) {
+            throw new ExcelDataConvertException(
+                "Converter not found, converte " + cellData.getType() + " to " + clazz.getName());
         }
-        return null;
+        try {
+            return converter.convertToJavaData(cellData, columnProperty);
+        } catch (Exception e) {
+            throw new ExcelDataConvertException("Convert data " + cellData + " to " + clazz + " error ", e);
+        }
     }
 
     @Override

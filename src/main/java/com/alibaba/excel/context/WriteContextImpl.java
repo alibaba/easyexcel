@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -18,14 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.converters.bigdecimal.BigDecimalNumberConverter;
-import com.alibaba.excel.converters.date.DateStringConverter;
+import com.alibaba.excel.converters.DefaultConverterBuilder;
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.event.Order;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
-import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.metadata.TableStyle;
@@ -34,10 +31,12 @@ import com.alibaba.excel.metadata.holder.SheetHolder;
 import com.alibaba.excel.metadata.holder.TableHolder;
 import com.alibaba.excel.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.util.WorkBookUtil;
+import com.alibaba.excel.write.handler.DefaultWriteHandlerBuilder;
+import com.alibaba.excel.write.handler.SheetWriteHandler;
+import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.style.RowCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
-import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
 
 /**
  * A context is the main anchorage point of a excel writer.
@@ -73,13 +72,39 @@ public class WriteContextImpl implements WriteContext {
             LOGGER.debug("Begin to Initialization 'WriteContextImpl'");
         }
         initCurrentWorkbookHolder(workbook);
+        beforeWorkbookCreate();
         try {
             currentWorkbookHolder.setWorkbook(WorkBookUtil.createWorkBook(workbook));
         } catch (IOException e) {
             throw new ExcelGenerateException("Create workbook failure", e);
         }
+        afterWorkbookCreate();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialization 'WriteContextImpl' complete");
+        }
+    }
+
+    private void beforeWorkbookCreate() {
+        List<WriteHandler> handlerList = currentConfigurationSelector.writeHandlerMap().get(WorkbookWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof WorkbookWriteHandler) {
+                ((WorkbookWriteHandler)writeHandler).beforeWorkbookCreate();
+            }
+        }
+    }
+
+    private void afterWorkbookCreate() {
+        List<WriteHandler> handlerList = currentConfigurationSelector.writeHandlerMap().get(WorkbookWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof WorkbookWriteHandler) {
+                ((WorkbookWriteHandler)writeHandler).afterWorkbookCreate(currentWorkbookHolder);
+            }
         }
     }
 
@@ -102,9 +127,9 @@ public class WriteContextImpl implements WriteContext {
         if (workbook.getCustomWriteHandlerList() != null && !workbook.getCustomWriteHandlerList().isEmpty()) {
             handlerList.addAll(workbook.getCustomWriteHandlerList());
         }
-        handlerList.addAll(loadDefaultHandler());
+        handlerList.addAll(DefaultWriteHandlerBuilder.loadDefaultHandler());
         currentWorkbookHolder.setWriteHandlerList(sortAndClearUpHandler(handlerList));
-        Map<Class, Converter> converterMap = loadDefaultConverter();
+        Map<Class, Converter> converterMap = DefaultConverterBuilder.loadDefaultWriteConverter();
         if (workbook.getCustomConverterMap() != null && !workbook.getCustomConverterMap().isEmpty()) {
             converterMap.putAll(workbook.getCustomConverterMap());
         }
@@ -150,28 +175,6 @@ public class WriteContextImpl implements WriteContext {
         return result;
     }
 
-    private List<WriteHandler> loadDefaultHandler() {
-        List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
-        CellStyle headCellStyle = new CellStyle();
-        Font font = new Font();
-        headCellStyle.setFont(font);
-        font.setFontName("宋体");
-        font.setBold(true);
-        headCellStyle.setIndexedColors(IndexedColors.GREY_25_PERCENT);
-        handlerList.add(new RowCellStyleStrategy(headCellStyle, new ArrayList<CellStyle>()));
-        handlerList.add(new SimpleColumnWidthStyleStrategy(20));
-        return handlerList;
-    }
-
-    private Map<Class, Converter> loadDefaultConverter() {
-        Map<Class, Converter> converterMap = new HashMap<Class, Converter>();
-        DateStringConverter dateStringConverter = new DateStringConverter();
-        converterMap.put(dateStringConverter.supportJavaTypeKey(), dateStringConverter);
-        BigDecimalNumberConverter bigDecimalNumberConverter = new BigDecimalNumberConverter();
-        converterMap.put(bigDecimalNumberConverter.supportJavaTypeKey(), bigDecimalNumberConverter);
-        return converterMap;
-    }
-
     /**
      * @param sheet
      */
@@ -195,9 +198,36 @@ public class WriteContextImpl implements WriteContext {
             }
             return;
         }
+
         initCurrentSheetHolder(sheet);
+        beforeSheetCreate();
         // Initialization current sheet
         initSheet(sheet);
+        afterSheetCreate();
+    }
+
+    private void beforeSheetCreate() {
+        List<WriteHandler> handlerList = currentConfigurationSelector.writeHandlerMap().get(SheetWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof SheetWriteHandler) {
+                ((SheetWriteHandler)writeHandler).beforeSheetCreate(currentWorkbookHolder, currentSheetHolder);
+            }
+        }
+    }
+
+    private void afterSheetCreate() {
+        List<WriteHandler> handlerList = currentConfigurationSelector.writeHandlerMap().get(SheetWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof SheetWriteHandler) {
+                ((SheetWriteHandler)writeHandler).afterSheetCreate(currentWorkbookHolder, currentSheetHolder);
+            }
+        }
     }
 
     private void initCurrentSheetHolder(com.alibaba.excel.metadata.Sheet sheet) {
@@ -313,7 +343,7 @@ public class WriteContextImpl implements WriteContext {
         for (int i = 0; i < headList.size(); i++) {
             Head head = headList.get(i);
             // TODO 创建cell
-            Cell cell = WorkBookUtil.createCell(row, i, null, head.getHeadName(i));
+            Cell cell = WorkBookUtil.createCell(row, i, head.getHeadName(i));
         }
     }
 

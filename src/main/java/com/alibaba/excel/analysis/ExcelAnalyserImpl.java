@@ -3,12 +3,14 @@ package com.alibaba.excel.analysis;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.converters.ConverterRegistryCenter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
@@ -34,7 +36,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             }
 
             @Override
-            public Collection<Converter> getConverters() {
+            public Map<ConverterKey, Converter> getConverters() {
                 return saxAnalyser.getConverters();
             }
         };

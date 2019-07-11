@@ -20,7 +20,7 @@ public interface ConfigurationSelector {
      * 
      * @return
      */
-    List<WriteHandler> writeHandlerList();
+    Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap();
 
     /**
      * What converter does the currently operated cell need to execute

@@ -1,6 +1,6 @@
 package com.alibaba.excel.write.handler;
 
-import org.apache.poi.ss.usermodel.Workbook;
+import com.alibaba.excel.metadata.holder.WorkbookHolder;
 
 /**
  * intercepts handle Workbook creation
@@ -21,5 +21,5 @@ public interface WorkbookWriteHandler extends WriteHandler {
      *
      * @param writeContext
      */
-    void afterWorkbookCreate(Workbook workbook);
+    void afterWorkbookCreate(WorkbookHolder workbookHolder);
 }
