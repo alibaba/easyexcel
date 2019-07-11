@@ -33,7 +33,7 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
         if (headCellStyleCache.containsKey(columnIndex)) {
             cell.setCellStyle(headCellStyleCache.get(columnIndex));
         }
-        CellStyle cellStyle = StyleUtil.buildCellStyle(workbook, headCellStyle(head));
+        CellStyle cellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle(head));
         headCellStyleCache.put(columnIndex, cellStyle);
         cell.setCellStyle(cellStyle);
     }
@@ -44,7 +44,7 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
         if (contentCellStyleCache.containsKey(columnIndex)) {
             cell.setCellStyle(contentCellStyleCache.get(columnIndex));
         }
-        CellStyle cellStyle = StyleUtil.buildCellStyle(workbook, contentCellStyle(head));
+        CellStyle cellStyle = StyleUtil.buildContentCellStyle(workbook, contentCellStyle(head));
         contentCellStyleCache.put(columnIndex, cellStyle);
         cell.setCellStyle(cellStyle);
     }

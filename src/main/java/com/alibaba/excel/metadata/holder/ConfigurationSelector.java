@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
@@ -40,4 +41,16 @@ public interface ConfigurationSelector {
      */
     int writeRelativeHeadRowIndex();
 
+    /**
+     * What 'ExcelHeadProperty' does the currently operated cell need to execute
+     */
+    ExcelHeadProperty excelHeadProperty();
+
+    /**
+     * 
+     * Record whether it's new or from cache
+     * 
+     * @return
+     */
+    boolean isNew();
 }

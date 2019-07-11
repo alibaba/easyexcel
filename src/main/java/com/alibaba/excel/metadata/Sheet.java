@@ -1,10 +1,14 @@
 package com.alibaba.excel.metadata;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.style.RowCellStyleStrategy;
+import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
 
 /**
  * sheet
@@ -28,7 +32,6 @@ public class Sheet {
      * <li>2 - This Sheet has two row head ,since the third row is the data
      */
     private Integer readHeadRowNumber;
-
     /**
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
      */
@@ -53,6 +56,79 @@ public class Sheet {
      * Custom type handler override the default
      */
     private List<WriteHandler> customWriteHandlerList;
+
+    /**
+     * column with
+     * 
+     * @deprecated please use {@link SimpleColumnWidthStyleStrategy}
+     */
+    @Deprecated
+    private Map<Integer, Integer> columnWidthMap = new HashMap<Integer, Integer>();
+
+    /**
+     *
+     * @deprecated please use{@link RowCellStyleStrategy}
+     */
+    @Deprecated
+    private TableStyle tableStyle;
+
+    public Sheet() {}
+
+    /**
+     * It was 'sheetNo' starting from 1 and now it is starting from 0
+     * 
+     * @param sheetNo
+     * @param readHeadRowNumber
+     * @deprecated please use {@link ExcelWriterSheetBuilder#build()}
+     */
+    @Deprecated
+    public Sheet(int sheetNo, int readHeadRowNumber) {
+        this.sheetNo = sheetNo - 1;
+        this.readHeadRowNumber = readHeadRowNumber;
+    }
+
+    /**
+     * It was 'sheetNo' starting from 1 and now it is starting from 0
+     *
+     * @param sheetNo
+     * @deprecated please use {@link ExcelWriterSheetBuilder#build()}
+     */
+    @Deprecated
+    public Sheet(int sheetNo) {
+        this.sheetNo = sheetNo - 1;
+    }
+
+    /**
+     * It was 'sheetNo' starting from 1 and now it is starting from 0
+     * 
+     * @param sheetNo
+     * @param readHeadRowNumber
+     * @param clazz
+     * @deprecated please use {@link ExcelWriterSheetBuilder#build()}
+     */
+    @Deprecated
+    public Sheet(int sheetNo, int readHeadRowNumber, Class clazz) {
+        this.sheetNo = sheetNo - 1;
+        this.readHeadRowNumber = readHeadRowNumber;
+        this.clazz = clazz;
+    }
+
+    /**
+     * It was 'sheetNo' starting from 1 and now it is starting from 0
+     *
+     * @param sheetNo
+     * @param readHeadRowNumber
+     * @param clazz
+     * @deprecated please use {@link ExcelWriterSheetBuilder#build()}
+     */
+    @Deprecated
+    public Sheet(int sheetNo, int readHeadRowNumber, Class clazz, String sheetName, List<List<String>> head) {
+        this.sheetNo = sheetNo - 1;
+        this.clazz = clazz;
+        this.readHeadRowNumber = readHeadRowNumber;
+        this.sheetName = sheetName;
+        this.head = head;
+    }
 
     public Integer getSheetNo() {
         return sheetNo;
@@ -124,6 +200,42 @@ public class Sheet {
 
     public void setCustomWriteHandlerList(List<WriteHandler> customWriteHandlerList) {
         this.customWriteHandlerList = customWriteHandlerList;
+    }
+
+    public Map<Integer, Integer> getColumnWidthMap() {
+        return columnWidthMap;
+    }
+
+    public void setColumnWidthMap(Map<Integer, Integer> columnWidthMap) {
+        this.columnWidthMap = columnWidthMap;
+    }
+
+    public TableStyle getTableStyle() {
+        return tableStyle;
+    }
+
+    public void setTableStyle(TableStyle tableStyle) {
+        this.tableStyle = tableStyle;
+    }
+
+    /**
+     * 
+     * @param writeRelativeHeadRowIndex
+     * @deprecated please use {@link Sheet#setWriteRelativeHeadRowIndex(Integer)}
+     */
+    @Deprecated
+    public void setStartRow(int writeRelativeHeadRowIndex) {
+        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
+    }
+
+    /**
+     * 
+     * @param readHeadRowNumber
+     * @deprecated please use {@link Sheet#setReadHeadRowNumber(Integer)} )}
+     */
+    @Deprecated
+    public void setHeadLineMun(int readHeadRowNumber) {
+        this.readHeadRowNumber = readHeadRowNumber;
     }
 
     @Override

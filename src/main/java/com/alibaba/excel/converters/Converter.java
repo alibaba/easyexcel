@@ -4,6 +4,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.ExcelColumnProperty;
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
 public interface Converter<T> {
 
@@ -11,7 +12,7 @@ public interface Converter<T> {
 
     CellDataTypeEnum supportExcelTypeKey();
 
-    T convertToJavaData(@NotNull CellData cellData, ExcelColumnProperty columnProperty) throws Exception;
+    T convertToJavaData(@NotNull CellData cellData, @Nullable ExcelColumnProperty columnProperty) throws Exception;
 
-    CellData convertToExcelData(@NotNull T value, ExcelColumnProperty columnProperty) throws Exception;
+    CellData convertToExcelData(@NotNull T value, @Nullable ExcelColumnProperty columnProperty) throws Exception;
 }

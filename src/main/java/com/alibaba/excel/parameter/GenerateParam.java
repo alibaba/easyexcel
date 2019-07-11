@@ -6,7 +6,10 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * Created by jipengfei on 17/2/19.
+ * 
+ * @deprecated please use {@link com.alibaba.excel.write.builder.ExcelWriterBuilder} build ExcelWriter
  */
+@Deprecated
 public class GenerateParam {
 
     private OutputStream outputStream;
@@ -32,7 +35,6 @@ public class GenerateParam {
     public void setOutputStream(OutputStream outputStream) {
         this.outputStream = outputStream;
     }
-
 
     public String getSheetName() {
         return sheetName;

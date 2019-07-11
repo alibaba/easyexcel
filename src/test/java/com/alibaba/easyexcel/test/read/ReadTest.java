@@ -1,4 +1,10 @@
-package com.alibaba.easyexcel.test;
+package com.alibaba.easyexcel.test.read;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import org.junit.Test;
 
 import com.alibaba.easyexcel.test.listen.ExcelListener;
 import com.alibaba.easyexcel.test.model.ReadModel;
@@ -7,11 +13,6 @@ import com.alibaba.easyexcel.test.util.FileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.metadata.Sheet;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 public class ReadTest {
 
@@ -161,13 +162,13 @@ public class ReadTest {
     public void saxReadSheetsV2003() throws IOException {
         InputStream inputStream = FileUtil.getResourcesFileInputStream("2003.xls");
         ExcelListener excelListener = new ExcelListener();
-        ExcelReader excelReader = EasyExcelFactory.getReader(inputStream,excelListener);
+        ExcelReader excelReader = EasyExcelFactory.getReader(inputStream, excelListener);
         List<Sheet> sheets = excelReader.getSheets();
         System.out.println();
-        for (Sheet sheet:sheets) {
-            if(sheet.getSheetNo() == 1) {
+        for (Sheet sheet : sheets) {
+            if (sheet.getSheetNo() == 1) {
                 excelReader.read(sheet);
-            }else {
+            } else {
                 sheet.setHeadLineMun(2);
                 sheet.setClazz(ReadModel.class);
                 excelReader.read(sheet);

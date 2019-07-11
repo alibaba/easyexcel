@@ -8,7 +8,6 @@ import com.alibaba.excel.analysis.ExcelAnalyserImpl;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.parameter.AnalysisParam;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -155,7 +154,7 @@ public class ExcelReader {
      * @param sheet Read sheet
      * @param clazz object parsed into each row of value
      */
-    public void read(Sheet sheet, Class<? extends BaseRowModel> clazz) {
+    public void read(Sheet sheet, Class clazz) {
         analyser.beforeAnalysis();
         if (sheet != null) {
             sheet.setClazz(clazz);

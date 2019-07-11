@@ -7,14 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.event.WriteHandler;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
+import com.alibaba.excel.metadata.Workbook;
+import com.alibaba.excel.parameter.GenerateParam;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.ExcelBuilder;
 import com.alibaba.excel.write.ExcelBuilderImpl;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 
 /**
  * Excel Writer This tool is used to write value out to Excel via POI. This object can perform the following two
@@ -46,8 +47,14 @@ public class ExcelWriter {
      */
     public ExcelWriter(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType,
         boolean needHead, Map<Class, Converter> customConverterMap, List<WriteHandler> customWriteHandlerList) {
-        excelBuilder = new ExcelBuilderImpl(templateInputStream, outputStream, excelType, needHead, customConverterMap,
-            customWriteHandlerList);
+        Workbook workbook = new Workbook();
+        workbook.setTemplateInputStream(templateInputStream);
+        workbook.setOutputStream(outputStream);
+        workbook.setExcelType(excelType);
+        workbook.setNeedHead(needHead);
+        workbook.setCustomConverterMap(customConverterMap);
+        workbook.setCustomWriteHandlerList(customWriteHandlerList);
+        excelBuilder = new ExcelBuilderImpl(workbook);
     }
 
     /**
@@ -118,8 +125,22 @@ public class ExcelWriter {
         Boolean needHead, WriteHandler writeHandler) {
         List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
         customWriteHandlerList.add(writeHandler);
-        excelBuilder =
-            new ExcelBuilderImpl(templateInputStream, outputStream, typeEnum, needHead, null, customWriteHandlerList);
+        Workbook workbook = new Workbook();
+        workbook.setTemplateInputStream(templateInputStream);
+        workbook.setOutputStream(outputStream);
+        workbook.setExcelType(typeEnum);
+        workbook.setNeedHead(needHead);
+        workbook.setCustomWriteHandlerList(customWriteHandlerList);
+        excelBuilder = new ExcelBuilderImpl(workbook);
+    }
+
+    /**
+     * @param generateParam
+     * @deprecated please use {@link com.alibaba.excel.write.builder.ExcelWriterBuilder} build ExcelWriter
+     */
+    @Deprecated
+    public ExcelWriter(GenerateParam generateParam) {
+        this(generateParam.getOutputStream(), generateParam.getType(), true);
     }
 
     /**
@@ -131,9 +152,8 @@ public class ExcelWriter {
      *            Write to this sheet
      * @return this current writer
      */
-    public ExcelWriter write(List<? extends BaseRowModel> data, Sheet sheet) {
-        excelBuilder.addContent(data, sheet);
-        return this;
+    public ExcelWriter write(List data, Sheet sheet) {
+        return write(data, sheet, null);
     }
 
     /**
@@ -147,7 +167,7 @@ public class ExcelWriter {
      *            Write to this table
      * @return this
      */
-    public ExcelWriter write(List<? extends BaseRowModel> data, Sheet sheet, Table table) {
+    public ExcelWriter write(List data, Sheet sheet, Table table) {
         excelBuilder.addContent(data, sheet, table);
         return this;
     }
@@ -161,7 +181,9 @@ public class ExcelWriter {
      * @param sheet
      *            Write to this sheet
      * @return this
+     * @deprecated please use {@link ExcelWriter#write(List, Sheet)}
      */
+    @Deprecated
     public ExcelWriter write1(List<List<Object>> data, Sheet sheet) {
         excelBuilder.addContent(data, sheet);
         return this;
@@ -174,8 +196,9 @@ public class ExcelWriter {
      *            Data to be written
      * @param sheet
      *            Write to this sheet
-     * @return this
+     * @deprecated please use {@link ExcelWriter#write(List, Sheet)}
      */
+    @Deprecated
     public ExcelWriter write0(List<List<String>> data, Sheet sheet) {
         excelBuilder.addContent(data, sheet);
         return this;
@@ -190,8 +213,9 @@ public class ExcelWriter {
      *            Write to this sheet
      * @param table
      *            Write to this table
-     * @return this
+     * @deprecated please use {@link ExcelWriter#write(List, Sheet,Table)}
      */
+    @Deprecated
     public ExcelWriter write0(List<List<String>> data, Sheet sheet, Table table) {
         excelBuilder.addContent(data, sheet, table);
         return this;
@@ -206,10 +230,30 @@ public class ExcelWriter {
      *            Write to this sheet
      * @param table
      *            Write to this table
-     * @return
+     * @deprecated please use {@link ExcelWriter#write(List, Sheet,Table)}
      */
+    @Deprecated
     public ExcelWriter write1(List<List<Object>> data, Sheet sheet, Table table) {
         excelBuilder.addContent(data, sheet, table);
+        return this;
+    }
+
+    /**
+     * Merge Cells，Indexes are zero-based.
+     *
+     * @param firstRow
+     *            Index of first row
+     * @param lastRow
+     *            Index of last row (inclusive), must be equal to or larger than {@code firstRow}
+     * @param firstCol
+     *            Index of first column
+     * @param lastCol
+     *            Index of last column (inclusive), must be equal to or larger than {@code firstCol}
+     * @deprecated please use{@link OnceAbsoluteMergeStrategy}
+     */
+    @Deprecated
+    public ExcelWriter merge(int firstRow, int lastRow, int firstCol, int lastCol) {
+        excelBuilder.merge(firstRow, lastRow, firstCol, lastCol);
         return this;
     }
 

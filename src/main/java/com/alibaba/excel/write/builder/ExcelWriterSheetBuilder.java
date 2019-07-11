@@ -18,11 +18,11 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
- * Build ExcelBuilder
+ * Build sheet
  * 
  * @author zhuangjiaju
  */
-public class ExcelWriterBuilder {
+public class ExcelWriterSheetBuilder {
     /**
      * Excel type
      */
@@ -48,42 +48,42 @@ public class ExcelWriterBuilder {
      */
     private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
 
-    public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
+    public ExcelWriterSheetBuilder excelType(ExcelTypeEnum excelType) {
         this.excelType = excelType;
         return this;
     }
 
-    public ExcelWriterBuilder outputFile(OutputStream outputStream) {
+    public ExcelWriterSheetBuilder outputFile(OutputStream outputStream) {
         this.outputStream = outputStream;
         return this;
     }
 
-    public ExcelWriterBuilder outputFile(File outputFile) throws FileNotFoundException {
+    public ExcelWriterSheetBuilder outputFile(File outputFile) throws FileNotFoundException {
         return outputFile(new FileOutputStream(outputFile));
     }
 
-    public ExcelWriterBuilder outputFile(String outputPathName) throws FileNotFoundException {
+    public ExcelWriterSheetBuilder outputFile(String outputPathName) throws FileNotFoundException {
         return outputFile(new File(outputPathName));
     }
 
-    public ExcelWriterBuilder outputFile(URI outputUri) throws FileNotFoundException {
+    public ExcelWriterSheetBuilder outputFile(URI outputUri) throws FileNotFoundException {
         return outputFile(new File(outputUri));
     }
 
-    public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {
+    public ExcelWriterSheetBuilder withTemplate(InputStream templateInputStream) {
         this.templateInputStream = templateInputStream;
         return this;
     }
 
-    public ExcelWriterBuilder withTemplate(File templateFile) throws FileNotFoundException {
+    public ExcelWriterSheetBuilder withTemplate(File templateFile) throws FileNotFoundException {
         return withTemplate(new FileInputStream(templateFile));
     }
 
-    public ExcelWriterBuilder withTemplate(String templatePathName) throws FileNotFoundException {
+    public ExcelWriterSheetBuilder withTemplate(String templatePathName) throws FileNotFoundException {
         return withTemplate(new File(templatePathName));
     }
 
-    public ExcelWriterBuilder withTemplate(URI templateUri) throws FileNotFoundException {
+    public ExcelWriterSheetBuilder withTemplate(URI templateUri) throws FileNotFoundException {
         return withTemplate(new File(templateUri));
     }
 
@@ -93,7 +93,7 @@ public class ExcelWriterBuilder {
      * @param converter
      * @return
      */
-    public ExcelWriterBuilder registerConverter(Converter converter) {
+    public ExcelWriterSheetBuilder registerConverter(Converter converter) {
         this.customConverterMap.put(converter.supportJavaTypeKey(), converter);
         return this;
     }
@@ -103,12 +103,12 @@ public class ExcelWriterBuilder {
      * 
      * @return
      */
-    public ExcelWriterBuilder doNotNeedHead() {
+    public ExcelWriterSheetBuilder doNotNeedHead() {
         this.needHead = Boolean.FALSE;
         return this;
     }
 
-    public ExcelWriterBuilder registerWriteHandler(WriteHandler writeHandler) {
+    public ExcelWriterSheetBuilder registerWriteHandler(WriteHandler writeHandler) {
         this.customWriteHandlerList.add(writeHandler);
         return this;
     }

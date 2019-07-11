@@ -5,7 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
-public class AfterWriteHandlerImpl implements WriteHandler {
+public class AfterExcelWriteHandlerImpl implements WriteHandler {
 
     //
     CellStyle cellStyle;

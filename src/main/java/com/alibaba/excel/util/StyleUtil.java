@@ -38,6 +38,21 @@ public class StyleUtil {
     }
 
     /**
+     * Build style
+     * 
+     * @param workbook
+     * @param cs
+     * @return
+     */
+    public static CellStyle buildHeadCellStyle(Workbook workbook, com.alibaba.excel.metadata.CellStyle cs) {
+        CellStyle cellStyle = workbook.createCellStyle();
+        if (cs == null) {
+            return cellStyle;
+        }
+        return buildCellStyle(workbook, cellStyle, cs.getFont(), cs.getIndexedColors());
+    }
+
+    /**
      *
      * @param workbook
      * @param f
@@ -48,6 +63,21 @@ public class StyleUtil {
         IndexedColors indexedColors) {
         CellStyle cellStyle = workbook.createCellStyle();
         return buildCellStyle(workbook, cellStyle, f, indexedColors);
+    }
+
+    /**
+     * Build style
+     *
+     * @param workbook
+     * @param cs
+     * @return
+     */
+    public static CellStyle buildContentCellStyle(Workbook workbook, com.alibaba.excel.metadata.CellStyle cs) {
+        CellStyle cellStyle = buildDefaultCellStyle(workbook);
+        if (cs == null) {
+            return cellStyle;
+        }
+        return buildCellStyle(workbook, cellStyle, cs.getFont(), cs.getIndexedColors());
     }
 
     /**

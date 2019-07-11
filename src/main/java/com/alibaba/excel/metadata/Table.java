@@ -1,8 +1,9 @@
 package com.alibaba.excel.metadata;
 
 import java.util.List;
+import java.util.Map;
 
-import com.alibaba.excel.event.Handler;
+import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
@@ -12,11 +13,11 @@ import com.alibaba.excel.write.handler.WriteHandler;
  */
 public class Table {
     /**
-     * Starting from 1
+     * Starting from 0
      */
     private Integer tableNo;
     /**
-     * Writes the header relative to the existing contents of the sheet. Indexes are zero-based.
+     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
      */
     private Integer writeRelativeHeadRowIndex;
     /**
@@ -28,47 +29,27 @@ public class Table {
      */
     private Class clazz;
     /**
-     * Need head
+     * Custom type conversions override the default
+     */
+    private Map<Class, Converter> customConverterMap;
+    /**
+     * Need Head
      */
     private Boolean needHead;
     /**
-     * Handle some extra logic. So far only for writing purposes {@link WriteHandler}
-     *
+     * Custom type handler override the default
      */
-    private List<Handler> handler;
+    private List<WriteHandler> customWriteHandlerList;
 
-    public Table(Integer sheetNo) {
-        this(sheetNo, 0, null, null, Boolean.TRUE);
-    }
+    /**
+     *
+     * @deprecated please use{@link RowCellStyleStrategy}
+     */
+    @Deprecated
+    private TableStyle tableStyle;
 
-    public Table(Integer sheetNo, List<List<String>> head) {
-        this(sheetNo, 0, head, null, Boolean.TRUE);
-    }
-
-    public Table(Integer sheetNo, Class clazz) {
-        this(sheetNo, 0, null, clazz, Boolean.TRUE);
-    }
-
-    public Table(Integer tableNo, Integer writeRelativeHeadRowIndex, List<List<String>> head, Class clazz,
-        Boolean needHead) {
-        if (tableNo == null || tableNo < 1) {
-            throw new IllegalArgumentException("SheetNo must greater than 0");
-        }
-        if (writeRelativeHeadRowIndex == null || writeRelativeHeadRowIndex < 0) {
-            throw new IllegalArgumentException("WriteRelativeHeadRowIndex must greater than -1");
-        }
-        if (head != null && !head.isEmpty() && clazz != null) {
-            throw new IllegalArgumentException("Head and clazz fill in no more than one");
-        }
-        if (needHead == null) {
-            throw new IllegalArgumentException("NeedHead can not be null");
-        }
+    public Table(Integer tableNo) {
         this.tableNo = tableNo;
-        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
-        this.head = head;
-        this.clazz = clazz;
-        this.needHead = needHead;
-
     }
 
     public Integer getTableNo() {
@@ -103,6 +84,14 @@ public class Table {
         this.clazz = clazz;
     }
 
+    public Map<Class, Converter> getCustomConverterMap() {
+        return customConverterMap;
+    }
+
+    public void setCustomConverterMap(Map<Class, Converter> customConverterMap) {
+        this.customConverterMap = customConverterMap;
+    }
+
     public Boolean getNeedHead() {
         return needHead;
     }
@@ -111,12 +100,20 @@ public class Table {
         this.needHead = needHead;
     }
 
-    public List<Handler> getHandler() {
-        return handler;
+    public List<WriteHandler> getCustomWriteHandlerList() {
+        return customWriteHandlerList;
     }
 
-    public void setHandler(List<Handler> handler) {
-        this.handler = handler;
+    public void setCustomWriteHandlerList(List<WriteHandler> customWriteHandlerList) {
+        this.customWriteHandlerList = customWriteHandlerList;
+    }
+
+    public TableStyle getTableStyle() {
+        return tableStyle;
+    }
+
+    public void setTableStyle(TableStyle tableStyle) {
+        this.tableStyle = tableStyle;
     }
 
     @Override

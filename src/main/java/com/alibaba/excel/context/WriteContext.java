@@ -1,11 +1,10 @@
 package com.alibaba.excel.context;
 
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
-import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.metadata.holder.ConfigurationSelector;
+import com.alibaba.excel.metadata.holder.SheetHolder;
+import com.alibaba.excel.metadata.holder.TableHolder;
+import com.alibaba.excel.metadata.holder.WorkbookHolder;
 
 /**
  * Write context
@@ -32,13 +31,28 @@ public interface WriteContext {
      * 
      * @return
      */
-    ConfigurationSelector configurationSelector();
+    ConfigurationSelector currentConfigurationSelector();
 
-    Sheet getCurrentSheet();
+    /**
+     * All information about the workbook you are currently working on
+     * 
+     * @return
+     */
+    WorkbookHolder currentWorkbookHolder();
 
-    ExcelHeadProperty getExcelHeadProperty();
+    /**
+     * All information about the sheet you are currently working on
+     * 
+     * @return
+     */
+    SheetHolder currentSheetHolder();
 
-    Workbook getWorkbook();
+    /**
+     * All information about the table you are currently working on
+     * 
+     * @return
+     */
+    TableHolder currentTableHolder();
 
     /**
      * close

@@ -1,11 +1,14 @@
 package com.alibaba.excel.metadata.holder;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
@@ -34,6 +37,22 @@ public class WorkbookHolder implements ConfigurationSelector {
      * prevent duplicate creation of sheet objects
      */
     private Map<Integer, SheetHolder> hasBeenInitializedSheet;
+    /**
+     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
+     */
+    private Integer writeRelativeHeadRowIndex;
+    /**
+     * current param
+     */
+    private com.alibaba.excel.metadata.Workbook workbookParam;
+    /**
+     * Final output stream
+     */
+    private OutputStream outputStream;
+    /**
+     * Template input stream
+     */
+    private InputStream templateInputStream;
 
     public Workbook getWorkbook() {
         return workbook;
@@ -75,6 +94,38 @@ public class WorkbookHolder implements ConfigurationSelector {
         this.hasBeenInitializedSheet = hasBeenInitializedSheet;
     }
 
+    public Integer getWriteRelativeHeadRowIndex() {
+        return writeRelativeHeadRowIndex;
+    }
+
+    public void setWriteRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
+        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
+    }
+
+    public com.alibaba.excel.metadata.Workbook getWorkbookParam() {
+        return workbookParam;
+    }
+
+    public void setWorkbookParam(com.alibaba.excel.metadata.Workbook workbookParam) {
+        this.workbookParam = workbookParam;
+    }
+
+    public OutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public InputStream getTemplateInputStream() {
+        return templateInputStream;
+    }
+
+    public void setTemplateInputStream(InputStream templateInputStream) {
+        this.templateInputStream = templateInputStream;
+    }
+
     @Override
     public List<WriteHandler> writeHandlerList() {
         return getWriteHandlerList();
@@ -88,5 +139,20 @@ public class WorkbookHolder implements ConfigurationSelector {
     @Override
     public boolean needHead() {
         return getNeedHead();
+    }
+
+    @Override
+    public int writeRelativeHeadRowIndex() {
+        return getWriteRelativeHeadRowIndex();
+    }
+
+    @Override
+    public ExcelHeadProperty excelHeadProperty() {
+        return null;
+    }
+
+    @Override
+    public boolean isNew() {
+        return true;
     }
 }

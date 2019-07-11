@@ -38,12 +38,12 @@ public class RowCellStyleStrategy extends AbstractCellStyleStrategy {
     @Override
     protected void initCellStyle(Workbook workbook) {
         if (headCellStyle != null) {
-            poiHeadCellStyle = StyleUtil.buildCellStyle(workbook, headCellStyle);
+            poiHeadCellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle);
         }
         if (contentCellStyleList != null && !contentCellStyleList.isEmpty()) {
             poiContentCellStyleList = new ArrayList<org.apache.poi.ss.usermodel.CellStyle>();
             for (CellStyle cellStyle : contentCellStyleList) {
-                poiContentCellStyleList.add(StyleUtil.buildCellStyle(workbook, cellStyle));
+                poiContentCellStyleList.add(StyleUtil.buildContentCellStyle(workbook, cellStyle));
             }
         }
     }

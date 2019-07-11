@@ -15,11 +15,23 @@ import com.alibaba.excel.write.handler.WriteHandler;
  * @author zhuangjiaju
  */
 public class SheetHolder implements ConfigurationSelector {
+
     /***
      * poi sheet
      */
     private Sheet sheet;
-
+    /***
+     * sheetNo
+     */
+    private Integer sheetNo;
+    /***
+     * sheetName
+     */
+    private String sheetName;
+    /***
+     * poi sheet
+     */
+    private WorkbookHolder parentWorkBook;
     /***
      * has been initialized table
      */
@@ -49,6 +61,10 @@ public class SheetHolder implements ConfigurationSelector {
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
      */
     private Integer writeRelativeHeadRowIndex;
+    /**
+     * Record whether it's new or from cache
+     */
+    private Boolean newInitialization;
 
     public Sheet getSheet() {
         return sheet;
@@ -56,6 +72,30 @@ public class SheetHolder implements ConfigurationSelector {
 
     public void setSheet(Sheet sheet) {
         this.sheet = sheet;
+    }
+
+    public Integer getSheetNo() {
+        return sheetNo;
+    }
+
+    public void setSheetNo(Integer sheetNo) {
+        this.sheetNo = sheetNo;
+    }
+
+    public String getSheetName() {
+        return sheetName;
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
+    }
+
+    public WorkbookHolder getParentWorkBook() {
+        return parentWorkBook;
+    }
+
+    public void setParentWorkBook(WorkbookHolder parentWorkBook) {
+        this.parentWorkBook = parentWorkBook;
     }
 
     public Map<Integer, TableHolder> getHasBeenInitializedTable() {
@@ -114,6 +154,14 @@ public class SheetHolder implements ConfigurationSelector {
         this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
     }
 
+    public Boolean getNewInitialization() {
+        return newInitialization;
+    }
+
+    public void setNewInitialization(Boolean newInitialization) {
+        this.newInitialization = newInitialization;
+    }
+
     @Override
     public List<WriteHandler> writeHandlerList() {
         return getWriteHandlerList();
@@ -128,4 +176,20 @@ public class SheetHolder implements ConfigurationSelector {
     public boolean needHead() {
         return getNeedHead();
     }
+
+    @Override
+    public int writeRelativeHeadRowIndex() {
+        return getWriteRelativeHeadRowIndex();
+    }
+
+    @Override
+    public ExcelHeadProperty excelHeadProperty() {
+        return getExcelHeadProperty();
+    }
+
+    @Override
+    public boolean isNew() {
+        return getNewInitialization();
+    }
+
 }
