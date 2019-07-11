@@ -1,10 +1,9 @@
 package com.alibaba.excel.write;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -14,10 +13,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.converters.ConverterRegistryCenter;
-import com.alibaba.excel.event.WriteHandler;
-import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.ExcelColumnProperty;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
@@ -25,37 +22,26 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.POITempFile;
 import com.alibaba.excel.util.WorkBookUtil;
-import com.alibaba.excel.write.merge.MergeStrategy;
+import com.alibaba.excel.write.handler.WriteHandler;
 
 import net.sf.cglib.beans.BeanMap;
 
 /**
  * @author jipengfei
  */
-public class ExcelBuilderImpl implements ExcelBuilder, ConverterRegistryCenter {
-
+public class ExcelBuilderImpl implements ExcelBuilder {
 
     private WriteContext context;
-    private final List<Converter> converters = new ArrayList<Converter>();
 
-    public ExcelBuilderImpl(InputStream templateInputStream,
-                            OutputStream out,
-                            ExcelTypeEnum excelType,
-                            boolean needHead, WriteHandler writeHandler, List<Converter> converters) {
-        try {
-            //初始化时候创建临时缓存目录，用于规避POI在并发写bug
-            POITempFile.createPOIFilesDirectory();
-            if (converters != null) {
-                converters.addAll(converters);
-            }
-            context = new WriteContextImpl(templateInputStream, out, excelType, needHead, writeHandler, this);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public ExcelBuilderImpl(InputStream templateInputStream, OutputStream out, ExcelTypeEnum excelType,
+        boolean needHead, Map<Class, Converter> customConverterMap, List<WriteHandler> customWriteHandlerList) {
+        // 初始化时候创建临时缓存目录，用于规避POI在并发写bug
+        POITempFile.createPOIFilesDirectory();
+        context = new WriteContextImpl(templateInputStream, out, excelType, needHead, customConverterMap,
+            customWriteHandlerList);
     }
 
-    @Override
-    public void addContent(List data, int startRow) {
+    private void doAddContent(List data, int startRow) {
         if (CollectionUtils.isEmpty(data)) {
             return;
         }
@@ -80,35 +66,25 @@ public class ExcelBuilderImpl implements ExcelBuilder, ConverterRegistryCenter {
     @Override
     public void addContent(List data, Sheet sheetParam) {
         context.currentSheet(sheetParam);
-        addContent(data, sheetParam.getStartRow());
+        doAddContent(data, sheetParam.getWriteRelativeHeadRowIndex());
     }
 
     @Override
     public void addContent(List data, Sheet sheetParam, Table table) {
         context.currentSheet(sheetParam);
         context.currentTable(table);
-        addContent(data, sheetParam.getStartRow());
-    }
-
-
-    @Override
-    public void merge(List<MergeStrategy> strategies)  {
-        if (strategies != null) {
-            for (MergeStrategy ms : strategies) {
-                CellRangeAddress cra = new CellRangeAddress(ms.getFirstRow(), ms.getLastRow(), ms.getFirstCol(), ms.getLastCol());
-                context.getCurrentSheet().addMergedRegion(cra);
-            }
-        }
+        doAddContent(data, sheetParam.getWriteRelativeHeadRowIndex());
     }
 
     @Override
     public void finish() {
-        try {
-            context.getWorkbook().write(context.getOutputStream());
-            context.getWorkbook().close();
-        } catch (IOException e) {
-            throw new ExcelGenerateException("IO error", e);
-        }
+        context.finish();
+    }
+
+    @Override
+    public void merge(int firstRow, int lastRow, int firstCol, int lastCol) {
+        CellRangeAddress cra = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+        context.getCurrentSheet().addMergedRegion(cra);
     }
 
     private void addBasicTypeToExcel(List<Object> oneRowData, Row row) {
@@ -130,11 +106,13 @@ public class ExcelBuilderImpl implements ExcelBuilder, ConverterRegistryCenter {
         BeanMap beanMap = BeanMap.create(oneRowData);
         for (ExcelColumnProperty excelHeadProperty : context.getExcelHeadProperty().getColumnPropertyList()) {
             BaseRowModel baseRowModel = (BaseRowModel)oneRowData;
-            CellStyle cellStyle = baseRowModel.getStyle(i) != null ? baseRowModel.getStyle(i)
-                            : context.getCurrentContentStyle();
+            CellStyle cellStyle =
+                baseRowModel.getStyle(i) != null ? baseRowModel.getStyle(i) : context.getCurrentContentStyle();
             Object value = beanMap.get(excelHeadProperty.getField().getName());
+            // excelHeadProperty.getField().getType();
+
             Cell cell = WorkBookUtil.createCell(row, i, cellStyle);
-            cell = convertValue(cell, value, excelHeadProperty);
+            cell.setCL cell = convertValue(cell, value, excelHeadProperty);
             if (null != context.getWriteHandler()) {
                 context.getWriteHandler().cell(i, cell);
             }
@@ -145,6 +123,8 @@ public class ExcelBuilderImpl implements ExcelBuilder, ConverterRegistryCenter {
     private Cell convertValue(Cell cell, Object value, ExcelColumnProperty excelHeadProperty) {
         if (!CollectionUtils.isEmpty(this.converters)) {
             for (Converter c : this.converters) {
+              CellData c.convertToExcelData(excelHeadProperty);
+
                 if (value != null && c.support(value)) {
                     return c.convert(cell, value, excelHeadProperty);
                 }
@@ -165,13 +145,4 @@ public class ExcelBuilderImpl implements ExcelBuilder, ConverterRegistryCenter {
         }
     }
 
-    @Override
-    public void register(Converter converter) {
-        this.converters.add(converter);
-    }
-
-    @Override
-    public List<Converter> getConverters() {
-        return this.converters;
-    }
 }

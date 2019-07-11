@@ -1,15 +1,16 @@
 package com.alibaba.excel;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 
 /**
  * Reader and writer factory class
@@ -69,7 +70,7 @@ public class EasyExcelFactory {
      * @return new ExcelWriter.
      */
     public static ExcelWriter getWriter(OutputStream outputStream) {
-        return new ExcelWriter(outputStream, ExcelTypeEnum.XLSX, true);
+        return writerBuilder().outputFile(outputStream).build();
     }
 
     /**
@@ -81,7 +82,11 @@ public class EasyExcelFactory {
      * @return new  ExcelWriter
      */
     public static ExcelWriter getWriter(OutputStream outputStream, ExcelTypeEnum typeEnum, boolean needHead) {
-        return new ExcelWriter(outputStream, typeEnum, needHead);
+        if (needHead) {
+            return writerBuilder().outputFile(outputStream).excelType(typeEnum).build();
+        } else {
+            return writerBuilder().outputFile(outputStream).excelType(typeEnum).doNotNeedHead().build();
+        }
     }
 
     /**
@@ -94,8 +99,13 @@ public class EasyExcelFactory {
      * @return new  ExcelWriter
      */
     public static ExcelWriter getWriterWithTemp(InputStream temp, OutputStream outputStream, ExcelTypeEnum typeEnum,
-                                                boolean needHead) {
-        return new ExcelWriter(temp, outputStream, typeEnum, needHead);
+        boolean needHead) {
+        if (needHead) {
+            return writerBuilder().withTemplate(temp).outputFile(outputStream).excelType(typeEnum).build();
+        } else {
+            return writerBuilder().withTemplate(temp).outputFile(outputStream).excelType(typeEnum).doNotNeedHead()
+                .build();
+        }
     }
 
     /**
@@ -109,12 +119,26 @@ public class EasyExcelFactory {
      * @param handler      User-defined callback
      * @return new  ExcelWriter
      */
-    public static ExcelWriter getWriterWithTempAndHandler(InputStream temp,
-                                                          OutputStream outputStream,
-                                                          ExcelTypeEnum typeEnum,
-                                                          boolean needHead,
-                                                          WriteHandler handler) {
-        return new ExcelWriter(temp, outputStream, typeEnum, needHead, handler);
+    public static ExcelWriter getWriterWithTempAndHandler(InputStream temp, OutputStream outputStream,
+        ExcelTypeEnum typeEnum, boolean needHead, WriteHandler handler) {
+        if (needHead) {
+            return writerBuilder().withTemplate(temp).outputFile(outputStream).excelType(typeEnum)
+                .registerWriteHandler(handler).build();
+        } else {
+            return writerBuilder().withTemplate(temp).outputFile(outputStream).excelType(typeEnum).doNotNeedHead()
+                .registerWriteHandler(handler).build();
+        }
     }
 
+    public static ExcelWriterBuilder writerBuilder() {
+        return new ExcelWriterBuilder();
+    }
+
+    public static ExcelWriterBuilder writerSheetBuilder() {
+        return new ExcelWriterBuilder();
+    }
+
+    public static ExcelWriterBuilder writerTableBuilder() {
+        return new ExcelWriterBuilder();
+    }
 }

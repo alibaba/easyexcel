@@ -9,25 +9,33 @@ import java.util.List;
  * @author zhuangjiaju
  **/
 public class Head {
+    /**
+     * Column index of head
+     */
     private Integer columnIndex;
+    /**
+     * It only has values when passed in {@link Sheet#setClazz(Class)} and {@link Table#setClazz(Class)}
+     */
     private String fieldName;
-    private List<String> headNames;
+    /**
+     * Head name
+     */
+    private List<String> headNameList;
 
     public Head(Integer columnIndex, String fieldName, String headName) {
         this.columnIndex = columnIndex;
         this.fieldName = fieldName;
-        List<String> headNamesTmp = new ArrayList<String>();
-        headNamesTmp.add(headName);
-        this.headNames = headNamesTmp;
+        headNameList = new ArrayList<String>();
+        headNameList.add(headName);
     }
 
-    public Head(Integer columnIndex, String fieldName, List<String> headNames) {
+    public Head(Integer columnIndex, String fieldName, List<String> headNameList) {
         this.columnIndex = columnIndex;
         this.fieldName = fieldName;
-        if (headNames == null) {
-            headNames = new ArrayList<String>();
+        if (headNameList == null) {
+            headNameList = new ArrayList<String>();
         }
-        this.headNames = headNames;
+        this.headNameList = headNameList;
     }
 
     public Integer getColumnIndex() {
@@ -46,12 +54,18 @@ public class Head {
         this.fieldName = fieldName;
     }
 
-    public List<String> getHeadNames() {
-        return headNames;
+    public List<String> getHeadNameList() {
+        return headNameList;
     }
 
-    public void setHeadNames(List<String> headNames) {
-        this.headNames = headNames;
+    public void setHeadNameList(List<String> headNameList) {
+        this.headNameList = headNameList;
+    }
+
+    @Override
+    public String toString() {
+        return "Head{" + "columnIndex=" + columnIndex + ", fieldName='" + fieldName + '\'' + ", headNameList="
+            + headNameList + '}';
     }
 
     /**
@@ -61,13 +75,13 @@ public class Head {
      * @return
      */
     public String getHeadName(int index) {
-        if (headNames == null || headNames.isEmpty()) {
+        if (headNameList == null || headNameList.isEmpty()) {
             return null;
         }
-        if (index >= headNames.size()) {
-            return headNames.get(headNames.size() - 1);
+        if (index >= headNameList.size()) {
+            return headNameList.get(headNameList.size() - 1);
         } else {
-            return headNames.get(index);
+            return headNameList.get(index);
         }
     }
 }

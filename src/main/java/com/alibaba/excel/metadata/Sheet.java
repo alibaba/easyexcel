@@ -1,133 +1,64 @@
 package com.alibaba.excel.metadata;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.TableStyle;
-
-import com.alibaba.excel.write.style.CellStyleStrategy;
-import com.alibaba.excel.write.style.column.ColumnWihtStyleStrategy;
-import com.alibaba.excel.write.style.column.ColumnWithStyleStrategy;
-import com.oracle.webservices.internal.api.databinding.DatabindingMode;
+import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
- *
+ * sheet
+ * 
  * @author jipengfei
  */
 public class Sheet {
-
     /**
+     * Starting from 0
      */
-    private int headLineMun;
-
+    private Integer sheetNo;
     /**
-     * Starting from 1
-     */
-    private int sheetNo;
-
-    /**
+     * sheet name
      */
     private String sheetName;
-
     /**
+     * Count the number of added heads when read sheet.
+     *
+     * <li>0 - This Sheet has no head ,since the first row are the data
+     * <li>1 - This Sheet has one row head , this is the default
+     * <li>2 - This Sheet has two row head ,since the third row is the data
      */
-    private Class<? extends BaseRowModel> clazz;
+    private Integer readHeadRowNumber;
 
     /**
+     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
+     */
+    private Integer writeRelativeHeadRowIndex;
+    /**
+     * You can only choose one of the {@link Sheet#head} and {@link Sheet#clazz}
      */
     private List<List<String>> head;
-
     /**
-     *
+     * You can only choose one of the {@link Sheet#head} and {@link Sheet#clazz}
      */
-    @Deprecated
-    private TableStyle tableStyle;
-
+    private Class clazz;
     /**
-     * column with
+     * Custom type conversions override the default
      */
-    @Deprecated
-    private Map<Integer,Integer> columnWidthMap = new HashMap<Integer, Integer>();
-
+    private Map<Class, Converter> customConverterMap;
     /**
-     *
+     * Need Head
      */
-    private Boolean autoWidth = Boolean.FALSE;
-
+    private Boolean needHead;
     /**
-     *
+     * Custom type handler override the default
      */
-    private int startRow = 0;
+    private List<WriteHandler> customWriteHandlerList;
 
-    private CellStyleStrategy cellStyleStrategy;
-
-    private ColumnWithStyleStrategy columnWithStyleStrategy;
-
-    public ColumnWithStyleStrategy getColumnWithStyleStrategy() {
-        return columnWithStyleStrategy;
-    }
-
-    public void setColumnWithStyleStrategy(ColumnWithStyleStrategy columnWithStyleStrategy) {
-        this.columnWithStyleStrategy = columnWithStyleStrategy;
-    }
-
-    public Sheet(int sheetNo) {
-        this.sheetNo = sheetNo;
-    }
-
-    public Sheet(int sheetNo, int headLineMun) {
-        this.sheetNo = sheetNo;
-        this.headLineMun = headLineMun;
-    }
-
-    public Sheet(int sheetNo, int headLineMun, Class<? extends BaseRowModel> clazz) {
-        this.sheetNo = sheetNo;
-        this.headLineMun = headLineMun;
-        this.clazz = clazz;
-    }
-
-    public Sheet(int sheetNo, int headLineMun, Class<? extends BaseRowModel> clazz, String sheetName,
-                 List<List<String>> head) {
-        this.sheetNo = sheetNo;
-        this.clazz = clazz;
-        this.headLineMun = headLineMun;
-        this.sheetName = sheetName;
-        this.head = head;
-    }
-
-    public List<List<String>> getHead() {
-        return head;
-    }
-
-    public void setHead(List<List<String>> head) {
-        this.head = head;
-    }
-
-    public Class<? extends BaseRowModel> getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(Class<? extends BaseRowModel> clazz) {
-        this.clazz = clazz;
-        if (headLineMun == 0) {
-            this.headLineMun = 1;
-        }
-    }
-
-    public int getHeadLineMun() {
-        return headLineMun;
-    }
-
-    public void setHeadLineMun(int headLineMun) {
-        this.headLineMun = headLineMun;
-    }
-
-    public int getSheetNo() {
+    public Integer getSheetNo() {
         return sheetNo;
     }
 
-    public void setSheetNo(int sheetNo) {
+    public void setSheetNo(Integer sheetNo) {
         this.sheetNo = sheetNo;
     }
 
@@ -139,58 +70,64 @@ public class Sheet {
         this.sheetName = sheetName;
     }
 
-    public TableStyle getTableStyle() {
-        return tableStyle;
+    public Integer getReadHeadRowNumber() {
+        return readHeadRowNumber;
     }
 
-    public void setTableStyle(TableStyle tableStyle) {
-        this.tableStyle = tableStyle;
+    public void setReadHeadRowNumber(Integer readHeadRowNumber) {
+        this.readHeadRowNumber = readHeadRowNumber;
     }
 
-
-
-    public Map<Integer, Integer> getColumnWidthMap() {
-        return columnWidthMap;
+    public Integer getWriteRelativeHeadRowIndex() {
+        return writeRelativeHeadRowIndex;
     }
 
-    public void setColumnWidthMap(Map<Integer, Integer> columnWidthMap) {
-        this.columnWidthMap = columnWidthMap;
+    public void setWriteRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
+        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
+    }
+
+    public List<List<String>> getHead() {
+        return head;
+    }
+
+    public void setHead(List<List<String>> head) {
+        this.head = head;
+    }
+
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class clazz) {
+        this.clazz = clazz;
+    }
+
+    public Map<Class, Converter> getCustomConverterMap() {
+        return customConverterMap;
+    }
+
+    public void setCustomConverterMap(Map<Class, Converter> customConverterMap) {
+        this.customConverterMap = customConverterMap;
+    }
+
+    public Boolean getNeedHead() {
+        return needHead;
+    }
+
+    public void setNeedHead(Boolean needHead) {
+        this.needHead = needHead;
+    }
+
+    public List<WriteHandler> getCustomWriteHandlerList() {
+        return customWriteHandlerList;
+    }
+
+    public void setCustomWriteHandlerList(List<WriteHandler> customWriteHandlerList) {
+        this.customWriteHandlerList = customWriteHandlerList;
     }
 
     @Override
     public String toString() {
-        return "Sheet{" +
-            "headLineMun=" + headLineMun +
-            ", sheetNo=" + sheetNo +
-            ", sheetName='" + sheetName + '\'' +
-            ", clazz=" + clazz +
-            ", head=" + head +
-            ", tableStyle=" + tableStyle +
-            ", columnWidthMap=" + columnWidthMap +
-            '}';
-    }
-
-    public Boolean getAutoWidth() {
-        return autoWidth;
-    }
-
-    public void setAutoWidth(Boolean autoWidth) {
-        this.autoWidth = autoWidth;
-    }
-
-    public int getStartRow() {
-        return startRow;
-    }
-
-    public void setStartRow(int startRow) {
-        this.startRow = startRow;
-    }
-
-    public CellStyleStrategy getCellStyleStrategy() {
-        return cellStyleStrategy;
-    }
-
-    public void setCellStyleStrategy(CellStyleStrategy cellStyleStrategy) {
-        this.cellStyleStrategy = cellStyleStrategy;
+        return "Sheet{" + "sheetNo=" + sheetNo + ", sheetName='" + sheetName + '\'' + '}';
     }
 }

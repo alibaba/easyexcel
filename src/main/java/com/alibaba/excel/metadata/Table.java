@@ -2,57 +2,89 @@ package com.alibaba.excel.metadata;
 
 import java.util.List;
 
-import com.alibaba.excel.write.style.CellStyleStrategy;
+import com.alibaba.excel.event.Handler;
+import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
+ * table
+ * 
  * @author jipengfei
  */
 public class Table {
     /**
+     * Starting from 1
      */
-    private Class<? extends BaseRowModel> clazz;
-
+    private Integer tableNo;
     /**
+     * Writes the header relative to the existing contents of the sheet. Indexes are zero-based.
+     */
+    private Integer writeRelativeHeadRowIndex;
+    /**
+     * You can only choose one of the {@link Table#head} and {@link Table#clazz}
      */
     private List<List<String>> head;
-
     /**
+     * You can only choose one of the {@link Table#head} and {@link Table#clazz}
      */
-    private int tableNo;
-
+    private Class clazz;
     /**
+     * Need head
      */
-    @Deprecated
-    private TableStyle tableStyle;
+    private Boolean needHead;
+    /**
+     * Handle some extra logic. So far only for writing purposes {@link WriteHandler}
+     *
+     */
+    private List<Handler> handler;
 
-    private CellStyleStrategy cellStyleStrategy;
-
-    public CellStyleStrategy getCellStyleStrategy() {
-        return cellStyleStrategy;
+    public Table(Integer sheetNo) {
+        this(sheetNo, 0, null, null, Boolean.TRUE);
     }
 
-    public void setCellStyleStrategy(CellStyleStrategy cellStyleStrategy) {
-        this.cellStyleStrategy = cellStyleStrategy;
+    public Table(Integer sheetNo, List<List<String>> head) {
+        this(sheetNo, 0, head, null, Boolean.TRUE);
     }
 
-    public TableStyle getTableStyle() {
-        return tableStyle;
+    public Table(Integer sheetNo, Class clazz) {
+        this(sheetNo, 0, null, clazz, Boolean.TRUE);
     }
 
-    public void setTableStyle(TableStyle tableStyle) {
-        this.tableStyle = tableStyle;
+    public Table(Integer tableNo, Integer writeRelativeHeadRowIndex, List<List<String>> head, Class clazz,
+        Boolean needHead) {
+        if (tableNo == null || tableNo < 1) {
+            throw new IllegalArgumentException("SheetNo must greater than 0");
+        }
+        if (writeRelativeHeadRowIndex == null || writeRelativeHeadRowIndex < 0) {
+            throw new IllegalArgumentException("WriteRelativeHeadRowIndex must greater than -1");
+        }
+        if (head != null && !head.isEmpty() && clazz != null) {
+            throw new IllegalArgumentException("Head and clazz fill in no more than one");
+        }
+        if (needHead == null) {
+            throw new IllegalArgumentException("NeedHead can not be null");
+        }
+        this.tableNo = tableNo;
+        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
+        this.head = head;
+        this.clazz = clazz;
+        this.needHead = needHead;
+
     }
 
-    public Table(Integer tableNo) {
+    public Integer getTableNo() {
+        return tableNo;
+    }
+
+    public void setTableNo(Integer tableNo) {
         this.tableNo = tableNo;
     }
 
-    public Class<? extends BaseRowModel> getClazz() {
-        return clazz;
+    public Integer getWriteRelativeHeadRowIndex() {
+        return writeRelativeHeadRowIndex;
     }
 
-    public void setClazz(Class<? extends BaseRowModel> clazz) {
-        this.clazz = clazz;
+    public void setWriteRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
+        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
     }
 
     public List<List<String>> getHead() {
@@ -63,11 +95,32 @@ public class Table {
         this.head = head;
     }
 
-    public int getTableNo() {
-        return tableNo;
+    public Class getClazz() {
+        return clazz;
     }
 
-    public void setTableNo(int tableNo) {
-        this.tableNo = tableNo;
+    public void setClazz(Class clazz) {
+        this.clazz = clazz;
+    }
+
+    public Boolean getNeedHead() {
+        return needHead;
+    }
+
+    public void setNeedHead(Boolean needHead) {
+        this.needHead = needHead;
+    }
+
+    public List<Handler> getHandler() {
+        return handler;
+    }
+
+    public void setHandler(List<Handler> handler) {
+        this.handler = handler;
+    }
+
+    @Override
+    public String toString() {
+        return "Table{" + "tableNo=" + tableNo + '}';
     }
 }

@@ -22,7 +22,7 @@ public class ExcelHeadProperty {
     /**
      * Custom class
      */
-    private Class<? extends BaseRowModel> headClazz;
+    private Class headClazz;
 
     /**
      * A two-dimensional array describing the header
@@ -47,7 +47,7 @@ public class ExcelHeadProperty {
      */
     private int headRowNumber;
 
-    public ExcelHeadProperty(Class<? extends BaseRowModel> headClazz, List<List<String>> head) {
+    public ExcelHeadProperty(Class headClazz, List<List<String>> head) {
         this.headClazz = headClazz;
         headList = new ArrayList<Head>();
         headKind = HeadKindEnum.NONE;
@@ -67,7 +67,7 @@ public class ExcelHeadProperty {
     }
 
     public static ExcelHeadProperty buildExcelHeadProperty(ExcelHeadProperty excelHeadProperty,
-        Class<? extends BaseRowModel> clazz, List<String> headOneRow) {
+        Class clazz, List<String> headOneRow) {
         if (excelHeadProperty == null) {
             return new ExcelHeadProperty(clazz, new ArrayList<List<String>>());
         }
@@ -80,7 +80,7 @@ public class ExcelHeadProperty {
     private void initHeadRowNumber() {
         headRowNumber = 0;
         for (Head head : headList) {
-            List<String> list = head.getHeadNames();
+            List<String> list = head.getHeadNameList();
             if (list != null && list.size() > headRowNumber) {
                 headRowNumber = list.size();
             }
@@ -156,7 +156,7 @@ public class ExcelHeadProperty {
             String rowData = row.get(i);
             // join
             if (i <= headSize) {
-                headList.get(i).getHeadNames().add(rowData);
+                headList.get(i).getHeadNameList().add(rowData);
             } else {
                 // create and join
                 headList.add(new Head(i, null, rowData));
@@ -173,11 +173,11 @@ public class ExcelHeadProperty {
         return excelColumnPropertyMap1.get(columnNum);
     }
 
-    public Class<? extends BaseRowModel> getHeadClazz() {
+    public Class getHeadClazz() {
         return headClazz;
     }
 
-    public void setHeadClazz(Class<? extends BaseRowModel> headClazz) {
+    public void setHeadClazz(Class headClazz) {
         this.headClazz = headClazz;
     }
 
@@ -225,7 +225,7 @@ public class ExcelHeadProperty {
     public List<CellRange> getCellRangeModels() {
         List<CellRange> cellRanges = new ArrayList<CellRange>();
         for (int i = 0; i < headList.size(); i++) {
-            List<String> columnValues = headList.get(i).getHeadNames();
+            List<String> columnValues = headList.get(i).getHeadNameList();
             for (int j = 0; j < columnValues.size(); j++) {
                 int lastRow = getLastRangNum(j, columnValues.get(j), columnValues);
                 int lastColumn = getLastRangNum(i, columnValues.get(j), getHeadByRowNum(j));
@@ -240,7 +240,7 @@ public class ExcelHeadProperty {
     public List<String> getHeadByRowNum(int rowNum) {
         List<String> l = new ArrayList<String>(headList.size());
         for (Head head : headList) {
-            List<String> list = head.getHeadNames();
+            List<String> list = head.getHeadNameList();
             if (list.size() > rowNum) {
                 l.add(list.get(rowNum));
             } else {

@@ -1,7 +1,7 @@
 package com.alibaba.excel.enums;
 
 /**
- * The types of head
+ * The types of header
  *
  * @author zhuangjiaju
  **/

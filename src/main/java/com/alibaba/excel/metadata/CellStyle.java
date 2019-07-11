@@ -12,11 +12,10 @@ public class CellStyle {
      * 表头背景颜色
      */
     private IndexedColors indexedColors;
-
     /**
      * 表头字体样式
      */
-    private Font simpleFont;
+    private Font font;
 
     public IndexedColors getIndexedColors() {
         return indexedColors;
@@ -26,11 +25,11 @@ public class CellStyle {
         this.indexedColors = indexedColors;
     }
 
-    public Font getSimpleFont() {
-        return simpleFont;
+    public Font getFont() {
+        return font;
     }
 
-    public void setSimpleFont(Font simpleFont) {
-        this.simpleFont = simpleFont;
+    public void setFont(Font font) {
+        this.font = font;
     }
 }

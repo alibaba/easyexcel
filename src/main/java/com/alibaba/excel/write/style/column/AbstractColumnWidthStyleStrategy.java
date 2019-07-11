@@ -4,17 +4,23 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.SheetHolder;
-import com.alibaba.excel.metadata.TableHolder;
-import com.alibaba.excel.write.handler.CellExcelWriteHandler;
+import com.alibaba.excel.metadata.holder.SheetHolder;
+import com.alibaba.excel.metadata.holder.TableHolder;
+import com.alibaba.excel.write.handler.CellWriteHandler;
 
 /**
  * Column width style strategy
  * 
  * @author zhuangjiaju
  */
-public abstract class AbstractColumnWidthStyleStrategy implements CellExcelWriteHandler {
+public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandler, NotRepeatExecutor {
+
+    @Override
+    public String uniqueValue() {
+        return "ColumnWidthStyleStrategy";
+    }
 
     @Override
     public void beforeCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Row row, Head head,

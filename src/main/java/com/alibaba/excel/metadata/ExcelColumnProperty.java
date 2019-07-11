@@ -3,6 +3,7 @@ package com.alibaba.excel.metadata;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * @author jipengfei
@@ -22,8 +23,29 @@ public class ExcelColumnProperty implements Comparable<ExcelColumnProperty> {
     private List<String> head = new ArrayList<String>();
 
     /**
+     *
      */
     private String format;
+
+    private Boolean use1904windowing;
+
+    private TimeZone timeZone;
+
+    public Boolean getUse1904windowing() {
+        return use1904windowing;
+    }
+
+    public void setUse1904windowing(Boolean use1904windowing) {
+        this.use1904windowing = use1904windowing;
+    }
+
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
+    }
 
     public String getFormat() {
         return format;

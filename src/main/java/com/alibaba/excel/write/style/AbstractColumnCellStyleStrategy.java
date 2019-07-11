@@ -11,9 +11,12 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.StyleUtil;
 
 /**
- * Head of style shareholders and content of style loop
+ *
+ * Use the same style for the column
+ *
+ * @author zhuangjiaju
  */
-public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyleStrategy {
+public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleStrategy {
 
     private Workbook workbook;
     private Map<Integer, CellStyle> headCellStyleCache = new HashMap<Integer, CellStyle>();
@@ -47,7 +50,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
     }
 
     /**
-     * Returns the column width corresponding to each column header
+     * Returns the column width corresponding to each column head
      *
      * @param head
      * @return
@@ -55,7 +58,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
     protected abstract com.alibaba.excel.metadata.CellStyle headCellStyle(Head head);
 
     /**
-     * Returns the column width corresponding to each column header
+     * Returns the column width corresponding to each column head
      *
      * @param head
      * @return

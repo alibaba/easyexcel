@@ -1,5 +1,7 @@
-package com.alibaba.excel.metadata;
+package com.alibaba.excel.metadata.holder;
 
+import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.write.style.CellStyleStrategy;
 import com.alibaba.excel.write.style.column.ColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.row.RowHighStyleStrategy;
@@ -9,7 +11,7 @@ import com.alibaba.excel.write.style.row.RowHighStyleStrategy;
  *
  * @author zhuangjiaju
  */
-public class TableHolder {
+public class TableHolder implements ConfigurationSelector{
     /***
      * poi sheet
      */

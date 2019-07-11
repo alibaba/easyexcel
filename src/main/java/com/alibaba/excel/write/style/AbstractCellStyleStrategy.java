@@ -4,18 +4,25 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.SheetHolder;
-import com.alibaba.excel.metadata.TableHolder;
-import com.alibaba.excel.write.handler.CellExcelWriteHandler;
-import com.alibaba.excel.write.handler.WookbookExcelWriteHandler;
+import com.alibaba.excel.metadata.holder.SheetHolder;
+import com.alibaba.excel.metadata.holder.TableHolder;
+import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 
-public abstract class AbstractCellStyleStrategy implements CellExcelWriteHandler, WookbookExcelWriteHandler {
+public abstract class AbstractCellStyleStrategy
+    implements CellWriteHandler, WorkbookWriteHandler, NotRepeatExecutor {
     @Override
-    public void beforeWookbookCreate() {}
+    public String uniqueValue() {
+        return "CellStyleStrategy";
+    }
 
     @Override
-    public void afterWookbookCreate(Workbook workbook) {
+    public void beforeWorkbookCreate() {}
+
+    @Override
+    public void afterWorkbookCreate(Workbook workbook) {
         initCellStyle(workbook);
     }
 

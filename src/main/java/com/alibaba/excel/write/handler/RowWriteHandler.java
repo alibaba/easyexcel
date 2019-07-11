@@ -2,8 +2,8 @@ package com.alibaba.excel.write.handler;
 
 import org.apache.poi.ss.usermodel.Row;
 
-import com.alibaba.excel.metadata.SheetHolder;
-import com.alibaba.excel.metadata.TableHolder;
+import com.alibaba.excel.metadata.holder.SheetHolder;
+import com.alibaba.excel.metadata.holder.TableHolder;
 import com.sun.istack.internal.Nullable;
 
 /**
@@ -11,7 +11,7 @@ import com.sun.istack.internal.Nullable;
  * 
  * @author zhuangjiaju
  */
-public interface RowExcelWriteHandler extends ExcelWriteHandler {
+public interface RowWriteHandler extends WriteHandler {
 
     /**
      * called before create the row

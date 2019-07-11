@@ -3,6 +3,8 @@ package com.alibaba.excel.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.excel.metadata.CellData;
+
 /**
  * @author jipengfei
  */
@@ -12,9 +14,9 @@ public class EachRowAnalysisFinishEvent implements AnalysisFinishEvent {
         this.result = content;
     }
 
-    public EachRowAnalysisFinishEvent(String[] content, int length) {
+    public EachRowAnalysisFinishEvent(CellData[] content, int length) {
         if (content != null) {
-            List<String> ls = new ArrayList<String>(length);
+            List<CellData> ls = new ArrayList<CellData>(length);
             for (int i = 0; i <= length; i++) {
                 ls.add(content[i]);
             }

@@ -4,8 +4,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.SheetHolder;
-import com.alibaba.excel.metadata.TableHolder;
+import com.alibaba.excel.metadata.holder.SheetHolder;
+import com.alibaba.excel.metadata.holder.TableHolder;
 import com.sun.istack.internal.Nullable;
 
 /**
@@ -13,7 +13,7 @@ import com.sun.istack.internal.Nullable;
  * 
  * @author zhuangjiaju
  */
-public interface CellExcelWriteHandler extends ExcelWriteHandler {
+public interface CellWriteHandler extends WriteHandler {
 
     /**
      * called before create the cell

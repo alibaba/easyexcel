@@ -1,23 +1,14 @@
 package com.alibaba.excel.write;
 
+import java.util.List;
+
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.write.merge.MergeStrategy;
-
-import java.util.List;
 
 /**
  * @author jipengfei
  */
 public interface ExcelBuilder {
-
-    /**
-     * workBook increase value
-     *
-     * @param data     java basic type or java model extend BaseModel
-     * @param startRow Start row number
-     */
-    void addContent(List data, int startRow);
 
     /**
      * WorkBook increase value
@@ -39,9 +30,13 @@ public interface ExcelBuilder {
     /**
      * Creates new cell range. Indexes are zero-based.
      *
-     * @param strategies the merge strategy
+     * @param firstRow Index of first row
+     * @param lastRow  Index of last row (inclusive), must be equal to or larger than {@code firstRow}
+     * @param firstCol Index of first column
+     * @param lastCol  Index of last column (inclusive), must be equal to or larger than {@code firstCol}
      */
-    void merge(List<MergeStrategy> strategies);
+    @Deprecated
+    void merge(int firstRow, int lastRow, int firstCol, int lastCol);
 
     /**
      * Close io

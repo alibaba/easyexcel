@@ -1,11 +1,13 @@
 package com.alibaba.excel.analysis.v07;
 
+import com.alibaba.excel.metadata.CellData;
+
 public interface XlsxRowResultHolder {
     void clearResult();
     
     void appendCurrentCellValue(String currentCellValue);
-    
-    String[] getCurRowContent();
+
+    CellData[] getCurRowContent();
     
     int getColumnSize();
 }

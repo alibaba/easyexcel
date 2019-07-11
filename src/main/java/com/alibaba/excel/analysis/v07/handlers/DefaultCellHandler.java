@@ -1,60 +1,61 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
-import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TAG;
+import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_FORMULA_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_TAG;
+import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TAG_1;
+import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 
 import java.util.Arrays;
 
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.xssf.model.SharedStringsTable;
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
-import com.alibaba.excel.annotation.FieldType;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.event.AnalysisEventRegistryCenter;
+import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
+import com.alibaba.excel.util.StringUtils;
 
 public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder {
-    private String currentCellIndex;
-
-    private FieldType currentCellType;
-
-    private int curRow;
-
-    private int curCol;
-
-    private String[] curRowContent = new String[20];
-
-    private String currentCellValue;
-
     private final AnalysisContext analysisContext;
-    
     private final AnalysisEventRegistryCenter registerCenter;
-
     private final SharedStringsTable sst;
+    private String currentTag;
+    private String currentCellIndex;
+    private int curRow;
+    private int curCol;
+    private CellData[] curRowContent = new CellData[20];
+    private CellData currentCellData;
 
-    public DefaultCellHandler(AnalysisContext analysisContext, AnalysisEventRegistryCenter registerCenter, SharedStringsTable sst) {
+    public DefaultCellHandler(AnalysisContext analysisContext, AnalysisEventRegistryCenter registerCenter,
+        SharedStringsTable sst) {
         this.analysisContext = analysisContext;
         this.registerCenter = registerCenter;
         this.sst = sst;
     }
-    
+
     @Override
     public void clearResult() {
-        curRowContent = new String[20];
+        curRowContent = new CellData[20];
     }
 
     @Override
     public boolean support(String name) {
-        return CELL_VALUE_TAG.equals(name) || CELL_VALUE_TAG_1.equals(name) || CELL_TAG.equals(name);
+        return CELL_VALUE_TAG.equals(name) || CELL_FORMULA_TAG.equals(name) || CELL_VALUE_TAG_1.equals(name)
+            || CELL_TAG.equals(name);
     }
 
     @Override
     public void startHandle(String name, Attributes attributes) {
+        currentTag = name;
+        // start a cell
         if (CELL_TAG.equals(name)) {
             currentCellIndex = attributes.getValue(ExcelXmlConstants.POSITION);
             int nextRow = PositionUtils.getRow(currentCellIndex);
@@ -65,51 +66,67 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             analysisContext.setCurrentRowNum(curRow);
             curCol = PositionUtils.getCol(currentCellIndex);
 
-            String cellType = attributes.getValue("t");
-            currentCellType = FieldType.EMPTY;
-            if (cellType != null && cellType.equals("s")) {
-                currentCellType = FieldType.STRING;
-            }
+            // t="s" ,it's means String
+            // t="b" ,it's means Boolean
+            // t is null ,it's means Empty or Number
+            CellDataTypeEnum type = CellDataTypeEnum.buildFromCellType(attributes.getValue(CELL_VALUE_TYPE_TAG));
+            currentCellData = new CellData(type);
         }
-        if (name.equals(CELL_VALUE_TAG) || name.equals(CELL_VALUE_TAG_1)) {
-            // initialize current cell value
-            currentCellValue = "";
+        // cell is formula
+        if (CELL_FORMULA_TAG.equals(name)) {
+            currentCellData.setReadIsFormula(Boolean.TRUE);
         }
     }
 
     @Override
     public void endHandle(String name) {
-        ensureSize();
         if (CELL_VALUE_TAG.equals(name)) {
-            switch (currentCellType) {
-                case STRING:
-                    int idx = Integer.parseInt(currentCellValue);
-                    currentCellValue = new XSSFRichTextString(sst.getEntryAt(idx)).toString();
-                    currentCellType = FieldType.EMPTY;
-                    break;
+            ensureSize();
+            // Have to go "sharedStrings.xml" and get it
+            if (currentCellData.getType() == CellDataTypeEnum.STRING) {
+                RichTextString richTextString = sst.getItemAt(Integer.parseInt(currentCellData.getStringValue()));
+                currentCellData.setStringValue(richTextString.toString());
             }
-            curRowContent[curCol] = currentCellValue;
-        } else if (CELL_VALUE_TAG_1.equals(name)) {
-            curRowContent[curCol] = currentCellValue;
+            curRowContent[curCol] = currentCellData;
         }
     }
-    
-    
 
     private void ensureSize() {
         // try to size
         if (curCol >= curRowContent.length) {
-            curRowContent = Arrays.copyOf(curRowContent, (int) (curCol * 1.5));
+            curRowContent = Arrays.copyOf(curRowContent, (int)(curCol * 1.5));
         }
     }
 
     @Override
     public void appendCurrentCellValue(String currentCellValue) {
-        this.currentCellValue += currentCellValue;
+        if (StringUtils.isEmpty(currentCellValue)) {
+            return;
+        }
+        if (CELL_FORMULA_TAG.equals(currentTag)) {
+            currentCellData.setReadFormula(currentCellValue);
+            return;
+        }
+        CellDataTypeEnum oldType = currentCellData.getType();
+        switch (oldType) {
+            case STRING:
+            case ERROR:
+                currentCellData.setStringValue(currentCellValue);
+                break;
+            case BOOLEAN:
+                currentCellData.setBooleanValue(BooleanUtils.valueOf(currentCellValue));
+                break;
+            case EMPTY:
+                currentCellData.setType(CellDataTypeEnum.NUMBER);
+                currentCellData.setDoubleValue(Double.valueOf(currentCellValue));
+                break;
+            default:
+                throw new IllegalStateException("Cannot set values now");
+        }
     }
 
     @Override
-    public String[] getCurRowContent() {
+    public CellData[] getCurRowContent() {
         return this.curRowContent;
     }
 

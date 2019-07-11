@@ -17,7 +17,7 @@ public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColum
     }
 
     /**
-     * Returns the column width corresponding to each column header
+     * Returns the column width corresponding to each column head
      * 
      * @param head
      * @return

@@ -1,16 +1,19 @@
 package com.alibaba.excel.analysis;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.BooleanConverter;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.converters.ConverterRegistryCenter;
 import com.alibaba.excel.converters.DateConverter;
+import com.alibaba.excel.converters.Double2Converter;
 import com.alibaba.excel.converters.DoubleConverter;
 import com.alibaba.excel.converters.FloatConverter;
 import com.alibaba.excel.converters.IntegerConverter;
@@ -31,9 +34,10 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
     protected AnalysisContext analysisContext;
 
     private LinkedHashMap<String, AnalysisEventListener<Object>> listeners =
-                    new LinkedHashMap<String, AnalysisEventListener<Object>>();
+        new LinkedHashMap<String, AnalysisEventListener<Object>>();
 
-    private LinkedHashMap<String, Converter> converters = new LinkedHashMap<String, Converter>();
+    private Map<ConverterKey, Converter> converters = new HashMap<ConverterKey, Converter>();
+
     /**
      * execute method
      */
@@ -50,13 +54,17 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
     public void register(Converter converter) {
         converters.put(converter.getName(), converter);
     }
-    
+
     @Override
     public void beforeAnalysis() {
         registerDefaultConverters();
     }
-    
+
     private void registerDefaultConverters() {
+        Double2Converter double2Converter = new Double2Converter();
+        converters.put(ConverterKey.buildConverterKey(double2Converter.supportJavaTypeKey(),
+            double2Converter.supportExcelTypeKey()), double2Converter);
+
         StringConverter s = new StringConverter();
         converters.put(s.getName(), s);
         DateConverter d = new DateConverter(this.analysisContext);
@@ -77,6 +85,7 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
     public Collection<Converter> getConverters() {
         return converters.values();
     }
+
     @Override
     public void analysis(Sheet sheetParam) {
         analysisContext.setCurrentSheet(sheetParam);
@@ -92,6 +101,7 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
     public AnalysisContext getAnalysisContext() {
         return analysisContext;
     }
+
     /**
      */
     @Override
@@ -109,9 +119,9 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
     public void notify(AnalysisFinishEvent event) {
         analysisContext.setCurrentRowAnalysisResult(event.getAnalysisResult());
         /** Parsing header content **/
-        if (analysisContext.getCurrentRowNum() < analysisContext.getCurrentSheet().getHeadLineMun()) {
-            if (analysisContext.getCurrentRowNum() <= analysisContext.getCurrentSheet().getHeadLineMun() - 1) {
-                buildExcelHeadProperty(null, (List<String>) analysisContext.getCurrentRowAnalysisResult());
+        if (analysisContext.getCurrentRowNum() < analysisContext.getCurrentSheet().getReadHeadRowNumber()) {
+            if (analysisContext.getCurrentRowNum() <= analysisContext.getCurrentSheet().getReadHeadRowNumber() - 1) {
+                buildExcelHeadProperty(null, (List<String>)analysisContext.getCurrentRowAnalysisResult());
             }
         } else {
             for (Entry<String, AnalysisEventListener<Object>> entry : listeners.entrySet()) {
@@ -120,10 +130,9 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
         }
     }
 
-
     private void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow) {
-        ExcelHeadProperty excelHeadProperty = ExcelHeadProperty
-                        .buildExcelHeadProperty(this.analysisContext.getExcelHeadProperty(), clazz, headOneRow);
+        ExcelHeadProperty excelHeadProperty =
+            ExcelHeadProperty.buildExcelHeadProperty(this.analysisContext.getExcelHeadProperty(), clazz, headOneRow);
         this.analysisContext.setExcelHeadProperty(excelHeadProperty);
     }
 }

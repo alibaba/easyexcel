@@ -2,14 +2,14 @@ package com.alibaba.excel.write.handler;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.alibaba.excel.metadata.SheetHolder;
+import com.alibaba.excel.metadata.holder.SheetHolder;
 
 /**
  * intercepts handle sheet creation
  * 
  * @author zhuangjiaju
  */
-public interface SheetExcelWriteHandler extends ExcelWriteHandler {
+public interface SheetWriteHandler extends WriteHandler {
 
     /**
      * called before create the sheet

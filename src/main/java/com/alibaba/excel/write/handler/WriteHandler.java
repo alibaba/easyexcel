@@ -7,4 +7,4 @@ import com.alibaba.excel.event.Handler;
  * 
  * @author zhuangjiaju
  */
-public interface ExcelWriteHandler extends Handler {}
+public interface WriteHandler extends Handler {}

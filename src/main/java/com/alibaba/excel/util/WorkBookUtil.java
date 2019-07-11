@@ -30,22 +30,6 @@ public class WorkBookUtil {
         return workbook;
     }
 
-    public static Sheet createOrGetSheet(Workbook workbook, com.alibaba.excel.metadata.Sheet sheet) {
-        Sheet sheet1 = null;
-        try {
-            try {
-                sheet1 = workbook.getSheetAt(sheet.getSheetNo()-1);
-            } catch (Exception e) {
-            }
-            if (null == sheet1) {
-                sheet1 = createSheet(workbook, sheet);
-                buildSheetStyle(sheet1,sheet.getColumnWidthMap());
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("constructCurrentSheet error", e);
-        }
-        return sheet1;
-    }
 
     public static Sheet createSheet(Workbook workbook, com.alibaba.excel.metadata.Sheet sheet) {
         return workbook.createSheet(sheet.getSheetName() != null ? sheet.getSheetName() : sheet.getSheetNo() + "");

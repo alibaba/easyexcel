@@ -9,6 +9,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelGenerateException;
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.ExcelColumnProperty;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.util.TypeUtil;
@@ -29,7 +30,7 @@ public class ModelBuildEventListener extends AnalysisEventListener<Object> {
         if (context.getExcelHeadProperty() != null && context.getExcelHeadProperty().getHeadClazz() != null) {
             try {
                 @SuppressWarnings("unchecked")
-                Object resultModel = buildUserModel(context, (List<String>)object);
+                Object resultModel = buildUserModel(context, (List<CellData>)object);
                 context.setCurrentRowAnalysisResult(resultModel);
             } catch (Exception e) {
                 throw new ExcelGenerateException(e);
@@ -38,7 +39,7 @@ public class ModelBuildEventListener extends AnalysisEventListener<Object> {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private Object buildUserModel(AnalysisContext context, List<String> stringList) throws Exception {
+    private Object buildUserModel(AnalysisContext context, List<CellData> cellDataList) throws Exception {
         ExcelHeadProperty excelHeadProperty = context.getExcelHeadProperty();
         Object resultModel = excelHeadProperty.getHeadClazz().newInstance();
         if (excelHeadProperty == null) {
@@ -58,8 +59,14 @@ public class ModelBuildEventListener extends AnalysisEventListener<Object> {
         return resultModel;
     }
 
-    private Object convertValue(String value, ExcelColumnProperty columnProperty) {
+    private Object convertValue(CellData cellData, ExcelColumnProperty columnProperty) {
+
+//        columnProperty.getField().getClass(), cellData.getType();
+
+
         for (Converter c : converters) {
+//            c.convertToJavaData(cellData,columnProperty);
+
             if (c.support(columnProperty)) {
                 return c.convert(value, columnProperty);
             }
