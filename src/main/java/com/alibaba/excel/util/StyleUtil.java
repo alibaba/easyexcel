@@ -45,7 +45,7 @@ public class StyleUtil {
      * @return
      */
     public static CellStyle buildHeadCellStyle(Workbook workbook, com.alibaba.excel.metadata.CellStyle cs) {
-        CellStyle cellStyle = workbook.createCellStyle();
+        CellStyle cellStyle = buildDefaultCellStyle(workbook);
         if (cs == null) {
             return cellStyle;
         }
@@ -61,7 +61,7 @@ public class StyleUtil {
      */
     public static CellStyle buildHeadCellStyle(Workbook workbook, com.alibaba.excel.metadata.Font f,
         IndexedColors indexedColors) {
-        CellStyle cellStyle = workbook.createCellStyle();
+        CellStyle cellStyle = buildDefaultCellStyle(workbook);
         return buildCellStyle(workbook, cellStyle, f, indexedColors);
     }
 
@@ -73,7 +73,7 @@ public class StyleUtil {
      * @return
      */
     public static CellStyle buildContentCellStyle(Workbook workbook, com.alibaba.excel.metadata.CellStyle cs) {
-        CellStyle cellStyle = buildDefaultCellStyle(workbook);
+        CellStyle cellStyle = workbook.createCellStyle();
         if (cs == null) {
             return cellStyle;
         }
@@ -89,7 +89,7 @@ public class StyleUtil {
      */
     public static CellStyle buildContentCellStyle(Workbook workbook, com.alibaba.excel.metadata.Font f,
         IndexedColors indexedColors) {
-        CellStyle cellStyle = buildDefaultCellStyle(workbook);
+        CellStyle cellStyle = workbook.createCellStyle();
         return buildCellStyle(workbook, cellStyle, f, indexedColors);
     }
 

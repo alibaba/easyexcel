@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.alibaba.excel.converters.bigdecimal.BigDecimalNumberConverter;
 import com.alibaba.excel.converters.date.DateStringConverter;
+import com.alibaba.excel.converters.string.StringStringConverter;
 
 /**
  * Build default handler
@@ -19,11 +20,14 @@ public class DefaultConverterBuilder {
      */
     public static Map<Class, Converter> loadDefaultWriteConverter() {
         Map<Class, Converter> converterMap = new HashMap<Class, Converter>();
-        DateStringConverter dateStringConverter = new DateStringConverter();
-        converterMap.put(dateStringConverter.supportJavaTypeKey(), dateStringConverter);
-        BigDecimalNumberConverter bigDecimalNumberConverter = new BigDecimalNumberConverter();
-        converterMap.put(bigDecimalNumberConverter.supportJavaTypeKey(), bigDecimalNumberConverter);
+        putConverter(converterMap, new DateStringConverter());
+        putConverter(converterMap, new BigDecimalNumberConverter());
+        putConverter(converterMap, new StringStringConverter());
         return converterMap;
+    }
+
+    private static void putConverter(Map<Class, Converter> converterMap, Converter converter) {
+        converterMap.put(converter.supportJavaTypeKey(), converter);
     }
 
     /**

@@ -62,12 +62,11 @@ public class ExcelHeadProperty {
             // convert headClazz to head
             initColumnProperties();
         }
-
         initHeadRowNumber();
     }
 
-    public static ExcelHeadProperty buildExcelHeadProperty(ExcelHeadProperty excelHeadProperty,
-        Class clazz, List<String> headOneRow) {
+    public static ExcelHeadProperty buildExcelHeadProperty(ExcelHeadProperty excelHeadProperty, Class clazz,
+        List<String> headOneRow) {
         if (excelHeadProperty == null) {
             return new ExcelHeadProperty(clazz, new ArrayList<List<String>>());
         }
@@ -206,7 +205,7 @@ public class ExcelHeadProperty {
     }
 
     public boolean hasHead() {
-        return headKind == HeadKindEnum.NONE;
+        return headKind != HeadKindEnum.NONE;
     }
 
     public int getHeadRowNumber() {

@@ -10,10 +10,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Workbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.WriteHandler;
@@ -25,100 +25,156 @@ import com.alibaba.excel.write.handler.WriteHandler;
  */
 public class ExcelWriterBuilder {
     /**
-     * Excel type
+     * Workbook
      */
-    private ExcelTypeEnum excelType;
+    private Workbook workbook;
+
+    public ExcelWriterBuilder() {
+        this.workbook = new Workbook();
+    }
+
     /**
-     * Final output stream
+     * Count the number of added heads when read sheet.
+     *
+     * <li>0 - This Sheet has no head ,since the first row are the data
+     * <li>1 - This Sheet has one row head , this is the default
+     * <li>2 - This Sheet has two row head ,since the third row is the data
+     *
+     * @param readHeadRowNumber
+     * @return
      */
-    private OutputStream outputStream;
+    public ExcelWriterBuilder readHeadRowNumber(Integer readHeadRowNumber) {
+        workbook.setReadHeadRowNumber(readHeadRowNumber);
+        return this;
+    }
+
     /**
-     * Template input stream
+     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
+     *
+     * @param writeRelativeHeadRowIndex
+     * @return
      */
-    private InputStream templateInputStream;
+    public ExcelWriterBuilder writeRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
+        workbook.setWriteRelativeHeadRowIndex(writeRelativeHeadRowIndex);
+        return this;
+    }
+
     /**
-     * Custom type conversions override the default
+     * You can only choose one of the {@link ExcelWriterBuilder#head(List)} and
+     * {@link ExcelWriterBuilder#head(Class)}
+     *
+     * @param head
+     * @return
      */
-    private Map<Class, Converter> customConverterMap = new HashMap<Class, Converter>();
+    public ExcelWriterBuilder head(List<List<String>> head) {
+        workbook.setHead(head);
+        return this;
+    }
+
+    /**
+     * You can only choose one of the {@link ExcelWriterBuilder#head(List)} and
+     * {@link ExcelWriterBuilder#head(Class)}
+     *
+     * @param clazz
+     * @return
+     */
+    public ExcelWriterBuilder head(Class clazz) {
+        workbook.setClazz(clazz);
+        return this;
+    }
+
     /**
      * Need Head
      */
-    private Boolean needHead;
+    public ExcelWriterBuilder needHead(Boolean needHead) {
+        workbook.setNeedHead(needHead);
+        return this;
+    }
+
     /**
-     * Custom type handler override the default
-     */
-    private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
-    /**
-     * Write handler
+     * Default true
      *
-     * @deprecated please use {@link WriteHandler}
+     * @param autoCloseStream
+     * @return
      */
-    @Deprecated
-    private com.alibaba.excel.event.WriteHandler writeHandler;
-
-    public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
-        this.excelType = excelType;
+    public ExcelWriterBuilder autoCloseStream(Boolean autoCloseStream) {
+        workbook.setAutoCloseStream(autoCloseStream);
         return this;
-    }
-
-    public ExcelWriterBuilder outputFile(OutputStream outputStream) {
-        this.outputStream = outputStream;
-        return this;
-    }
-
-    public ExcelWriterBuilder outputFile(File outputFile) throws FileNotFoundException {
-        return outputFile(new FileOutputStream(outputFile));
-    }
-
-    public ExcelWriterBuilder outputFile(String outputPathName) throws FileNotFoundException {
-        return outputFile(new File(outputPathName));
-    }
-
-    public ExcelWriterBuilder outputFile(URI outputUri) throws FileNotFoundException {
-        return outputFile(new File(outputUri));
-    }
-
-    public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {
-        this.templateInputStream = templateInputStream;
-        return this;
-    }
-
-    public ExcelWriterBuilder withTemplate(File templateFile) throws FileNotFoundException {
-        return withTemplate(new FileInputStream(templateFile));
-    }
-
-    public ExcelWriterBuilder withTemplate(String templatePathName) throws FileNotFoundException {
-        return withTemplate(new File(templatePathName));
-    }
-
-    public ExcelWriterBuilder withTemplate(URI templateUri) throws FileNotFoundException {
-        return withTemplate(new File(templateUri));
     }
 
     /**
      * Custom type conversions override the default.
-     * 
+     *
      * @param converter
      * @return
      */
     public ExcelWriterBuilder registerConverter(Converter converter) {
-        this.customConverterMap.put(converter.supportJavaTypeKey(), converter);
+        if (workbook.getCustomConverterMap() == null) {
+            workbook.setCustomConverterMap(new HashMap<Class, Converter>());
+        }
+        workbook.getCustomConverterMap().put(converter.supportJavaTypeKey(), converter);
         return this;
     }
 
     /**
-     * Default required header
-     * 
+     * Custom write handler
+     *
+     * @param writeHandler
      * @return
      */
-    public ExcelWriterBuilder doNotNeedHead() {
-        this.needHead = Boolean.FALSE;
+    public ExcelWriterBuilder registerWriteHandler(WriteHandler writeHandler) {
+        if (workbook.getCustomWriteHandlerList() == null) {
+            workbook.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
+        }
+        workbook.getCustomWriteHandlerList().add(writeHandler);
         return this;
     }
 
-    public ExcelWriterBuilder registerWriteHandler(WriteHandler writeHandler) {
-        this.customWriteHandlerList.add(writeHandler);
+    public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
+        workbook.setExcelType(excelType);
         return this;
+    }
+
+    public ExcelWriterBuilder outputFile(OutputStream outputStream) {
+        workbook.setOutputStream(outputStream);
+        return this;
+    }
+
+    public ExcelWriterBuilder outputFile(File outputFile) {
+        try {
+            return outputFile(new FileOutputStream(outputFile));
+        } catch (FileNotFoundException e) {
+            throw new ExcelGenerateException("Can not create file", e);
+        }
+    }
+
+    public ExcelWriterBuilder outputFile(String outputPathName) {
+        return outputFile(new File(outputPathName));
+    }
+
+    public ExcelWriterBuilder outputFile(URI outputUri) {
+        return outputFile(new File(outputUri));
+    }
+
+    public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {
+        workbook.setTemplateInputStream(templateInputStream);
+        return this;
+    }
+
+    public ExcelWriterBuilder withTemplate(File templateFile) {
+        try {
+            return withTemplate(new FileInputStream(templateFile));
+        } catch (FileNotFoundException e) {
+            throw new ExcelGenerateException("Can not create file", e);
+        }
+    }
+
+    public ExcelWriterBuilder withTemplate(String templatePathName) {
+        return withTemplate(new File(templatePathName));
+    }
+
+    public ExcelWriterBuilder withTemplate(URI templateUri) {
+        return withTemplate(new File(templateUri));
     }
 
     /**
@@ -128,19 +184,11 @@ public class ExcelWriterBuilder {
      */
     @Deprecated
     public ExcelWriterBuilder registerWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
-        this.writeHandler = writeHandler;
+        workbook.setWriteHandler(writeHandler);
         return this;
     }
 
     public ExcelWriter build() {
-        Workbook workbook = new Workbook();
-        workbook.setTemplateInputStream(templateInputStream);
-        workbook.setOutputStream(outputStream);
-        workbook.setExcelType(excelType);
-        workbook.setNeedHead(needHead);
-        workbook.setCustomConverterMap(customConverterMap);
-        workbook.setCustomWriteHandlerList(customWriteHandlerList);
-        workbook.setWriteHandler(writeHandler);
         return new ExcelWriter(workbook);
     }
 }

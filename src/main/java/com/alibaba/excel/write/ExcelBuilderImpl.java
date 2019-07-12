@@ -12,12 +12,16 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.metadata.holder.ConfigurationSelector;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.POITempFile;
 import com.alibaba.excel.util.WorkBookUtil;
+import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.handler.RowWriteHandler;
+import com.alibaba.excel.write.handler.WriteHandler;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -43,9 +47,9 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (context.currentConfigurationSelector().isNew()) {
             rowNum += context.currentConfigurationSelector().writeRelativeHeadRowIndex();
         }
-        for (int i = 0; i < data.size(); i++) {
-            int n = i + rowNum + 1;
-            addOneRowOfDataToExcel(data.get(i), n);
+        for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {
+            int n = relativeRowIndex + rowNum + 1;
+            addOneRowOfDataToExcel(data.get(relativeRowIndex), n, relativeRowIndex);
         }
     }
 
@@ -72,37 +76,110 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         context.currentSheetHolder().getSheet().addMergedRegion(cra);
     }
 
-    private void addOneRowOfDataToExcel(Object oneRowData, int n) {
+    private void addOneRowOfDataToExcel(Object oneRowData, int n, int relativeRowIndex) {
+        beforeRowCreate(n, relativeRowIndex);
         Row row = WorkBookUtil.createRow(context.currentSheetHolder().getSheet(), n);
+        afterRowCreate(row, relativeRowIndex);
         if (oneRowData instanceof List) {
-            addBasicTypeToExcel((List)oneRowData, row);
+            addBasicTypeToExcel((List)oneRowData, row, relativeRowIndex);
         } else {
-            addJavaObjectToExcel(oneRowData, row);
+            addJavaObjectToExcel(oneRowData, row, relativeRowIndex);
         }
     }
 
-    private void addBasicTypeToExcel(List<Object> oneRowData, Row row) {
+    private void beforeRowCreate(int rowIndex, int relativeRowIndex) {
+        List<WriteHandler> handlerList =
+            context.currentConfigurationSelector().writeHandlerMap().get(RowWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof RowWriteHandler) {
+                ((RowWriteHandler)writeHandler).beforeRowCreate(context.currentSheetHolder(),
+                    context.currentTableHolder(), rowIndex, relativeRowIndex, false);
+            }
+        }
+    }
+
+    private void afterRowCreate(Row row, int relativeRowIndex) {
+        List<WriteHandler> handlerList =
+            context.currentConfigurationSelector().writeHandlerMap().get(RowWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof RowWriteHandler) {
+                ((RowWriteHandler)writeHandler).afterRowCreate(context.currentSheetHolder(),
+                    context.currentTableHolder(), row, relativeRowIndex, false);
+            }
+        }
+        if (null != context.currentWorkbookHolder().getWriteHandler()) {
+            context.currentWorkbookHolder().getWriteHandler().row(row.getRowNum(), row);
+        }
+    }
+
+    private void addBasicTypeToExcel(List<Object> oneRowData, Row row, int relativeRowIndex) {
         if (CollectionUtils.isEmpty(oneRowData)) {
             return;
         }
+        List<Head> headList = context.currentConfigurationSelector().excelHeadProperty().getHeadList();
         for (int i = 0; i < oneRowData.size(); i++) {
-            Cell cell = WorkBookUtil.createCell(row, i, null);
+            Head head = i <= headList.size() ? headList.get(i) : null;
+            beforeCellCreate(row, head, relativeRowIndex);
+            Cell cell = WorkBookUtil.createCell(row, i);
             Object value = oneRowData.get(i);
             converterAndSet(context.currentConfigurationSelector(), value.getClass(), cell, value, null);
+            afterCellCreate(head, cell, relativeRowIndex);
         }
     }
 
-    private void addJavaObjectToExcel(Object oneRowData, Row row) {
+    private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex) {
         ConfigurationSelector currentConfigurationSelector = context.currentConfigurationSelector();
         int i = 0;
         BeanMap beanMap = BeanMap.create(oneRowData);
+        List<Head> headList = context.currentConfigurationSelector().excelHeadProperty().getHeadList();
         for (ExcelColumnProperty excelHeadProperty : currentConfigurationSelector.excelHeadProperty()
             .getColumnPropertyList()) {
-            Cell cell = WorkBookUtil.createCell(row, i, null);
+            Head head = i <= headList.size() ? headList.get(i) : null;
+            beforeCellCreate(row, head, relativeRowIndex);
+            Cell cell = WorkBookUtil.createCell(row, i);
             Object value = beanMap.get(excelHeadProperty.getField().getName());
             converterAndSet(currentConfigurationSelector, excelHeadProperty.getField().getType(), cell, value,
                 excelHeadProperty);
+            afterCellCreate(head, cell, relativeRowIndex);
             i++;
+        }
+    }
+
+    private void beforeCellCreate(Row row, Head head, int relativeRowIndex) {
+        List<WriteHandler> handlerList =
+            context.currentConfigurationSelector().writeHandlerMap().get(CellWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof CellWriteHandler) {
+                ((CellWriteHandler)writeHandler).beforeCellCreate(context.currentSheetHolder(),
+                    context.currentTableHolder(), row, head, relativeRowIndex, false);
+            }
+        }
+
+    }
+
+    private void afterCellCreate(Head head, Cell cell, int relativeRowIndex) {
+        List<WriteHandler> handlerList =
+            context.currentConfigurationSelector().writeHandlerMap().get(CellWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof CellWriteHandler) {
+                ((CellWriteHandler)writeHandler).afterCellCreate(context.currentSheetHolder(),
+                    context.currentTableHolder(), cell, head, relativeRowIndex, false);
+            }
+        }
+        if (null != context.currentWorkbookHolder().getWriteHandler()) {
+            context.currentWorkbookHolder().getWriteHandler().cell(cell.getRowIndex(), cell);
         }
     }
 
@@ -117,7 +194,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
         }
 
-        CellData cellData = null;
+        CellData cellData;
         try {
             cellData = converter.convertToExcelData(value, excelHeadProperty);
         } catch (Exception e) {
@@ -130,13 +207,13 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         }
         switch (cellData.getType()) {
             case STRING:
-                cell.setCellValue(cell.getStringCellValue());
+                cell.setCellValue(cellData.getStringValue());
                 return;
             case BOOLEAN:
-                cell.setCellValue(cell.getBooleanCellValue());
+                cell.setCellValue(cellData.getBooleanValue());
                 return;
             case NUMBER:
-                cell.setCellValue(cell.getNumericCellValue());
+                cell.setCellValue(cellData.getDoubleValue());
                 return;
             default:
                 throw new ExcelDataConvertException("Not supported data:" + value + " return type:" + cell.getCellType()

@@ -8,11 +8,11 @@ import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.holder.SheetHolder;
 import com.alibaba.excel.metadata.holder.TableHolder;
+import com.alibaba.excel.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 
-public abstract class AbstractCellStyleStrategy
-    implements CellWriteHandler, WorkbookWriteHandler, NotRepeatExecutor {
+public abstract class AbstractCellStyleStrategy implements CellWriteHandler, WorkbookWriteHandler, NotRepeatExecutor {
     @Override
     public String uniqueValue() {
         return "CellStyleStrategy";
@@ -22,8 +22,8 @@ public abstract class AbstractCellStyleStrategy
     public void beforeWorkbookCreate() {}
 
     @Override
-    public void afterWorkbookCreate(Workbook workbook) {
-        initCellStyle(workbook);
+    public void afterWorkbookCreate(WorkbookHolder workbookHolder) {
+        initCellStyle(workbookHolder.getWorkbook());
     }
 
     @Override

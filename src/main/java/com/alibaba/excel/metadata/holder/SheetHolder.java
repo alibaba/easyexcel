@@ -1,21 +1,26 @@
 package com.alibaba.excel.metadata.holder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.CellStyle;
+import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.style.RowCellStyleStrategy;
+import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
 
 /**
  * sheet holder
  *
  * @author zhuangjiaju
  */
-public class SheetHolder implements ConfigurationSelector {
-
+public class SheetHolder extends AbstractConfigurationSelector {
     /***
      * poi sheet
      */
@@ -37,34 +42,83 @@ public class SheetHolder implements ConfigurationSelector {
      */
     private Map<Integer, TableHolder> hasBeenInitializedTable;
     /**
-     * Need Head
-     */
-    private Boolean needHead;
-    /**
-     * Write handler for workbook
-     */
-    private List<WriteHandler> writeHandlerList;
-    /**
-     * Converter for workbook
-     */
-    private Map<Class, Converter> converterMap;
-    /**
      * current param
      */
     private com.alibaba.excel.metadata.Sheet sheetParam;
 
+    public SheetHolder(com.alibaba.excel.metadata.Sheet sheet, WorkbookHolder workbookHolder) {
+        super();
+        this.sheetParam = sheet;
+        this.parentWorkBook = workbookHolder;
+        boolean noHead = (sheet.getHead() == null || sheet.getHead().isEmpty()) && sheet.getClazz() == null;
+        if (noHead) {
+            // Use parent
+            setHead(workbookHolder.getHead());
+            setClazz(workbookHolder.getClazz());
+        } else {
+            setHead(sheet.getHead());
+            setClazz(sheet.getClazz());
+        }
+        setNewInitialization(Boolean.TRUE);
+        if (sheet.getNeedHead() == null) {
+            setNeedHead(workbookHolder.needHead());
+        } else {
+            setNeedHead(sheet.getNeedHead());
+        }
+        if (sheet.getWriteRelativeHeadRowIndex() == null) {
+            setWriteRelativeHeadRowIndex(workbookHolder.writeRelativeHeadRowIndex());
+        } else {
+            setWriteRelativeHeadRowIndex(sheet.getWriteRelativeHeadRowIndex());
+        }
+        // Compatible with old code
+        compatibleOldCode(sheet);
+        List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
+        if (sheet.getCustomWriteHandlerList() != null && !sheet.getCustomWriteHandlerList().isEmpty()) {
+            handlerList.addAll(sheet.getCustomWriteHandlerList());
+        }
+        setWriteHandlerMap(sortAndClearUpHandler(handlerList, workbookHolder.getWriteHandlerMap()));
+        Map<Class, Converter> converterMap = new HashMap<Class, Converter>(workbookHolder.converterMap());
+        if (sheet.getCustomConverterMap() != null && !sheet.getCustomConverterMap().isEmpty()) {
+            converterMap.putAll(sheet.getCustomConverterMap());
+        }
+        setConverterMap(converterMap);
+        setHasBeenInitializedTable(new HashMap<Integer, TableHolder>());
+    }
+
     /**
-     * Excel head property
+     * Compatible with old code
      */
-    private ExcelHeadProperty excelHeadProperty;
-    /**
-     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
-     */
-    private Integer writeRelativeHeadRowIndex;
-    /**
-     * Record whether it's new or from cache
-     */
-    private Boolean newInitialization;
+    @Deprecated
+    private void compatibleOldCode(com.alibaba.excel.metadata.Sheet sheet) {
+        if (sheet.getColumnWidthMap() != null && !sheet.getColumnWidthMap().isEmpty()) {
+            final Map<Integer, Integer> columnWidthMap = sheet.getColumnWidthMap();
+            if (sheet.getCustomWriteHandlerList() == null) {
+                sheet.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
+            }
+            sheet.getCustomWriteHandlerList().add(new AbstractHeadColumnWidthStyleStrategy() {
+                @Override
+                protected int columnWidth(Head head) {
+                    if (columnWidthMap.containsKey(head.getColumnIndex())) {
+                        columnWidthMap.get(head.getColumnIndex());
+                    }
+                    return 20;
+                }
+            });
+        }
+        if (sheet.getTableStyle() != null) {
+            final TableStyle tableStyle = sheet.getTableStyle();
+            if (sheet.getCustomWriteHandlerList() == null) {
+                sheet.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
+            }
+            CellStyle headCellStyle = new CellStyle();
+            headCellStyle.setFont(tableStyle.getTableHeadFont());
+            headCellStyle.setIndexedColors(tableStyle.getTableContentBackGroundColor());
+            CellStyle contentCellStyle = new CellStyle();
+            contentCellStyle.setFont(tableStyle.getTableContentFont());
+            contentCellStyle.setIndexedColors(tableStyle.getTableContentBackGroundColor());
+            sheet.getCustomWriteHandlerList().add(new RowCellStyleStrategy(headCellStyle, contentCellStyle));
+        }
+    }
 
     public Sheet getSheet() {
         return sheet;
@@ -106,30 +160,6 @@ public class SheetHolder implements ConfigurationSelector {
         this.hasBeenInitializedTable = hasBeenInitializedTable;
     }
 
-    public Boolean getNeedHead() {
-        return needHead;
-    }
-
-    public void setNeedHead(Boolean needHead) {
-        this.needHead = needHead;
-    }
-
-    public List<WriteHandler> getWriteHandlerList() {
-        return writeHandlerList;
-    }
-
-    public void setWriteHandlerList(List<WriteHandler> writeHandlerList) {
-        this.writeHandlerList = writeHandlerList;
-    }
-
-    public Map<Class, Converter> getConverterMap() {
-        return converterMap;
-    }
-
-    public void setConverterMap(Map<Class, Converter> converterMap) {
-        this.converterMap = converterMap;
-    }
-
     public com.alibaba.excel.metadata.Sheet getSheetParam() {
         return sheetParam;
     }
@@ -137,59 +167,4 @@ public class SheetHolder implements ConfigurationSelector {
     public void setSheetParam(com.alibaba.excel.metadata.Sheet sheetParam) {
         this.sheetParam = sheetParam;
     }
-
-    public ExcelHeadProperty getExcelHeadProperty() {
-        return excelHeadProperty;
-    }
-
-    public void setExcelHeadProperty(ExcelHeadProperty excelHeadProperty) {
-        this.excelHeadProperty = excelHeadProperty;
-    }
-
-    public Integer getWriteRelativeHeadRowIndex() {
-        return writeRelativeHeadRowIndex;
-    }
-
-    public void setWriteRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
-        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
-    }
-
-    public Boolean getNewInitialization() {
-        return newInitialization;
-    }
-
-    public void setNewInitialization(Boolean newInitialization) {
-        this.newInitialization = newInitialization;
-    }
-
-    @Override
-    public List<WriteHandler> writeHandlerList() {
-        return getWriteHandlerList();
-    }
-
-    @Override
-    public Map<Class, Converter> converterMap() {
-        return getConverterMap();
-    }
-
-    @Override
-    public boolean needHead() {
-        return getNeedHead();
-    }
-
-    @Override
-    public int writeRelativeHeadRowIndex() {
-        return getWriteRelativeHeadRowIndex();
-    }
-
-    @Override
-    public ExcelHeadProperty excelHeadProperty() {
-        return getExcelHeadProperty();
-    }
-
-    @Override
-    public boolean isNew() {
-        return getNewInitialization();
-    }
-
 }

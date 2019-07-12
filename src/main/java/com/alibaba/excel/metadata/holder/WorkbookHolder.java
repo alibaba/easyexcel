@@ -2,13 +2,16 @@ package com.alibaba.excel.metadata.holder;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.converters.DefaultConverterBuilder;
+import com.alibaba.excel.write.handler.DefaultWriteHandlerBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
@@ -16,31 +19,15 @@ import com.alibaba.excel.write.handler.WriteHandler;
  *
  * @author zhuangjiaju
  */
-public class WorkbookHolder implements ConfigurationSelector {
+public class WorkbookHolder extends AbstractConfigurationSelector {
     /***
      * poi Workbook
      */
     private Workbook workbook;
     /**
-     * Need Head
-     */
-    private Boolean needHead;
-    /**
-     * Write handler for workbook
-     */
-    private List<WriteHandler> writeHandlerList;
-    /**
-     * Converter for workbook
-     */
-    private Map<Class, Converter> converterMap;
-    /**
      * prevent duplicate creation of sheet objects
      */
     private Map<Integer, SheetHolder> hasBeenInitializedSheet;
-    /**
-     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
-     */
-    private Integer writeRelativeHeadRowIndex;
     /**
      * current param
      */
@@ -53,6 +40,56 @@ public class WorkbookHolder implements ConfigurationSelector {
      * Template input stream
      */
     private InputStream templateInputStream;
+    /**
+     * Default true
+     */
+    private Boolean autoCloseStream;
+
+    /**
+     * Write handler
+     *
+     * @deprecated please use {@link WriteHandler}
+     */
+    @Deprecated
+    private com.alibaba.excel.event.WriteHandler writeHandler;
+
+    public WorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
+        super();
+        this.workbookParam = workbook;
+        this.templateInputStream = workbook.getTemplateInputStream();
+        this.outputStream = workbook.getOutputStream();
+        this.templateInputStream = workbook.getTemplateInputStream();
+        setHead(workbook.getHead());
+        setClazz(workbook.getClazz());
+        setNewInitialization(Boolean.TRUE);
+        if (workbook.getAutoCloseStream() == null) {
+            setAutoCloseStream(Boolean.TRUE);
+        } else {
+            setAutoCloseStream(workbook.getAutoCloseStream());
+        }
+        if (workbook.getNeedHead() == null) {
+            setNeedHead(Boolean.TRUE);
+        } else {
+            setNeedHead(workbook.getNeedHead());
+        }
+        if (workbook.getWriteRelativeHeadRowIndex() == null) {
+            setWriteRelativeHeadRowIndex(0);
+        } else {
+            setWriteRelativeHeadRowIndex(workbook.getWriteRelativeHeadRowIndex());
+        }
+        List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
+        if (workbook.getCustomWriteHandlerList() != null && !workbook.getCustomWriteHandlerList().isEmpty()) {
+            handlerList.addAll(workbook.getCustomWriteHandlerList());
+        }
+        handlerList.addAll(DefaultWriteHandlerBuilder.loadDefaultHandler());
+        setWriteHandlerMap(sortAndClearUpHandler(handlerList, null));
+        Map<Class, Converter> converterMap = DefaultConverterBuilder.loadDefaultWriteConverter();
+        if (workbook.getCustomConverterMap() != null && !workbook.getCustomConverterMap().isEmpty()) {
+            converterMap.putAll(workbook.getCustomConverterMap());
+        }
+        setConverterMap(converterMap);
+        setHasBeenInitializedSheet(new HashMap<Integer, SheetHolder>());
+    }
 
     public Workbook getWorkbook() {
         return workbook;
@@ -62,44 +99,12 @@ public class WorkbookHolder implements ConfigurationSelector {
         this.workbook = workbook;
     }
 
-    public Boolean getNeedHead() {
-        return needHead;
-    }
-
-    public void setNeedHead(Boolean needHead) {
-        this.needHead = needHead;
-    }
-
-    public List<WriteHandler> getWriteHandlerList() {
-        return writeHandlerList;
-    }
-
-    public void setWriteHandlerList(List<WriteHandler> writeHandlerList) {
-        this.writeHandlerList = writeHandlerList;
-    }
-
-    public Map<Class, Converter> getConverterMap() {
-        return converterMap;
-    }
-
-    public void setConverterMap(Map<Class, Converter> converterMap) {
-        this.converterMap = converterMap;
-    }
-
     public Map<Integer, SheetHolder> getHasBeenInitializedSheet() {
         return hasBeenInitializedSheet;
     }
 
     public void setHasBeenInitializedSheet(Map<Integer, SheetHolder> hasBeenInitializedSheet) {
         this.hasBeenInitializedSheet = hasBeenInitializedSheet;
-    }
-
-    public Integer getWriteRelativeHeadRowIndex() {
-        return writeRelativeHeadRowIndex;
-    }
-
-    public void setWriteRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
-        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
     }
 
     public com.alibaba.excel.metadata.Workbook getWorkbookParam() {
@@ -126,33 +131,19 @@ public class WorkbookHolder implements ConfigurationSelector {
         this.templateInputStream = templateInputStream;
     }
 
-    @Override
-    public List<WriteHandler> writeHandlerList() {
-        return getWriteHandlerList();
+    public com.alibaba.excel.event.WriteHandler getWriteHandler() {
+        return writeHandler;
     }
 
-    @Override
-    public Map<Class, Converter> converterMap() {
-        return getConverterMap();
+    public void setWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
+        this.writeHandler = writeHandler;
     }
 
-    @Override
-    public boolean needHead() {
-        return getNeedHead();
+    public Boolean getAutoCloseStream() {
+        return autoCloseStream;
     }
 
-    @Override
-    public int writeRelativeHeadRowIndex() {
-        return getWriteRelativeHeadRowIndex();
-    }
-
-    @Override
-    public ExcelHeadProperty excelHeadProperty() {
-        return null;
-    }
-
-    @Override
-    public boolean isNew() {
-        return true;
+    public void setAutoCloseStream(Boolean autoCloseStream) {
+        this.autoCloseStream = autoCloseStream;
     }
 }

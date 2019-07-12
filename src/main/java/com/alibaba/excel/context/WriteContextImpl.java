@@ -1,13 +1,7 @@
 package com.alibaba.excel.context;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -16,27 +10,20 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.converters.DefaultConverterBuilder;
-import com.alibaba.excel.event.NotRepeatExecutor;
-import com.alibaba.excel.event.Order;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.metadata.holder.ConfigurationSelector;
 import com.alibaba.excel.metadata.holder.SheetHolder;
 import com.alibaba.excel.metadata.holder.TableHolder;
 import com.alibaba.excel.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.util.WorkBookUtil;
-import com.alibaba.excel.write.handler.DefaultWriteHandlerBuilder;
+import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
-import com.alibaba.excel.write.style.RowCellStyleStrategy;
-import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
 
 /**
  * A context is the main anchorage point of a excel writer.
@@ -109,70 +96,11 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void initCurrentWorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
-        currentWorkbookHolder = new WorkbookHolder();
-        currentWorkbookHolder.setWorkbookParam(workbook);
-        currentWorkbookHolder.setTemplateInputStream(workbook.getTemplateInputStream());
-        currentWorkbookHolder.setOutputStream(workbook.getOutputStream());
-        if (workbook.getNeedHead() == null) {
-            currentWorkbookHolder.setNeedHead(Boolean.TRUE);
-        } else {
-            currentWorkbookHolder.setNeedHead(workbook.getNeedHead());
-        }
-        if (workbook.getWriteRelativeHeadRowIndex() == null) {
-            currentWorkbookHolder.setWriteRelativeHeadRowIndex(0);
-        } else {
-            currentWorkbookHolder.setWriteRelativeHeadRowIndex(workbook.getWriteRelativeHeadRowIndex());
-        }
-        List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
-        if (workbook.getCustomWriteHandlerList() != null && !workbook.getCustomWriteHandlerList().isEmpty()) {
-            handlerList.addAll(workbook.getCustomWriteHandlerList());
-        }
-        handlerList.addAll(DefaultWriteHandlerBuilder.loadDefaultHandler());
-        currentWorkbookHolder.setWriteHandlerList(sortAndClearUpHandler(handlerList));
-        Map<Class, Converter> converterMap = DefaultConverterBuilder.loadDefaultWriteConverter();
-        if (workbook.getCustomConverterMap() != null && !workbook.getCustomConverterMap().isEmpty()) {
-            converterMap.putAll(workbook.getCustomConverterMap());
-        }
-        currentWorkbookHolder.setConverterMap(converterMap);
-        currentWorkbookHolder.setHasBeenInitializedSheet(new HashMap<Integer, SheetHolder>());
+        currentWorkbookHolder = new WorkbookHolder(workbook);
         currentConfigurationSelector = currentWorkbookHolder;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("CurrentConfigurationSelector is currentWorkbookHolder");
         }
-    }
-
-    private List<WriteHandler> sortAndClearUpHandler(List<WriteHandler> handlerList) {
-        // sort
-        Map<Integer, List<WriteHandler>> orderExcelWriteHandlerMap = new TreeMap<Integer, List<WriteHandler>>();
-        for (WriteHandler handler : handlerList) {
-            int order = Integer.MIN_VALUE;
-            if (handler instanceof Order) {
-                order = ((Order)handler).order();
-            }
-            if (orderExcelWriteHandlerMap.containsKey(order)) {
-                orderExcelWriteHandlerMap.get(order).add(handler);
-            } else {
-                List<WriteHandler> tempHandlerList = new ArrayList<WriteHandler>();
-                tempHandlerList.add(handler);
-                orderExcelWriteHandlerMap.put(order, tempHandlerList);
-            }
-        }
-        // clean up
-        Set<String> alreadyExistedHandlerSet = new HashSet<String>();
-        List<WriteHandler> result = new ArrayList<WriteHandler>();
-        for (Map.Entry<Integer, List<WriteHandler>> entry : orderExcelWriteHandlerMap.entrySet()) {
-            for (WriteHandler handler : entry.getValue()) {
-                if (handler instanceof NotRepeatExecutor) {
-                    String uniqueValue = ((NotRepeatExecutor)handler).uniqueValue();
-                    if (alreadyExistedHandlerSet.contains(uniqueValue)) {
-                        continue;
-                    }
-                    alreadyExistedHandlerSet.add(uniqueValue);
-                }
-                result.add(handler);
-            }
-        }
-        return result;
     }
 
     /**
@@ -191,6 +119,7 @@ public class WriteContextImpl implements WriteContext {
                 LOGGER.debug("Sheet:{} is already existed", sheet.getSheetNo());
             }
             currentSheetHolder = currentWorkbookHolder.getHasBeenInitializedSheet().get(sheet.getSheetNo());
+            currentSheetHolder.setNewInitialization(Boolean.FALSE);
             currentTableHolder = null;
             currentConfigurationSelector = currentSheetHolder;
             if (LOGGER.isDebugEnabled()) {
@@ -198,7 +127,6 @@ public class WriteContextImpl implements WriteContext {
             }
             return;
         }
-
         initCurrentSheetHolder(sheet);
         beforeSheetCreate();
         // Initialization current sheet
@@ -228,76 +156,19 @@ public class WriteContextImpl implements WriteContext {
                 ((SheetWriteHandler)writeHandler).afterSheetCreate(currentWorkbookHolder, currentSheetHolder);
             }
         }
+        if (null != currentWorkbookHolder.getWriteHandler()) {
+            currentWorkbookHolder.getWriteHandler().sheet(currentSheetHolder.getSheetNo(),
+                currentSheetHolder.getSheet());
+        }
     }
 
     private void initCurrentSheetHolder(com.alibaba.excel.metadata.Sheet sheet) {
-        currentSheetHolder = new SheetHolder();
-        currentSheetHolder.setSheetParam(sheet);
-        currentSheetHolder.setParentWorkBook(currentWorkbookHolder);
-        if (sheet.getNeedHead() == null) {
-            currentSheetHolder.setNeedHead(currentConfigurationSelector.needHead());
-        } else {
-            currentSheetHolder.setNeedHead(sheet.getNeedHead());
-        }
-        if (sheet.getWriteRelativeHeadRowIndex() == null) {
-            currentSheetHolder.setWriteRelativeHeadRowIndex(currentConfigurationSelector.writeRelativeHeadRowIndex());
-        } else {
-            currentSheetHolder.setWriteRelativeHeadRowIndex(sheet.getWriteRelativeHeadRowIndex());
-        }
-        // Compatible with old code
-        compatibleOldCode(sheet);
-        List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
-        if (sheet.getCustomWriteHandlerList() != null && !sheet.getCustomWriteHandlerList().isEmpty()) {
-            handlerList.addAll(sheet.getCustomWriteHandlerList());
-        }
-        handlerList.addAll(currentConfigurationSelector.writeHandlerList());
-        currentSheetHolder.setWriteHandlerList(sortAndClearUpHandler(handlerList));
-        Map<Class, Converter> converterMap = new HashMap<Class, Converter>(currentConfigurationSelector.converterMap());
-        if (sheet.getCustomConverterMap() != null && !sheet.getCustomConverterMap().isEmpty()) {
-            converterMap.putAll(sheet.getCustomConverterMap());
-        }
-        currentSheetHolder.setConverterMap(converterMap);
-        currentSheetHolder.setHasBeenInitializedTable(new HashMap<Integer, TableHolder>());
+        currentSheetHolder = new SheetHolder(sheet, currentWorkbookHolder);
         currentWorkbookHolder.getHasBeenInitializedSheet().put(sheet.getSheetNo(), currentSheetHolder);
         currentTableHolder = null;
         currentConfigurationSelector = currentSheetHolder;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("CurrentConfigurationSelector is currentSheetHolder");
-        }
-    }
-
-    /**
-     * Compatible with old code
-     */
-    @Deprecated
-    private void compatibleOldCode(com.alibaba.excel.metadata.Sheet sheet) {
-        if (sheet.getColumnWidthMap() != null && !sheet.getColumnWidthMap().isEmpty()) {
-            final Map<Integer, Integer> columnWidthMap = sheet.getColumnWidthMap();
-            if (sheet.getCustomWriteHandlerList() == null) {
-                sheet.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
-            }
-            sheet.getCustomWriteHandlerList().add(new AbstractHeadColumnWidthStyleStrategy() {
-                @Override
-                protected int columnWidth(Head head) {
-                    if (columnWidthMap.containsKey(head.getColumnIndex())) {
-                        columnWidthMap.get(head.getColumnIndex());
-                    }
-                    return 20;
-                }
-            });
-        }
-        if (sheet.getTableStyle() != null) {
-            final TableStyle tableStyle = sheet.getTableStyle();
-            if (sheet.getCustomWriteHandlerList() == null) {
-                sheet.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
-            }
-            CellStyle headCellStyle = new CellStyle();
-            headCellStyle.setFont(tableStyle.getTableHeadFont());
-            headCellStyle.setIndexedColors(tableStyle.getTableContentBackGroundColor());
-            CellStyle contentCellStyle = new CellStyle();
-            contentCellStyle.setFont(tableStyle.getTableContentFont());
-            contentCellStyle.setIndexedColors(tableStyle.getTableContentBackGroundColor());
-            sheet.getCustomWriteHandlerList().add(new RowCellStyleStrategy(headCellStyle, contentCellStyle));
         }
     }
 
@@ -313,7 +184,8 @@ public class WriteContextImpl implements WriteContext {
         }
         currentSheetHolder.setSheet(currentSheet);
         // Initialization head
-        currentSheetHolder.setExcelHeadProperty(new ExcelHeadProperty(sheet.getClazz(), sheet.getHead()));
+        currentSheetHolder
+            .setExcelHeadProperty(new ExcelHeadProperty(currentSheetHolder.getClazz(), currentSheetHolder.getHead()));
         // Initialization head
         initHead(currentSheetHolder.getExcelHeadProperty());
     }
@@ -322,28 +194,90 @@ public class WriteContextImpl implements WriteContext {
         if (!currentConfigurationSelector.needHead() || !currentSheetHolder.getExcelHeadProperty().hasHead()) {
             return;
         }
-        int startRow = currentSheetHolder.getSheet().getLastRowNum();
-        startRow += currentConfigurationSelector.writeRelativeHeadRowIndex();
+        int lastRowNum = currentSheetHolder.getSheet().getLastRowNum();
+        int rowIndex = lastRowNum + currentConfigurationSelector.writeRelativeHeadRowIndex();
         // Combined head
-        addMergedRegionToCurrentSheet(excelHeadProperty, startRow);
-        for (int i = startRow; i < excelHeadProperty.getHeadRowNumber() + startRow; i++) {
+        addMergedRegionToCurrentSheet(excelHeadProperty, rowIndex);
+        for (int relativeRowIndex = 0, i = rowIndex; i < excelHeadProperty.getHeadRowNumber() + rowIndex;
+            i++, relativeRowIndex++) {
+            beforeRowCreate(rowIndex, relativeRowIndex);
             Row row = WorkBookUtil.createRow(currentSheetHolder.getSheet(), i);
-            addOneRowOfHeadDataToExcel(row, i, excelHeadProperty.getHeadList());
+            afterRowCreate(row, relativeRowIndex);
+            addOneRowOfHeadDataToExcel(row, excelHeadProperty.getHeadList(), relativeRowIndex);
         }
     }
 
-    private void addMergedRegionToCurrentSheet(ExcelHeadProperty excelHeadProperty, int startRow) {
+    private void beforeRowCreate(int rowIndex, int relativeRowIndex) {
+        List<WriteHandler> handlerList = currentConfigurationSelector.writeHandlerMap().get(RowWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof RowWriteHandler) {
+                ((RowWriteHandler)writeHandler).beforeRowCreate(currentSheetHolder, currentTableHolder, rowIndex,
+                    relativeRowIndex, true);
+            }
+        }
+    }
+
+    private void afterRowCreate(Row row, int relativeRowIndex) {
+        List<WriteHandler> handlerList = currentConfigurationSelector.writeHandlerMap().get(RowWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof RowWriteHandler) {
+                ((RowWriteHandler)writeHandler).afterRowCreate(currentSheetHolder, currentTableHolder, row,
+                    relativeRowIndex, true);
+            }
+        }
+        if (null != currentWorkbookHolder.getWriteHandler()) {
+            currentWorkbookHolder.getWriteHandler().row(row.getRowNum(), row);
+        }
+    }
+
+    private void addMergedRegionToCurrentSheet(ExcelHeadProperty excelHeadProperty, int rowIndex) {
         for (com.alibaba.excel.metadata.CellRange cellRangeModel : excelHeadProperty.getCellRangeModels()) {
-            currentSheetHolder.getSheet().addMergedRegion(new CellRangeAddress(cellRangeModel.getFirstRow() + startRow,
-                cellRangeModel.getLastRow() + startRow, cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
+            currentSheetHolder.getSheet().addMergedRegion(new CellRangeAddress(cellRangeModel.getFirstRow() + rowIndex,
+                cellRangeModel.getLastRow() + rowIndex, cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
         }
     }
 
-    private void addOneRowOfHeadDataToExcel(Row row, int rowIndex, List<Head> headList) {
+    private void addOneRowOfHeadDataToExcel(Row row, List<Head> headList, int relativeRowIndex) {
         for (int i = 0; i < headList.size(); i++) {
             Head head = headList.get(i);
-            // TODO 创建cell
+            beforeCellCreate(row, headList.get(i), relativeRowIndex);
             Cell cell = WorkBookUtil.createCell(row, i, head.getHeadName(i));
+            afterCellCreate(headList.get(i), cell, relativeRowIndex);
+        }
+    }
+
+    private void beforeCellCreate(Row row, Head head, int relativeRowIndex) {
+        List<WriteHandler> handlerList = currentConfigurationSelector.writeHandlerMap().get(CellWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof CellWriteHandler) {
+                ((CellWriteHandler)writeHandler).beforeCellCreate(currentSheetHolder, currentTableHolder, row, head,
+                    relativeRowIndex, true);
+            }
+        }
+    }
+
+    private void afterCellCreate(Head head, Cell cell, int relativeRowIndex) {
+        List<WriteHandler> handlerList = currentConfigurationSelector.writeHandlerMap().get(CellWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof CellWriteHandler) {
+                ((CellWriteHandler)writeHandler).afterCellCreate(currentSheetHolder, currentTableHolder, cell, head,
+                    relativeRowIndex, true);
+            }
+        }
+        if (null != currentWorkbookHolder.getWriteHandler()) {
+            currentWorkbookHolder.getWriteHandler().cell(cell.getRowIndex(), cell);
         }
     }
 
@@ -360,6 +294,7 @@ public class WriteContextImpl implements WriteContext {
                 LOGGER.debug("Table:{} is already existed", table.getTableNo());
             }
             currentTableHolder = currentSheetHolder.getHasBeenInitializedTable().get(table.getTableNo());
+            currentTableHolder.setNewInitialization(Boolean.FALSE);
             currentConfigurationSelector = currentTableHolder;
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("CurrentConfigurationSelector is currentTableHolder");
@@ -368,62 +303,17 @@ public class WriteContextImpl implements WriteContext {
         }
         initCurrentTableHolder(table);
         // Initialization head
-        currentTableHolder.setExcelHeadProperty(new ExcelHeadProperty(table.getClazz(), table.getHead()));
-
+        currentTableHolder
+            .setExcelHeadProperty(new ExcelHeadProperty(currentTableHolder.getClazz(), currentTableHolder.getHead()));
         initHead(currentTableHolder.getExcelHeadProperty());
     }
 
     private void initCurrentTableHolder(com.alibaba.excel.metadata.Table table) {
-        currentTableHolder = new TableHolder();
-        currentTableHolder.setTableParam(table);
-        currentTableHolder.setParentSheet(currentSheetHolder);
-        currentTableHolder.setTableNo(table.getTableNo());
-        if (table.getNeedHead() == null) {
-            currentTableHolder.setNeedHead(currentConfigurationSelector.needHead());
-        } else {
-            currentTableHolder.setNeedHead(table.getNeedHead());
-        }
-        if (table.getWriteRelativeHeadRowIndex() == null) {
-            currentTableHolder.setWriteRelativeHeadRowIndex(currentConfigurationSelector.writeRelativeHeadRowIndex());
-        } else {
-            currentTableHolder.setWriteRelativeHeadRowIndex(table.getWriteRelativeHeadRowIndex());
-        }
-        // Compatible with old code
-        compatibleOldCode(table);
-        List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
-        if (table.getCustomWriteHandlerList() != null && !table.getCustomWriteHandlerList().isEmpty()) {
-            handlerList.addAll(table.getCustomWriteHandlerList());
-        }
-        handlerList.addAll(currentConfigurationSelector.writeHandlerList());
-        currentTableHolder.setWriteHandlerList(sortAndClearUpHandler(handlerList));
-        Map<Class, Converter> converterMap = new HashMap<Class, Converter>(currentConfigurationSelector.converterMap());
-        if (table.getCustomConverterMap() != null && !table.getCustomConverterMap().isEmpty()) {
-            converterMap.putAll(table.getCustomConverterMap());
-        }
-        currentTableHolder.setConverterMap(converterMap);
+        currentTableHolder = new TableHolder(table, currentSheetHolder);
+        currentSheetHolder.getHasBeenInitializedTable().put(table.getTableNo(), currentTableHolder);
         currentConfigurationSelector = currentTableHolder;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("CurrentConfigurationSelector is currentTableHolder");
-        }
-    }
-
-    /**
-     * Compatible with old code
-     */
-    @Deprecated
-    private void compatibleOldCode(com.alibaba.excel.metadata.Table table) {
-        if (table.getTableStyle() != null) {
-            final TableStyle tableStyle = table.getTableStyle();
-            if (table.getCustomWriteHandlerList() == null) {
-                table.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
-            }
-            CellStyle headCellStyle = new CellStyle();
-            headCellStyle.setFont(tableStyle.getTableHeadFont());
-            headCellStyle.setIndexedColors(tableStyle.getTableContentBackGroundColor());
-            CellStyle contentCellStyle = new CellStyle();
-            contentCellStyle.setFont(tableStyle.getTableContentFont());
-            contentCellStyle.setIndexedColors(tableStyle.getTableContentBackGroundColor());
-            table.getCustomWriteHandlerList().add(new RowCellStyleStrategy(headCellStyle, contentCellStyle));
         }
     }
 
@@ -452,14 +342,19 @@ public class WriteContextImpl implements WriteContext {
         try {
             currentWorkbookHolder.getWorkbook().write(currentWorkbookHolder.getOutputStream());
             currentWorkbookHolder.getWorkbook().close();
-            if (currentWorkbookHolder.getOutputStream() != null) {
-                currentWorkbookHolder.getOutputStream().close();
-            }
-            if (currentWorkbookHolder.getTemplateInputStream() != null) {
-                currentWorkbookHolder.getTemplateInputStream().close();
+            if (currentWorkbookHolder.getAutoCloseStream()) {
+                if (currentWorkbookHolder.getOutputStream() != null) {
+                    currentWorkbookHolder.getOutputStream().close();
+                }
+                if (currentWorkbookHolder.getTemplateInputStream() != null) {
+                    currentWorkbookHolder.getTemplateInputStream().close();
+                }
             }
         } catch (IOException e) {
             throw new ExcelGenerateException("Can not close IO", e);
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Finished write.");
         }
     }
 }

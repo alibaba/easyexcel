@@ -1,20 +1,11 @@
 package com.alibaba.excel.write.builder;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
@@ -24,97 +15,124 @@ import com.alibaba.excel.write.handler.WriteHandler;
  */
 public class ExcelWriterSheetBuilder {
     /**
-     * Excel type
+     * Sheet
      */
-    private ExcelTypeEnum excelType;
+    private Sheet sheet;
+
+    public ExcelWriterSheetBuilder() {
+        this.sheet = new Sheet();
+    }
+
     /**
-     * Final output stream
+     * Count the number of added heads when read sheet.
+     *
+     * <li>0 - This Sheet has no head ,since the first row are the data
+     * <li>1 - This Sheet has one row head , this is the default
+     * <li>2 - This Sheet has two row head ,since the third row is the data
+     *
+     * @param readHeadRowNumber
+     * @return
      */
-    private OutputStream outputStream;
+    public ExcelWriterSheetBuilder readHeadRowNumber(Integer readHeadRowNumber) {
+        sheet.setReadHeadRowNumber(readHeadRowNumber);
+        return this;
+    }
+
     /**
-     * Template input stream
+     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
+     *
+     * @param writeRelativeHeadRowIndex
+     * @return
      */
-    private InputStream templateInputStream;
+    public ExcelWriterSheetBuilder writeRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
+        sheet.setWriteRelativeHeadRowIndex(writeRelativeHeadRowIndex);
+        return this;
+    }
+
     /**
-     * Custom type conversions override the default
+     * You can only choose one of the {@link ExcelWriterSheetBuilder#head(List)} and
+     * {@link ExcelWriterSheetBuilder#head(Class)}
+     *
+     * @param head
+     * @return
      */
-    private Map<Class, Converter> customConverterMap = new HashMap<Class, Converter>();
+    public ExcelWriterSheetBuilder head(List<List<String>> head) {
+        sheet.setHead(head);
+        return this;
+    }
+
+    /**
+     * You can only choose one of the {@link ExcelWriterSheetBuilder#head(List)} and
+     * {@link ExcelWriterSheetBuilder#head(Class)}
+     *
+     * @param clazz
+     * @return
+     */
+    public ExcelWriterSheetBuilder head(Class clazz) {
+        sheet.setClazz(clazz);
+        return this;
+    }
+
     /**
      * Need Head
      */
-    private Boolean needHead;
-    /**
-     * Custom type handler override the default
-     */
-    private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
-
-    public ExcelWriterSheetBuilder excelType(ExcelTypeEnum excelType) {
-        this.excelType = excelType;
+    public ExcelWriterSheetBuilder needHead(Boolean needHead) {
+        sheet.setNeedHead(needHead);
         return this;
-    }
-
-    public ExcelWriterSheetBuilder outputFile(OutputStream outputStream) {
-        this.outputStream = outputStream;
-        return this;
-    }
-
-    public ExcelWriterSheetBuilder outputFile(File outputFile) throws FileNotFoundException {
-        return outputFile(new FileOutputStream(outputFile));
-    }
-
-    public ExcelWriterSheetBuilder outputFile(String outputPathName) throws FileNotFoundException {
-        return outputFile(new File(outputPathName));
-    }
-
-    public ExcelWriterSheetBuilder outputFile(URI outputUri) throws FileNotFoundException {
-        return outputFile(new File(outputUri));
-    }
-
-    public ExcelWriterSheetBuilder withTemplate(InputStream templateInputStream) {
-        this.templateInputStream = templateInputStream;
-        return this;
-    }
-
-    public ExcelWriterSheetBuilder withTemplate(File templateFile) throws FileNotFoundException {
-        return withTemplate(new FileInputStream(templateFile));
-    }
-
-    public ExcelWriterSheetBuilder withTemplate(String templatePathName) throws FileNotFoundException {
-        return withTemplate(new File(templatePathName));
-    }
-
-    public ExcelWriterSheetBuilder withTemplate(URI templateUri) throws FileNotFoundException {
-        return withTemplate(new File(templateUri));
     }
 
     /**
      * Custom type conversions override the default.
-     * 
+     *
      * @param converter
      * @return
      */
     public ExcelWriterSheetBuilder registerConverter(Converter converter) {
-        this.customConverterMap.put(converter.supportJavaTypeKey(), converter);
+        if (sheet.getCustomConverterMap() == null) {
+            sheet.setCustomConverterMap(new HashMap<Class, Converter>());
+        }
+        sheet.getCustomConverterMap().put(converter.supportJavaTypeKey(), converter);
         return this;
     }
 
     /**
-     * Default required header
-     * 
+     * Custom write handler
+     *
+     * @param writeHandler
      * @return
      */
-    public ExcelWriterSheetBuilder doNotNeedHead() {
-        this.needHead = Boolean.FALSE;
-        return this;
-    }
-
     public ExcelWriterSheetBuilder registerWriteHandler(WriteHandler writeHandler) {
-        this.customWriteHandlerList.add(writeHandler);
+        if (sheet.getCustomWriteHandlerList() == null) {
+            sheet.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
+        }
+        sheet.getCustomWriteHandlerList().add(writeHandler);
         return this;
     }
 
-    public ExcelWriter build() {
-        return new ExcelWriter(templateInputStream, outputStream, excelType, needHead, customConverterMap,
-            customWriteHandlerList);
+    /**
+     * Starting from 0
+     * 
+     * @param sheetNo
+     * @return
+     */
+    public ExcelWriterSheetBuilder sheetNo(Integer sheetNo) {
+        sheet.setSheetNo(sheetNo);
+        return this;
     }
+
+    /**
+     * sheet name
+     * 
+     * @param sheetName
+     * @return
+     */
+    public ExcelWriterSheetBuilder sheetName(String sheetName) {
+        sheet.setSheetName(sheetName);
+        return this;
+    }
+
+    public Sheet build() {
+        return sheet;
+    }
+
 }

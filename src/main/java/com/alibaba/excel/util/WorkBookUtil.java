@@ -40,6 +40,10 @@ public class WorkBookUtil {
         return sheet.createRow(rowNum);
     }
 
+    public static Cell createCell(Row row, int colNum) {
+        return row.createCell(colNum);
+    }
+
     public static Cell createCell(Row row, int colNum, CellStyle cellStyle) {
         Cell cell = row.createCell(colNum);
         cell.setCellStyle(cellStyle);
