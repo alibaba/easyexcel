@@ -11,10 +11,15 @@ import com.alibaba.excel.util.StringUtils;
  * @author zhuangjiaju
  */
 public enum CellDataTypeEnum {
+
     /**
      * string
      */
     STRING,
+    /**
+     * inlineString
+     */
+    INLINE_STRING,
     /**
      * number
      */
@@ -35,6 +40,7 @@ public enum CellDataTypeEnum {
     private static final Map<String, CellDataTypeEnum> TYPE_ROUTING_MAP = new HashMap<String, CellDataTypeEnum>(8);
     static {
         TYPE_ROUTING_MAP.put("s", STRING);
+        TYPE_ROUTING_MAP.put("inlineStr", INLINE_STRING);
         TYPE_ROUTING_MAP.put("e", ERROR);
         TYPE_ROUTING_MAP.put("b", BOOLEAN);
     }

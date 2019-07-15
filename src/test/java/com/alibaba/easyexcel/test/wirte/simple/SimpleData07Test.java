@@ -19,9 +19,19 @@ public class SimpleData07Test {
 
     @Test
     public void simple() {
-        ExcelWriter writer = EasyExcelFactory.writerBuilder().outputFile(FileUtil.createNewFile("simple07.xlsx"))
+        ExcelWriter writer = EasyExcelFactory.writerBuilder().outputFile(FileUtil.createNewWriteFile("simple07.xlsx"))
             .head(SimpleData.class).build();
         Sheet sheet = EasyExcelFactory.writerSheetBuilder().sheetNo(0).sheetName("simple").build();
+        writer.write(createData(10), sheet);
+        writer.finish();
+    }
+
+    @Test
+    public void repeatWrite() {
+        ExcelWriter writer = EasyExcelFactory.writerBuilder()
+            .outputFile(FileUtil.createNewWriteFile("repeatWrite07.xlsx")).head(SimpleData.class).build();
+        Sheet sheet = EasyExcelFactory.writerSheetBuilder().sheetNo(0).sheetName("simple").build();
+        writer.write(createData(10), sheet);
         writer.write(createData(10), sheet);
         writer.finish();
     }

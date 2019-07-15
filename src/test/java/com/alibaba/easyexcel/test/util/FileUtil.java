@@ -17,7 +17,16 @@ public class FileUtil {
         File file = new File(getPath() + pathName);
         if (file.exists()) {
             file.delete();
+        } else {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
         }
+
         return file;
+    }
+
+    public static File createNewWriteFile(String pathName) {
+        return createNewFile("wirte/" + pathName);
     }
 }

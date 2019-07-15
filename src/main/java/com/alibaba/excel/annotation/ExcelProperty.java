@@ -18,13 +18,10 @@ public @interface ExcelProperty {
       * @return
       */
      String[] value() default {""};
-
-
      /**
       * @return
       */
      int index() default 99999;
-
      /**
       *
       * default @see com.alibaba.excel.util.TypeUtil

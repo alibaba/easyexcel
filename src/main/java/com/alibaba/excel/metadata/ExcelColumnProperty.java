@@ -30,6 +30,24 @@ public class ExcelColumnProperty implements Comparable<ExcelColumnProperty> {
     private Boolean use1904windowing;
 
     private TimeZone timeZone;
+    private int scale;
+    private int roundingMode;
+
+    public int getScale() {
+        return scale;
+    }
+
+    public void setScale(int scale) {
+        this.scale = scale;
+    }
+
+    public int getRoundingMode() {
+        return roundingMode;
+    }
+
+    public void setRoundingMode(int roundingMode) {
+        this.roundingMode = roundingMode;
+    }
 
     public Boolean getUse1904windowing() {
         return use1904windowing;
