@@ -6,17 +6,17 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
- * Integer and boolean converter
+ * Long and boolean converter
  *
  * @author zhuangjiaju
  */
-public class IntegerBooleanConverter implements Converter<Integer> {
-    private static final Integer ONE = 1;
-    private static final Integer ZERO = 0;
+public class LongBooleanConverter implements Converter<Long> {
+    private static final Long ONE = 1L;
+    private static final Long ZERO = 0L;
 
     @Override
     public Class supportJavaTypeKey() {
-        return Integer.class;
+        return Long.class;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class IntegerBooleanConverter implements Converter<Integer> {
     }
 
     @Override
-    public Integer convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
+    public Long convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         if (cellData.getBooleanValue()) {
             return ONE;
         }
@@ -33,7 +33,7 @@ public class IntegerBooleanConverter implements Converter<Integer> {
     }
 
     @Override
-    public CellData convertToExcelData(Integer value, ExcelContentProperty contentProperty) {
+    public CellData convertToExcelData(Long value, ExcelContentProperty contentProperty) {
         if (ONE.equals(value)) {
             return new CellData(Boolean.TRUE);
         }

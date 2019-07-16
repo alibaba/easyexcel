@@ -24,6 +24,10 @@ public class ConverterKey {
         return new ConverterKey(javaTypeKey, excelTypeKey);
     }
 
+    public static ConverterKey buildConverterKey(Converter converter) {
+        return buildConverterKey(converter.supportJavaTypeKey(), converter.supportExcelTypeKey());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

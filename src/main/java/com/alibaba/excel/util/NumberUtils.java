@@ -16,20 +16,31 @@ public class NumberUtils {
 
     /**
      * format
+     *
+     * @param num
+     * @param contentProperty
+     * @return
+     */
+    public static String format(Number num, ExcelContentProperty contentProperty) {
+        if (contentProperty.getNumberFormatProperty() == null
+            || StringUtils.isEmpty(contentProperty.getNumberFormatProperty().getFormat())) {
+            return num.toString();
+        }
+        String format = contentProperty.getNumberFormatProperty().getFormat();
+        RoundingMode roundingMode = contentProperty.getNumberFormatProperty().getRoundingMode();
+        DecimalFormat decimalFormat = new DecimalFormat(format);
+        decimalFormat.setRoundingMode(roundingMode);
+        return decimalFormat.format(num);
+    }
+
+    /**
+     * format
      * 
      * @param num
      * @param contentProperty
      * @return
      */
     public static CellData formatToCellData(Number num, ExcelContentProperty contentProperty) {
-        if (contentProperty.getNumberFormatProperty() == null
-            || StringUtils.isEmpty(contentProperty.getNumberFormatProperty().getFormat())) {
-            return new CellData(num.toString());
-        }
-        String format = contentProperty.getNumberFormatProperty().getFormat();
-        RoundingMode roundingMode = contentProperty.getNumberFormatProperty().getRoundingMode();
-        DecimalFormat decimalFormat = new DecimalFormat(format);
-        decimalFormat.setRoundingMode(roundingMode);
-        return new CellData(decimalFormat.format(num));
+        return new CellData(format(num, contentProperty));
     }
 }

@@ -1,6 +1,4 @@
-package com.alibaba.excel.converters.bigdecimal;
-
-import java.math.BigDecimal;
+package com.alibaba.excel.converters.shortconverter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -8,15 +6,17 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
- * BigDecimal and boolean converter
+ * Short and boolean converter
  *
  * @author zhuangjiaju
  */
-public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
+public class ShortBooleanConverter implements Converter<Short> {
+    private static final Short ONE = 1;
+    private static final Short ZERO = 0;
 
     @Override
     public Class supportJavaTypeKey() {
-        return Byte.class;
+        return Long.class;
     }
 
     @Override
@@ -25,16 +25,16 @@ public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
+    public Short convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         if (cellData.getBooleanValue()) {
-            return BigDecimal.ONE;
+            return ONE;
         }
-        return BigDecimal.ZERO;
+        return ZERO;
     }
 
     @Override
-    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty) {
-        if (BigDecimal.ONE.equals(value)) {
+    public CellData convertToExcelData(Short value, ExcelContentProperty contentProperty) {
+        if (ONE.equals(value)) {
             return new CellData(Boolean.TRUE);
         }
         return new CellData(Boolean.FALSE);
