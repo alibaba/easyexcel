@@ -11,6 +11,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.TableStyle;
+import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.style.RowCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
@@ -21,6 +22,7 @@ import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy
  * @author zhuangjiaju
  */
 public class SheetHolder extends AbstractConfigurationSelector {
+
     /***
      * poi sheet
      */
@@ -59,6 +61,9 @@ public class SheetHolder extends AbstractConfigurationSelector {
             setHead(sheet.getHead());
             setClazz(sheet.getClazz());
         }
+        // Initialization property
+        setExcelHeadProperty(new ExcelHeadProperty(getClazz(), getHead(), workbookHolder.getConvertAllFiled()));
+
         setNewInitialization(Boolean.TRUE);
         if (sheet.getNeedHead() == null) {
             setNeedHead(workbookHolder.needHead());
@@ -76,6 +81,9 @@ public class SheetHolder extends AbstractConfigurationSelector {
         if (sheet.getCustomWriteHandlerList() != null && !sheet.getCustomWriteHandlerList().isEmpty()) {
             handlerList.addAll(sheet.getCustomWriteHandlerList());
         }
+        // Initialization Annotation
+        initAnnotationConfig(handlerList);
+
         setWriteHandlerMap(sortAndClearUpHandler(handlerList, workbookHolder.getWriteHandlerMap()));
         Map<Class, Converter> converterMap = new HashMap<Class, Converter>(workbookHolder.converterMap());
         if (sheet.getCustomConverterMap() != null && !sheet.getCustomConverterMap().isEmpty()) {
@@ -97,7 +105,7 @@ public class SheetHolder extends AbstractConfigurationSelector {
             }
             sheet.getCustomWriteHandlerList().add(new AbstractHeadColumnWidthStyleStrategy() {
                 @Override
-                protected int columnWidth(Head head) {
+                protected Integer columnWidth(Head head) {
                     if (columnWidthMap.containsKey(head.getColumnIndex())) {
                         columnWidthMap.get(head.getColumnIndex());
                     }

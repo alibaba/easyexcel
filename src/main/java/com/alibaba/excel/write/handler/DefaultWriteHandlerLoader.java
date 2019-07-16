@@ -10,11 +10,11 @@ import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.write.style.RowCellStyleStrategy;
 
 /**
- * Build default handler
+ * Load default handler
  * 
  * @author zhuangjiaju
  */
-public class DefaultWriteHandlerBuilder {
+public class DefaultWriteHandlerLoader {
 
     /**
      * Load default handler

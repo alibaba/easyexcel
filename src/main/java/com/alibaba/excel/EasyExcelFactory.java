@@ -81,7 +81,8 @@ public class EasyExcelFactory {
      */
     @Deprecated
     public static ExcelWriter getWriter(OutputStream outputStream) {
-        return writerBuilder().outputFile(outputStream).autoCloseStream(Boolean.FALSE).build();
+        return writerBuilder().outputFile(outputStream).autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE)
+            .build();
     }
 
     /**
@@ -99,7 +100,7 @@ public class EasyExcelFactory {
     @Deprecated
     public static ExcelWriter getWriter(OutputStream outputStream, ExcelTypeEnum typeEnum, boolean needHead) {
         return writerBuilder().outputFile(outputStream).excelType(typeEnum).needHead(needHead)
-            .autoCloseStream(Boolean.FALSE).build();
+            .autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE).build();
     }
 
     /**
@@ -119,7 +120,7 @@ public class EasyExcelFactory {
     public static ExcelWriter getWriterWithTemp(InputStream temp, OutputStream outputStream, ExcelTypeEnum typeEnum,
         boolean needHead) {
         return writerBuilder().withTemplate(temp).outputFile(outputStream).excelType(typeEnum).needHead(needHead)
-            .autoCloseStream(Boolean.FALSE).build();
+            .autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE).build();
     }
 
     /**
@@ -142,7 +143,7 @@ public class EasyExcelFactory {
     public static ExcelWriter getWriterWithTempAndHandler(InputStream temp, OutputStream outputStream,
         ExcelTypeEnum typeEnum, boolean needHead, WriteHandler handler) {
         return writerBuilder().withTemplate(temp).outputFile(outputStream).excelType(typeEnum).needHead(needHead)
-            .registerWriteHandler(handler).autoCloseStream(Boolean.FALSE).build();
+            .registerWriteHandler(handler).autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE).build();
     }
 
     public static ExcelWriterBuilder writerBuilder() {

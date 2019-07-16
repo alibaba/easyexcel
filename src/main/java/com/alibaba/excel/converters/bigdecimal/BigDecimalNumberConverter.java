@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
  * BigDecimal and number converter
@@ -25,12 +25,12 @@ public class BigDecimalNumberConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public BigDecimal convertToJavaData(CellData cellData, ExcelColumnProperty columnProperty) {
+    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         return new BigDecimal(cellData.getDoubleValue());
     }
 
     @Override
-    public CellData convertToExcelData(BigDecimal value, ExcelColumnProperty columnProperty) {
+    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty) {
         return new CellData(value.doubleValue());
     }
 }

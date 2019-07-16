@@ -29,6 +29,14 @@ public class Workbook extends BasicParameter {
      */
     private Boolean autoCloseStream;
     /**
+     * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
+     * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
+     * 
+     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
+     */
+    @Deprecated
+    private Boolean convertAllFiled;
+    /**
      * Write handler
      * 
      * @deprecated please use {@link WriteHandler}
@@ -74,5 +82,13 @@ public class Workbook extends BasicParameter {
 
     public void setAutoCloseStream(Boolean autoCloseStream) {
         this.autoCloseStream = autoCloseStream;
+    }
+
+    public Boolean getConvertAllFiled() {
+        return convertAllFiled;
+    }
+
+    public void setConvertAllFiled(Boolean convertAllFiled) {
+        this.convertAllFiled = convertAllFiled;
     }
 }

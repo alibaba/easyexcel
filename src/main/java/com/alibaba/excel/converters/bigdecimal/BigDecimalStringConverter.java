@@ -1,12 +1,13 @@
 package com.alibaba.excel.converters.bigdecimal;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.StringUtils;
 
 /**
@@ -27,15 +28,23 @@ public class BigDecimalStringConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public BigDecimal convertToJavaData(CellData cellData, ExcelColumnProperty columnProperty) {
+    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         return new BigDecimal(cellData.getStringValue());
     }
 
     @Override
-    public CellData convertToExcelData(BigDecimal value, ExcelColumnProperty columnProperty) {
-        if (StringUtils.isEmpty(columnProperty.getFormat())) {
+    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty) {
+        String format = null;
+        RoundingMode roundingMode = RoundingMode.HALF_UP;
+        if (contentProperty.getNumberFormatProperty() != null) {
+            format = contentProperty.getNumberFormatProperty().getFormat();
+            roundingMode = contentProperty.getNumberFormatProperty().getRoundingMode();
+        }
+        if (StringUtils.isEmpty(format)) {
             return new CellData(value.toString());
         }
-        return new CellData(new DecimalFormat(columnProperty.getFormat()).format(value));
+        DecimalFormat decimalFormat = new DecimalFormat(format);
+        decimalFormat.setRoundingMode(roundingMode);
+        return new CellData(decimalFormat.format(value));
     }
 }

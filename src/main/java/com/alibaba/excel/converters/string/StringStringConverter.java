@@ -3,7 +3,7 @@ package com.alibaba.excel.converters.string;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
  * String and string converter
@@ -22,12 +22,12 @@ public class StringStringConverter implements Converter<String> {
     }
 
     @Override
-    public String convertToJavaData(CellData cellData, ExcelColumnProperty columnProperty) {
+    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         return cellData.getStringValue();
     }
 
     @Override
-    public CellData convertToExcelData(String value, ExcelColumnProperty columnProperty) {
+    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty) {
         return new CellData(value);
     }
 

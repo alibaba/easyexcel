@@ -8,13 +8,13 @@ import com.alibaba.excel.converters.date.DateStringConverter;
 import com.alibaba.excel.converters.string.StringStringConverter;
 
 /**
- * Build default handler
+ * Load default handler
  * 
  * @author zhuangjiaju
  */
-public class DefaultConverterBuilder {
+public class DefaultConverterLoader {
     /**
-     * Load default wirte converter
+     * Load default write converter
      *
      * @return
      */

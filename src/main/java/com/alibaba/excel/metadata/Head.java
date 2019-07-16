@@ -3,6 +3,9 @@ package com.alibaba.excel.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.excel.metadata.property.CellStyleProperty;
+import com.alibaba.excel.metadata.property.ColumnWidthProperty;
+
 /**
  * excel head
  *
@@ -21,6 +24,15 @@ public class Head {
      * Head name
      */
     private List<String> headNameList;
+
+    /**
+     * Cell style property
+     */
+    private CellStyleProperty cellStyleProperty;
+    /**
+     * column with
+     */
+    private ColumnWidthProperty columnWidthProperty;
 
     public Head(Integer columnIndex, String fieldName, String headName) {
         this.columnIndex = columnIndex;
@@ -62,26 +74,19 @@ public class Head {
         this.headNameList = headNameList;
     }
 
-    @Override
-    public String toString() {
-        return "Head{" + "columnIndex=" + columnIndex + ", fieldName='" + fieldName + '\'' + ", headNameList="
-            + headNameList + '}';
+    public CellStyleProperty getCellStyleProperty() {
+        return cellStyleProperty;
     }
 
-    /**
-     * Get head name with index
-     * 
-     * @param index
-     * @return
-     */
-    public String getHeadName(int index) {
-        if (headNameList == null || headNameList.isEmpty()) {
-            return null;
-        }
-        if (index >= headNameList.size()) {
-            return headNameList.get(headNameList.size() - 1);
-        } else {
-            return headNameList.get(index);
-        }
+    public void setCellStyleProperty(CellStyleProperty cellStyleProperty) {
+        this.cellStyleProperty = cellStyleProperty;
+    }
+
+    public ColumnWidthProperty getColumnWidthProperty() {
+        return columnWidthProperty;
+    }
+
+    public void setColumnWidthProperty(ColumnWidthProperty columnWidthProperty) {
+        this.columnWidthProperty = columnWidthProperty;
     }
 }

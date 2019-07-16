@@ -9,6 +9,11 @@ import com.alibaba.excel.metadata.holder.SheetHolder;
 import com.alibaba.excel.metadata.holder.TableHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 
+/**
+ * Merge strategy
+ * 
+ * @author zhuangjiaju
+ */
 public abstract class AbstractMergeStrategy implements CellWriteHandler {
 
     @Override
@@ -24,5 +29,13 @@ public abstract class AbstractMergeStrategy implements CellWriteHandler {
         merge(sheetHolder.getSheet(), cell, head, relativeRowIndex);
     }
 
+    /**
+     * merge
+     * 
+     * @param sheet
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     */
     protected abstract void merge(Sheet sheet, Cell cell, Head head, int relativeRowIndex);
 }

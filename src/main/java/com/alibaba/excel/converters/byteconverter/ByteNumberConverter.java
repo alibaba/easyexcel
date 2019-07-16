@@ -3,7 +3,7 @@ package com.alibaba.excel.converters.byteconverter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
  * Byte and number converter
@@ -23,12 +23,12 @@ public class ByteNumberConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData cellData, ExcelColumnProperty columnProperty) {
+    public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         return cellData.getDoubleValue().byteValue();
     }
 
     @Override
-    public CellData convertToExcelData(Byte value, ExcelColumnProperty columnProperty) {
+    public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty) {
         return new CellData((double)value);
     }
 

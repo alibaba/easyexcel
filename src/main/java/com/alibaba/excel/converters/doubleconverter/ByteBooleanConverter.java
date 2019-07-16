@@ -3,7 +3,7 @@ package com.alibaba.excel.converters.doubleconverter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
  * Byte and boolean converter
@@ -25,7 +25,7 @@ public class ByteBooleanConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData cellData, ExcelColumnProperty columnProperty) {
+    public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         if (cellData.getBooleanValue()) {
             return ONE;
         }
@@ -33,7 +33,7 @@ public class ByteBooleanConverter implements Converter<Byte> {
     }
 
     @Override
-    public CellData convertToExcelData(Byte value, ExcelColumnProperty columnProperty) {
+    public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty) {
         if (ONE.equals(value)) {
             return new CellData(Boolean.TRUE);
         }

@@ -60,8 +60,7 @@ public class ExcelWriterBuilder {
     }
 
     /**
-     * You can only choose one of the {@link ExcelWriterBuilder#head(List)} and
-     * {@link ExcelWriterBuilder#head(Class)}
+     * You can only choose one of the {@link ExcelWriterBuilder#head(List)} and {@link ExcelWriterBuilder#head(Class)}
      *
      * @param head
      * @return
@@ -72,8 +71,7 @@ public class ExcelWriterBuilder {
     }
 
     /**
-     * You can only choose one of the {@link ExcelWriterBuilder#head(List)} and
-     * {@link ExcelWriterBuilder#head(Class)}
+     * You can only choose one of the {@link ExcelWriterBuilder#head(List)} and {@link ExcelWriterBuilder#head(Class)}
      *
      * @param clazz
      * @return
@@ -99,6 +97,22 @@ public class ExcelWriterBuilder {
      */
     public ExcelWriterBuilder autoCloseStream(Boolean autoCloseStream) {
         workbook.setAutoCloseStream(autoCloseStream);
+        return this;
+    }
+
+    /**
+     * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
+     * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
+     * <p>
+     * Default true
+     * 
+     * @param convertAllFiled
+     * @return
+     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
+     */
+    @Deprecated
+    public ExcelWriterBuilder convertAllFiled(Boolean convertAllFiled) {
+        workbook.setConvertAllFiled(convertAllFiled);
         return this;
     }
 

@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.StyleUtil;
+import com.sun.istack.internal.Nullable;
 
 /**
  *
@@ -31,22 +32,40 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
     protected void setHeadCellStyle(Cell cell, Head head, int relativeRowIndex) {
         int columnIndex = head.getColumnIndex();
         if (headCellStyleCache.containsKey(columnIndex)) {
-            cell.setCellStyle(headCellStyleCache.get(columnIndex));
+            CellStyle cellStyle = headCellStyleCache.get(columnIndex);
+            if (cellStyle != null) {
+                cell.setCellStyle(cellStyle);
+            }
+            return;
         }
-        CellStyle cellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle(head));
-        headCellStyleCache.put(columnIndex, cellStyle);
-        cell.setCellStyle(cellStyle);
+        com.alibaba.excel.metadata.CellStyle headCellStyle = headCellStyle(head);
+        if (headCellStyle == null) {
+            headCellStyleCache.put(columnIndex, null);
+        } else {
+            CellStyle cellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle(head));
+            headCellStyleCache.put(columnIndex, cellStyle);
+            cell.setCellStyle(cellStyle);
+        }
     }
 
     @Override
     protected void setContentCellStyle(Cell cell, Head head, int relativeRowIndex) {
         int columnIndex = head.getColumnIndex();
         if (contentCellStyleCache.containsKey(columnIndex)) {
-            cell.setCellStyle(contentCellStyleCache.get(columnIndex));
+            CellStyle cellStyle = contentCellStyleCache.get(columnIndex);
+            if (cellStyle != null) {
+                cell.setCellStyle(cellStyle);
+            }
+            return;
         }
-        CellStyle cellStyle = StyleUtil.buildContentCellStyle(workbook, contentCellStyle(head));
-        contentCellStyleCache.put(columnIndex, cellStyle);
-        cell.setCellStyle(cellStyle);
+        com.alibaba.excel.metadata.CellStyle contentCellStyle = contentCellStyle(head);
+        if (contentCellStyle == null) {
+            contentCellStyleCache.put(columnIndex, null);
+        } else {
+            CellStyle cellStyle = StyleUtil.buildContentCellStyle(workbook, contentCellStyle(head));
+            contentCellStyleCache.put(columnIndex, cellStyle);
+            cell.setCellStyle(cellStyle);
+        }
     }
 
     /**
@@ -55,7 +74,7 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
      * @param head
      * @return
      */
-    protected abstract com.alibaba.excel.metadata.CellStyle headCellStyle(Head head);
+    protected abstract com.alibaba.excel.metadata.CellStyle headCellStyle(@Nullable Head head);
 
     /**
      * Returns the column width corresponding to each column head
@@ -63,6 +82,6 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
      * @param head
      * @return
      */
-    protected abstract com.alibaba.excel.metadata.CellStyle contentCellStyle(Head head);
+    protected abstract com.alibaba.excel.metadata.CellStyle contentCellStyle(@Nullable Head head);
 
 }

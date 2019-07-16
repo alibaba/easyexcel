@@ -9,6 +9,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.metadata.TableStyle;
+import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.style.RowCellStyleStrategy;
 
@@ -31,7 +32,7 @@ public class TableHolder extends AbstractConfigurationSelector {
      */
     private com.alibaba.excel.metadata.Table tableParam;
 
-    public TableHolder(com.alibaba.excel.metadata.Table table, SheetHolder sheetHolder) {
+    public TableHolder(com.alibaba.excel.metadata.Table table, SheetHolder sheetHolder, WorkbookHolder workbookHolder) {
         super();
         this.tableParam = table;
         this.parentSheet = sheetHolder;
@@ -46,6 +47,9 @@ public class TableHolder extends AbstractConfigurationSelector {
             setClazz(table.getClazz());
         }
         setNewInitialization(Boolean.TRUE);
+        // Initialization property
+        setExcelHeadProperty(new ExcelHeadProperty(getClazz(), getHead(), workbookHolder.getConvertAllFiled()));
+
         if (table.getNeedHead() == null) {
             setNeedHead(sheetHolder.needHead());
         } else {
@@ -62,6 +66,9 @@ public class TableHolder extends AbstractConfigurationSelector {
         if (table.getCustomWriteHandlerList() != null && !table.getCustomWriteHandlerList().isEmpty()) {
             handlerList.addAll(table.getCustomWriteHandlerList());
         }
+        // Initialization Annotation
+        initAnnotationConfig(handlerList);
+
         setWriteHandlerMap(sortAndClearUpHandler(handlerList, sheetHolder.getWriteHandlerMap()));
         Map<Class, Converter> converterMap = new HashMap<Class, Converter>(sheetHolder.converterMap());
         if (table.getCustomConverterMap() != null && !table.getCustomConverterMap().isEmpty()) {

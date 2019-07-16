@@ -14,20 +14,32 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface ExcelProperty {
 
-     /**
-      * @return
-      */
-     String[] value() default {""};
-     /**
-      * @return
-      */
-     int index() default 99999;
-     /**
-      *
-      * default @see com.alibaba.excel.util.TypeUtil
-      * if default is not  meet you can set format
-      *
-      * @return
-      */
-     String format() default "";
+    /**
+     * The name of the sheet header.
+     * 
+     * <li>write: It automatically merges when you have more than one head
+     * <li>read: When you have multiple heads, take the first one
+     * 
+     * @return
+     */
+    String[] value() default {""};
+
+    /**
+     * Index of column
+     *
+     * Read or write it on the index of column,If it's equal to -1, it's sorted by Java class
+     * 
+     * @return
+     */
+    int index() default -1;
+
+    /**
+     *
+     * default @see com.alibaba.excel.util.TypeUtil if default is not meet you can set format
+     *
+     * @return
+     * @deprecated please use {@link com.alibaba.excel.annotation.format.DateTimeFormat}
+     */
+    @Deprecated
+    String format() default "";
 }

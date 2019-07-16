@@ -5,7 +5,7 @@ import java.io.InputStream;
 import com.alibaba.excel.converters.ConverterRegistryCenter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 

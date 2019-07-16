@@ -2,6 +2,7 @@ package com.alibaba.excel.context;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,13 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.metadata.holder.ConfigurationSelector;
 import com.alibaba.excel.metadata.holder.SheetHolder;
 import com.alibaba.excel.metadata.holder.TableHolder;
 import com.alibaba.excel.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
@@ -184,9 +185,6 @@ public class WriteContextImpl implements WriteContext {
         }
         currentSheetHolder.setSheet(currentSheet);
         // Initialization head
-        currentSheetHolder
-            .setExcelHeadProperty(new ExcelHeadProperty(currentSheetHolder.getClazz(), currentSheetHolder.getHead()));
-        // Initialization head
         initHead(currentSheetHolder.getExcelHeadProperty());
     }
 
@@ -203,7 +201,7 @@ public class WriteContextImpl implements WriteContext {
             beforeRowCreate(rowIndex, relativeRowIndex);
             Row row = WorkBookUtil.createRow(currentSheetHolder.getSheet(), i);
             afterRowCreate(row, relativeRowIndex);
-            addOneRowOfHeadDataToExcel(row, excelHeadProperty.getHeadList(), relativeRowIndex);
+            addOneRowOfHeadDataToExcel(row, excelHeadProperty.getHeadMap(), relativeRowIndex);
         }
     }
 
@@ -237,18 +235,18 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void addMergedRegionToCurrentSheet(ExcelHeadProperty excelHeadProperty, int rowIndex) {
-        for (com.alibaba.excel.metadata.CellRange cellRangeModel : excelHeadProperty.getCellRangeModels()) {
+        for (com.alibaba.excel.metadata.CellRange cellRangeModel : excelHeadProperty.headCellRangeList()) {
             currentSheetHolder.getSheet().addMergedRegion(new CellRangeAddress(cellRangeModel.getFirstRow() + rowIndex,
                 cellRangeModel.getLastRow() + rowIndex, cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
         }
     }
 
-    private void addOneRowOfHeadDataToExcel(Row row, List<Head> headList, int relativeRowIndex) {
-        for (int i = 0; i < headList.size(); i++) {
-            Head head = headList.get(i);
-            beforeCellCreate(row, headList.get(i), relativeRowIndex);
-            Cell cell = WorkBookUtil.createCell(row, i, head.getHeadName(i));
-            afterCellCreate(headList.get(i), cell, relativeRowIndex);
+    private void addOneRowOfHeadDataToExcel(Row row, Map<Integer, Head> headMap, int relativeRowIndex) {
+        for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
+            Head head = entry.getValue();
+            beforeCellCreate(row, head, relativeRowIndex);
+            Cell cell = WorkBookUtil.createCell(row, entry.getKey(), head.getHeadNameList().get(relativeRowIndex));
+            afterCellCreate(head, cell, relativeRowIndex);
         }
     }
 
@@ -302,14 +300,11 @@ public class WriteContextImpl implements WriteContext {
             return;
         }
         initCurrentTableHolder(table);
-        // Initialization head
-        currentTableHolder
-            .setExcelHeadProperty(new ExcelHeadProperty(currentTableHolder.getClazz(), currentTableHolder.getHead()));
         initHead(currentTableHolder.getExcelHeadProperty());
     }
 
     private void initCurrentTableHolder(com.alibaba.excel.metadata.Table table) {
-        currentTableHolder = new TableHolder(table, currentSheetHolder);
+        currentTableHolder = new TableHolder(table, currentSheetHolder, currentWorkbookHolder);
         currentSheetHolder.getHasBeenInitializedTable().put(table.getTableNo(), currentTableHolder);
         currentConfigurationSelector = currentTableHolder;
         if (LOGGER.isDebugEnabled()) {

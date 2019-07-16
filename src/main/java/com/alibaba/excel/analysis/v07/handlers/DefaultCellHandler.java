@@ -1,15 +1,16 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_FORMULA_TAG;
+import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_INLINE_STRING_VALUE_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TAG;
-import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TAG_1;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 
 import java.util.Arrays;
 
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
@@ -48,7 +49,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
 
     @Override
     public boolean support(String name) {
-        return CELL_VALUE_TAG.equals(name) || CELL_FORMULA_TAG.equals(name) || CELL_VALUE_TAG_1.equals(name)
+        return CELL_VALUE_TAG.equals(name) || CELL_FORMULA_TAG.equals(name) || CELL_INLINE_STRING_VALUE_TAG.equals(name)
             || CELL_TAG.equals(name);
     }
 
@@ -61,13 +62,14 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             int nextRow = PositionUtils.getRow(currentCellIndex);
             if (nextRow > curRow) {
                 curRow = nextRow;
-                // endRow(ROW_TAG);
             }
             analysisContext.setCurrentRowNum(curRow);
             curCol = PositionUtils.getCol(currentCellIndex);
 
             // t="s" ,it's means String
+            // t="inlineStr" ,it's means String
             // t="b" ,it's means Boolean
+            // t="e" ,it's means Error
             // t is null ,it's means Empty or Number
             CellDataTypeEnum type = CellDataTypeEnum.buildFromCellType(attributes.getValue(CELL_VALUE_TYPE_TAG));
             currentCellData = new CellData(type);
@@ -87,6 +89,13 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
                 RichTextString richTextString = sst.getItemAt(Integer.parseInt(currentCellData.getStringValue()));
                 currentCellData.setStringValue(richTextString.toString());
             }
+            curRowContent[curCol] = currentCellData;
+        }
+        // This is a special form of string
+        if (CELL_INLINE_STRING_VALUE_TAG.equals(name)) {
+            ensureSize();
+            XSSFRichTextString richTextString = new XSSFRichTextString(currentCellData.getStringValue());
+            currentCellData.setStringValue(richTextString.toString());
             curRowContent[curCol] = currentCellData;
         }
     }

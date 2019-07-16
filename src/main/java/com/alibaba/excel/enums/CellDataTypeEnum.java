@@ -17,10 +17,6 @@ public enum CellDataTypeEnum {
      */
     STRING,
     /**
-     * inlineString
-     */
-    INLINE_STRING,
-    /**
      * number
      */
     NUMBER,
@@ -40,7 +36,7 @@ public enum CellDataTypeEnum {
     private static final Map<String, CellDataTypeEnum> TYPE_ROUTING_MAP = new HashMap<String, CellDataTypeEnum>(8);
     static {
         TYPE_ROUTING_MAP.put("s", STRING);
-        TYPE_ROUTING_MAP.put("inlineStr", INLINE_STRING);
+        TYPE_ROUTING_MAP.put("inlineStr", STRING);
         TYPE_ROUTING_MAP.put("e", ERROR);
         TYPE_ROUTING_MAP.put("b", BOOLEAN);
     }

@@ -3,7 +3,7 @@ package com.alibaba.excel.converters.booleanconverter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
  * Boolean and number converter
@@ -26,7 +26,7 @@ public class BooleanNumberConverter implements Converter<Boolean> {
     }
 
     @Override
-    public Boolean convertToJavaData(CellData cellData, ExcelColumnProperty columnProperty) {
+    public Boolean convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         if (ONE.equals(cellData.getDoubleValue())) {
             return Boolean.TRUE;
         }
@@ -34,7 +34,7 @@ public class BooleanNumberConverter implements Converter<Boolean> {
     }
 
     @Override
-    public CellData convertToExcelData(Boolean value, ExcelColumnProperty columnProperty) {
+    public CellData convertToExcelData(Boolean value, ExcelContentProperty contentProperty) {
         if (value) {
             return new CellData(ONE);
         }

@@ -2,7 +2,7 @@ package com.alibaba.excel.converters;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
@@ -32,19 +32,19 @@ public interface Converter<T> {
      * Convert excel objects to Java objects
      * 
      * @param cellData
-     * @param columnProperty
+     * @param contentProperty
      * @return
      * @throws Exception
      */
-    T convertToJavaData(@NotNull CellData cellData, @Nullable ExcelColumnProperty columnProperty) throws Exception;
+    T convertToJavaData(@NotNull CellData cellData, @Nullable ExcelContentProperty contentProperty) throws Exception;
 
     /**
      * Convert Java objects to excel objects
      * 
      * @param value
-     * @param columnProperty
+     * @param contentProperty
      * @return
      * @throws Exception
      */
-    CellData convertToExcelData(@NotNull T value, @Nullable ExcelColumnProperty columnProperty) throws Exception;
+    CellData convertToExcelData(@NotNull T value, @Nullable ExcelContentProperty contentProperty) throws Exception;
 }

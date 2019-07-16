@@ -6,7 +6,7 @@ import java.util.Date;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.ExcelColumnProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.DateUtils;
 
 /**
@@ -26,12 +26,21 @@ public class DateStringConverter implements Converter<Date> {
     }
 
     @Override
-    public Date convertToJavaData(CellData cellData, ExcelColumnProperty columnProperty) throws ParseException {
-        return DateUtils.parseDate(cellData.getStringValue(), columnProperty.getFormat());
+    public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) throws ParseException {
+        if (contentProperty.getDateTimeFormatProperty() == null) {
+            return DateUtils.parseDate(cellData.getStringValue(), null);
+        } else {
+            return DateUtils.parseDate(cellData.getStringValue(),
+                contentProperty.getDateTimeFormatProperty().getFormat());
+        }
     }
 
     @Override
-    public CellData convertToExcelData(Date value, ExcelColumnProperty columnProperty) {
-        return new CellData(DateUtils.format(value, columnProperty.getFormat()));
+    public CellData convertToExcelData(Date value, ExcelContentProperty contentProperty) {
+        if (contentProperty.getDateTimeFormatProperty() == null) {
+            return new CellData(DateUtils.format(value, null));
+        } else {
+            return new CellData(DateUtils.format(value, contentProperty.getDateTimeFormatProperty().getFormat()));
+        }
     }
 }

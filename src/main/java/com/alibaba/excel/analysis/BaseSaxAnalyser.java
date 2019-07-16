@@ -1,6 +1,5 @@
 package com.alibaba.excel.analysis;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,14 +10,11 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.converters.ConverterRegistryCenter;
-import com.alibaba.excel.converters.DefaultConverterBuilder;
-import com.alibaba.excel.converters.bigdecimal.BigDecimalBooleanConverter;
-import com.alibaba.excel.converters.bigdecimal.BigDecimalNumberConverter;
-import com.alibaba.excel.converters.string.StringStringConverter;
+import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.event.AnalysisEventRegistryCenter;
 import com.alibaba.excel.event.AnalysisFinishEvent;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.metadata.Sheet;
 
 /**
@@ -56,7 +52,7 @@ public abstract class BaseSaxAnalyser implements ConverterRegistryCenter, Analys
     }
 
     private void registerDefaultConverters() {
-        converters.putAll(DefaultConverterBuilder.loadDefaultReadConverter());
+        converters.putAll(DefaultConverterLoader.loadDefaultReadConverter());
     }
 
     @Override

@@ -12,6 +12,11 @@ import com.alibaba.excel.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 
+/**
+ * Cell style strategy
+ * 
+ * @author zhuangjiaju
+ */
 public abstract class AbstractCellStyleStrategy implements CellWriteHandler, WorkbookWriteHandler, NotRepeatExecutor {
     @Override
     public String uniqueValue() {
@@ -41,10 +46,29 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
 
     }
 
+    /**
+     * Initialization cell style
+     * 
+     * @param workbook
+     */
     protected abstract void initCellStyle(Workbook workbook);
 
+    /**
+     * Sets the cell style of header
+     * 
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     */
     protected abstract void setHeadCellStyle(Cell cell, Head head, int relativeRowIndex);
 
+    /**
+     * Sets the cell style of content
+     * 
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     */
     protected abstract void setContentCellStyle(Cell cell, Head head, int relativeRowIndex);
 
 }

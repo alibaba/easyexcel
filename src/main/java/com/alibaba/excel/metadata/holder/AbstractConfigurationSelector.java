@@ -8,15 +8,27 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.event.Order;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.CellStyle;
+import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.property.CellStyleProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.metadata.property.ExcelHeadProperty;
+import com.alibaba.excel.metadata.property.RowHeightProperty;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.style.AbstractColumnCellStyleStrategy;
+import com.alibaba.excel.write.style.column.AbstractColumnWidthStyleStrategy;
+import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
 /**
  * sheet holder
@@ -189,6 +201,99 @@ public abstract class AbstractConfigurationSelector implements ConfigurationSele
             result.get(WriteHandler.class).add(writeHandler);
         }
         return result;
+    }
+
+    protected void initAnnotationConfig(List<WriteHandler> handlerList) {
+        if (!HeadKindEnum.CLASS.equals(getExcelHeadProperty().getHeadKind())) {
+            return;
+        }
+        Map<Integer, Head> headMap = getExcelHeadProperty().getHeadMap();
+        Map<Integer, ExcelContentProperty> contentPropertyMap = getExcelHeadProperty().getContentPropertyMap();
+
+        boolean hasCellStyle = false;
+        boolean hasColumnWidth = false;
+        for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
+            if (entry.getValue().getCellStyleProperty() != null) {
+                hasCellStyle = true;
+            }
+            if (entry.getValue().getColumnWidthProperty() != null) {
+                hasColumnWidth = true;
+            }
+            ExcelContentProperty excelContentProperty = contentPropertyMap.get(entry.getKey());
+            if (excelContentProperty.getCellStyleProperty() != null) {
+                hasCellStyle = true;
+            }
+        }
+
+        if (hasCellStyle) {
+            dealCellStyle(handlerList, contentPropertyMap);
+        }
+        if (hasColumnWidth) {
+            dealColumnWidth(handlerList);
+        }
+        dealRowHigh(handlerList, contentPropertyMap);
+    }
+
+    private void dealRowHigh(List<WriteHandler> handlerList, Map<Integer, ExcelContentProperty> contentPropertyMap) {
+        RowHeightProperty headRowHeightProperty = excelHeadProperty.getHeadRowHeightProperty();
+        RowHeightProperty contentRowHeightProperty = excelHeadProperty.getContentRowHeightProperty();
+        if (headRowHeightProperty == null && contentRowHeightProperty == null) {
+            return;
+        }
+        Short headRowHeight = null;
+        if (headRowHeightProperty != null) {
+            headRowHeight = headRowHeightProperty.getHeight();
+        }
+        Short contentRowHeight = null;
+        if (contentRowHeightProperty != null) {
+            contentRowHeight = contentRowHeightProperty.getHeight();
+        }
+        handlerList.add(new SimpleRowHeightStyleStrategy(headRowHeight, contentRowHeight));
+    }
+
+    private void dealColumnWidth(List<WriteHandler> handlerList) {
+        WriteHandler columnWidthStyleStrategy = new AbstractColumnWidthStyleStrategy() {
+            @Override
+            protected void setColumnWidth(Sheet sheet, Cell cell, Head head) {
+                if (head == null) {
+                    return;
+                }
+                if (head.getColumnWidthProperty() != null) {
+                    sheet.setColumnWidth(head.getColumnIndex(), head.getColumnWidthProperty().getWidth());
+                }
+            }
+        };
+        handlerList.add(columnWidthStyleStrategy);
+    }
+
+    private void dealCellStyle(List<WriteHandler> handlerList,
+        final Map<Integer, ExcelContentProperty> contentPropertyMap) {
+        WriteHandler columnCellStyleStrategy = new AbstractColumnCellStyleStrategy() {
+            @Override
+            protected CellStyle headCellStyle(Head head) {
+                if (head == null || head.getCellStyleProperty() == null) {
+                    return null;
+                }
+                CellStyleProperty cellStyleProperty = head.getCellStyleProperty();
+                return new CellStyle(cellStyleProperty.getFontName(), cellStyleProperty.getFontHeightInPoints(),
+                    cellStyleProperty.getBold(), cellStyleProperty.getIndexedColors());
+            }
+
+            @Override
+            protected CellStyle contentCellStyle(Head head) {
+                if (head == null) {
+                    return null;
+                }
+                ExcelContentProperty excelContentProperty = contentPropertyMap.get(head.getColumnIndex());
+                if (excelContentProperty == null || excelContentProperty.getCellStyleProperty() == null) {
+                    return null;
+                }
+                CellStyleProperty cellStyleProperty = excelContentProperty.getCellStyleProperty();
+                return new CellStyle(cellStyleProperty.getFontName(), cellStyleProperty.getFontHeightInPoints(),
+                    cellStyleProperty.getBold(), cellStyleProperty.getIndexedColors());
+            }
+        };
+        handlerList.add(columnCellStyleStrategy);
     }
 
     @Override

@@ -17,6 +17,19 @@ public class CellStyle {
      */
     private Font font;
 
+    public CellStyle() {
+
+    }
+
+    public CellStyle(String fontName, Short fontHeightInPoints, Boolean bold, IndexedColors indexedColors) {
+        Font font = new Font();
+        font.setFontName(fontName);
+        font.setFontHeightInPoints(fontHeightInPoints);
+        font.setBold(bold);
+        this.font = font;
+        this.indexedColors = indexedColors;
+    }
+
     public IndexedColors getIndexedColors() {
         return indexedColors;
     }

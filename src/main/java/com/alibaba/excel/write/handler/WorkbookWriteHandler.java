@@ -11,15 +11,13 @@ public interface WorkbookWriteHandler extends WriteHandler {
 
     /**
      * called before create the sheet
-     * 
-     * @param writeContext
      */
     void beforeWorkbookCreate();
 
     /**
      * called after the sheet is created
-     *
-     * @param writeContext
+     * 
+     * @param workbookHolder
      */
     void afterWorkbookCreate(WorkbookHolder workbookHolder);
 }

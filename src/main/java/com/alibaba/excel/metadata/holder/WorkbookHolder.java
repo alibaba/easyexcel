@@ -10,8 +10,8 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.converters.DefaultConverterBuilder;
-import com.alibaba.excel.write.handler.DefaultWriteHandlerBuilder;
+import com.alibaba.excel.converters.DefaultConverterLoader;
+import com.alibaba.excel.write.handler.DefaultWriteHandlerLoader;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
@@ -46,6 +46,15 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
     private Boolean autoCloseStream;
 
     /**
+     * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
+     * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
+     *
+     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
+     */
+    @Deprecated
+    private Boolean convertAllFiled;
+
+    /**
      * Write handler
      *
      * @deprecated please use {@link WriteHandler}
@@ -62,6 +71,11 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
         setHead(workbook.getHead());
         setClazz(workbook.getClazz());
         setNewInitialization(Boolean.TRUE);
+        if (workbook.getConvertAllFiled() == null) {
+            this.convertAllFiled = Boolean.TRUE;
+        } else {
+            this.convertAllFiled = workbook.getConvertAllFiled();
+        }
         if (workbook.getAutoCloseStream() == null) {
             setAutoCloseStream(Boolean.TRUE);
         } else {
@@ -81,9 +95,12 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
         if (workbook.getCustomWriteHandlerList() != null && !workbook.getCustomWriteHandlerList().isEmpty()) {
             handlerList.addAll(workbook.getCustomWriteHandlerList());
         }
-        handlerList.addAll(DefaultWriteHandlerBuilder.loadDefaultHandler());
+        // Initialization Annotation
+        initAnnotationConfig(handlerList);
+
+        handlerList.addAll(DefaultWriteHandlerLoader.loadDefaultHandler());
         setWriteHandlerMap(sortAndClearUpHandler(handlerList, null));
-        Map<Class, Converter> converterMap = DefaultConverterBuilder.loadDefaultWriteConverter();
+        Map<Class, Converter> converterMap = DefaultConverterLoader.loadDefaultWriteConverter();
         if (workbook.getCustomConverterMap() != null && !workbook.getCustomConverterMap().isEmpty()) {
             converterMap.putAll(workbook.getCustomConverterMap());
         }
@@ -145,5 +162,13 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
 
     public void setAutoCloseStream(Boolean autoCloseStream) {
         this.autoCloseStream = autoCloseStream;
+    }
+
+    public Boolean getConvertAllFiled() {
+        return convertAllFiled;
+    }
+
+    public void setConvertAllFiled(Boolean convertAllFiled) {
+        this.convertAllFiled = convertAllFiled;
     }
 }

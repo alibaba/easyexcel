@@ -11,7 +11,7 @@ import com.alibaba.excel.metadata.Head;
  * @author zhuangjiaju
  */
 public class SimpleColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrategy {
-    private int columnWidth;
+    private Integer columnWidth;
 
     /**
      * Using the Calibri font as an example, the maximum digit width of 11 point font size is 7 pixels (at 96 dpi). * If
@@ -20,12 +20,14 @@ public class SimpleColumnWidthStyleStrategy extends AbstractColumnWidthStyleStra
      * @param columnWidth
      *            the width in units of 1/256th of a character width
      */
-    public SimpleColumnWidthStyleStrategy(int columnWidth) {
+    public SimpleColumnWidthStyleStrategy(Integer columnWidth) {
         this.columnWidth = columnWidth;
     }
 
     @Override
     protected void setColumnWidth(Sheet sheet, Cell cell, Head head) {
-        sheet.setColumnWidth(cell.getColumnIndex(), columnWidth);
+        if (columnWidth != null) {
+            sheet.setColumnWidth(cell.getColumnIndex(), columnWidth);
+        }
     }
 }

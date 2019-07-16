@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
+import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
