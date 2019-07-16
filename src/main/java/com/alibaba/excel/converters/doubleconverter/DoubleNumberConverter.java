@@ -23,12 +23,12 @@ public class DoubleNumberConverter implements Converter<Double> {
     }
 
     @Override
-    public Double convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) throws Exception {
+    public Double convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         return cellData.getDoubleValue();
     }
 
     @Override
-    public CellData convertToExcelData(Double value, ExcelContentProperty contentProperty) throws Exception {
+    public CellData convertToExcelData(Double value, ExcelContentProperty contentProperty) {
         return new CellData(value);
     }
 

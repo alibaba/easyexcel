@@ -29,7 +29,7 @@ public class ByteNumberConverter implements Converter<Byte> {
 
     @Override
     public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty) {
-        return new CellData((double)value);
+        return new CellData(value.doubleValue());
     }
 
 }

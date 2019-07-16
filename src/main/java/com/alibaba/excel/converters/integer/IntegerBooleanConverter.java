@@ -1,4 +1,4 @@
-package com.alibaba.excel.converters.doubleconverter;
+package com.alibaba.excel.converters.integer;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -6,17 +6,17 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
- * Byte and boolean converter
+ * Integer and boolean converter
  *
  * @author zhuangjiaju
  */
-public class ByteBooleanConverter implements Converter<Byte> {
-    private static final Byte ONE = (byte)1;
-    private static final Byte ZERO = (byte)0;
+public class IntegerBooleanConverter implements Converter<Integer> {
+    private static final Integer ONE = 1;
+    private static final Integer ZERO = 0;
 
     @Override
     public Class supportJavaTypeKey() {
-        return Byte.class;
+        return Integer.class;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ByteBooleanConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
+    public Integer convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         if (cellData.getBooleanValue()) {
             return ONE;
         }
@@ -33,7 +33,7 @@ public class ByteBooleanConverter implements Converter<Byte> {
     }
 
     @Override
-    public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty) {
+    public CellData convertToExcelData(Integer value, ExcelContentProperty contentProperty) {
         if (ONE.equals(value)) {
             return new CellData(Boolean.TRUE);
         }

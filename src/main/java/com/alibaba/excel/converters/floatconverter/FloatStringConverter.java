@@ -1,4 +1,4 @@
-package com.alibaba.excel.converters.byteconverter;
+package com.alibaba.excel.converters.floatconverter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -7,15 +7,15 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
 
 /**
- * Byte and string converter
+ * Float and string converter
  *
  * @author zhuangjiaju
  */
-public class ByteStringConverter implements Converter<Byte> {
+public class FloatStringConverter implements Converter<Float> {
 
     @Override
     public Class supportJavaTypeKey() {
-        return Byte.class;
+        return Float.class;
     }
 
     @Override
@@ -24,13 +24,12 @@ public class ByteStringConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
-        return Byte.valueOf(cellData.getStringValue());
+    public Float convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
+        return Float.valueOf(cellData.getStringValue());
     }
 
     @Override
-    public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty) {
+    public CellData convertToExcelData(Float value, ExcelContentProperty contentProperty) {
         return NumberUtils.formatToCellData(value, contentProperty);
     }
-
 }

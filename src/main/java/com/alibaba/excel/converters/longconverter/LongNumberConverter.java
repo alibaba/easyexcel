@@ -1,6 +1,4 @@
-package com.alibaba.excel.converters.bigdecimal;
-
-import java.math.BigDecimal;
+package com.alibaba.excel.converters.longconverter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -8,15 +6,15 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
- * BigDecimal and number converter
+ * Long and number converter
  *
  * @author zhuangjiaju
  */
-public class BigDecimalNumberConverter implements Converter<BigDecimal> {
+public class LongNumberConverter implements Converter<Long> {
 
     @Override
     public Class supportJavaTypeKey() {
-        return BigDecimal.class;
+        return Long.class;
     }
 
     @Override
@@ -25,12 +23,13 @@ public class BigDecimalNumberConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
-        return BigDecimal.valueOf(cellData.getDoubleValue());
+    public Long convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
+        return cellData.getDoubleValue().longValue();
     }
 
     @Override
-    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty) {
+    public CellData convertToExcelData(Long value, ExcelContentProperty contentProperty) {
         return new CellData(value.doubleValue());
     }
+
 }
