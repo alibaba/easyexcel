@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.event.ReadListener;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
@@ -46,6 +47,10 @@ public class BasicParameter {
      * Custom type handler override the default
      */
     private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
+    /**
+     * Custom type listener run after default
+     */
+    private List<ReadListener> customReadListenerList = new ArrayList<ReadListener>();
 
     public Integer getReadHeadRowNumber() {
         return readHeadRowNumber;
@@ -101,5 +106,13 @@ public class BasicParameter {
 
     public void setCustomWriteHandlerList(List<WriteHandler> customWriteHandlerList) {
         this.customWriteHandlerList = customWriteHandlerList;
+    }
+
+    public List<ReadListener> getCustomReadListenerList() {
+        return customReadListenerList;
+    }
+
+    public void setCustomReadListenerList(List<ReadListener> customReadListenerList) {
+        this.customReadListenerList = customReadListenerList;
     }
 }

@@ -24,27 +24,28 @@ import com.alibaba.excel.util.StringUtils;
  * 
  * @author zhuangjiaju
  */
-public class Ehcache implements Cache {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Ehcache.class);
+public class EhcacheMix implements Cache {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EhcacheMix.class);
     private static final int BATCH = 500;
-    // private org.ehcache.Cache<Integer, String> cache;
     int index = 0;
     int expirekey = 0;
-    private Map<Integer, String> cache = new HashMap<Integer, String>();
+    private org.ehcache.Cache<Integer, String> cache;
     private Map<Integer, Map<Integer, String>> cacheMap = new HashMap<Integer, Map<Integer, String>>();
     private TreeMap<Integer, Integer> expire = new TreeMap<Integer, Integer>();
     private StringBuilder sb = new StringBuilder();
     private Set<Integer> count = new HashSet<Integer>();
     private int getCount = 1;
 
-    public Ehcache() {
+    private int countRead = 0;
+
+    public EhcacheMix() {
         File file = POITempFile.createCacheTmpFile();
-        PersistentCacheManager persistentCacheManager =
-            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(file))
-                .withCache("cache", CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, String.class,
-                    ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.GB)))
-                .build(true);
-        // this.cache = persistentCacheManager.getCache("cache", Integer.class, String.class);
+        PersistentCacheManager persistentCacheManager = CacheManagerBuilder.newCacheManagerBuilder()
+            .with(CacheManagerBuilder.persistence(file))
+            .withCache("cache", CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, String.class,
+                ResourcePoolsBuilder.newResourcePoolsBuilder().heap(20, MemoryUnit.MB).disk(2, MemoryUnit.GB, false)))
+            .build(true);
+        this.cache = persistentCacheManager.getCache("cache", Integer.class, String.class);
     }
 
     @Override
@@ -63,7 +64,6 @@ public class Ehcache implements Cache {
         int route = key / BATCH;
         route++;
         if (!cacheMap.containsKey(route)) {
-            // LOGGER.info("key:{},route:{},missing", key, route);
             Map<Integer, String> map = new HashMap<Integer, String>(10000 / 3 * 4 + 1);
             String s = cache.get(route);
             String[] values = s.split(",");
@@ -98,12 +98,12 @@ public class Ehcache implements Cache {
         }
 
         if (expire.size() > 10) {
-            int value1=expire.firstEntry().getValue();
-            int key1=expire.firstEntry().getKey();
+            int value1 = expire.firstEntry().getValue();
+            int key1 = expire.firstEntry().getKey();
             cacheMap.remove(value1);
             expire.remove(key1);
         }
-        
+
         return cacheMap.get(route).get(key);
     }
 

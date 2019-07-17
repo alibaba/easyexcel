@@ -1,5 +1,6 @@
 package com.alibaba.excel.metadata;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -16,14 +17,26 @@ public class Workbook extends BasicParameter {
      * Excel type
      */
     private ExcelTypeEnum excelType;
+
     /**
-     * Final output stream
+     * Read final output stream
      */
     private OutputStream outputStream;
     /**
-     * Template input stream
+     * <li>write: Template input stream
+     * <li>read: Read InputStream
+     * <p>
+     * If 'inputStream' and 'file' all not empty,file first
      */
-    private InputStream templateInputStream;
+    private InputStream inputStream;
+
+    /**
+     * <li>write: Template file
+     * <li>read: Read file
+     * <p>
+     * If 'inputStream' and 'file' all not empty,file first
+     */
+    private File file;
     /**
      * Default true
      */
@@ -60,12 +73,20 @@ public class Workbook extends BasicParameter {
         this.outputStream = outputStream;
     }
 
-    public InputStream getTemplateInputStream() {
-        return templateInputStream;
+    public InputStream getInputStream() {
+        return inputStream;
     }
 
-    public void setTemplateInputStream(InputStream templateInputStream) {
-        this.templateInputStream = templateInputStream;
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public com.alibaba.excel.event.WriteHandler getWriteHandler() {

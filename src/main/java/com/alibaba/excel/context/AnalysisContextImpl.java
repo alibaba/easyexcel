@@ -74,7 +74,6 @@ public class AnalysisContextImpl implements AnalysisContext {
         this.converterRegistryCenter = converterRegistryCenter;
     }
 
-
     @Override
     public void setCurrentSheet(Sheet currentSheet) {
         cleanCurrentSheet();
@@ -84,6 +83,7 @@ public class AnalysisContextImpl implements AnalysisContext {
                 ExcelHeadProperty.buildExcelHeadProperty(this.excelHeadProperty, currentSheet.getClazz(), null);
         }
     }
+
 
     private void cleanCurrentSheet() {
         this.currentSheet = null;

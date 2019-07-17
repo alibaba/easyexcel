@@ -1,7 +1,7 @@
 package com.alibaba.excel.event;
 
 /**
- * intercepts handle some business logic
+ * Intercepts handle some business logic
  *
  * @author zhuangjiaju
  **/

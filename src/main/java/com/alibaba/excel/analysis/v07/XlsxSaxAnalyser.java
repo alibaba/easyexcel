@@ -14,16 +14,13 @@ import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.apache.xmlbeans.XmlException;
-import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
-import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
-import org.openxmlformats.schemas.spreadsheetml.x2006.main.WorkbookDocument;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import com.alibaba.excel.analysis.BaseSaxAnalyser;
 import com.alibaba.excel.cache.Cache;
-import com.alibaba.excel.cache.Ehcache;
+import com.alibaba.excel.cache.EhcacheFile;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
@@ -46,12 +43,31 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
         this.analysisContext = analysisContext;
 
         analysisContext.setCurrentRowNum(0);
-        OPCPackage pkg = OPCPackage.open(analysisContext.getInputStream());
+        // OPCPackage pkg =
+        // OPCPackage.open(new File("D:\\git\\easyexcel\\src\\test\\resources\\read\\large\\large07.xlsx"));
+//        InputStream input =
+//            Thread.currentThread().getContextClassLoader().getResourceAsStream("read/large/large07.xlsx");
+//        File ff = new File("D:\\git\\easyexcel\\src\\test\\resources\\read\\large\\large0722.xlsx");
+//        OutputStream os = new FileOutputStream(ff);
+//        int bytesRead = 0;
+//        byte[] buffer = new byte[8192];
+//        while ((bytesRead = input.read(buffer, 0, 8192)) != -1) {
+//            os.write(buffer, 0, bytesRead);
+//        }
+//        os.close();
+//        input.close();
+//        OPCPackage pkg = OPCPackage.open(ff);
+
+         OPCPackage pkg =
+         OPCPackage.open(Thread.currentThread().getContextClassLoader().getResourceAsStream("read/large/large07.xlsx"));
         this.xssfReader = new XSSFReader(pkg);
         ArrayList<PackagePart> parts = pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType());
         PackagePart packagePart = parts.get(0);
-        InputSource sheetSource1 = new InputSource(packagePart.getInputStream());
-        this.cache = new Ehcache();
+        // InputStream sheet = Thread.currentThread().getContextClassLoader()
+        // .getResourceAsStream("read/large/large07/xl/sharedStrings.xml");
+        InputStream sheet = packagePart.getInputStream();
+        InputSource sheetSource1 = new InputSource(sheet);
+        this.cache = new EhcacheFile();
         try {
             SAXParserFactory saxFactory = SAXParserFactory.newInstance();
             saxFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -62,23 +78,27 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
             ContentHandler handler = new SharedStringsTableHandler(cache);
             xmlReader.setContentHandler(handler);
             xmlReader.parse(sheetSource1);
-            packagePart.getInputStream().close();
+            sheet.close();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ExcelAnalysisException(e);
         }
-
-        InputStream workbookXml = xssfReader.getWorkbookData();
-        WorkbookDocument ctWorkbook = WorkbookDocument.Factory.parse(workbookXml);
-        CTWorkbook wb = ctWorkbook.getWorkbook();
-        CTWorkbookPr prefix = wb.getWorkbookPr();
-        if (prefix != null) {
-            this.use1904WindowDate = prefix.getDate1904();
-        }
+        cache.finish();
+        // this.cache=new SharedStringsTableCache(xssfReader.getSharedStringsTable());
+        // InputStream workbookXml = xssfReader.getWorkbookData();
+        // WorkbookDocument ctWorkbook = WorkbookDocument.Factory.parse(workbookXml);
+        // CTWorkbook wb = ctWorkbook.getWorkbook();
+        // CTWorkbookPr prefix = wb.getWorkbookPr();
+        // if (prefix != null) {
+        // this.use1904WindowDate = prefix.getDate1904();
+        // }
         this.analysisContext.setUse1904WindowDate(use1904WindowDate);
 
+        // sheetSourceList.add(new SheetSource("test", Thread.currentThread().getContextClassLoader()
+        // .getResourceAsStream("read/large/large07/xl/worksheets/sheet1.xml")));
         XSSFReader.SheetIterator ite;
         sheetSourceList = new ArrayList<SheetSource>();
+
         ite = (XSSFReader.SheetIterator)xssfReader.getSheetsData();
         while (ite.hasNext()) {
             InputStream inputStream = ite.next();

@@ -75,6 +75,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             throw new ExcelAnalysisException("File type error，io must be available markSupported,you can do like "
                 + "this <code> new BufferedInputStream(new FileInputStream(\\\"/xxxx\\\"))</code> \"", e);
         }
+
         return this.saxAnalyser;
     }
     
