@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.DefaultConverterLoader;
@@ -20,6 +22,7 @@ import com.alibaba.excel.write.handler.WriteHandler;
  * @author zhuangjiaju
  */
 public class WorkbookHolder extends AbstractConfigurationSelector {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkbookHolder.class);
     /***
      * poi Workbook
      */
@@ -95,9 +98,6 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
         if (workbook.getCustomWriteHandlerList() != null && !workbook.getCustomWriteHandlerList().isEmpty()) {
             handlerList.addAll(workbook.getCustomWriteHandlerList());
         }
-        // Initialization Annotation
-        initAnnotationConfig(handlerList);
-
         handlerList.addAll(DefaultWriteHandlerLoader.loadDefaultHandler());
         setWriteHandlerMap(sortAndClearUpHandler(handlerList, null));
         Map<Class, Converter> converterMap = DefaultConverterLoader.loadDefaultWriteConverter();
@@ -106,6 +106,9 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
         }
         setConverterMap(converterMap);
         setHasBeenInitializedSheet(new HashMap<Integer, SheetHolder>());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Wookbook writeHandlerMap:{}", getWriteHandlerMap());
+        }
     }
 
     public Workbook getWorkbook() {

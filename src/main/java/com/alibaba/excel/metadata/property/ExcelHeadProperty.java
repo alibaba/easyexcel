@@ -75,6 +75,10 @@ public class ExcelHeadProperty {
         }
         initHeadRowNumber();
         LOGGER.info("The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is {}", headKind);
+        if (!hasHead()) {
+            LOGGER.warn(
+                "The table has no header set and all annotations will not be read.If you want to use annotations, please use set head class in ExcelWriterBuilder/ExcelWriterSheetBuilder/ExcelWriterTableBuilder");
+        }
     }
 
     public static ExcelHeadProperty buildExcelHeadProperty(ExcelHeadProperty excelHeadProperty, Class clazz,
@@ -136,7 +140,7 @@ public class ExcelHeadProperty {
             }
             if (excelProperty == null || excelProperty.index() < 0) {
                 defaultFieldList.add(field);
-                return;
+                continue;
             }
             if (customFiledMap.containsKey(excelProperty.index())) {
                 throw new ExcelGenerateException("The index of " + customFiledMap.get(excelProperty.index()).getName()
@@ -195,6 +199,7 @@ public class ExcelHeadProperty {
 
         ExcelContentProperty excelContentProperty = new ExcelContentProperty();
         excelContentProperty.setHead(head);
+        excelContentProperty.setField(field);
         ContentStyle contentStyle = field.getAnnotation(ContentStyle.class);
         if (contentStyle == null) {
             contentStyle = parentContentStyle;

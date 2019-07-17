@@ -9,6 +9,10 @@ public class FileUtil {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream("" + fileName);
     }
 
+    public static InputStream readFile(String fileName) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream("read/" + fileName);
+    }
+
     public static String getPath() {
         return FileUtil.class.getResource("/").getPath();
     }

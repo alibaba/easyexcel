@@ -1,13 +1,18 @@
 package com.alibaba.excel.analysis.v07;
 
-import com.alibaba.excel.analysis.BaseSaxAnalyser;
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.Sheet;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
-import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
@@ -16,12 +21,12 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.excel.analysis.BaseSaxAnalyser;
+import com.alibaba.excel.cache.Cache;
+import com.alibaba.excel.cache.Ehcache;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.metadata.Sheet;
 
 /**
  *
@@ -31,7 +36,7 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
 
     private XSSFReader xssfReader;
 
-    private SharedStringsTable sharedStringsTable;
+    private Cache cache;
 
     private List<SheetSource> sheetSourceList = new ArrayList<SheetSource>();
 
@@ -41,8 +46,27 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
         this.analysisContext = analysisContext;
 
         analysisContext.setCurrentRowNum(0);
-        this.xssfReader = new XSSFReader(OPCPackage.open(analysisContext.getInputStream()));
-        this.sharedStringsTable = this.xssfReader.getSharedStringsTable();
+        OPCPackage pkg = OPCPackage.open(analysisContext.getInputStream());
+        this.xssfReader = new XSSFReader(pkg);
+        ArrayList<PackagePart> parts = pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType());
+        PackagePart packagePart = parts.get(0);
+        InputSource sheetSource1 = new InputSource(packagePart.getInputStream());
+        this.cache = new Ehcache();
+        try {
+            SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+            saxFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            SAXParser saxParser = saxFactory.newSAXParser();
+            XMLReader xmlReader = saxParser.getXMLReader();
+            ContentHandler handler = new SharedStringsTableHandler(cache);
+            xmlReader.setContentHandler(handler);
+            xmlReader.parse(sheetSource1);
+            packagePart.getInputStream().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExcelAnalysisException(e);
+        }
 
         InputStream workbookXml = xssfReader.getWorkbookData();
         WorkbookDocument ctWorkbook = WorkbookDocument.Factory.parse(workbookXml);
@@ -52,7 +76,6 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
             this.use1904WindowDate = prefix.getDate1904();
         }
         this.analysisContext.setUse1904WindowDate(use1904WindowDate);
-
 
         XSSFReader.SheetIterator ite;
         sheetSourceList = new ArrayList<SheetSource>();
@@ -77,7 +100,7 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
             int i = 0;
             for (SheetSource sheetSource : sheetSourceList) {
                 i++;
-                analysisContext.setCurrentSheet(new Sheet(i));
+                analysisContext.setCurrentSheet(new Sheet(i, sheetParam.getReadHeadRowNumber()));
                 parseXmlSource(sheetSource.getInputStream());
             }
         }
@@ -92,7 +115,7 @@ public class XlsxSaxAnalyser extends BaseSaxAnalyser {
             saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             SAXParser saxParser = saxFactory.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
-            ContentHandler handler = new XlsxRowHandler(this, sharedStringsTable, analysisContext);
+            ContentHandler handler = new XlsxRowHandler(this, cache, analysisContext);
             xmlReader.setContentHandler(handler);
             xmlReader.parse(sheetSource);
             inputStream.close();

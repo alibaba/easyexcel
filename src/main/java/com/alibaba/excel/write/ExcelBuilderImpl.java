@@ -1,7 +1,9 @@
 package com.alibaba.excel.write;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -158,6 +160,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex) {
         ConfigurationSelector currentConfigurationSelector = context.currentConfigurationSelector();
         BeanMap beanMap = BeanMap.create(oneRowData);
+        Set<String> beanMapHandledSet = new HashSet<String>();
         Map<Integer, Head> headMap = context.currentConfigurationSelector().excelHeadProperty().getHeadMap();
         Map<Integer, ExcelContentProperty> contentPropertyMap =
             context.currentConfigurationSelector().excelHeadProperty().getContentPropertyMap();
@@ -176,30 +179,25 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             converterAndSet(currentConfigurationSelector, excelContentProperty.getField().getType(), cell, value,
                 excelContentProperty);
             afterCellCreate(head, cell, relativeRowIndex);
-            beanMap.remove(name);
+            beanMapHandledSet.add(name);
         }
         // Finish
-        if (beanMap.isEmpty()) {
+        if (beanMapHandledSet.size() == beanMap.size()) {
             return;
         }
         if (cellIndex != 0) {
             cellIndex++;
         }
-        for (Object value : beanMap.values()) {
+        Set<Map.Entry<String, Object>> entrySet = beanMap.entrySet();
+        for (Map.Entry<String, Object> entry : entrySet) {
+            if (entry.getValue() == null || beanMapHandledSet.contains(entry.getKey())) {
+                continue;
+            }
             beforeCellCreate(row, null, relativeRowIndex);
             Cell cell = WorkBookUtil.createCell(row, cellIndex++);
-            converterAndSet(currentConfigurationSelector, value.getClass(), cell, value, null);
+            converterAndSet(currentConfigurationSelector, entry.getValue().getClass(), cell, entry.getValue(), null);
             afterCellCreate(null, cell, relativeRowIndex);
         }
-    }
-
-    private void doAddJavaObjectToExcel(List<Object> oneRowData, Head head, Row row, int relativeRowIndex,
-        int dataIndex, int cellIndex) {
-        beforeCellCreate(row, head, relativeRowIndex);
-        Cell cell = WorkBookUtil.createCell(row, cellIndex);
-        Object value = oneRowData.get(dataIndex);
-        converterAndSet(context.currentConfigurationSelector(), value.getClass(), cell, value, null);
-        afterCellCreate(head, cell, relativeRowIndex);
     }
 
     private void beforeCellCreate(Row row, Head head, int relativeRowIndex) {

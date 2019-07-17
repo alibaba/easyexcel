@@ -40,7 +40,8 @@ public class SimpleData07Test {
         List<SimpleData> list = new ArrayList<SimpleData>();
         for (int i = 0; i < count; i++) {
             SimpleData simpleData = new SimpleData();
-            simpleData.setString("字符体" + i);
+            simpleData.setString1("一号字" + i);
+            simpleData.setString2("二号字" + i);
             list.add(simpleData);
         }
         return list;

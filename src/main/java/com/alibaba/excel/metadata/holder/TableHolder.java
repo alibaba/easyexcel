@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.Table;
@@ -19,6 +22,8 @@ import com.alibaba.excel.write.style.RowCellStyleStrategy;
  * @author zhuangjiaju
  */
 public class TableHolder extends AbstractConfigurationSelector {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TableHolder.class);
+
     /***
      * poi sheet
      */
@@ -75,6 +80,9 @@ public class TableHolder extends AbstractConfigurationSelector {
             converterMap.putAll(table.getCustomConverterMap());
         }
         setConverterMap(converterMap);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Table writeHandlerMap:{}", getWriteHandlerMap());
+        }
     }
 
     /**

@@ -31,6 +31,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.apache.commons.codec.binary.CharSequenceUtils;
 
@@ -1312,4 +1313,5 @@ public abstract class StringUtils {
 
         return true;
     }
+
 }

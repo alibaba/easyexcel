@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.CellStyle;
@@ -22,6 +24,7 @@ import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy
  * @author zhuangjiaju
  */
 public class SheetHolder extends AbstractConfigurationSelector {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SheetHolder.class);
 
     /***
      * poi sheet
@@ -91,6 +94,9 @@ public class SheetHolder extends AbstractConfigurationSelector {
         }
         setConverterMap(converterMap);
         setHasBeenInitializedTable(new HashMap<Integer, TableHolder>());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Sheet writeHandlerMap:{}", getWriteHandlerMap());
+        }
     }
 
     /**

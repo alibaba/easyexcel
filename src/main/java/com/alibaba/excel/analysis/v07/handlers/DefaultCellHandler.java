@@ -8,13 +8,12 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 
 import java.util.Arrays;
 
-import org.apache.poi.ss.usermodel.RichTextString;
-import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
+import com.alibaba.excel.cache.Cache;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -27,7 +26,7 @@ import com.alibaba.excel.util.StringUtils;
 public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder {
     private final AnalysisContext analysisContext;
     private final AnalysisEventRegistryCenter registerCenter;
-    private final SharedStringsTable sst;
+    private final Cache cahe;
     private String currentTag;
     private String currentCellIndex;
     private int curRow;
@@ -35,11 +34,10 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private CellData[] curRowContent = new CellData[20];
     private CellData currentCellData;
 
-    public DefaultCellHandler(AnalysisContext analysisContext, AnalysisEventRegistryCenter registerCenter,
-        SharedStringsTable sst) {
+    public DefaultCellHandler(AnalysisContext analysisContext, AnalysisEventRegistryCenter registerCenter, Cache cahe) {
         this.analysisContext = analysisContext;
         this.registerCenter = registerCenter;
-        this.sst = sst;
+        this.cahe = cahe;
     }
 
     @Override
@@ -86,8 +84,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             ensureSize();
             // Have to go "sharedStrings.xml" and get it
             if (currentCellData.getType() == CellDataTypeEnum.STRING) {
-                RichTextString richTextString = sst.getItemAt(Integer.parseInt(currentCellData.getStringValue()));
-                currentCellData.setStringValue(richTextString.toString());
+                currentCellData.setStringValue(cahe.get(Integer.valueOf(currentCellData.getStringValue())));
             }
             curRowContent[curCol] = currentCellData;
         }
@@ -110,6 +107,9 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     @Override
     public void appendCurrentCellValue(String currentCellValue) {
         if (StringUtils.isEmpty(currentCellValue)) {
+            return;
+        }
+        if (currentTag == null) {
             return;
         }
         if (CELL_FORMULA_TAG.equals(currentTag)) {
