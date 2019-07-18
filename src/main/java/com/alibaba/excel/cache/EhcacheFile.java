@@ -24,7 +24,7 @@ import com.alibaba.excel.util.StringUtils;
  * 
  * @author zhuangjiaju
  */
-public class EhcacheFile implements Cache {
+public class EhcacheFile implements ReadCache {
     private static final Logger LOGGER = LoggerFactory.getLogger(EhcacheFile.class);
     private static final int BATCH = 500;
     int index = 0;

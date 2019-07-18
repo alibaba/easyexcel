@@ -6,7 +6,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.alibaba.excel.cache.Cache;
+import com.alibaba.excel.cache.ReadCache;
 
 /**
  * Sax read sharedStringsTable.xml
@@ -19,10 +19,10 @@ public class SharedStringsTableHandler extends DefaultHandler {
     private String currentData;
     private boolean isT;
     private int index = 0;
-    private Cache cache;
+    private ReadCache readCache;
 
-    public SharedStringsTableHandler(Cache cache) {
-        this.cache = cache;
+    public SharedStringsTableHandler(ReadCache readCache) {
+        this.readCache = readCache;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SharedStringsTableHandler extends DefaultHandler {
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         if (isT) {
-            cache.put(index++, new String(ch, start, length));
+            readCache.put(index++, new String(ch, start, length));
             if (index % 100000 == 0) {
                 LOGGER.info("row:{} ,mem:{},data:{}", index, Runtime.getRuntime().totalMemory());
             }

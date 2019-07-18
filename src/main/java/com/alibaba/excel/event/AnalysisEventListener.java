@@ -1,6 +1,7 @@
 package com.alibaba.excel.event;
 
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.ReadListener;
 
 /**
  * Receives the return of each piece of data parsed
@@ -21,12 +22,7 @@ public abstract class AnalysisEventListener<T> implements ReadListener<T> {
         throw exception;
     }
 
-    /**
-     * Verify that there is another piece of data.You can stop the read by returning false
-     * 
-     * @param context
-     * @return
-     */
+    @Override
     public boolean hasNext(AnalysisContext context) {
         return true;
     }

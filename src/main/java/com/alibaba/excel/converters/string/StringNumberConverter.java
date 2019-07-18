@@ -29,7 +29,7 @@ public class StringNumberConverter implements Converter<String> {
     @Override
     public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
         // If there are "DateTimeFormat", read as date
-        if (contentProperty.getDateTimeFormatProperty() != null) {
+        if (contentProperty != null && contentProperty.getDateTimeFormatProperty() != null) {
             return DateUtils.format(
                 HSSFDateUtil.getJavaDate(cellData.getDoubleValue(),
                     contentProperty.getDateTimeFormatProperty().getUse1904windowing(), null),

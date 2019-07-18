@@ -7,10 +7,10 @@ import org.apache.poi.xssf.model.SharedStringsTable;
  * 
  * @author zhuangjiaju
  */
-public class SharedStringsTableCache implements Cache {
+public class SharedStringsTableReadCache implements ReadCache {
     private SharedStringsTable sharedStringsTable;
 
-    public SharedStringsTableCache(SharedStringsTable sharedStringsTable) {
+    public SharedStringsTableReadCache(SharedStringsTable sharedStringsTable) {
         this.sharedStringsTable = sharedStringsTable;
     }
 

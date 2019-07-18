@@ -1,13 +1,19 @@
 package com.alibaba.excel.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
+
+import com.alibaba.excel.exception.ExcelAnalysisException;
 
 /**
  *
  * @author jipengfei
  */
-public class POITempFile {
+public class FileUtils {
 
     private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
@@ -16,8 +22,43 @@ public class POITempFile {
     private static final String CACHE = "excache";
 
     /**
+     * Write inputStream to file
+     * 
+     * @param file
+     * @param inputStream
      */
-    public static void createPOIFilesDirectory() {
+    public static void writeToFile(File file, InputStream inputStream) {
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            int bytesRead;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead = inputStream.read(buffer, 0, 8192)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (Exception e) {
+            throw new ExcelAnalysisException("Can not create temporary file!", e);
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    throw new ExcelAnalysisException("Can not close 'outputStream'!", e);
+                }
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    throw new ExcelAnalysisException("Can not close 'inputStream'", e);
+                }
+            }
+        }
+    }
+
+    /**
+     */
+    public static void createPoiFilesDirectory() {
         createTmpDirectory(POIFILES);
     }
 

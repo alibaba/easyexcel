@@ -17,7 +17,7 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.holder.ConfigurationSelector;
+import com.alibaba.excel.metadata.holder.WriteConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.POITempFile;
@@ -47,8 +47,8 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         }
         org.apache.poi.ss.usermodel.Sheet currentSheet = context.currentSheetHolder().getSheet();
         int rowNum = currentSheet.getLastRowNum();
-        if (context.currentConfigurationSelector().isNew()) {
-            rowNum += context.currentConfigurationSelector().writeRelativeHeadRowIndex();
+        if (context.currentConfiguration().isNew()) {
+            rowNum += context.currentConfiguration().writeRelativeHeadRowIndex();
         }
         for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {
             int n = relativeRowIndex + rowNum + 1;
@@ -92,7 +92,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     private void beforeRowCreate(int rowIndex, int relativeRowIndex) {
         List<WriteHandler> handlerList =
-            context.currentConfigurationSelector().writeHandlerMap().get(RowWriteHandler.class);
+            context.currentConfiguration().writeHandlerMap().get(RowWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
@@ -106,7 +106,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     private void afterRowCreate(Row row, int relativeRowIndex) {
         List<WriteHandler> handlerList =
-            context.currentConfigurationSelector().writeHandlerMap().get(RowWriteHandler.class);
+            context.currentConfiguration().writeHandlerMap().get(RowWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
@@ -125,7 +125,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (CollectionUtils.isEmpty(oneRowData)) {
             return;
         }
-        Map<Integer, Head> headMap = context.currentConfigurationSelector().excelHeadProperty().getHeadMap();
+        Map<Integer, Head> headMap = context.currentConfiguration().excelHeadProperty().getHeadMap();
         int dataIndex = 0;
         int cellIndex = 0;
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
@@ -153,17 +153,17 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         beforeCellCreate(row, head, relativeRowIndex);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
         Object value = oneRowData.get(dataIndex);
-        converterAndSet(context.currentConfigurationSelector(), value.getClass(), cell, value, null);
+        converterAndSet(context.currentConfiguration(), value.getClass(), cell, value, null);
         afterCellCreate(head, cell, relativeRowIndex);
     }
 
     private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex) {
-        ConfigurationSelector currentConfigurationSelector = context.currentConfigurationSelector();
+        WriteConfiguration currentWriteConfiguration = context.currentConfiguration();
         BeanMap beanMap = BeanMap.create(oneRowData);
         Set<String> beanMapHandledSet = new HashSet<String>();
-        Map<Integer, Head> headMap = context.currentConfigurationSelector().excelHeadProperty().getHeadMap();
+        Map<Integer, Head> headMap = context.currentConfiguration().excelHeadProperty().getHeadMap();
         Map<Integer, ExcelContentProperty> contentPropertyMap =
-            context.currentConfigurationSelector().excelHeadProperty().getContentPropertyMap();
+            context.currentConfiguration().excelHeadProperty().getContentPropertyMap();
         int cellIndex = 0;
         for (Map.Entry<Integer, ExcelContentProperty> entry : contentPropertyMap.entrySet()) {
             cellIndex = entry.getKey();
@@ -176,7 +176,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             beforeCellCreate(row, head, relativeRowIndex);
             Cell cell = WorkBookUtil.createCell(row, cellIndex);
             Object value = beanMap.get(name);
-            converterAndSet(currentConfigurationSelector, excelContentProperty.getField().getType(), cell, value,
+            converterAndSet(currentWriteConfiguration, excelContentProperty.getField().getType(), cell, value,
                 excelContentProperty);
             afterCellCreate(head, cell, relativeRowIndex);
             beanMapHandledSet.add(name);
@@ -195,14 +195,14 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             beforeCellCreate(row, null, relativeRowIndex);
             Cell cell = WorkBookUtil.createCell(row, cellIndex++);
-            converterAndSet(currentConfigurationSelector, entry.getValue().getClass(), cell, entry.getValue(), null);
+            converterAndSet(currentWriteConfiguration, entry.getValue().getClass(), cell, entry.getValue(), null);
             afterCellCreate(null, cell, relativeRowIndex);
         }
     }
 
     private void beforeCellCreate(Row row, Head head, int relativeRowIndex) {
         List<WriteHandler> handlerList =
-            context.currentConfigurationSelector().writeHandlerMap().get(CellWriteHandler.class);
+            context.currentConfiguration().writeHandlerMap().get(CellWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
@@ -217,7 +217,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     private void afterCellCreate(Head head, Cell cell, int relativeRowIndex) {
         List<WriteHandler> handlerList =
-            context.currentConfigurationSelector().writeHandlerMap().get(CellWriteHandler.class);
+            context.currentConfiguration().writeHandlerMap().get(CellWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
@@ -232,12 +232,12 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         }
     }
 
-    private void converterAndSet(ConfigurationSelector currentConfigurationSelector, Class clazz, Cell cell,
-        Object value, ExcelContentProperty excelContentProperty) {
+    private void converterAndSet(WriteConfiguration currentWriteConfiguration, Class clazz, Cell cell,
+                                 Object value, ExcelContentProperty excelContentProperty) {
         if (value == null) {
             return;
         }
-        Converter converter = currentConfigurationSelector.converterMap().get(clazz);
+        Converter converter = currentWriteConfiguration.converterMap().get(clazz);
         if (converter == null) {
             throw new ExcelDataConvertException(
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");

@@ -19,6 +19,12 @@ public class ExcelContentProperty {
     private CellStyleProperty cellStyleProperty;
     private DateTimeFormatProperty dateTimeFormatProperty;
     private NumberFormatProperty numberFormatProperty;
+    /**
+     * true if date uses 1904 windowing, or false if using 1900 date windowing.
+     *
+     * @return
+     */
+    private Boolean use1904windowing;
 
     public Field getField() {
         return field;
@@ -58,5 +64,13 @@ public class ExcelContentProperty {
 
     public void setNumberFormatProperty(NumberFormatProperty numberFormatProperty) {
         this.numberFormatProperty = numberFormatProperty;
+    }
+
+    public Boolean getUse1904windowing() {
+        return use1904windowing;
+    }
+
+    public void setUse1904windowing(Boolean use1904windowing) {
+        this.use1904windowing = use1904windowing;
     }
 }

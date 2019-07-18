@@ -1,7 +1,6 @@
 package com.alibaba.excel.write.builder;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -170,25 +169,22 @@ public class ExcelWriterBuilder {
         return outputFile(new File(outputUri));
     }
 
-    public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {
-        workbook.setTemplateInputStream(templateInputStream);
+    public ExcelWriterBuilder withTemplate(InputStream inputStream) {
+        workbook.setInputStream(inputStream);
         return this;
     }
 
-    public ExcelWriterBuilder withTemplate(File templateFile) {
-        try {
-            return withTemplate(new FileInputStream(templateFile));
-        } catch (FileNotFoundException e) {
-            throw new ExcelGenerateException("Can not create file", e);
-        }
+    public ExcelWriterBuilder withTemplate(File file) {
+        workbook.setFile(file);
+        return this;
     }
 
-    public ExcelWriterBuilder withTemplate(String templatePathName) {
-        return withTemplate(new File(templatePathName));
+    public ExcelWriterBuilder withTemplate(String pathName) {
+        return withTemplate(new File(pathName));
     }
 
-    public ExcelWriterBuilder withTemplate(URI templateUri) {
-        return withTemplate(new File(templateUri));
+    public ExcelWriterBuilder withTemplate(URI uri) {
+        return withTemplate(new File(uri));
     }
 
     /**

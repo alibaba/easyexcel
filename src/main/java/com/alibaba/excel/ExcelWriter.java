@@ -48,7 +48,7 @@ public class ExcelWriter {
     public ExcelWriter(InputStream templateInputStream, OutputStream outputStream, ExcelTypeEnum excelType,
         boolean needHead, Map<Class, Converter> customConverterMap, List<WriteHandler> customWriteHandlerList) {
         Workbook workbook = new Workbook();
-        workbook.setTemplateInputStream(templateInputStream);
+        workbook.setInputStream(templateInputStream);
         workbook.setOutputStream(outputStream);
         workbook.setExcelType(excelType);
         workbook.setNeedHead(needHead);
@@ -135,7 +135,7 @@ public class ExcelWriter {
         List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
         customWriteHandlerList.add(writeHandler);
         Workbook workbook = new Workbook();
-        workbook.setTemplateInputStream(templateInputStream);
+        workbook.setInputStream(templateInputStream);
         workbook.setOutputStream(outputStream);
         workbook.setExcelType(typeEnum);
         workbook.setNeedHead(needHead);

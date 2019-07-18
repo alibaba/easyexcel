@@ -24,10 +24,10 @@ import com.alibaba.excel.util.StringUtils;
  * 
  * @author zhuangjiaju
  */
-public class Ehcache implements Cache {
+public class Ehcache implements ReadCache {
     private static final Logger LOGGER = LoggerFactory.getLogger(Ehcache.class);
     private static final int BATCH = 500;
-    // private org.ehcache.Cache<Integer, String> cache;
+    // private org.ehcache.ReadCache<Integer, String> cache;
     int index = 0;
     int expirekey = 0;
     private Map<Integer, String> cache = new HashMap<Integer, String>();

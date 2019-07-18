@@ -11,16 +11,26 @@ import java.util.TreeMap;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.enums.HeadKindEnum;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.event.AnalysisFinishEvent;
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.event.Order;
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelDataConvertException;
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.CellStyleProperty;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.read.listener.ReadListenerRegistryCenter;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
@@ -35,7 +45,8 @@ import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
  *
  * @author zhuangjiaju
  */
-public abstract class AbstractConfigurationSelector implements ConfigurationSelector {
+public abstract class AbstractWriteConfiguration
+    implements WriteConfiguration, ReadConfiguration, ReadListenerRegistryCenter {
     /**
      * Need Head
      */
@@ -45,9 +56,17 @@ public abstract class AbstractConfigurationSelector implements ConfigurationSele
      */
     private Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap;
     /**
+     * Read listener
+     */
+    private List<ReadListener> readListenerList;
+    /**
      * Converter for workbook
      */
-    private Map<Class, Converter> converterMap;
+    private Map<ConverterKey, Converter> readConverterMap;
+    /**
+     * Converter for workbook
+     */
+    private Map<Class, Converter> writeConverterMap;
     /**
      * Excel head property
      */
@@ -60,17 +79,28 @@ public abstract class AbstractConfigurationSelector implements ConfigurationSele
      * Record whether it's new or from cache
      */
     private Boolean newInitialization;
-
     /**
-     * You can only choose one of the {@link AbstractConfigurationSelector#head} and
-     * {@link AbstractConfigurationSelector#clazz}
+     * Count the number of added heads when read sheet.
+     *
+     * <li>0 - This Sheet has no head ,since the first row are the data
+     * <li>1 - This Sheet has one row head , this is the default
+     * <li>2 - This Sheet has two row head ,since the third row is the data
+     */
+    private Integer readHeadRowNumber;
+    /**
+     * You can only choose one of the {@link AbstractWriteConfiguration#head} and
+     * {@link AbstractWriteConfiguration#clazz}
      */
     private List<List<String>> head;
     /**
-     * You can only choose one of the {@link AbstractConfigurationSelector#head} and
-     * {@link AbstractConfigurationSelector#clazz}
+     * You can only choose one of the {@link AbstractWriteConfiguration#head} and
+     * {@link AbstractWriteConfiguration#clazz}
      */
     private Class clazz;
+    /**
+     * Automatic trim includes sheet name and content
+     */
+    private Boolean autoTrim;
 
     public Boolean getNeedHead() {
         return needHead;
@@ -86,14 +116,6 @@ public abstract class AbstractConfigurationSelector implements ConfigurationSele
 
     public void setWriteHandlerMap(Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap) {
         this.writeHandlerMap = writeHandlerMap;
-    }
-
-    public Map<Class, Converter> getConverterMap() {
-        return converterMap;
-    }
-
-    public void setConverterMap(Map<Class, Converter> converterMap) {
-        this.converterMap = converterMap;
     }
 
     public ExcelHeadProperty getExcelHeadProperty() {
@@ -134,6 +156,139 @@ public abstract class AbstractConfigurationSelector implements ConfigurationSele
 
     public void setClazz(Class clazz) {
         this.clazz = clazz;
+    }
+
+    public Boolean getAutoTrim() {
+        return autoTrim;
+    }
+
+    public void setAutoTrim(Boolean autoTrim) {
+        this.autoTrim = autoTrim;
+    }
+
+    public List<ReadListener> getReadListenerList() {
+        return readListenerList;
+    }
+
+    public void setReadListenerList(List<ReadListener> readListenerList) {
+        this.readListenerList = readListenerList;
+    }
+
+    public Map<ConverterKey, Converter> getReadConverterMap() {
+        return readConverterMap;
+    }
+
+    public void setReadConverterMap(Map<ConverterKey, Converter> readConverterMap) {
+        this.readConverterMap = readConverterMap;
+    }
+
+    public Map<Class, Converter> getWriteConverterMap() {
+        return writeConverterMap;
+    }
+
+    public void setWriteConverterMap(Map<Class, Converter> writeConverterMap) {
+        this.writeConverterMap = writeConverterMap;
+    }
+
+    public Integer getReadHeadRowNumber() {
+        return readHeadRowNumber;
+    }
+
+    public void setReadHeadRowNumber(Integer readHeadRowNumber) {
+        this.readHeadRowNumber = readHeadRowNumber;
+    }
+
+    @Override
+    public void register(AnalysisEventListener listener) {
+        readListenerList.add(listener);
+    }
+
+    @Override
+    public void notifyEndOneRow(AnalysisFinishEvent event, AnalysisContext analysisContext) {
+        List<CellData> cellDataList = (List<CellData>)event.getAnalysisResult();
+        if (analysisContext.currentRowNum() > analysisContext.currentSheetHolder().getReadHeadRowNumber()) {
+            for (ReadListener readListener : readListenerList) {
+                try {
+                    readListener.invoke(analysisContext.currentRowAnalysisResult(), analysisContext);
+                } catch (Exception e) {
+                    for (ReadListener readListenerException : readListenerList) {
+                        try {
+                            readListenerException.onException(e, analysisContext);
+                        } catch (Exception exception) {
+                            throw new ExcelAnalysisException("Listen error!", exception);
+                        }
+                    }
+                }
+            }
+        }
+        // Now is header
+        if (analysisContext.currentRowNum().equals(analysisContext.currentSheetHolder().getReadHeadRowNumber())) {
+            buildHead(analysisContext, cellDataList);
+        }
+    }
+
+    @Override
+    public void notifyAfterAllAnalysed(AnalysisContext analysisContext) {
+        for (ReadListener readListener : readListenerList) {
+            readListener.doAfterAllAnalysed(analysisContext);
+        }
+    }
+
+    private void buildHead(AnalysisContext analysisContext, List<CellData> cellDataList) {
+        if (!HeadKindEnum.CLASS.equals(analysisContext.currentConfiguration().excelHeadProperty().getHeadKind())) {
+            return;
+        }
+        List<String> dataList = (List<String>)buildStringList(cellDataList, analysisContext.currentConfiguration());
+        ExcelHeadProperty excelHeadPropertyData = analysisContext.currentConfiguration().excelHeadProperty();
+        Map<Integer, Head> headMapData = excelHeadPropertyData.getHeadMap();
+        Map<Integer, ExcelContentProperty> contentPropertyMapData = excelHeadPropertyData.getContentPropertyMap();
+        Map<Integer, Head> tmpHeadMap = new HashMap<Integer, Head>(headMapData.size() * 4 / 3 + 1);
+        Map<Integer, ExcelContentProperty> tmpContentPropertyMap =
+            new HashMap<Integer, ExcelContentProperty>(contentPropertyMapData.size() * 4 / 3 + 1);
+        for (Map.Entry<Integer, Head> entry : headMapData.entrySet()) {
+            Head headData = entry.getValue();
+            if (headData.getForceIndex()) {
+                tmpHeadMap.put(entry.getKey(), headData);
+                tmpContentPropertyMap.put(entry.getKey(), contentPropertyMapData.get(entry.getKey()));
+                continue;
+            }
+            String headName = headData.getHeadNameList().get(0);
+            for (int i = 0; i < dataList.size(); i++) {
+                String headString = dataList.get(i);
+                if (StringUtils.isEmpty(headString)) {
+                    continue;
+                }
+                if (analysisContext.currentSheetHolder().getAutoTrim()) {
+                    headString = headString.trim();
+                }
+                if (headName.equals(headString)) {
+                    headData.setColumnIndex(i);
+                    tmpHeadMap.put(i, headData);
+                    tmpContentPropertyMap.put(i, contentPropertyMapData.get(entry.getKey()));
+                    break;
+                }
+            }
+        }
+        excelHeadPropertyData.setHeadMap(tmpHeadMap);
+        excelHeadPropertyData.setContentPropertyMap(tmpContentPropertyMap);
+    }
+
+    private Object buildStringList(List<CellData> data, ReadConfiguration readConfiguration) {
+        List<String> list = new ArrayList<String>();
+        for (CellData cellData : data) {
+            Converter converter = readConfiguration.readConverterMap()
+                .get(ConverterKey.buildConverterKey(String.class, cellData.getType()));
+            if (converter == null) {
+                throw new ExcelDataConvertException(
+                    "Converter not found, convert " + cellData.getType() + " to String");
+            }
+            try {
+                list.add((String)(converter.convertToJavaData(cellData, null)));
+            } catch (Exception e) {
+                throw new ExcelDataConvertException("Convert data " + cellData + " to String error ", e);
+            }
+        }
+        return list;
     }
 
     protected Map<Class<? extends WriteHandler>, List<WriteHandler>> sortAndClearUpHandler(
@@ -302,11 +457,6 @@ public abstract class AbstractConfigurationSelector implements ConfigurationSele
     }
 
     @Override
-    public Map<Class, Converter> converterMap() {
-        return getConverterMap();
-    }
-
-    @Override
     public boolean needHead() {
         return getNeedHead();
     }
@@ -326,4 +476,18 @@ public abstract class AbstractConfigurationSelector implements ConfigurationSele
         return getNewInitialization();
     }
 
+    @Override
+    public List<ReadListener> readListenerList() {
+        return getReadListenerList();
+    }
+
+    @Override
+    public Map<ConverterKey, Converter> readConverterMap() {
+        return getReadConverterMap();
+    }
+
+    @Override
+    public Map<Class, Converter> writeConverterMap() {
+        return getWriteConverterMap();
+    }
 }

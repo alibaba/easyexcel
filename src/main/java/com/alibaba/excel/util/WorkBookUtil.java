@@ -3,6 +3,7 @@ package com.alibaba.excel.util;
 import java.io.IOException;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -12,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.alibaba.excel.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -20,16 +22,24 @@ import com.alibaba.excel.support.ExcelTypeEnum;
  */
 public class WorkBookUtil {
 
-    public static Workbook createWorkBook(com.alibaba.excel.metadata.Workbook workbookParam) throws IOException {
-        Workbook workbook;
-        if (ExcelTypeEnum.XLS.equals(workbookParam.getExcelType())) {
-            workbook = (workbookParam.getTemplateInputStream() == null) ? new HSSFWorkbook()
-                : new HSSFWorkbook(new POIFSFileSystem(workbookParam.getTemplateInputStream()));
-        } else {
-            workbook = (workbookParam.getTemplateInputStream() == null) ? new SXSSFWorkbook(500)
-                : new SXSSFWorkbook(new XSSFWorkbook(workbookParam.getTemplateInputStream()));
+    public static Workbook createWorkBook(WorkbookHolder workbookHolder)
+        throws IOException, InvalidFormatException {
+        if (ExcelTypeEnum.XLSX.equals(workbookHolder.getExcelType())) {
+            if (workbookHolder.getFile() != null) {
+                return new SXSSFWorkbook(new XSSFWorkbook(workbookParam.getFile()));
+            }
+            if (workbookParam.getInputStream() != null) {
+                return new SXSSFWorkbook(new XSSFWorkbook(workbookParam.getInputStream()));
+            }
+            return new SXSSFWorkbook(500);
         }
-        return workbook;
+        if (workbookParam.getFile() != null) {
+            return new HSSFWorkbook(new POIFSFileSystem(workbookParam.getFile()));
+        }
+        if (workbookParam.getInputStream() != null) {
+            return new HSSFWorkbook(new POIFSFileSystem(workbookParam.getInputStream()));
+        }
+        return new HSSFWorkbook();
     }
 
     public static Sheet createSheet(Workbook workbook, com.alibaba.excel.metadata.Sheet sheet) {

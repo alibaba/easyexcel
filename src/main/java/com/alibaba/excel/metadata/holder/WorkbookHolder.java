@@ -1,5 +1,6 @@
 package com.alibaba.excel.metadata.holder;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -11,8 +12,16 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.converters.DefaultConverterLoader;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.read.listener.ModelBuildEventListener;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.DefaultWriteHandlerLoader;
 import com.alibaba.excel.write.handler.WriteHandler;
 
@@ -21,8 +30,9 @@ import com.alibaba.excel.write.handler.WriteHandler;
  *
  * @author zhuangjiaju
  */
-public class WorkbookHolder extends AbstractConfigurationSelector {
+public class WorkbookHolder extends AbstractWriteConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkbookHolder.class);
+
     /***
      * poi Workbook
      */
@@ -40,13 +50,53 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
      */
     private OutputStream outputStream;
     /**
-     * Template input stream
+     * <li>write: Template input stream
+     * <li>read: Read InputStream
+     * <p>
+     * If 'inputStream' and 'file' all not empty,file first
      */
-    private InputStream templateInputStream;
+    private InputStream inputStream;
+    /**
+     * <li>write: Template file
+     * <li>read: Read file
+     * <p>
+     * If 'inputStream' and 'file' all not empty,file first
+     */
+    private File file;
     /**
      * Default true
      */
     private Boolean autoCloseStream;
+    /**
+     * Excel type
+     */
+    private ExcelTypeEnum excelType;
+    /**
+     * This object can be read in the Listener {@link AnalysisEventListener#invoke(Object, AnalysisContext)}
+     * {@link AnalysisContext#getCustom()}
+     *
+     */
+    private Object readCustomObject;
+    /**
+     * A cache that stores temp data to save memory.Default use {@link com.alibaba.excel.cache.Ehcache}
+     */
+    private ReadCache readCache;
+    /**
+     * true if date uses 1904 windowing, or false if using 1900 date windowing.
+     *
+     * @return
+     */
+    private Boolean use1904windowing;
+
+    /**
+     * Mmandatory use 'inputStream'
+     */
+    private Boolean mandatoryUseInputStream;
+
+    /**
+     * Temporary files when reading excel
+     */
+    private File readTempFile;
 
     /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
@@ -65,50 +115,91 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
     @Deprecated
     private com.alibaba.excel.event.WriteHandler writeHandler;
 
-    public WorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
-        super();
-        this.workbookParam = workbook;
-        this.templateInputStream = workbook.getTemplateInputStream();
-        this.outputStream = workbook.getOutputStream();
-        this.templateInputStream = workbook.getTemplateInputStream();
-        setHead(workbook.getHead());
-        setClazz(workbook.getClazz());
-        setNewInitialization(Boolean.TRUE);
-        if (workbook.getConvertAllFiled() == null) {
-            this.convertAllFiled = Boolean.TRUE;
-        } else {
-            this.convertAllFiled = workbook.getConvertAllFiled();
-        }
-        if (workbook.getAutoCloseStream() == null) {
-            setAutoCloseStream(Boolean.TRUE);
-        } else {
-            setAutoCloseStream(workbook.getAutoCloseStream());
-        }
+    public static WorkbookHolder buildWriteWorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
+        WorkbookHolder workbookHolder = buildBaseWorkbookHolder(workbook);
+        workbookHolder.setNewInitialization(Boolean.TRUE);
         if (workbook.getNeedHead() == null) {
-            setNeedHead(Boolean.TRUE);
+            workbookHolder.setNeedHead(Boolean.TRUE);
         } else {
-            setNeedHead(workbook.getNeedHead());
+            workbookHolder.setNeedHead(workbook.getNeedHead());
         }
         if (workbook.getWriteRelativeHeadRowIndex() == null) {
-            setWriteRelativeHeadRowIndex(0);
+            workbookHolder.setWriteRelativeHeadRowIndex(0);
         } else {
-            setWriteRelativeHeadRowIndex(workbook.getWriteRelativeHeadRowIndex());
+            workbookHolder.setWriteRelativeHeadRowIndex(workbook.getWriteRelativeHeadRowIndex());
         }
         List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
         if (workbook.getCustomWriteHandlerList() != null && !workbook.getCustomWriteHandlerList().isEmpty()) {
             handlerList.addAll(workbook.getCustomWriteHandlerList());
         }
         handlerList.addAll(DefaultWriteHandlerLoader.loadDefaultHandler());
-        setWriteHandlerMap(sortAndClearUpHandler(handlerList, null));
+        workbookHolder.setWriteHandlerMap(workbookHolder.sortAndClearUpHandler(handlerList, null));
+
         Map<Class, Converter> converterMap = DefaultConverterLoader.loadDefaultWriteConverter();
-        if (workbook.getCustomConverterMap() != null && !workbook.getCustomConverterMap().isEmpty()) {
-            converterMap.putAll(workbook.getCustomConverterMap());
+        if (workbook.getCustomConverterList() != null && !workbook.getCustomConverterList().isEmpty()) {
+            for (Converter converter : workbook.getCustomConverterList()) {
+                converterMap.put(converter.getClass(), converter);
+            }
         }
-        setConverterMap(converterMap);
-        setHasBeenInitializedSheet(new HashMap<Integer, SheetHolder>());
+        workbookHolder.setWriteConverterMap(converterMap);
+        workbookHolder.setHasBeenInitializedSheet(new HashMap<Integer, SheetHolder>());
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Wookbook writeHandlerMap:{}", getWriteHandlerMap());
+            LOGGER.debug("Wookbook writeHandlerMap:{}", workbookHolder.getWriteHandlerMap());
         }
+        return workbookHolder;
+    }
+
+    public static WorkbookHolder buildReadWorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
+        WorkbookHolder workbookHolder = buildBaseWorkbookHolder(workbook);
+        if (workbook.getFile() == null && workbookHolder.getInputStream() == null) {
+            throw new ExcelAnalysisException("Read excel 'file' and 'inputStream' cannot be empty at the same time!");
+        }
+        workbookHolder.setReadCustomObject(workbook.getReadCustomObject());
+        workbookHolder.setReadHeadRowNumber(workbook.getReadHeadRowNumber());
+        workbookHolder.setReadCache(workbook.getReadCache());
+
+        Map<ConverterKey, Converter> converterMap = DefaultConverterLoader.loadDefaultReadConverter();
+        if (workbook.getCustomConverterList() != null && !workbook.getCustomConverterList().isEmpty()) {
+            for (Converter converter : workbook.getCustomConverterList()) {
+                converterMap.put(ConverterKey.buildConverterKey(converter), converter);
+            }
+        }
+        workbookHolder.setReadConverterMap(converterMap);
+
+        List<ReadListener> readListenerList = new ArrayList<ReadListener>();
+        readListenerList.add(new ModelBuildEventListener());
+        if (workbook.getCustomReadListenerList() != null && !workbook.getCustomReadListenerList().isEmpty()) {
+            readListenerList.addAll(workbook.getCustomReadListenerList());
+        }
+        workbookHolder.setReadListenerList(readListenerList);
+        return workbookHolder;
+    }
+
+    private static WorkbookHolder buildBaseWorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
+        WorkbookHolder workbookHolder = new WorkbookHolder();
+        workbookHolder.setUse1904windowing(workbook.getUse1904windowing());
+        workbookHolder.setWorkbookParam(workbook);
+        workbookHolder.setInputStream(workbook.getInputStream());
+        workbookHolder.setFile(workbook.getFile());
+        workbookHolder.setExcelType(workbook.getExcelType());
+        workbookHolder.setHead(workbook.getHead());
+        workbookHolder.setClazz(workbook.getClazz());
+        if (workbook.getConvertAllFiled() == null) {
+            workbookHolder.setConvertAllFiled(Boolean.TRUE);
+        } else {
+            workbookHolder.setConvertAllFiled(workbook.getConvertAllFiled());
+        }
+        if (workbook.getAutoCloseStream() == null) {
+            workbookHolder.setAutoCloseStream(Boolean.TRUE);
+        } else {
+            workbookHolder.setAutoCloseStream(workbook.getAutoCloseStream());
+        }
+        if (workbook.getAutoTrim() == null) {
+            workbookHolder.setAutoTrim(Boolean.TRUE);
+        } else {
+            workbookHolder.setAutoTrim(workbook.getNeedHead());
+        }
+        return workbookHolder;
     }
 
     public Workbook getWorkbook() {
@@ -143,12 +234,12 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
         this.outputStream = outputStream;
     }
 
-    public InputStream getTemplateInputStream() {
-        return templateInputStream;
+    public InputStream getInputStream() {
+        return inputStream;
     }
 
-    public void setTemplateInputStream(InputStream templateInputStream) {
-        this.templateInputStream = templateInputStream;
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
     }
 
     public com.alibaba.excel.event.WriteHandler getWriteHandler() {
@@ -173,5 +264,61 @@ public class WorkbookHolder extends AbstractConfigurationSelector {
 
     public void setConvertAllFiled(Boolean convertAllFiled) {
         this.convertAllFiled = convertAllFiled;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public ExcelTypeEnum getExcelType() {
+        return excelType;
+    }
+
+    public void setExcelType(ExcelTypeEnum excelType) {
+        this.excelType = excelType;
+    }
+
+    public Object getReadCustomObject() {
+        return readCustomObject;
+    }
+
+    public void setReadCustomObject(Object readCustomObject) {
+        this.readCustomObject = readCustomObject;
+    }
+
+    public ReadCache getReadCache() {
+        return readCache;
+    }
+
+    public void setReadCache(ReadCache readCache) {
+        this.readCache = readCache;
+    }
+
+    public Boolean getUse1904windowing() {
+        return use1904windowing;
+    }
+
+    public void setUse1904windowing(Boolean use1904windowing) {
+        this.use1904windowing = use1904windowing;
+    }
+
+    public Boolean getMandatoryUseInputStream() {
+        return mandatoryUseInputStream;
+    }
+
+    public void setMandatoryUseInputStream(Boolean mandatoryUseInputStream) {
+        this.mandatoryUseInputStream = mandatoryUseInputStream;
+    }
+
+    public File getReadTempFile() {
+        return readTempFile;
+    }
+
+    public void setReadTempFile(File readTempFile) {
+        this.readTempFile = readTempFile;
     }
 }

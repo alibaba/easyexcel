@@ -22,7 +22,7 @@ public class NumberUtils {
      * @return
      */
     public static String format(Number num, ExcelContentProperty contentProperty) {
-        if (contentProperty.getNumberFormatProperty() == null
+        if (contentProperty == null || contentProperty.getNumberFormatProperty() == null
             || StringUtils.isEmpty(contentProperty.getNumberFormatProperty().getFormat())) {
             return num.toString();
         }

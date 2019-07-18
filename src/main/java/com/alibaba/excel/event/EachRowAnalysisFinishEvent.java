@@ -10,6 +10,7 @@ import com.alibaba.excel.metadata.CellData;
  */
 public class EachRowAnalysisFinishEvent implements AnalysisFinishEvent {
     private Object result;
+
     public EachRowAnalysisFinishEvent(Object content) {
         this.result = content;
     }

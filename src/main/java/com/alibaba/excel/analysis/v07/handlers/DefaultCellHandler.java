@@ -13,11 +13,9 @@ import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
-import com.alibaba.excel.cache.Cache;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.event.AnalysisEventRegistryCenter;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
@@ -25,8 +23,6 @@ import com.alibaba.excel.util.StringUtils;
 
 public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder {
     private final AnalysisContext analysisContext;
-    private final AnalysisEventRegistryCenter registerCenter;
-    private final Cache cahe;
     private String currentTag;
     private String currentCellIndex;
     private int curRow;
@@ -34,10 +30,8 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private CellData[] curRowContent = new CellData[20];
     private CellData currentCellData;
 
-    public DefaultCellHandler(AnalysisContext analysisContext, AnalysisEventRegistryCenter registerCenter, Cache cahe) {
+    public DefaultCellHandler(AnalysisContext analysisContext) {
         this.analysisContext = analysisContext;
-        this.registerCenter = registerCenter;
-        this.cahe = cahe;
     }
 
     @Override
@@ -84,7 +78,8 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             ensureSize();
             // Have to go "sharedStrings.xml" and get it
             if (currentCellData.getType() == CellDataTypeEnum.STRING) {
-                currentCellData.setStringValue(cahe.get(Integer.valueOf(currentCellData.getStringValue())));
+                currentCellData.setStringValue(analysisContext.currentWorkbookHolder().getReadCache()
+                    .get(Integer.valueOf(currentCellData.getStringValue())));
             }
             curRowContent[curCol] = currentCellData;
         }

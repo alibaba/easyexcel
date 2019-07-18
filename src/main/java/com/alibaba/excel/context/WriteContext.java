@@ -1,7 +1,7 @@
 package com.alibaba.excel.context;
 
 import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.holder.ConfigurationSelector;
+import com.alibaba.excel.metadata.holder.WriteConfiguration;
 import com.alibaba.excel.metadata.holder.SheetHolder;
 import com.alibaba.excel.metadata.holder.TableHolder;
 import com.alibaba.excel.metadata.holder.WorkbookHolder;
@@ -31,7 +31,7 @@ public interface WriteContext {
      * 
      * @return
      */
-    ConfigurationSelector currentConfigurationSelector();
+    WriteConfiguration currentConfiguration();
 
     /**
      * All information about the workbook you are currently working on

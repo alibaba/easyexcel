@@ -24,7 +24,10 @@ public class Head {
      * Head name
      */
     private List<String> headNameList;
-
+    /**
+     * Whether index is specified
+     */
+    private Boolean forceIndex;
     /**
      * Cell style property
      */
@@ -88,5 +91,13 @@ public class Head {
 
     public void setColumnWidthProperty(ColumnWidthProperty columnWidthProperty) {
         this.columnWidthProperty = columnWidthProperty;
+    }
+
+    public Boolean getForceIndex() {
+        return forceIndex;
+    }
+
+    public void setForceIndex(Boolean forceIndex) {
+        this.forceIndex = forceIndex;
     }
 }

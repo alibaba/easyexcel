@@ -10,10 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
+import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.style.RowCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
@@ -23,9 +25,8 @@ import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy
  *
  * @author zhuangjiaju
  */
-public class SheetHolder extends AbstractConfigurationSelector {
+public class SheetHolder extends AbstractWriteConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SheetHolder.class);
-
     /***
      * poi sheet
      */
@@ -51,32 +52,20 @@ public class SheetHolder extends AbstractConfigurationSelector {
      */
     private com.alibaba.excel.metadata.Sheet sheetParam;
 
-    public SheetHolder(com.alibaba.excel.metadata.Sheet sheet, WorkbookHolder workbookHolder) {
-        super();
-        this.sheetParam = sheet;
-        this.parentWorkBook = workbookHolder;
-        boolean noHead = (sheet.getHead() == null || sheet.getHead().isEmpty()) && sheet.getClazz() == null;
-        if (noHead) {
-            // Use parent
-            setHead(workbookHolder.getHead());
-            setClazz(workbookHolder.getClazz());
-        } else {
-            setHead(sheet.getHead());
-            setClazz(sheet.getClazz());
-        }
-        // Initialization property
-        setExcelHeadProperty(new ExcelHeadProperty(getClazz(), getHead(), workbookHolder.getConvertAllFiled()));
+    public static SheetHolder buildWriteWorkSheetHolder(com.alibaba.excel.metadata.Sheet sheet,
+        WorkbookHolder workbookHolder) {
+        SheetHolder sheetHolder = buildBaseSheetHolder(sheet, workbookHolder);
 
-        setNewInitialization(Boolean.TRUE);
+        sheetHolder.setNewInitialization(Boolean.TRUE);
         if (sheet.getNeedHead() == null) {
-            setNeedHead(workbookHolder.needHead());
+            sheetHolder.setNeedHead(workbookHolder.needHead());
         } else {
-            setNeedHead(sheet.getNeedHead());
+            sheetHolder.setNeedHead(sheet.getNeedHead());
         }
         if (sheet.getWriteRelativeHeadRowIndex() == null) {
-            setWriteRelativeHeadRowIndex(workbookHolder.writeRelativeHeadRowIndex());
+            sheetHolder.setWriteRelativeHeadRowIndex(workbookHolder.writeRelativeHeadRowIndex());
         } else {
-            setWriteRelativeHeadRowIndex(sheet.getWriteRelativeHeadRowIndex());
+            sheetHolder.setWriteRelativeHeadRowIndex(sheet.getWriteRelativeHeadRowIndex());
         }
         // Compatible with old code
         compatibleOldCode(sheet);
@@ -85,25 +74,86 @@ public class SheetHolder extends AbstractConfigurationSelector {
             handlerList.addAll(sheet.getCustomWriteHandlerList());
         }
         // Initialization Annotation
-        initAnnotationConfig(handlerList);
+        sheetHolder.initAnnotationConfig(handlerList);
 
-        setWriteHandlerMap(sortAndClearUpHandler(handlerList, workbookHolder.getWriteHandlerMap()));
-        Map<Class, Converter> converterMap = new HashMap<Class, Converter>(workbookHolder.converterMap());
-        if (sheet.getCustomConverterMap() != null && !sheet.getCustomConverterMap().isEmpty()) {
-            converterMap.putAll(sheet.getCustomConverterMap());
+        sheetHolder
+            .setWriteHandlerMap(sheetHolder.sortAndClearUpHandler(handlerList, workbookHolder.getWriteHandlerMap()));
+        Map<Class, Converter> converterMap = new HashMap<Class, Converter>(workbookHolder.getWriteConverterMap());
+        if (sheet.getCustomConverterList() != null && !sheet.getCustomConverterList().isEmpty()) {
+            for (Converter converter : sheet.getCustomConverterList()) {
+                converterMap.put(converter.getClass(), converter);
+            }
         }
-        setConverterMap(converterMap);
-        setHasBeenInitializedTable(new HashMap<Integer, TableHolder>());
+        sheetHolder.setWriteConverterMap(converterMap);
+        sheetHolder.setHasBeenInitializedTable(new HashMap<Integer, TableHolder>());
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Sheet writeHandlerMap:{}", getWriteHandlerMap());
+            LOGGER.debug("Sheet writeHandlerMap:{}", sheetHolder.getWriteHandlerMap());
         }
+        return sheetHolder;
+    }
+
+    public static SheetHolder buildReadWorkSheetHolder(com.alibaba.excel.metadata.Sheet sheet,
+        WorkbookHolder workbookHolder) {
+        SheetHolder sheetHolder = buildBaseSheetHolder(sheet, workbookHolder);
+        if (sheet.getReadHeadRowNumber() == null) {
+            if (workbookHolder.getReadHeadRowNumber() == null) {
+                sheetHolder.setReadHeadRowNumber(sheetHolder.getExcelHeadProperty().getHeadRowNumber());
+            } else {
+                sheetHolder.setReadHeadRowNumber(workbookHolder.getReadHeadRowNumber());
+            }
+        } else {
+            sheetHolder.setReadHeadRowNumber(sheet.getReadHeadRowNumber());
+        }
+
+        Map<ConverterKey, Converter> converterMap =
+            new HashMap<ConverterKey, Converter>(workbookHolder.getReadConverterMap());
+        if (sheet.getCustomConverterList() != null && !sheet.getCustomConverterList().isEmpty()) {
+            for (Converter converter : sheet.getCustomConverterList()) {
+                converterMap.put(ConverterKey.buildConverterKey(converter), converter);
+            }
+        }
+        sheetHolder.setReadConverterMap(converterMap);
+
+        List<ReadListener> readListenerList = new ArrayList<ReadListener>();
+        if (sheet.getCustomReadListenerList() != null && !sheet.getCustomReadListenerList().isEmpty()) {
+            readListenerList.addAll(sheet.getCustomReadListenerList());
+        }
+        sheetHolder.setReadListenerList(readListenerList);
+        return sheetHolder;
+    }
+
+    private static SheetHolder buildBaseSheetHolder(com.alibaba.excel.metadata.Sheet sheet,
+        WorkbookHolder workbookHolder) {
+        SheetHolder sheetHolder = new SheetHolder();
+        sheetHolder.setSheetParam(sheet);
+        sheetHolder.setParentWorkBook(workbookHolder);
+
+        boolean noHead = (sheet.getHead() == null || sheet.getHead().isEmpty()) && sheet.getClazz() == null;
+        if (noHead) {
+            // Use parent
+            sheetHolder.setHead(workbookHolder.getHead());
+            sheetHolder.setClazz(workbookHolder.getClazz());
+        } else {
+            sheetHolder.setHead(sheet.getHead());
+            sheetHolder.setClazz(sheet.getClazz());
+        }
+
+        if (sheet.getAutoTrim() == null) {
+            workbookHolder.setAutoTrim(workbookHolder.getAutoTrim());
+        } else {
+            workbookHolder.setAutoTrim(sheet.getNeedHead());
+        }
+        // Initialization property
+        sheetHolder
+            .setExcelHeadProperty(new ExcelHeadProperty(sheetHolder.getClazz(), sheetHolder.getHead(), workbookHolder));
+        return sheetHolder;
     }
 
     /**
      * Compatible with old code
      */
     @Deprecated
-    private void compatibleOldCode(com.alibaba.excel.metadata.Sheet sheet) {
+    private static void compatibleOldCode(com.alibaba.excel.metadata.Sheet sheet) {
         if (sheet.getColumnWidthMap() != null && !sheet.getColumnWidthMap().isEmpty()) {
             final Map<Integer, Integer> columnWidthMap = sheet.getColumnWidthMap();
             if (sheet.getCustomWriteHandlerList() == null) {

@@ -23,6 +23,8 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * Define the header attribute of excel
@@ -49,7 +51,6 @@ public class ExcelHeadProperty {
      * Configuration header information
      */
     private Map<Integer, Head> headMap;
-
     /**
      * Configuration column information
      */
@@ -57,7 +58,7 @@ public class ExcelHeadProperty {
     private RowHeightProperty headRowHeightProperty;
     private RowHeightProperty contentRowHeightProperty;
 
-    public ExcelHeadProperty(Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
+    public ExcelHeadProperty(Class headClazz, List<List<String>> head, WorkbookHolder workbookHolder) {
         this.headClazz = headClazz;
         headMap = new TreeMap<Integer, Head>();
         contentPropertyMap = new TreeMap<Integer, ExcelContentProperty>();
@@ -71,25 +72,16 @@ public class ExcelHeadProperty {
             headKind = HeadKindEnum.STRING;
         } else {
             // convert headClazz to head
-            initColumnProperties(convertAllFiled);
+            initColumnProperties(workbookHolder);
         }
         initHeadRowNumber();
-        LOGGER.info("The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is {}", headKind);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is {}", headKind);
+        }
         if (!hasHead()) {
             LOGGER.warn(
                 "The table has no header set and all annotations will not be read.If you want to use annotations, please use set head class in ExcelWriterBuilder/ExcelWriterSheetBuilder/ExcelWriterTableBuilder");
         }
-    }
-
-    public static ExcelHeadProperty buildExcelHeadProperty(ExcelHeadProperty excelHeadProperty, Class clazz,
-        List<String> headOneRow) {
-        if (excelHeadProperty == null) {
-            return new ExcelHeadProperty(clazz, new ArrayList<List<String>>(), false);
-        }
-        if (headOneRow != null) {
-            excelHeadProperty.appendOneRow(headOneRow);
-        }
-        return excelHeadProperty;
     }
 
     private void initHeadRowNumber() {
@@ -112,7 +104,7 @@ public class ExcelHeadProperty {
         }
     }
 
-    private void initColumnProperties(Boolean convertAllFiled) {
+    private void initColumnProperties(WorkbookHolder workbookHolder) {
         if (headClazz == null) {
             return;
         }
@@ -135,7 +127,7 @@ public class ExcelHeadProperty {
                 continue;
             }
             ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-            if (excelProperty == null && !convertAllFiled) {
+            if (excelProperty == null && (workbookHolder == null || !workbookHolder.getConvertAllFiled())) {
                 continue;
             }
             if (excelProperty == null || excelProperty.index() < 0) {
@@ -160,28 +152,32 @@ public class ExcelHeadProperty {
         int index = 0;
         for (Field field : defaultFieldList) {
             while (customFiledMap.containsKey(index)) {
-                initOneColumnProperty(index, customFiledMap.get(index), headStyle, contentStyle, columnWidth);
+                initOneColumnProperty(index, customFiledMap.get(index), headStyle, contentStyle, columnWidth,
+                    workbookHolder);
                 customFiledMap.remove(index);
                 index++;
             }
-            initOneColumnProperty(index, field, headStyle, contentStyle, columnWidth);
+            initOneColumnProperty(index, field, headStyle, contentStyle, columnWidth, workbookHolder);
             index++;
         }
         for (Map.Entry<Integer, Field> entry : customFiledMap.entrySet()) {
-            initOneColumnProperty(index, entry.getValue(), headStyle, contentStyle, columnWidth);
+            initOneColumnProperty(index, entry.getValue(), headStyle, contentStyle, columnWidth, workbookHolder);
             index++;
         }
         headKind = HeadKindEnum.CLASS;
     }
 
     private void initOneColumnProperty(int index, Field field, HeadStyle parentHeadStyle,
-        ContentStyle parentContentStyle, ColumnWidth parentColumnWidth) {
+        ContentStyle parentContentStyle, ColumnWidth parentColumnWidth, WorkbookHolder workbookHolder) {
 
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         List<String> tmpHeadList = new ArrayList<String>();
         if (excelProperty != null) {
             tmpHeadList = Arrays.asList(excelProperty.value());
         } else {
+            tmpHeadList.add(field.getName());
+        }
+        if (tmpHeadList.isEmpty() || StringUtils.isEmpty(tmpHeadList.get(0))) {
             tmpHeadList.add(field.getName());
         }
         Head head = new Head(index, field.getName(), tmpHeadList);
@@ -211,26 +207,12 @@ public class ExcelHeadProperty {
 
         excelContentProperty
             .setNumberFormatProperty(NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
+
+        if (workbookHolder != null && workbookHolder.getReadGlobalProperty() != null) {
+            excelContentProperty.setGlobalProperty(workbookHolder.getReadGlobalProperty());
+        }
         headMap.put(index, head);
         contentPropertyMap.put(index, excelContentProperty);
-    }
-
-    /**
-     * Add one more head under the last head
-     */
-    public void appendOneRow(List<String> row) {
-        for (int i = 0; i < row.size(); i++) {
-            String rowData = row.get(i);
-            // join
-            if (headMap.containsKey(i)) {
-                headMap.get(i).getHeadNameList().add(rowData);
-            } else {
-                // create and join
-                int index = ((TreeMap<Integer, Head>)headMap).lastKey() + 1;
-                headMap.put(index, new Head(i, null, rowData));
-            }
-        }
-        initHeadRowNumber();
     }
 
     public Class getHeadClazz() {

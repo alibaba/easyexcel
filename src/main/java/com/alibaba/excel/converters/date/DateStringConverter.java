@@ -27,7 +27,7 @@ public class DateStringConverter implements Converter<Date> {
 
     @Override
     public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) throws ParseException {
-        if (contentProperty.getDateTimeFormatProperty() == null) {
+        if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
             return DateUtils.parseDate(cellData.getStringValue(), null);
         } else {
             return DateUtils.parseDate(cellData.getStringValue(),
@@ -37,7 +37,7 @@ public class DateStringConverter implements Converter<Date> {
 
     @Override
     public CellData convertToExcelData(Date value, ExcelContentProperty contentProperty) {
-        if (contentProperty.getDateTimeFormatProperty() == null) {
+        if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
             return new CellData(DateUtils.format(value, null));
         } else {
             return new CellData(DateUtils.format(value, contentProperty.getDateTimeFormatProperty().getFormat()));

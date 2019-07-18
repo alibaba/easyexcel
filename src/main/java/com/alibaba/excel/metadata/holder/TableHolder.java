@@ -21,7 +21,7 @@ import com.alibaba.excel.write.style.RowCellStyleStrategy;
  *
  * @author zhuangjiaju
  */
-public class TableHolder extends AbstractConfigurationSelector {
+public class TableHolder extends AbstractWriteConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(TableHolder.class);
 
     /***
@@ -37,33 +37,35 @@ public class TableHolder extends AbstractConfigurationSelector {
      */
     private com.alibaba.excel.metadata.Table tableParam;
 
-    public TableHolder(com.alibaba.excel.metadata.Table table, SheetHolder sheetHolder, WorkbookHolder workbookHolder) {
-        super();
-        this.tableParam = table;
-        this.parentSheet = sheetHolder;
-        this.tableNo = table.getTableNo();
+    public static TableHolder buildWriteWorkTableHolder(com.alibaba.excel.metadata.Table table, SheetHolder sheetHolder,
+        WorkbookHolder workbookHolder) {
+        TableHolder tableHolder = new TableHolder();
+        tableHolder.setTableParam(table);
+        tableHolder.setParentSheet(sheetHolder);
+        tableHolder.setTableNo(table.getTableNo());
         boolean noHead = (table.getHead() == null || table.getHead().isEmpty()) && table.getClazz() == null;
         if (noHead) {
             // Use parent
-            setHead(sheetHolder.getHead());
-            setClazz(sheetHolder.getClazz());
+            tableHolder.setHead(sheetHolder.getHead());
+            tableHolder.setClazz(sheetHolder.getClazz());
         } else {
-            setHead(table.getHead());
-            setClazz(table.getClazz());
+            tableHolder.setHead(table.getHead());
+            tableHolder.setClazz(table.getClazz());
         }
-        setNewInitialization(Boolean.TRUE);
+        tableHolder.setNewInitialization(Boolean.TRUE);
         // Initialization property
-        setExcelHeadProperty(new ExcelHeadProperty(getClazz(), getHead(), workbookHolder.getConvertAllFiled()));
+        tableHolder.setExcelHeadProperty(
+            new ExcelHeadProperty(tableHolder.getClazz(), tableHolder.getHead(), workbookHolder.getConvertAllFiled()));
 
         if (table.getNeedHead() == null) {
-            setNeedHead(sheetHolder.needHead());
+            tableHolder.setNeedHead(sheetHolder.needHead());
         } else {
-            setNeedHead(table.getNeedHead());
+            tableHolder.setNeedHead(table.getNeedHead());
         }
         if (table.getWriteRelativeHeadRowIndex() == null) {
-            setWriteRelativeHeadRowIndex(sheetHolder.writeRelativeHeadRowIndex());
+            tableHolder.setWriteRelativeHeadRowIndex(sheetHolder.writeRelativeHeadRowIndex());
         } else {
-            setWriteRelativeHeadRowIndex(table.getWriteRelativeHeadRowIndex());
+            tableHolder.setWriteRelativeHeadRowIndex(table.getWriteRelativeHeadRowIndex());
         }
         // Compatible with old code
         compatibleOldCode(table);
@@ -72,24 +74,28 @@ public class TableHolder extends AbstractConfigurationSelector {
             handlerList.addAll(table.getCustomWriteHandlerList());
         }
         // Initialization Annotation
-        initAnnotationConfig(handlerList);
+        tableHolder.initAnnotationConfig(handlerList);
 
-        setWriteHandlerMap(sortAndClearUpHandler(handlerList, sheetHolder.getWriteHandlerMap()));
-        Map<Class, Converter> converterMap = new HashMap<Class, Converter>(sheetHolder.converterMap());
-        if (table.getCustomConverterMap() != null && !table.getCustomConverterMap().isEmpty()) {
-            converterMap.putAll(table.getCustomConverterMap());
+        tableHolder
+            .setWriteHandlerMap(tableHolder.sortAndClearUpHandler(handlerList, sheetHolder.getWriteHandlerMap()));
+        Map<Class, Converter> converterMap = new HashMap<Class, Converter>(sheetHolder.getWriteConverterMap());
+        if (table.getCustomConverterList() != null && !table.getCustomConverterList().isEmpty()) {
+            for (Converter converter : table.getCustomConverterList()) {
+                converterMap.put(converter.getClass(), converter);
+            }
         }
-        setConverterMap(converterMap);
+        tableHolder.setWriteConverterMap(converterMap);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Table writeHandlerMap:{}", getWriteHandlerMap());
+            LOGGER.debug("Table writeHandlerMap:{}", tableHolder.getWriteHandlerMap());
         }
+        return tableHolder;
     }
 
     /**
      * Compatible with old code
      */
     @Deprecated
-    private void compatibleOldCode(com.alibaba.excel.metadata.Table table) {
+    private static void compatibleOldCode(com.alibaba.excel.metadata.Table table) {
         if (table.getTableStyle() != null) {
             final TableStyle tableStyle = table.getTableStyle();
             if (table.getCustomWriteHandlerList() == null) {

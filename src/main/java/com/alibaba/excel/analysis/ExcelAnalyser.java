@@ -1,7 +1,5 @@
 package com.alibaba.excel.analysis;
 
-import java.util.List;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.metadata.Sheet;
 
@@ -11,9 +9,6 @@ import com.alibaba.excel.metadata.Sheet;
  * @author jipengfei
  */
 public interface ExcelAnalyser {
-    
-    void beforeAnalysis();
-    
     /**
      * parse one sheet
      *
@@ -22,21 +17,22 @@ public interface ExcelAnalyser {
     void analysis(Sheet sheetParam);
 
     /**
-     * parse all sheets
+     * Complete the entire read file.Release the cache and close stream
      */
-    void analysis();
+    void finish();
 
     /**
-     * get all sheet of workbook
-     *
-     * @return all sheets
+     * Acquisition excel executor
+     * 
+     * @return
      */
-    List<Sheet> getSheets();
-    
+    ExcelExecutor excelExecutor();
+
     /**
      * get the analysis context.
+     * 
      * @return analysis context
      */
-    AnalysisContext getAnalysisContext();
+    AnalysisContext analysisContext();
 
 }

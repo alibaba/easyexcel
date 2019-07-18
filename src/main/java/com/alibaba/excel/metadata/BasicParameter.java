@@ -1,12 +1,10 @@
 package com.alibaba.excel.metadata;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.event.ReadListener;
+import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
@@ -42,7 +40,7 @@ public class BasicParameter {
     /**
      * Custom type conversions override the default
      */
-    private Map<Class, Converter> customConverterMap = new HashMap<Class, Converter>();
+    private List<Converter> customConverterList = new ArrayList<Converter>();
     /**
      * Custom type handler override the default
      */
@@ -51,6 +49,10 @@ public class BasicParameter {
      * Custom type listener run after default
      */
     private List<ReadListener> customReadListenerList = new ArrayList<ReadListener>();
+    /**
+     * Automatic trim includes sheet name and content
+     */
+    private Boolean autoTrim;
 
     public Integer getReadHeadRowNumber() {
         return readHeadRowNumber;
@@ -92,12 +94,12 @@ public class BasicParameter {
         this.needHead = needHead;
     }
 
-    public Map<Class, Converter> getCustomConverterMap() {
-        return customConverterMap;
+    public List<Converter> getCustomConverterList() {
+        return customConverterList;
     }
 
-    public void setCustomConverterMap(Map<Class, Converter> customConverterMap) {
-        this.customConverterMap = customConverterMap;
+    public void setCustomConverterList(List<Converter> customConverterList) {
+        this.customConverterList = customConverterList;
     }
 
     public List<WriteHandler> getCustomWriteHandlerList() {
@@ -114,5 +116,13 @@ public class BasicParameter {
 
     public void setCustomReadListenerList(List<ReadListener> customReadListenerList) {
         this.customReadListenerList = customReadListenerList;
+    }
+
+    public Boolean getAutoTrim() {
+        return autoTrim;
+    }
+
+    public void setAutoTrim(Boolean autoTrim) {
+        this.autoTrim = autoTrim;
     }
 }

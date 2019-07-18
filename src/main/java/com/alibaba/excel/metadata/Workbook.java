@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.WriteHandler;
 
@@ -41,6 +44,22 @@ public class Workbook extends BasicParameter {
      * Default true
      */
     private Boolean autoCloseStream;
+    /**
+     * This object can be read in the Listener {@link AnalysisEventListener#invoke(Object, AnalysisContext)}
+     * {@link AnalysisContext#getCustom()}
+     * 
+     */
+    private Object readCustomObject;
+    /**
+     * A cache that stores temp data to save memory.Default use {@link com.alibaba.excel.cache.Ehcache}
+     */
+    private ReadCache readCache;
+    /**
+     * true if date uses 1904 windowing, or false if using 1900 date windowing.
+     *
+     * @return
+     */
+    private Boolean use1904windowing;
     /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
@@ -111,5 +130,29 @@ public class Workbook extends BasicParameter {
 
     public void setConvertAllFiled(Boolean convertAllFiled) {
         this.convertAllFiled = convertAllFiled;
+    }
+
+    public Object getReadCustomObject() {
+        return readCustomObject;
+    }
+
+    public void setReadCustomObject(Object readCustomObject) {
+        this.readCustomObject = readCustomObject;
+    }
+
+    public ReadCache getReadCache() {
+        return readCache;
+    }
+
+    public void setReadCache(ReadCache readCache) {
+        this.readCache = readCache;
+    }
+
+    public Boolean getUse1904windowing() {
+        return use1904windowing;
+    }
+
+    public void setUse1904windowing(Boolean use1904windowing) {
+        this.use1904windowing = use1904windowing;
     }
 }

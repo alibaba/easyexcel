@@ -28,8 +28,12 @@ public class DateNumberConverter implements Converter<Date> {
 
     @Override
     public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
-        if (contentProperty.getDateTimeFormatProperty() == null) {
-            return HSSFDateUtil.getJavaDate(cellData.getDoubleValue(), false, null);
+        if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
+            Boolean use1904windowing = Boolean.FALSE;
+            if (contentProperty != null && contentProperty.getUse1904windowing() != null) {
+                use1904windowing = contentProperty.getUse1904windowing();
+            }
+            return HSSFDateUtil.getJavaDate(cellData.getDoubleValue(), use1904windowing, null);
         } else {
             return HSSFDateUtil.getJavaDate(cellData.getDoubleValue(),
                 contentProperty.getDateTimeFormatProperty().getUse1904windowing(), null);

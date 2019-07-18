@@ -3,23 +3,16 @@ package com.alibaba.excel.cache;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Default cache
+ * 
+ * Putting temporary data directly into a map is a little more efficient but very memory intensive
  * 
  * @author zhuangjiaju
  */
-public class Ehcache2 implements Cache {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Ehcache2.class);
-
-    int index = 0;
-    // private org.ehcache.Cache<Integer, String> cache;
-
+public class MapCache implements ReadCache {
     private Map<Integer, String> cache = new HashMap<Integer, String>();
 
-    public Ehcache2() {}
+    public MapCache() {}
 
     @Override
     public void put(Integer key, String value) {

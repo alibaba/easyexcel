@@ -1,6 +1,7 @@
-package com.alibaba.excel.event;
+package com.alibaba.excel.read.listener;
 
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.Listener;
 
 /**
  * Interface to listen for read results
@@ -19,14 +20,14 @@ public interface ReadListener<T> extends Listener {
     void onException(Exception exception, AnalysisContext context) throws Exception;
 
     /**
-     * when analysis one row trigger invoke function
+     * when analysis one row trigger invoke function.
      *
-     * @param object
-     *            one row value
+     * @param data
+     *            one row value. Is is same as {@link AnalysisContext#currentRowAnalysisResult()}
      * @param context
      *            analysis context
      */
-    void invoke(T object, AnalysisContext context);
+    void invoke(T data, AnalysisContext context);
 
     /**
      * if have something to do after all analysis
@@ -34,4 +35,12 @@ public interface ReadListener<T> extends Listener {
      * @param context
      */
     void doAfterAllAnalysed(AnalysisContext context);
+
+    /**
+     * Verify that there is another piece of data.You can stop the read by returning false
+     *
+     * @param context
+     * @return
+     */
+    boolean hasNext(AnalysisContext context);
 }

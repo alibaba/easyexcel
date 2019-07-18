@@ -13,7 +13,7 @@ import com.alibaba.excel.write.handler.WriteHandler;
  * 
  * @author zhuangjiaju
  **/
-public interface ConfigurationSelector {
+public interface WriteConfiguration {
 
     /**
      * What handler does the currently operated cell need to execute
@@ -27,7 +27,7 @@ public interface ConfigurationSelector {
      * 
      * @return
      */
-    Map<Class, Converter> converterMap();
+    Map<Class, Converter> writeConverterMap();
 
     /**
      * Whether a header is required for the currently operated cell

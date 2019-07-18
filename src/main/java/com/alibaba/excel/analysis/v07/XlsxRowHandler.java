@@ -6,9 +6,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.alibaba.excel.cache.Cache;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventRegistryCenter;
 
 /**
  *
@@ -19,8 +17,8 @@ public class XlsxRowHandler extends DefaultHandler {
     private List<XlsxCellHandler> cellHandlers;
     private XlsxRowResultHolder rowResultHolder;
 
-    public XlsxRowHandler(AnalysisEventRegistryCenter registerCenter, Cache cache, AnalysisContext analysisContext) {
-        this.cellHandlers = XlsxHandlerFactory.buildCellHandlers(analysisContext, registerCenter, cache);
+    public XlsxRowHandler(AnalysisContext analysisContext) {
+        this.cellHandlers = XlsxHandlerFactory.buildCellHandlers(analysisContext);
         for (XlsxCellHandler cellHandler : cellHandlers) {
             if (cellHandler instanceof XlsxRowResultHolder) {
                 this.rowResultHolder = (XlsxRowResultHolder)cellHandler;
