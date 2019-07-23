@@ -3,8 +3,8 @@ package com.alibaba.excel.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.metadata.holder.SheetHolder;
-import com.alibaba.excel.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.metadata.holder.write.SheetHolder;
+import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
 
 /**
  *

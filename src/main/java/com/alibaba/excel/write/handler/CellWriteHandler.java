@@ -4,8 +4,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.holder.SheetHolder;
-import com.alibaba.excel.metadata.holder.TableHolder;
+import com.alibaba.excel.metadata.holder.write.SheetHolder;
+import com.alibaba.excel.metadata.holder.write.TableHolder;
 import com.sun.istack.internal.Nullable;
 
 /**
@@ -26,7 +26,7 @@ public interface CellWriteHandler extends WriteHandler {
      * @param isHead
      */
     void beforeCellCreate(SheetHolder sheetHolder, @Nullable TableHolder tableHolder, Row row, Head head,
-        int relativeRowIndex, boolean isHead);
+                          int relativeRowIndex, boolean isHead);
 
     /**
      * called after the cell is created
@@ -39,5 +39,5 @@ public interface CellWriteHandler extends WriteHandler {
      * @param isHead
      */
     void afterCellCreate(SheetHolder sheetHolder, @Nullable TableHolder tableHolder, Cell cell, Head head,
-        int relativeRowIndex, boolean isHead);
+                         int relativeRowIndex, boolean isHead);
 }

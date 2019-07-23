@@ -5,8 +5,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.holder.SheetHolder;
-import com.alibaba.excel.metadata.holder.TableHolder;
+import com.alibaba.excel.metadata.holder.write.SheetHolder;
+import com.alibaba.excel.metadata.holder.write.TableHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 
 /**
@@ -18,11 +18,11 @@ public abstract class AbstractMergeStrategy implements CellWriteHandler {
 
     @Override
     public void beforeCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Row row, Head head,
-        int relativeRowIndex, boolean isHead) {}
+                                 int relativeRowIndex, boolean isHead) {}
 
     @Override
     public void afterCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Cell cell, Head head,
-        int relativeRowIndex, boolean isHead) {
+                                int relativeRowIndex, boolean isHead) {
         if (isHead) {
             return;
         }

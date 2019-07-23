@@ -27,7 +27,7 @@ import com.alibaba.excel.analysis.v03.handlers.NumberRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.RKRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.SSTRecordHandler;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.EachRowAnalysisFinishEvent;
+import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.util.CollectionUtils;

@@ -27,7 +27,7 @@ import com.alibaba.excel.cache.Ehcache;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
 import com.alibaba.excel.util.FileUtils;
 
 /**
@@ -46,6 +46,8 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         if (workbookHolder.getReadCache() == null) {
             workbookHolder.setReadCache(new Ehcache());
         }
+        workbookHolder.getReadCache().init(analysisContext);
+
         OPCPackage pkg = readOpcPackage(workbookHolder);
 
         // Analysis sharedStringsTable.xml

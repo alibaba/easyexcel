@@ -6,8 +6,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.holder.SheetHolder;
-import com.alibaba.excel.metadata.holder.TableHolder;
+import com.alibaba.excel.metadata.holder.write.SheetHolder;
+import com.alibaba.excel.metadata.holder.write.TableHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.sun.istack.internal.Nullable;
 
@@ -25,11 +25,11 @@ public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandl
 
     @Override
     public void beforeCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Row row, Head head,
-        int relativeRowIndex, boolean isHead) {}
+                                 int relativeRowIndex, boolean isHead) {}
 
     @Override
     public void afterCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Cell cell, Head head,
-        int relativeRowIndex, boolean isHead) {
+                                int relativeRowIndex, boolean isHead) {
         if (!isHead && relativeRowIndex != 0) {
             return;
         }

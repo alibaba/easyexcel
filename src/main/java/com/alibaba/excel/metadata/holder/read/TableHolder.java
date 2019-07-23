@@ -1,4 +1,4 @@
-package com.alibaba.excel.metadata.holder;
+package com.alibaba.excel.metadata.holder.read;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.metadata.TableStyle;
+import com.alibaba.excel.metadata.holder.write.AbstractWriteConfiguration;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.style.RowCellStyleStrategy;
@@ -35,10 +36,10 @@ public class TableHolder extends AbstractWriteConfiguration {
     /**
      * current table param
      */
-    private com.alibaba.excel.metadata.Table tableParam;
+    private Table tableParam;
 
-    public static TableHolder buildWriteWorkTableHolder(com.alibaba.excel.metadata.Table table, SheetHolder sheetHolder,
-        WorkbookHolder workbookHolder) {
+    public static TableHolder buildWriteWorkTableHolder(Table table, SheetHolder sheetHolder,
+                                                        WorkbookHolder workbookHolder) {
         TableHolder tableHolder = new TableHolder();
         tableHolder.setTableParam(table);
         tableHolder.setParentSheet(sheetHolder);
@@ -95,7 +96,7 @@ public class TableHolder extends AbstractWriteConfiguration {
      * Compatible with old code
      */
     @Deprecated
-    private static void compatibleOldCode(com.alibaba.excel.metadata.Table table) {
+    private static void compatibleOldCode(Table table) {
         if (table.getTableStyle() != null) {
             final TableStyle tableStyle = table.getTableStyle();
             if (table.getCustomWriteHandlerList() == null) {

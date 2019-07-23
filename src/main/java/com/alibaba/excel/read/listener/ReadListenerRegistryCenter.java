@@ -2,7 +2,7 @@ package com.alibaba.excel.read.listener;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.event.AnalysisFinishEvent;
+import com.alibaba.excel.read.listener.event.AnalysisFinishEvent;
 
 /**
  * Registry center.

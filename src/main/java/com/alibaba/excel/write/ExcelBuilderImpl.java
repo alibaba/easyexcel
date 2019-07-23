@@ -17,7 +17,7 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.holder.WriteConfiguration;
+import com.alibaba.excel.metadata.holder.write.WriteConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.POITempFile;

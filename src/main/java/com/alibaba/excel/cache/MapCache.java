@@ -3,6 +3,8 @@ package com.alibaba.excel.cache;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.excel.context.AnalysisContext;
+
 /**
  * 
  * Putting temporary data directly into a map is a little more efficient but very memory intensive
@@ -11,19 +13,28 @@ import java.util.Map;
  */
 public class MapCache implements ReadCache {
     private Map<Integer, String> cache = new HashMap<Integer, String>();
-
-    public MapCache() {}
+    private int index = 0;
 
     @Override
-    public void put(Integer key, String value) {
-        cache.put(key, value);
+    public void init(AnalysisContext analysisContext) {}
+
+    @Override
+    public void put(String value) {
+        cache.put(index++, value);
     }
 
     @Override
     public String get(Integer key) {
+        if (key == null || key < 0) {
+            return null;
+        }
         return cache.get(key);
     }
 
     @Override
-    public void finish() {}
+    public void putFinished() {}
+
+    @Override
+    public void destroy() {}
+
 }

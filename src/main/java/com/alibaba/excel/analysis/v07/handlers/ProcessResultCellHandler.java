@@ -7,7 +7,7 @@ import org.xml.sax.Attributes;
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.EachRowAnalysisFinishEvent;
+import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
 
 public class ProcessResultCellHandler implements XlsxCellHandler {
     private AnalysisContext analysisContext;
@@ -28,7 +28,7 @@ public class ProcessResultCellHandler implements XlsxCellHandler {
 
     @Override
     public void endHandle(String name) {
-        analysisContext.currentSheetHolder().notifyAll(
+        analysisContext.currentSheetHolder().notifyEndOneRow(
             new EachRowAnalysisFinishEvent(rowResultHandler.getCurRowContent(), rowResultHandler.getColumnSize()),
             analysisContext);
         rowResultHandler.clearResult();

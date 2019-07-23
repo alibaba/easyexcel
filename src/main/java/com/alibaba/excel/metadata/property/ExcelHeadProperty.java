@@ -23,7 +23,7 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
 import com.alibaba.excel.util.StringUtils;
 
 /**

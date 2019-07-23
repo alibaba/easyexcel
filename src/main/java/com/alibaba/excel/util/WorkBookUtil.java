@@ -13,7 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.alibaba.excel.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
