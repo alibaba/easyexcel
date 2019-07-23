@@ -1,7 +1,7 @@
 package com.alibaba.excel.analysis;
 
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Sheet;
 
 /**
  * Excel file analyser

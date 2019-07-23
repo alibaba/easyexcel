@@ -5,8 +5,8 @@ import com.alibaba.easyexcel.test.model.WriteModel;
 import com.alibaba.easyexcel.test.util.FileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.Table;
+import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Table;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import org.junit.Test;
 

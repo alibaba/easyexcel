@@ -1,8 +1,9 @@
 package com.alibaba.excel.context;
 
-import com.alibaba.excel.metadata.holder.read.ReadConfiguration;
-import com.alibaba.excel.metadata.holder.write.SheetHolder;
-import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
+import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
+import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 
 /**
  *
@@ -14,71 +15,28 @@ public interface AnalysisContext {
     /**
      * Select the current table
      *
-     * @param sheet
+     * @param readSheet
      */
-    void currentSheet(com.alibaba.excel.metadata.Sheet sheet);
+    void currentSheet(ReadSheet readSheet);
 
     /**
      * All information about the workbook you are currently working on
      *
      * @return
      */
-    WorkbookHolder currentWorkbookHolder();
+    ReadWorkbookHolder currentWorkbookHolder();
 
     /**
      * All information about the sheet you are currently working on
      *
      * @return
      */
-    SheetHolder currentSheetHolder();
+    ReadSheetHolder currentSheetHolder();
 
     /**
-     * Configuration of currently operated cell
+     * Row of currently operated cell
      *
      * @return
      */
-    ReadConfiguration currentConfiguration();
-
-    /**
-     * set current result
-     * 
-     * @param result
-     */
-    void setCurrentRowAnalysisResult(Object result);
-
-    /**
-     * get current result
-     * 
-     * @return get current result
-     */
-    Object currentRowAnalysisResult();
-
-    /**
-     * get current row
-     * 
-     * @return
-     */
-    Integer currentRowNum();
-
-    /**
-     * set current row num
-     * 
-     * @param row
-     */
-    void setCurrentRowNum(Integer row);
-
-    /**
-     * get total row , Data may be inaccurate
-     * 
-     * @return
-     */
-    @Deprecated
-    Integer getTotalCount();
-
-    /**
-     * get total row ,Data may be inaccurate
-     *
-     * @param totalCount
-     */
-    void setTotalCount(Integer totalCount);
+    ReadRowHolder currentRowHolder();
 }

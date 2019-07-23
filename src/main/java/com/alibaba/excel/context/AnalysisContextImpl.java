@@ -3,8 +3,10 @@ package com.alibaba.excel.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.metadata.holder.write.SheetHolder;
-import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
+import com.alibaba.excel.write.metadata.holder.SheetHolder;
+import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Workbook;
 
 /**
  *
@@ -21,7 +23,7 @@ public class AnalysisContextImpl implements AnalysisContext {
      */
     private SheetHolder currentSheetHolder;
 
-    public AnalysisContextImpl(com.alibaba.excel.metadata.Workbook workbook) {
+    public AnalysisContextImpl(Workbook workbook) {
         if (workbook == null) {
             throw new IllegalArgumentException("Workbook argument cannot be null");
         }
@@ -32,7 +34,7 @@ public class AnalysisContextImpl implements AnalysisContext {
     }
 
     @Override
-    public void currentSheet(com.alibaba.excel.metadata.Sheet sheet) {
+    public void currentSheet(Sheet sheet) {
         if (sheet == null) {
             throw new IllegalArgumentException("Sheet argument cannot be null");
         }

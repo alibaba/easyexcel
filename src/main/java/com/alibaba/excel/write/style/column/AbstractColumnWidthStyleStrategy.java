@@ -6,8 +6,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.holder.write.SheetHolder;
-import com.alibaba.excel.metadata.holder.write.TableHolder;
+import com.alibaba.excel.write.metadata.holder.SheetHolder;
+import com.alibaba.excel.write.metadata.holder.TableHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.sun.istack.internal.Nullable;
 

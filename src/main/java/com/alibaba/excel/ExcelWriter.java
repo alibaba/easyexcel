@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.Workbook;
+import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Table;
+import com.alibaba.excel.write.metadata.Workbook;
 import com.alibaba.excel.parameter.GenerateParam;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.ExcelBuilder;

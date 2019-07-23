@@ -1,10 +1,11 @@
 package com.alibaba.excel.context;
 
-import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.holder.write.WriteConfiguration;
-import com.alibaba.excel.metadata.holder.write.SheetHolder;
-import com.alibaba.excel.metadata.holder.write.TableHolder;
-import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
+import com.alibaba.excel.write.metadata.Table;
+import com.alibaba.excel.write.metadata.holder.WriteConfiguration;
+import com.alibaba.excel.write.metadata.holder.SheetHolder;
+import com.alibaba.excel.write.metadata.holder.TableHolder;
+import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.write.metadata.Sheet;
 
 /**
  * Write context
@@ -17,7 +18,7 @@ public interface WriteContext {
      * 
      * @param sheet
      */
-    void currentSheet(com.alibaba.excel.metadata.Sheet sheet);
+    void currentSheet(Sheet sheet);
 
     /**
      * If the current table already exists, select it; if not, create it

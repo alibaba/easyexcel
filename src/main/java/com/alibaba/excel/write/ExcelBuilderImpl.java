@@ -15,9 +15,9 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.holder.write.WriteConfiguration;
+import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Table;
+import com.alibaba.excel.write.metadata.holder.WriteConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.POITempFile;
@@ -25,6 +25,7 @@ import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.metadata.Workbook;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -35,7 +36,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     private WriteContext context;
 
-    public ExcelBuilderImpl(com.alibaba.excel.metadata.Workbook workbook) {
+    public ExcelBuilderImpl(Workbook workbook) {
         // 初始化时候创建临时缓存目录，用于规避POI在并发写bug
         POITempFile.createPOIFilesDirectory();
         context = new WriteContextImpl(workbook);

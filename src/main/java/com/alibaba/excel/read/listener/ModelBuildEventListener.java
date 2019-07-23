@@ -14,7 +14,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.holder.read.ReadConfiguration;
+import com.alibaba.excel.read.metadata.read.ReadConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 

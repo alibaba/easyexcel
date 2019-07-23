@@ -13,11 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.metadata.holder.write.SheetHolder;
-import com.alibaba.excel.metadata.holder.write.TableHolder;
-import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
-import com.alibaba.excel.metadata.holder.write.WriteConfiguration;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.write.handler.CellWriteHandler;
@@ -25,6 +20,12 @@ import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.metadata.Table;
+import com.alibaba.excel.write.metadata.Workbook;
+import com.alibaba.excel.write.metadata.holder.SheetHolder;
+import com.alibaba.excel.write.metadata.holder.TableHolder;
+import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.write.metadata.holder.WriteConfiguration;
 
 /**
  * A context is the main anchorage point of a excel writer.
@@ -52,7 +53,7 @@ public class WriteContextImpl implements WriteContext {
      */
     private WriteConfiguration currentWriteConfiguration;
 
-    public WriteContextImpl(com.alibaba.excel.metadata.Workbook workbook) {
+    public WriteContextImpl(Workbook workbook) {
         if (workbook == null) {
             throw new IllegalArgumentException("Workbook argument cannot be null");
         }
@@ -96,7 +97,7 @@ public class WriteContextImpl implements WriteContext {
         }
     }
 
-    private void initCurrentWorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
+    private void initCurrentWorkbookHolder(Workbook workbook) {
         currentWorkbookHolder = new WorkbookHolder(workbook);
         currentWriteConfiguration = currentWorkbookHolder;
         if (LOGGER.isDebugEnabled()) {
@@ -108,11 +109,12 @@ public class WriteContextImpl implements WriteContext {
      * @param sheet
      */
     @Override
-    public void currentSheet(com.alibaba.excel.metadata.Sheet sheet) {
+    public void currentSheet(com.alibaba.excel.write.metadata.Sheet sheet) {
         if (sheet == null) {
             throw new IllegalArgumentException("Sheet argument cannot be null");
         }
         if (sheet.getSheetNo() == null || sheet.getSheetNo() <= 0) {
+            LOGGER.info("Sheet number is null");
             sheet.setSheetNo(0);
         }
         if (currentWorkbookHolder.getHasBeenInitializedSheet().containsKey(sheet.getSheetNo())) {
@@ -163,7 +165,7 @@ public class WriteContextImpl implements WriteContext {
         }
     }
 
-    private void initCurrentSheetHolder(com.alibaba.excel.metadata.Sheet sheet) {
+    private void initCurrentSheetHolder(com.alibaba.excel.write.metadata.Sheet sheet) {
         currentSheetHolder = new SheetHolder(sheet, currentWorkbookHolder);
         currentWorkbookHolder.getHasBeenInitializedSheet().put(sheet.getSheetNo(), currentSheetHolder);
         currentTableHolder = null;
@@ -173,7 +175,7 @@ public class WriteContextImpl implements WriteContext {
         }
     }
 
-    private void initSheet(com.alibaba.excel.metadata.Sheet sheet) {
+    private void initSheet(com.alibaba.excel.write.metadata.Sheet sheet) {
         Sheet currentSheet;
         try {
             currentSheet = currentWorkbookHolder.getWorkbook().getSheetAt(sheet.getSheetNo());
@@ -303,7 +305,7 @@ public class WriteContextImpl implements WriteContext {
         initHead(currentTableHolder.getExcelHeadProperty());
     }
 
-    private void initCurrentTableHolder(com.alibaba.excel.metadata.Table table) {
+    private void initCurrentTableHolder(Table table) {
         currentTableHolder = new TableHolder(table, currentSheetHolder, currentWorkbookHolder);
         currentSheetHolder.getHasBeenInitializedTable().put(table.getTableNo(), currentTableHolder);
         currentWriteConfiguration = currentTableHolder;

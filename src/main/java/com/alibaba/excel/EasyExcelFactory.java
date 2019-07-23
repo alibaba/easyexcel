@@ -8,7 +8,7 @@ import java.util.List;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.event.WriteHandler;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;

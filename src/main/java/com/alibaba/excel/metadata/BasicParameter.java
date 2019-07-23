@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.read.listener.ReadListener;
-import com.alibaba.excel.write.handler.WriteHandler;
 
 /**
  * Basic parameter
@@ -13,18 +11,6 @@ import com.alibaba.excel.write.handler.WriteHandler;
  * @author zhuangjiaju
  **/
 public class BasicParameter {
-    /**
-     * Count the number of added heads when read sheet.
-     *
-     * <li>0 - This Sheet has no head ,since the first row are the data
-     * <li>1 - This Sheet has one row head , this is the default
-     * <li>2 - This Sheet has two row head ,since the third row is the data
-     */
-    private Integer readHeadRowNumber;
-    /**
-     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
-     */
-    private Integer writeRelativeHeadRowIndex;
     /**
      * You can only choose one of the {@link BasicParameter#head} and {@link BasicParameter#clazz}
      */
@@ -34,41 +20,21 @@ public class BasicParameter {
      */
     private Class clazz;
     /**
-     * Need Head
-     */
-    private Boolean needHead;
-    /**
      * Custom type conversions override the default
      */
     private List<Converter> customConverterList = new ArrayList<Converter>();
     /**
-     * Custom type handler override the default
-     */
-    private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
-    /**
-     * Custom type listener run after default
-     */
-    private List<ReadListener> customReadListenerList = new ArrayList<ReadListener>();
-    /**
      * Automatic trim includes sheet name and content
      */
     private Boolean autoTrim;
-
-    public Integer getReadHeadRowNumber() {
-        return readHeadRowNumber;
-    }
-
-    public void setReadHeadRowNumber(Integer readHeadRowNumber) {
-        this.readHeadRowNumber = readHeadRowNumber;
-    }
-
-    public Integer getWriteRelativeHeadRowIndex() {
-        return writeRelativeHeadRowIndex;
-    }
-
-    public void setWriteRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
-        this.writeRelativeHeadRowIndex = writeRelativeHeadRowIndex;
-    }
+    /**
+     * true if date uses 1904 windowing, or false if using 1900 date windowing.
+     *
+     * default is false
+     * 
+     * @return
+     */
+    private Boolean use1904windowing;
 
     public List<List<String>> getHead() {
         return head;
@@ -86,14 +52,6 @@ public class BasicParameter {
         this.clazz = clazz;
     }
 
-    public Boolean getNeedHead() {
-        return needHead;
-    }
-
-    public void setNeedHead(Boolean needHead) {
-        this.needHead = needHead;
-    }
-
     public List<Converter> getCustomConverterList() {
         return customConverterList;
     }
@@ -102,27 +60,19 @@ public class BasicParameter {
         this.customConverterList = customConverterList;
     }
 
-    public List<WriteHandler> getCustomWriteHandlerList() {
-        return customWriteHandlerList;
-    }
-
-    public void setCustomWriteHandlerList(List<WriteHandler> customWriteHandlerList) {
-        this.customWriteHandlerList = customWriteHandlerList;
-    }
-
-    public List<ReadListener> getCustomReadListenerList() {
-        return customReadListenerList;
-    }
-
-    public void setCustomReadListenerList(List<ReadListener> customReadListenerList) {
-        this.customReadListenerList = customReadListenerList;
-    }
-
     public Boolean getAutoTrim() {
         return autoTrim;
     }
 
     public void setAutoTrim(Boolean autoTrim) {
         this.autoTrim = autoTrim;
+    }
+
+    public Boolean getUse1904windowing() {
+        return use1904windowing;
+    }
+
+    public void setUse1904windowing(Boolean use1904windowing) {
+        this.use1904windowing = use1904windowing;
     }
 }

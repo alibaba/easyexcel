@@ -1,19 +1,24 @@
-package com.alibaba.excel.metadata.holder.write;
+package com.alibaba.excel.write.metadata.holder;
 
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.metadata.property.ExcelHeadProperty;
+import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 
 /**
  * 
- * Get the corresponding configuration
+ * Get the corresponding Holder
  * 
  * @author zhuangjiaju
  **/
-public interface WriteConfiguration {
+public interface WriteHolder extends Holder {
+    /**
+     * What 'ExcelWriteHeadProperty' does the currently operated cell need to execute
+     */
+    ExcelWriteHeadProperty excelWriteHeadProperty();
 
     /**
      * What handler does the currently operated cell need to execute
@@ -27,7 +32,7 @@ public interface WriteConfiguration {
      * 
      * @return
      */
-    Map<Class, Converter> writeConverterMap();
+    Map<Class, Converter> converterMap();
 
     /**
      * Whether a header is required for the currently operated cell
@@ -38,19 +43,8 @@ public interface WriteConfiguration {
 
     /**
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
-     */
-    int writeRelativeHeadRowIndex();
-
-    /**
-     * What 'ExcelHeadProperty' does the currently operated cell need to execute
-     */
-    ExcelHeadProperty excelHeadProperty();
-
-    /**
-     * 
-     * Record whether it's new or from cache
      * 
      * @return
      */
-    boolean isNew();
+    int relativeHeadRowIndex();
 }

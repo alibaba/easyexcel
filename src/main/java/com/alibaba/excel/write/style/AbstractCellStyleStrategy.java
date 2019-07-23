@@ -6,9 +6,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.holder.write.SheetHolder;
-import com.alibaba.excel.metadata.holder.write.TableHolder;
-import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
+import com.alibaba.excel.write.metadata.holder.SheetHolder;
+import com.alibaba.excel.write.metadata.holder.TableHolder;
+import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 

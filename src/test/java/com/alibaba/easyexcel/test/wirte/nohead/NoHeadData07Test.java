@@ -9,7 +9,7 @@ import com.alibaba.easyexcel.test.util.FileUtil;
 import com.alibaba.easyexcel.test.wirte.order.OrderData;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Sheet;
 
 /**
  * Order data test

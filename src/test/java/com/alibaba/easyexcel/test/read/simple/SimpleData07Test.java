@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.alibaba.easyexcel.test.util.FileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Sheet;
 
 /**
  * Simple data test

@@ -1,14 +1,12 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
-import com.alibaba.excel.analysis.v03.XlsRecordHandler;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Sheet;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import org.apache.poi.hssf.record.BOFRecord;
 import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.util.ArrayList;
 import java.util.List;

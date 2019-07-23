@@ -13,7 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
+import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -42,7 +42,7 @@ public class WorkBookUtil {
         return new HSSFWorkbook();
     }
 
-    public static Sheet createSheet(Workbook workbook, com.alibaba.excel.metadata.Sheet sheet) {
+    public static Sheet createSheet(Workbook workbook, com.alibaba.excel.write.metadata.Sheet sheet) {
         return workbook.createSheet(sheet.getSheetName() != null ? sheet.getSheetName() : sheet.getSheetNo() + "");
     }
 

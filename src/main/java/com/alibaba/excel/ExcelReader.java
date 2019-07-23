@@ -13,7 +13,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Sheet;
 import com.alibaba.excel.parameter.AnalysisParam;
 import com.alibaba.excel.support.ExcelTypeEnum;
 

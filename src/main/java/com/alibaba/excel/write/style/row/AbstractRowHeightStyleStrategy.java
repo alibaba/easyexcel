@@ -3,8 +3,8 @@ package com.alibaba.excel.write.style.row;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.alibaba.excel.event.NotRepeatExecutor;
-import com.alibaba.excel.metadata.holder.write.SheetHolder;
-import com.alibaba.excel.metadata.holder.write.TableHolder;
+import com.alibaba.excel.write.metadata.holder.SheetHolder;
+import com.alibaba.excel.write.metadata.holder.TableHolder;
 import com.alibaba.excel.write.handler.RowWriteHandler;
 
 /**

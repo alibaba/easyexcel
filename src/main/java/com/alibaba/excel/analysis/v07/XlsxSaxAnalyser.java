@@ -26,8 +26,8 @@ import com.alibaba.excel.analysis.ExcelExecutor;
 import com.alibaba.excel.cache.Ehcache;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
+import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.util.FileUtils;
 
 /**

@@ -5,8 +5,8 @@ import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.Workbook;
+import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Workbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**

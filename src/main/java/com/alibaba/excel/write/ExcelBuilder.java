@@ -2,8 +2,8 @@ package com.alibaba.excel.write;
 
 import java.util.List;
 
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.Table;
+import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.write.metadata.Table;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 
 /**

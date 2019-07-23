@@ -1,40 +1,26 @@
 package com.alibaba.excel.metadata;
 
-import com.alibaba.excel.write.style.RowCellStyleStrategy;
+import java.util.List;
 
 /**
- * table
- * 
  * @author jipengfei
  */
-public class Table extends BasicParameter {
+public class Table {
     /**
-     * Starting from 0
      */
-    private Integer tableNo;
+    private Class<? extends BaseRowModel> clazz;
+
     /**
-     *
-     * @deprecated please use{@link RowCellStyleStrategy}
      */
-    @Deprecated
+    private List<List<String>> head;
+
+    /**
+     */
+    private int tableNo;
+
+    /**
+     */
     private TableStyle tableStyle;
-
-    public Table() {
-        super();
-    }
-
-    public Table(Integer tableNo) {
-        super();
-        this.tableNo = tableNo;
-    }
-
-    public Integer getTableNo() {
-        return tableNo;
-    }
-
-    public void setTableNo(Integer tableNo) {
-        this.tableNo = tableNo;
-    }
 
     public TableStyle getTableStyle() {
         return tableStyle;
@@ -44,8 +30,31 @@ public class Table extends BasicParameter {
         this.tableStyle = tableStyle;
     }
 
-    @Override
-    public String toString() {
-        return "Table{" + "tableNo=" + tableNo + '}';
+    public Table(Integer tableNo) {
+        this.tableNo = tableNo;
+    }
+
+    public Class<? extends BaseRowModel> getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class<? extends BaseRowModel> clazz) {
+        this.clazz = clazz;
+    }
+
+    public List<List<String>> getHead() {
+        return head;
+    }
+
+    public void setHead(List<List<String>> head) {
+        this.head = head;
+    }
+
+    public int getTableNo() {
+        return tableNo;
+    }
+
+    public void setTableNo(int tableNo) {
+        this.tableNo = tableNo;
     }
 }

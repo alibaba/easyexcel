@@ -1,4 +1,4 @@
-package com.alibaba.excel.metadata.holder.write;
+package com.alibaba.excel.read.metadata.holder;
 
 import java.io.File;
 import java.io.InputStream;
@@ -17,10 +17,12 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.converters.DefaultConverterLoader;
+import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.DefaultWriteHandlerLoader;
 import com.alibaba.excel.write.handler.WriteHandler;
@@ -30,35 +32,25 @@ import com.alibaba.excel.write.handler.WriteHandler;
  *
  * @author zhuangjiaju
  */
-public class WorkbookHolder extends AbstractWriteConfiguration {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorkbookHolder.class);
+public class ReadWorkbookHolder extends AbstractReadHolder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReadWorkbookHolder.class);
 
     /***
      * poi Workbook
      */
     private Workbook workbook;
     /**
-     * prevent duplicate creation of sheet objects
-     */
-    private Map<Integer, SheetHolder> hasBeenInitializedSheet;
-    /**
      * current param
      */
-    private com.alibaba.excel.metadata.Workbook workbookParam;
+    private ReadWorkbook readWorkbook;
     /**
-     * Final output stream
-     */
-    private OutputStream outputStream;
-    /**
-     * <li>write: Template input stream
-     * <li>read: Read InputStream
+     * Read InputStream
      * <p>
      * If 'inputStream' and 'file' all not empty,file first
      */
     private InputStream inputStream;
     /**
-     * <li>write: Template file
-     * <li>read: Read file
+     * Read file
      * <p>
      * If 'inputStream' and 'file' all not empty,file first
      */
@@ -81,12 +73,6 @@ public class WorkbookHolder extends AbstractWriteConfiguration {
      * A cache that stores temp data to save memory.Default use {@link com.alibaba.excel.cache.Ehcache}
      */
     private ReadCache readCache;
-    /**
-     * true if date uses 1904 windowing, or false if using 1900 date windowing.
-     *
-     * @return
-     */
-    private Boolean use1904windowing;
 
     /**
      * Mmandatory use 'inputStream'
@@ -115,7 +101,7 @@ public class WorkbookHolder extends AbstractWriteConfiguration {
     @Deprecated
     private com.alibaba.excel.event.WriteHandler writeHandler;
 
-    public static WorkbookHolder buildWriteWorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
+    public static WorkbookHolder buildWriteWorkbookHolder(com.alibaba.excel.write.metadata.Workbook workbook) {
         WorkbookHolder workbookHolder = buildBaseWorkbookHolder(workbook);
         workbookHolder.setNewInitialization(Boolean.TRUE);
         if (workbook.getNeedHead() == null) {
@@ -149,7 +135,7 @@ public class WorkbookHolder extends AbstractWriteConfiguration {
         return workbookHolder;
     }
 
-    public static WorkbookHolder buildReadWorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
+    public static WorkbookHolder buildReadWorkbookHolder(com.alibaba.excel.write.metadata.Workbook workbook) {
         WorkbookHolder workbookHolder = buildBaseWorkbookHolder(workbook);
         if (workbook.getFile() == null && workbookHolder.getInputStream() == null) {
             throw new ExcelAnalysisException("Read excel 'file' and 'inputStream' cannot be empty at the same time!");
@@ -175,7 +161,7 @@ public class WorkbookHolder extends AbstractWriteConfiguration {
         return workbookHolder;
     }
 
-    private static WorkbookHolder buildBaseWorkbookHolder(com.alibaba.excel.metadata.Workbook workbook) {
+    private static WorkbookHolder buildBaseWorkbookHolder(com.alibaba.excel.write.metadata.Workbook workbook) {
         WorkbookHolder workbookHolder = new WorkbookHolder();
         workbookHolder.setUse1904windowing(workbook.getUse1904windowing());
         workbookHolder.setWorkbookParam(workbook);
@@ -218,11 +204,11 @@ public class WorkbookHolder extends AbstractWriteConfiguration {
         this.hasBeenInitializedSheet = hasBeenInitializedSheet;
     }
 
-    public com.alibaba.excel.metadata.Workbook getWorkbookParam() {
+    public com.alibaba.excel.write.metadata.Workbook getWorkbookParam() {
         return workbookParam;
     }
 
-    public void setWorkbookParam(com.alibaba.excel.metadata.Workbook workbookParam) {
+    public void setWorkbookParam(com.alibaba.excel.write.metadata.Workbook workbookParam) {
         this.workbookParam = workbookParam;
     }
 
@@ -320,5 +306,10 @@ public class WorkbookHolder extends AbstractWriteConfiguration {
 
     public void setReadTempFile(File readTempFile) {
         this.readTempFile = readTempFile;
+    }
+
+    @Override
+    public HolderEnum holderType() {
+        return HolderEnum.WORKBOOK;
     }
 }

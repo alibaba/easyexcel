@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.metadata.Table;
+import com.alibaba.excel.write.metadata.Table;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 /**

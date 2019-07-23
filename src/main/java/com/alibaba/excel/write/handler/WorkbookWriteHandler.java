@@ -1,6 +1,6 @@
 package com.alibaba.excel.write.handler;
 
-import com.alibaba.excel.metadata.holder.write.WorkbookHolder;
+import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
 
 /**
  * intercepts handle Workbook creation

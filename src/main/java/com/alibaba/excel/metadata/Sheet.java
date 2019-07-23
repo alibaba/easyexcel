@@ -4,121 +4,110 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
-import com.alibaba.excel.write.style.RowCellStyleStrategy;
-import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
-
 /**
- * sheet
- * 
+ *
  * @author jipengfei
  */
-public class Sheet extends BasicParameter {
+public class Sheet {
+
     /**
-     * Starting from 0
      */
-    private Integer sheetNo;
+    private int headLineMun;
+
     /**
-     * sheet name
+     * Starting from 1
+     */
+    private int sheetNo;
+
+    /**
      */
     private String sheetName;
+
     /**
-     * column with
-     * 
-     * @deprecated please use {@link SimpleColumnWidthStyleStrategy}
      */
-    @Deprecated
-    private Map<Integer, Integer> columnWidthMap = new HashMap<Integer, Integer>();
+    private Class<? extends BaseRowModel> clazz;
+
+    /**
+     */
+    private List<List<String>> head;
 
     /**
      *
-     * @deprecated please use{@link RowCellStyleStrategy}
      */
-    @Deprecated
     private TableStyle tableStyle;
 
-    public Sheet() {
-        super();
-    }
-
     /**
-     * Create sheet
-     * 
-     * @param sheetNo
-     * @param sheetName
+     * column with
      */
-    public Sheet(Integer sheetNo, String sheetName) {
-        super();
-        this.sheetNo = sheetNo;
-        this.sheetName = sheetName;
-    }
+    private Map<Integer,Integer> columnWidthMap = new HashMap<Integer, Integer>();
 
     /**
-     * It was 'sheetNo' starting from 1 and now it is starting from 0
-     * 
-     * @param sheetNo
-     * @param readHeadRowNumber
-     * @deprecated please use {@link ExcelWriterSheetBuilder#build()}
-     */
-    @Deprecated
-    public Sheet(int sheetNo, int readHeadRowNumber) {
-        super();
-        this.sheetNo = sheetNo - 1;
-        setReadHeadRowNumber(readHeadRowNumber);
-    }
-
-    /**
-     * It was 'sheetNo' starting from 1 and now it is starting from 0
      *
-     * @param sheetNo
-     * @deprecated please use {@link ExcelWriterSheetBuilder#build()}
      */
-    @Deprecated
+    private Boolean autoWidth = Boolean.FALSE;
+
+    /**
+     *
+     */
+    private int startRow = 0;
+
+
     public Sheet(int sheetNo) {
-        super();
-        this.sheetNo = sheetNo - 1;
+        this.sheetNo = sheetNo;
     }
 
-    /**
-     * It was 'sheetNo' starting from 1 and now it is starting from 0
-     * 
-     * @param sheetNo
-     * @param readHeadRowNumber
-     * @param clazz
-     * @deprecated please use {@link ExcelWriterSheetBuilder#build()}
-     */
-    @Deprecated
-    public Sheet(int sheetNo, int readHeadRowNumber, Class clazz) {
-        super();
-        this.sheetNo = sheetNo - 1;
-        setReadHeadRowNumber(readHeadRowNumber);
-        setClazz(clazz);
+    public Sheet(int sheetNo, int headLineMun) {
+        this.sheetNo = sheetNo;
+        this.headLineMun = headLineMun;
     }
 
-    /**
-     * It was 'sheetNo' starting from 1 and now it is starting from 0
-     *
-     * @param sheetNo
-     * @param readHeadRowNumber
-     * @param clazz
-     * @deprecated please use {@link ExcelWriterSheetBuilder#build()}
-     */
-    @Deprecated
-    public Sheet(int sheetNo, int readHeadRowNumber, Class clazz, String sheetName, List<List<String>> head) {
-        super();
-        this.sheetNo = sheetNo - 1;
+    public Sheet(int sheetNo, int headLineMun, Class<? extends BaseRowModel> clazz) {
+        this.sheetNo = sheetNo;
+        this.headLineMun = headLineMun;
+        this.clazz = clazz;
+    }
+
+    public Sheet(int sheetNo, int headLineMun, Class<? extends BaseRowModel> clazz, String sheetName,
+                 List<List<String>> head) {
+        this.sheetNo = sheetNo;
+        this.clazz = clazz;
+        this.headLineMun = headLineMun;
         this.sheetName = sheetName;
-
-        setReadHeadRowNumber(readHeadRowNumber);
-        setClazz(clazz);
-        setHead(head);
+        this.head = head;
     }
 
-    public Integer getSheetNo() {
+    public List<List<String>> getHead() {
+        return head;
+    }
+
+    public void setHead(List<List<String>> head) {
+        this.head = head;
+    }
+
+    public Class<? extends BaseRowModel> getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class<? extends BaseRowModel> clazz) {
+        this.clazz = clazz;
+        if (headLineMun == 0) {
+            this.headLineMun = 1;
+        }
+    }
+
+    public int getHeadLineMun() {
+        return headLineMun;
+    }
+
+    public void setHeadLineMun(int headLineMun) {
+        this.headLineMun = headLineMun;
+    }
+
+    public int getSheetNo() {
         return sheetNo;
     }
 
-    public void setSheetNo(Integer sheetNo) {
+    public void setSheetNo(int sheetNo) {
         this.sheetNo = sheetNo;
     }
 
@@ -130,14 +119,6 @@ public class Sheet extends BasicParameter {
         this.sheetName = sheetName;
     }
 
-    public Map<Integer, Integer> getColumnWidthMap() {
-        return columnWidthMap;
-    }
-
-    public void setColumnWidthMap(Map<Integer, Integer> columnWidthMap) {
-        this.columnWidthMap = columnWidthMap;
-    }
-
     public TableStyle getTableStyle() {
         return tableStyle;
     }
@@ -146,28 +127,42 @@ public class Sheet extends BasicParameter {
         this.tableStyle = tableStyle;
     }
 
-    /**
-     * 
-     * @param writeRelativeHeadRowIndex
-     * @deprecated please use {@link Sheet#setWriteRelativeHeadRowIndex(Integer)}
-     */
-    @Deprecated
-    public void setStartRow(int writeRelativeHeadRowIndex) {
-        setWriteRelativeHeadRowIndex(writeRelativeHeadRowIndex);
+
+
+    public Map<Integer, Integer> getColumnWidthMap() {
+        return columnWidthMap;
     }
 
-    /**
-     * 
-     * @param readHeadRowNumber
-     * @deprecated please use {@link Sheet#setReadHeadRowNumber(Integer)} )}
-     */
-    @Deprecated
-    public void setHeadLineMun(int readHeadRowNumber) {
-        setReadHeadRowNumber(readHeadRowNumber);
+    public void setColumnWidthMap(Map<Integer, Integer> columnWidthMap) {
+        this.columnWidthMap = columnWidthMap;
     }
 
     @Override
     public String toString() {
-        return "Sheet{" + "sheetNo=" + sheetNo + ", sheetName='" + sheetName + '\'' + '}';
+        return "Sheet{" +
+            "headLineMun=" + headLineMun +
+            ", sheetNo=" + sheetNo +
+            ", sheetName='" + sheetName + '\'' +
+            ", clazz=" + clazz +
+            ", head=" + head +
+            ", tableStyle=" + tableStyle +
+            ", columnWidthMap=" + columnWidthMap +
+            '}';
+    }
+
+    public Boolean getAutoWidth() {
+        return autoWidth;
+    }
+
+    public void setAutoWidth(Boolean autoWidth) {
+        this.autoWidth = autoWidth;
+    }
+
+    public int getStartRow() {
+        return startRow;
+    }
+
+    public void setStartRow(int startRow) {
+        this.startRow = startRow;
     }
 }
