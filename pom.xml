@@ -146,6 +146,9 @@
                         <ruleset>rulesets/java/ali-other.xml</ruleset>
                         <ruleset>rulesets/java/ali-set.xml</ruleset>
                     </rulesets>
+                    <excludes>
+                        <exclude>com/alibaba/excel/event/AnalysisEventListener.java</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <!-- 绑定pmd:check到verify生命周期 -->

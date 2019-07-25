@@ -12,16 +12,21 @@ import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.metadata.ReadSheet;
 
-public class BOFRecordHandler extends AbstractXlsRecordHandler {
+/**
+ * Record handler
+ *
+ * @author Dan Zheng
+ */
+public class BofRecordHandler extends AbstractXlsRecordHandler {
     private List<BoundSheetRecord> boundSheetRecords = new ArrayList<BoundSheetRecord>();
-    private BoundSheetRecord[] orderedBSRs;
+    private BoundSheetRecord[] orderedBsrs;
     private int sheetIndex;
     private List<ReadSheet> sheets;
     private AnalysisContext context;
     private boolean analyAllSheet;
     private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
 
-    public BOFRecordHandler(EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener,
+    public BofRecordHandler(EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener,
         AnalysisContext context, List<ReadSheet> sheets) {
         this.context = context;
         this.workbookBuildingListener = workbookBuildingListener;
@@ -40,11 +45,11 @@ public class BOFRecordHandler extends AbstractXlsRecordHandler {
         } else if (record.getSid() == BOFRecord.sid) {
             BOFRecord br = (BOFRecord)record;
             if (br.getType() == BOFRecord.TYPE_WORKSHEET) {
-                if (orderedBSRs == null) {
-                    orderedBSRs = BoundSheetRecord.orderByBofPosition(boundSheetRecords);
+                if (orderedBsrs == null) {
+                    orderedBsrs = BoundSheetRecord.orderByBofPosition(boundSheetRecords);
                 }
                 sheetIndex++;
-                ReadSheet readSheet = new ReadSheet(sheetIndex, orderedBSRs[sheetIndex - 1].getSheetname());
+                ReadSheet readSheet = new ReadSheet(sheetIndex, orderedBsrs[sheetIndex - 1].getSheetname());
                 sheets.add(readSheet);
                 if (this.analyAllSheet) {
                     context.currentSheet(null, readSheet);
@@ -59,7 +64,7 @@ public class BOFRecordHandler extends AbstractXlsRecordHandler {
             this.analyAllSheet = true;
         }
         sheetIndex = 0;
-        orderedBSRs = null;
+        orderedBsrs = null;
         boundSheetRecords.clear();
         sheets.clear();
     }

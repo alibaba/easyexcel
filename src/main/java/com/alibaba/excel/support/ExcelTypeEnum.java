@@ -32,6 +32,17 @@ public enum ExcelTypeEnum {
             FileMagic fileMagic = null;
             if (file != null) {
                 fileMagic = FileMagic.valueOf(file);
+                if (!FileMagic.OLE2.equals(fileMagic) && !FileMagic.OOXML.equals(fileMagic)) {
+                    String fileName = file.getName();
+                    if (fileName.endsWith(XLSX.getValue())) {
+                        return XLSX;
+
+                    } else if (fileName.endsWith(XLS.getValue())) {
+                        return XLS;
+                    } else {
+                        throw new ExcelCommonException("Unknown excel type.");
+                    }
+                }
             } else {
                 fileMagic = FileMagic.valueOf(inputStream);
             }

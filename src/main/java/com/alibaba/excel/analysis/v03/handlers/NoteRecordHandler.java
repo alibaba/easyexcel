@@ -1,9 +1,15 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
 import org.apache.poi.hssf.record.NoteRecord;
 import org.apache.poi.hssf.record.Record;
 
+import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+
+/**
+ * Record handler
+ *
+ * @author Dan Zheng
+ */
 public class NoteRecordHandler extends AbstractXlsRecordHandler {
     @Override
     public boolean support(Record record) {
@@ -16,7 +22,6 @@ public class NoteRecordHandler extends AbstractXlsRecordHandler {
 
         this.row = nrec.getRow();
         this.column = nrec.getColumn();
-        // TODO: Find object to match nrec.getShapeId()
         this.value = "(TODO)";
     }
 

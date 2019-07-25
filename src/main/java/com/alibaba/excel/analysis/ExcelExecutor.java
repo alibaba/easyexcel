@@ -11,8 +11,16 @@ import com.alibaba.excel.read.metadata.ReadSheet;
  */
 public interface ExcelExecutor {
 
+    /**
+     * Returns the actual sheet in excel
+     * 
+     * @return
+     */
     List<ReadSheet> sheetList();
 
+    /**
+     * Read sheet
+     */
     void execute();
 
 }

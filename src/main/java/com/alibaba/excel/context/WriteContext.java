@@ -67,6 +67,7 @@ public interface WriteContext {
     void finish();
 
     /**
+     * Current sheet
      *
      * @return
      * @deprecated please us e{@link #writeSheetHolder()}
@@ -75,6 +76,7 @@ public interface WriteContext {
     Sheet getCurrentSheet();
 
     /**
+     * Need head
      *
      * @return
      * @deprecated please us e{@link #writeSheetHolder()}
@@ -83,7 +85,8 @@ public interface WriteContext {
     boolean needHead();
 
     /**
-     *
+     * Get outputStream
+     * 
      * @return
      * @deprecated please us e{@link #writeWorkbookHolder()} ()}
      */
@@ -91,7 +94,8 @@ public interface WriteContext {
     OutputStream getOutputStream();
 
     /**
-     *
+     * Get workbook
+     * 
      * @return
      * @deprecated please us e{@link #writeWorkbookHolder()} ()}
      */

@@ -12,7 +12,6 @@ import com.alibaba.excel.cache.ReadCache;
 public class SharedStringsTableHandler extends DefaultHandler {
     private static final String T_TAG = "t";
     private String currentData;
-    private boolean isT;
     private ReadCache readCache;
 
     public SharedStringsTableHandler(ReadCache readCache) {

@@ -1,8 +1,16 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
-import org.apache.poi.hssf.record.*;
+import org.apache.poi.hssf.record.BlankRecord;
+import org.apache.poi.hssf.record.BoolErrRecord;
+import org.apache.poi.hssf.record.Record;
 
+import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+
+/**
+ * Record handler
+ *
+ * @author Dan Zheng
+ */
 public class BlankOrErrorRecordHandler extends AbstractXlsRecordHandler {
 
     @Override

@@ -1,10 +1,16 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
 import org.apache.poi.hssf.record.RKRecord;
 import org.apache.poi.hssf.record.Record;
 
-public class RKRecordHandler extends AbstractXlsRecordHandler {
+import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+
+/**
+ * Record handler
+ *
+ * @author Dan Zheng
+ */
+public class RkRecordHandler extends AbstractXlsRecordHandler {
     @Override
     public boolean support(Record record) {
         return RKRecord.sid == record.getSid();

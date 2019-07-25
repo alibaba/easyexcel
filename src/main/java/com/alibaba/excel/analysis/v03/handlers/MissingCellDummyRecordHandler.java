@@ -1,9 +1,15 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord;
 import org.apache.poi.hssf.record.Record;
 
+import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+
+/**
+ * Record handler
+ *
+ * @author Dan Zheng
+ */
 public class MissingCellDummyRecordHandler extends AbstractXlsRecordHandler {
     @Override
     public boolean support(Record record) {

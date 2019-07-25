@@ -64,6 +64,8 @@ public interface AnalysisContext {
 
     /**
      * Custom attribute
+     * 
+     * @return
      */
     Object getCustom();
 

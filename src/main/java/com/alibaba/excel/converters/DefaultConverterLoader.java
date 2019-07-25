@@ -40,7 +40,7 @@ public class DefaultConverterLoader {
      * @return
      */
     public static Map<String, Converter> loadDefaultWriteConverter() {
-        Map<String, Converter> converterMap = new HashMap<String, Converter>();
+        Map<String, Converter> converterMap = new HashMap<String, Converter>(16);
         putWriteConverter(converterMap, new BigDecimalNumberConverter());
         putWriteConverter(converterMap, new BooleanBooleanConverter());
         putWriteConverter(converterMap, new ByteNumberConverter());
@@ -64,7 +64,7 @@ public class DefaultConverterLoader {
      * @return
      */
     public static Map<String, Converter> loadDefaultReadConverter() {
-        Map<String, Converter> converterMap = new HashMap<String, Converter>();
+        Map<String, Converter> converterMap = new HashMap<String, Converter>(64);
         putReadConverter(converterMap, new BigDecimalBooleanConverter());
         putReadConverter(converterMap, new BigDecimalNumberConverter());
         putReadConverter(converterMap, new BigDecimalStringConverter());

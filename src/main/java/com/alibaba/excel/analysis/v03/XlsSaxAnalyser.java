@@ -17,15 +17,15 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.alibaba.excel.analysis.ExcelExecutor;
-import com.alibaba.excel.analysis.v03.handlers.BOFRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.BlankOrErrorRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.BofRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.LabelRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.MissingCellDummyRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.NoteRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.NumberRecordHandler;
-import com.alibaba.excel.analysis.v03.handlers.RKRecordHandler;
-import com.alibaba.excel.analysis.v03.handlers.SSTRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.RkRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.SstRecordHandler;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
@@ -178,13 +178,13 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private void buildXlsRecordHandlers() {
         if (CollectionUtils.isEmpty(recordHandlers)) {
             recordHandlers.add(new BlankOrErrorRecordHandler());
-            recordHandlers.add(new BOFRecordHandler(workbookBuildingListener, analysisContext, sheets));
+            recordHandlers.add(new BofRecordHandler(workbookBuildingListener, analysisContext, sheets));
             recordHandlers.add(new FormulaRecordHandler(stubWorkbook, formatListener));
             recordHandlers.add(new LabelRecordHandler());
             recordHandlers.add(new NoteRecordHandler());
             recordHandlers.add(new NumberRecordHandler(formatListener));
-            recordHandlers.add(new RKRecordHandler());
-            recordHandlers.add(new SSTRecordHandler());
+            recordHandlers.add(new RkRecordHandler());
+            recordHandlers.add(new SstRecordHandler());
             recordHandlers.add(new MissingCellDummyRecordHandler());
             Collections.sort(recordHandlers);
         }

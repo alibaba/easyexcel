@@ -1,5 +1,9 @@
 package com.alibaba.excel.analysis.v03;
 
+/**
+ *
+ * @author Dan Zheng
+ */
 public abstract class AbstractXlsRecordHandler implements XlsRecordHandler {
     protected int row = -1;
     protected int column = -1;

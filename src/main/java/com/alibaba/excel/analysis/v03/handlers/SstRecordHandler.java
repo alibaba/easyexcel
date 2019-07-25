@@ -1,10 +1,19 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
-import org.apache.poi.hssf.record.*;
+import org.apache.poi.hssf.record.LabelSSTRecord;
+import org.apache.poi.hssf.record.Record;
+import org.apache.poi.hssf.record.SSTRecord;
 
-public class SSTRecordHandler extends AbstractXlsRecordHandler {
+import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+
+/**
+ * Record handler
+ *
+ * @author Dan Zheng
+ */
+public class SstRecordHandler extends AbstractXlsRecordHandler {
     private SSTRecord sstRecord;
+
     @Override
     public boolean support(Record record) {
         return SSTRecord.sid == record.getSid() || LabelSSTRecord.sid == record.getSid();

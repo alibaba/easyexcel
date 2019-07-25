@@ -21,7 +21,11 @@ import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
-
+/**
+ * Cell Handler
+ *
+ * @author jipengfei
+ */
 public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder {
     private final AnalysisContext analysisContext;
     private String currentTag;

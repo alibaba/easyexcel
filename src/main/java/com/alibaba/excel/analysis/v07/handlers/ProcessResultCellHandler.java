@@ -9,6 +9,11 @@ import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
 
+/**
+ * Cell Handler
+ *
+ * @author jipengfei
+ */
 public class ProcessResultCellHandler implements XlsxCellHandler {
     private AnalysisContext analysisContext;
     private XlsxRowResultHolder rowResultHandler;

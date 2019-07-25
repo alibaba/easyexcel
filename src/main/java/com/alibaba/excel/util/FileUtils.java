@@ -20,6 +20,7 @@ public class FileUtils {
     private static final String POIFILES = "poifiles";
 
     private static final String CACHE = "excache";
+    private static final int WRITE_BUFF_SIZE = 8192;
 
     /**
      * Write inputStream to file
@@ -32,8 +33,8 @@ public class FileUtils {
         try {
             outputStream = new FileOutputStream(file);
             int bytesRead;
-            byte[] buffer = new byte[8192];
-            while ((bytesRead = inputStream.read(buffer, 0, 8192)) != -1) {
+            byte[] buffer = new byte[WRITE_BUFF_SIZE];
+            while ((bytesRead = inputStream.read(buffer, 0, WRITE_BUFF_SIZE)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
         } catch (Exception e) {
@@ -98,7 +99,7 @@ public class FileUtils {
         }
         File directory = new File(tmpDir, path);
         if (!directory.exists()) {
-            syncCreatePOIFilesDirectory(directory);
+            syncCreatePoiFilesDirectory(directory);
         }
         return directory;
     }
@@ -107,7 +108,7 @@ public class FileUtils {
      *
      * @param directory
      */
-    private static synchronized void syncCreatePOIFilesDirectory(File directory) {
+    private static synchronized void syncCreatePoiFilesDirectory(File directory) {
         if (!directory.exists()) {
             directory.mkdirs();
         }

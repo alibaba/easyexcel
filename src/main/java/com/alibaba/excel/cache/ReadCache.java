@@ -24,7 +24,7 @@ public interface ReadCache {
     void put(String value);
 
     /**
-     * Get
+     * Get value
      * 
      * @param key
      * @return
@@ -32,12 +32,12 @@ public interface ReadCache {
     String get(Integer key);
 
     /**
-     * 所有
+     * It's called when all the values are put in
      */
     void putFinished();
 
     /**
-     *
+     * Called when the excel read is complete
      */
     void destroy();
 
