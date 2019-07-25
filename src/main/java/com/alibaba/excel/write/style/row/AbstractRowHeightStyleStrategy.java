@@ -3,9 +3,9 @@ package com.alibaba.excel.write.style.row;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.alibaba.excel.event.NotRepeatExecutor;
-import com.alibaba.excel.write.metadata.holder.SheetHolder;
-import com.alibaba.excel.write.metadata.holder.TableHolder;
 import com.alibaba.excel.write.handler.RowWriteHandler;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
 /**
  * Set the row height strategy
@@ -20,14 +20,14 @@ public abstract class AbstractRowHeightStyleStrategy implements RowWriteHandler,
     }
 
     @Override
-    public void beforeRowCreate(SheetHolder sheetHolder, TableHolder tableHolder, int rowIndex, int relativeRowIndex,
-                                boolean isHead) {
+    public void beforeRowCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, int rowIndex,
+        int relativeRowIndex, boolean isHead) {
 
     }
 
     @Override
-    public void afterRowCreate(SheetHolder sheetHolder, TableHolder tableHolder, Row row, int relativeRowIndex,
-                               boolean isHead) {
+    public void afterRowCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
+        int relativeRowIndex, boolean isHead) {
         if (isHead) {
             setHeadColumnHeight(row, relativeRowIndex);
         } else {

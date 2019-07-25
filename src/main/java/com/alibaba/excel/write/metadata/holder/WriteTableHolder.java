@@ -12,7 +12,7 @@ public class WriteTableHolder extends AbstractWriteHolder {
     /***
      * poi sheet
      */
-    private WriteSheetHolder parentSheet;
+    private WriteSheetHolder parentWriteSheetHolder;
     /***
      * tableNo
      */
@@ -25,17 +25,17 @@ public class WriteTableHolder extends AbstractWriteHolder {
     public WriteTableHolder(WriteTable writeTable, WriteSheetHolder writeSheetHolder,
         WriteWorkbookHolder writeWorkbookHolder) {
         super(writeTable, writeSheetHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
-        this.parentSheet = writeSheetHolder;
+        this.parentWriteSheetHolder = writeSheetHolder;
         this.tableNo = writeTable.getTableNo();
         this.writeTable = writeTable;
     }
 
-    public WriteSheetHolder getParentSheet() {
-        return parentSheet;
+    public WriteSheetHolder getParentWriteSheetHolder() {
+        return parentWriteSheetHolder;
     }
 
-    public void setParentSheet(WriteSheetHolder parentSheet) {
-        this.parentSheet = parentSheet;
+    public void setParentWriteSheetHolder(WriteSheetHolder parentWriteSheetHolder) {
+        this.parentWriteSheetHolder = parentWriteSheetHolder;
     }
 
     public Integer getTableNo() {

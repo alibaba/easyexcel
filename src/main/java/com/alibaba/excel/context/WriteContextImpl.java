@@ -13,19 +13,20 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
-import com.alibaba.excel.write.metadata.Table;
-import com.alibaba.excel.write.metadata.Workbook;
-import com.alibaba.excel.write.metadata.holder.SheetHolder;
-import com.alibaba.excel.write.metadata.holder.TableHolder;
-import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
-import com.alibaba.excel.write.metadata.holder.WriteConfiguration;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.WriteTable;
+import com.alibaba.excel.write.metadata.WriteWorkbook;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 
 /**
  * A context is the main anchorage point of a excel writer.
@@ -39,31 +40,31 @@ public class WriteContextImpl implements WriteContext {
     /**
      * The Workbook currently written
      */
-    private WorkbookHolder currentWorkbookHolder;
+    private WriteWorkbookHolder writeWorkbookHolder;
     /**
      * Current sheet holder
      */
-    private SheetHolder currentSheetHolder;
+    private WriteSheetHolder writeSheetHolder;
     /**
      * The table currently written
      */
-    private TableHolder currentTableHolder;
+    private WriteTableHolder writeTableHolder;
     /**
      * Configuration of currently operated cell
      */
-    private WriteConfiguration currentWriteConfiguration;
+    private WriteHolder currentWriteHolder;
 
-    public WriteContextImpl(Workbook workbook) {
-        if (workbook == null) {
+    public WriteContextImpl(WriteWorkbook writeWorkbook) {
+        if (writeWorkbook == null) {
             throw new IllegalArgumentException("Workbook argument cannot be null");
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Begin to Initialization 'WriteContextImpl'");
         }
-        initCurrentWorkbookHolder(workbook);
+        initCurrentWorkbookHolder(writeWorkbook);
         beforeWorkbookCreate();
         try {
-            currentWorkbookHolder.setWorkbook(WorkBookUtil.createWorkBook(currentWorkbookHolder));
+            writeWorkbookHolder.setWorkbook(WorkBookUtil.createWorkBook(writeWorkbookHolder));
         } catch (Exception e) {
             throw new ExcelGenerateException("Create workbook failure", e);
         }
@@ -74,7 +75,7 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void beforeWorkbookCreate() {
-        List<WriteHandler> handlerList = currentWriteConfiguration.writeHandlerMap().get(WorkbookWriteHandler.class);
+        List<WriteHandler> handlerList = currentWriteHolder.writeHandlerMap().get(WorkbookWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
@@ -86,159 +87,159 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void afterWorkbookCreate() {
-        List<WriteHandler> handlerList = currentWriteConfiguration.writeHandlerMap().get(WorkbookWriteHandler.class);
+        List<WriteHandler> handlerList = currentWriteHolder.writeHandlerMap().get(WorkbookWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof WorkbookWriteHandler) {
-                ((WorkbookWriteHandler)writeHandler).afterWorkbookCreate(currentWorkbookHolder);
+                ((WorkbookWriteHandler)writeHandler).afterWorkbookCreate(writeWorkbookHolder);
             }
         }
     }
 
-    private void initCurrentWorkbookHolder(Workbook workbook) {
-        currentWorkbookHolder = new WorkbookHolder(workbook);
-        currentWriteConfiguration = currentWorkbookHolder;
+    private void initCurrentWorkbookHolder(WriteWorkbook writeWorkbook) {
+        writeWorkbookHolder = new WriteWorkbookHolder(writeWorkbook);
+        currentWriteHolder = writeWorkbookHolder;
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("CurrentConfiguration is currentWorkbookHolder");
+            LOGGER.debug("CurrentConfiguration is writeWorkbookHolder");
         }
     }
 
     /**
-     * @param sheet
+     * @param writeSheet
      */
     @Override
-    public void currentSheet(com.alibaba.excel.write.metadata.Sheet sheet) {
-        if (sheet == null) {
+    public void currentSheet(WriteSheet writeSheet) {
+        if (writeSheet == null) {
             throw new IllegalArgumentException("Sheet argument cannot be null");
         }
-        if (sheet.getSheetNo() == null || sheet.getSheetNo() <= 0) {
+        if (writeSheet.getSheetNo() == null || writeSheet.getSheetNo() <= 0) {
             LOGGER.info("Sheet number is null");
-            sheet.setSheetNo(0);
+            writeSheet.setSheetNo(0);
         }
-        if (currentWorkbookHolder.getHasBeenInitializedSheet().containsKey(sheet.getSheetNo())) {
+        if (writeWorkbookHolder.getHasBeenInitializedSheet().containsKey(writeSheet.getSheetNo())) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Sheet:{} is already existed", sheet.getSheetNo());
+                LOGGER.debug("Sheet:{} is already existed", writeSheet.getSheetNo());
             }
-            currentSheetHolder = currentWorkbookHolder.getHasBeenInitializedSheet().get(sheet.getSheetNo());
-            currentSheetHolder.setNewInitialization(Boolean.FALSE);
-            currentTableHolder = null;
-            currentWriteConfiguration = currentSheetHolder;
+            writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheet().get(writeSheet.getSheetNo());
+            writeSheetHolder.setNewInitialization(Boolean.FALSE);
+            writeTableHolder = null;
+            currentWriteHolder = writeSheetHolder;
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("CurrentConfiguration is currentSheetHolder");
+                LOGGER.debug("CurrentConfiguration is writeSheetHolder");
             }
             return;
         }
-        initCurrentSheetHolder(sheet);
+        initCurrentSheetHolder(writeSheet);
         beforeSheetCreate();
         // Initialization current sheet
-        initSheet(sheet);
+        initSheet();
         afterSheetCreate();
     }
 
     private void beforeSheetCreate() {
-        List<WriteHandler> handlerList = currentWriteConfiguration.writeHandlerMap().get(SheetWriteHandler.class);
+        List<WriteHandler> handlerList = currentWriteHolder.writeHandlerMap().get(SheetWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof SheetWriteHandler) {
-                ((SheetWriteHandler)writeHandler).beforeSheetCreate(currentWorkbookHolder, currentSheetHolder);
+                ((SheetWriteHandler)writeHandler).beforeSheetCreate(writeWorkbookHolder, writeSheetHolder);
             }
         }
     }
 
     private void afterSheetCreate() {
-        List<WriteHandler> handlerList = currentWriteConfiguration.writeHandlerMap().get(SheetWriteHandler.class);
+        List<WriteHandler> handlerList = currentWriteHolder.writeHandlerMap().get(SheetWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof SheetWriteHandler) {
-                ((SheetWriteHandler)writeHandler).afterSheetCreate(currentWorkbookHolder, currentSheetHolder);
+                ((SheetWriteHandler)writeHandler).afterSheetCreate(writeWorkbookHolder, writeSheetHolder);
             }
         }
-        if (null != currentWorkbookHolder.getWriteHandler()) {
-            currentWorkbookHolder.getWriteHandler().sheet(currentSheetHolder.getSheetNo(),
-                currentSheetHolder.getSheet());
+        if (null != writeWorkbookHolder.getWriteWorkbook().getWriteHandler()) {
+            writeWorkbookHolder.getWriteWorkbook().getWriteHandler().sheet(writeSheetHolder.getSheetNo(),
+                writeSheetHolder.getSheet());
         }
     }
 
-    private void initCurrentSheetHolder(com.alibaba.excel.write.metadata.Sheet sheet) {
-        currentSheetHolder = new SheetHolder(sheet, currentWorkbookHolder);
-        currentWorkbookHolder.getHasBeenInitializedSheet().put(sheet.getSheetNo(), currentSheetHolder);
-        currentTableHolder = null;
-        currentWriteConfiguration = currentSheetHolder;
+    private void initCurrentSheetHolder(WriteSheet writeSheet) {
+        writeSheetHolder = new WriteSheetHolder(writeSheet, writeWorkbookHolder);
+        writeWorkbookHolder.getHasBeenInitializedSheet().put(writeSheet.getSheetNo(), writeSheetHolder);
+        writeTableHolder = null;
+        currentWriteHolder = writeSheetHolder;
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("CurrentConfiguration is currentSheetHolder");
+            LOGGER.debug("CurrentConfiguration is writeSheetHolder");
         }
     }
 
-    private void initSheet(com.alibaba.excel.write.metadata.Sheet sheet) {
+    private void initSheet() {
         Sheet currentSheet;
         try {
-            currentSheet = currentWorkbookHolder.getWorkbook().getSheetAt(sheet.getSheetNo());
+            currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(writeSheetHolder.getSheetNo());
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Can not find sheet:{} ,now create it", sheet.getSheetNo());
+                LOGGER.debug("Can not find sheet:{} ,now create it", writeSheetHolder.getSheetNo());
             }
-            currentSheet = WorkBookUtil.createSheet(currentWorkbookHolder.getWorkbook(), sheet);
+            currentSheet = WorkBookUtil.createSheet(writeWorkbookHolder.getWorkbook(), writeSheetHolder.getSheetName());
         }
-        currentSheetHolder.setSheet(currentSheet);
+        writeSheetHolder.setSheet(currentSheet);
         // Initialization head
-        initHead(currentSheetHolder.getExcelHeadProperty());
+        initHead(writeSheetHolder.excelWriteHeadProperty());
     }
 
-    public void initHead(ExcelHeadProperty excelHeadProperty) {
-        if (!currentWriteConfiguration.needHead() || !currentSheetHolder.getExcelHeadProperty().hasHead()) {
+    public void initHead(ExcelWriteHeadProperty excelWriteHeadProperty) {
+        if (!currentWriteHolder.needHead() || !currentWriteHolder.excelWriteHeadProperty().hasHead()) {
             return;
         }
-        int lastRowNum = currentSheetHolder.getSheet().getLastRowNum();
-        int rowIndex = lastRowNum + currentWriteConfiguration.writeRelativeHeadRowIndex();
+        int lastRowNum = writeSheetHolder.getSheet().getLastRowNum();
+        int rowIndex = lastRowNum + currentWriteHolder.relativeHeadRowIndex();
         // Combined head
-        addMergedRegionToCurrentSheet(excelHeadProperty, rowIndex);
-        for (int relativeRowIndex = 0, i = rowIndex; i < excelHeadProperty.getHeadRowNumber() + rowIndex;
+        addMergedRegionToCurrentSheet(excelWriteHeadProperty, rowIndex);
+        for (int relativeRowIndex = 0, i = rowIndex; i < excelWriteHeadProperty.getHeadRowNumber() + rowIndex;
             i++, relativeRowIndex++) {
             beforeRowCreate(rowIndex, relativeRowIndex);
-            Row row = WorkBookUtil.createRow(currentSheetHolder.getSheet(), i);
+            Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             afterRowCreate(row, relativeRowIndex);
-            addOneRowOfHeadDataToExcel(row, excelHeadProperty.getHeadMap(), relativeRowIndex);
+            addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
         }
     }
 
     private void beforeRowCreate(int rowIndex, int relativeRowIndex) {
-        List<WriteHandler> handlerList = currentWriteConfiguration.writeHandlerMap().get(RowWriteHandler.class);
+        List<WriteHandler> handlerList = currentWriteHolder.writeHandlerMap().get(RowWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
-                ((RowWriteHandler)writeHandler).beforeRowCreate(currentSheetHolder, currentTableHolder, rowIndex,
+                ((RowWriteHandler)writeHandler).beforeRowCreate(writeSheetHolder, writeTableHolder, rowIndex,
                     relativeRowIndex, true);
             }
         }
     }
 
     private void afterRowCreate(Row row, int relativeRowIndex) {
-        List<WriteHandler> handlerList = currentWriteConfiguration.writeHandlerMap().get(RowWriteHandler.class);
+        List<WriteHandler> handlerList = currentWriteHolder.writeHandlerMap().get(RowWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
-                ((RowWriteHandler)writeHandler).afterRowCreate(currentSheetHolder, currentTableHolder, row,
+                ((RowWriteHandler)writeHandler).afterRowCreate(writeSheetHolder, writeTableHolder, row,
                     relativeRowIndex, true);
             }
         }
-        if (null != currentWorkbookHolder.getWriteHandler()) {
-            currentWorkbookHolder.getWriteHandler().row(row.getRowNum(), row);
+        if (null != writeWorkbookHolder.getWriteWorkbook().getWriteHandler()) {
+            writeWorkbookHolder.getWriteWorkbook().getWriteHandler().row(row.getRowNum(), row);
         }
     }
 
-    private void addMergedRegionToCurrentSheet(ExcelHeadProperty excelHeadProperty, int rowIndex) {
-        for (com.alibaba.excel.metadata.CellRange cellRangeModel : excelHeadProperty.headCellRangeList()) {
-            currentSheetHolder.getSheet().addMergedRegion(new CellRangeAddress(cellRangeModel.getFirstRow() + rowIndex,
+    private void addMergedRegionToCurrentSheet(ExcelWriteHeadProperty excelWriteHeadProperty, int rowIndex) {
+        for (com.alibaba.excel.metadata.CellRange cellRangeModel : excelWriteHeadProperty.headCellRangeList()) {
+            writeSheetHolder.getSheet().addMergedRegion(new CellRangeAddress(cellRangeModel.getFirstRow() + rowIndex,
                 cellRangeModel.getLastRow() + rowIndex, cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
         }
     }
@@ -253,98 +254,98 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void beforeCellCreate(Row row, Head head, int relativeRowIndex) {
-        List<WriteHandler> handlerList = currentWriteConfiguration.writeHandlerMap().get(CellWriteHandler.class);
+        List<WriteHandler> handlerList = currentWriteHolder.writeHandlerMap().get(CellWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler)writeHandler).beforeCellCreate(currentSheetHolder, currentTableHolder, row, head,
+                ((CellWriteHandler)writeHandler).beforeCellCreate(writeSheetHolder, writeTableHolder, row, head,
                     relativeRowIndex, true);
             }
         }
     }
 
     private void afterCellCreate(Head head, Cell cell, int relativeRowIndex) {
-        List<WriteHandler> handlerList = currentWriteConfiguration.writeHandlerMap().get(CellWriteHandler.class);
+        List<WriteHandler> handlerList = currentWriteHolder.writeHandlerMap().get(CellWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler)writeHandler).afterCellCreate(currentSheetHolder, currentTableHolder, cell, head,
+                ((CellWriteHandler)writeHandler).afterCellCreate(writeSheetHolder, writeTableHolder, cell, head,
                     relativeRowIndex, true);
             }
         }
-        if (null != currentWorkbookHolder.getWriteHandler()) {
-            currentWorkbookHolder.getWriteHandler().cell(cell.getRowIndex(), cell);
+        if (null != writeWorkbookHolder.getWriteWorkbook().getWriteHandler()) {
+            writeWorkbookHolder.getWriteWorkbook().getWriteHandler().cell(cell.getRowIndex(), cell);
         }
     }
 
     @Override
-    public void currentTable(Table table) {
-        if (table == null) {
+    public void currentTable(WriteTable writeTable) {
+        if (writeTable == null) {
             return;
         }
-        if (table.getTableNo() == null || table.getTableNo() <= 0) {
-            table.setTableNo(0);
+        if (writeTable.getTableNo() == null || writeTable.getTableNo() <= 0) {
+            writeTable.setTableNo(0);
         }
-        if (currentSheetHolder.getHasBeenInitializedTable().containsKey(table.getTableNo())) {
+        if (writeSheetHolder.getHasBeenInitializedTable().containsKey(writeTable.getTableNo())) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Table:{} is already existed", table.getTableNo());
+                LOGGER.debug("Table:{} is already existed", writeTable.getTableNo());
             }
-            currentTableHolder = currentSheetHolder.getHasBeenInitializedTable().get(table.getTableNo());
-            currentTableHolder.setNewInitialization(Boolean.FALSE);
-            currentWriteConfiguration = currentTableHolder;
+            writeTableHolder = writeSheetHolder.getHasBeenInitializedTable().get(writeTable.getTableNo());
+            writeTableHolder.setNewInitialization(Boolean.FALSE);
+            currentWriteHolder = writeTableHolder;
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("CurrentConfiguration is currentTableHolder");
+                LOGGER.debug("CurrentConfiguration is writeTableHolder");
             }
             return;
         }
-        initCurrentTableHolder(table);
-        initHead(currentTableHolder.getExcelHeadProperty());
+        initCurrentTableHolder(writeTable);
+        initHead(writeTableHolder.excelWriteHeadProperty());
     }
 
-    private void initCurrentTableHolder(Table table) {
-        currentTableHolder = new TableHolder(table, currentSheetHolder, currentWorkbookHolder);
-        currentSheetHolder.getHasBeenInitializedTable().put(table.getTableNo(), currentTableHolder);
-        currentWriteConfiguration = currentTableHolder;
+    private void initCurrentTableHolder(WriteTable writeTable) {
+        writeTableHolder = new WriteTableHolder(writeTable, writeSheetHolder, writeWorkbookHolder);
+        writeSheetHolder.getHasBeenInitializedTable().put(writeTable.getTableNo(), writeTableHolder);
+        currentWriteHolder = writeTableHolder;
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("CurrentConfiguration is currentTableHolder");
+            LOGGER.debug("CurrentConfiguration is writeTableHolder");
         }
     }
 
     @Override
-    public WriteConfiguration currentConfiguration() {
-        return currentWriteConfiguration;
+    public WriteWorkbookHolder writeWorkbookHolder() {
+        return writeWorkbookHolder;
     }
 
     @Override
-    public WorkbookHolder currentWorkbookHolder() {
-        return currentWorkbookHolder;
+    public WriteSheetHolder writeSheetHolder() {
+        return writeSheetHolder;
     }
 
     @Override
-    public SheetHolder currentSheetHolder() {
-        return currentSheetHolder;
+    public WriteTableHolder writeTableHolder() {
+        return writeTableHolder;
     }
 
     @Override
-    public TableHolder currentTableHolder() {
-        return currentTableHolder;
+    public WriteHolder currentWriteHolder() {
+        return currentWriteHolder;
     }
 
     @Override
     public void finish() {
         try {
-            currentWorkbookHolder.getWorkbook().write(currentWorkbookHolder.getOutputStream());
-            currentWorkbookHolder.getWorkbook().close();
-            if (currentWorkbookHolder.getAutoCloseStream()) {
-                if (currentWorkbookHolder.getOutputStream() != null) {
-                    currentWorkbookHolder.getOutputStream().close();
+            writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
+            writeWorkbookHolder.getWorkbook().close();
+            if (writeWorkbookHolder.getAutoCloseStream()) {
+                if (writeWorkbookHolder.getOutputStream() != null) {
+                    writeWorkbookHolder.getOutputStream().close();
                 }
-                if (currentWorkbookHolder.getTemplateInputStream() != null) {
-                    currentWorkbookHolder.getTemplateInputStream().close();
+                if (writeWorkbookHolder.getTemplateInputStream() != null) {
+                    writeWorkbookHolder.getTemplateInputStream().close();
                 }
             }
         } catch (IOException e) {

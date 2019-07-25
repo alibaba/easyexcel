@@ -2,7 +2,7 @@ package com.alibaba.excel.analysis;
 
 import java.util.List;
 
-import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.read.metadata.ReadSheet;
 
 /**
  * Excel file Executor
@@ -11,7 +11,7 @@ import com.alibaba.excel.write.metadata.Sheet;
  */
 public interface ExcelExecutor {
 
-    List<Sheet> sheetList();
+    List<ReadSheet> sheetList();
 
     void execute();
 

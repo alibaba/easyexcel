@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -18,6 +20,7 @@ import com.alibaba.excel.write.metadata.WriteWorkbook;
  * @author zhuangjiaju
  */
 public class WriteWorkbookHolder extends AbstractWriteHolder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WriteWorkbookHolder.class);
     /***
      * poi Workbook
      */
@@ -71,7 +74,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.autoCloseStream = writeWorkbook.getAutoCloseStream();
         }
-        this.excelType = writeWorkbook.getExcelType();
+        if (writeWorkbook.getExcelType() == null) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("The default specified xlsx.");
+            }
+            this.excelType = ExcelTypeEnum.XLSX;
+        } else {
+            this.excelType = writeWorkbook.getExcelType();
+        }
         if (writeWorkbook.getMandatoryUseInputStream() == null) {
             this.mandatoryUseInputStream = Boolean.FALSE;
         } else {

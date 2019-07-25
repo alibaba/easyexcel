@@ -1,6 +1,7 @@
 package com.alibaba.excel;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,12 +10,15 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.excel.analysis.ExcelAnalyser;
 import com.alibaba.excel.analysis.ExcelAnalyserImpl;
 import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.cache.MapCache;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.parameter.AnalysisParam;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -43,6 +47,7 @@ public class ExcelReader {
      *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
      * @param eventListener
      *            Callback method after each row is parsed.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
     @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
@@ -59,24 +64,11 @@ public class ExcelReader {
      *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
      * @param eventListener
      *            Callback method after each row is parsed
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
+    @Deprecated
     public ExcelReader(InputStream in, Object customContent, AnalysisEventListener eventListener) {
-        this(in, customContent, eventListener, null, true);
-    }
-
-    /**
-     * Create new reader
-     *
-     * @param in
-     *            the POI filesystem that contains the Workbook stream
-     * @param customContent
-     *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
-     * @param eventListener
-     *            Callback method after each row is parsed
-     */
-    public ExcelReader(InputStream in, Object customContent, AnalysisEventListener eventListener,
-        List<Converter> converters) {
-        this(in, customContent, eventListener, converters, true);
+        this(in, customContent, eventListener, true);
     }
 
     /**
@@ -86,10 +78,29 @@ public class ExcelReader {
      *            old param Deprecated
      * @param eventListener
      *            Callback method after each row is parsed.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
     @Deprecated
     public ExcelReader(AnalysisParam param, AnalysisEventListener eventListener) {
         this(param.getIn(), param.getExcelTypeEnum(), param.getCustomContent(), eventListener, true);
+    }
+
+    /**
+     * Create new reader
+     *
+     * @param in
+     * @param customContent
+     *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
+     * @param eventListener
+     * @param trim
+     *            The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant, because
+     *            there are often table contents with spaces that can not be converted into custom types. For example:
+     *            '1234 ' contain a space cannot be converted to int.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
+     */
+    @Deprecated
+    public ExcelReader(InputStream in, Object customContent, AnalysisEventListener eventListener, boolean trim) {
+        this(in, null, customContent, eventListener, trim);
     }
 
     /**
@@ -107,48 +118,30 @@ public class ExcelReader {
      *            The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant, because
      *            there are often table contents with spaces that can not be converted into custom types. For example:
      *            '1234 ' contain a space cannot be converted to int.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
     @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
         AnalysisEventListener eventListener, boolean trim) {
-        this(in, excelTypeEnum, customContent, eventListener, null, trim);
-    }
-
-    /**
-     * Create new reader
-     *
-     * @param in
-     * @param customContent
-     *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
-     * @param eventListener
-     * @param trim
-     *            The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant, because
-     *            there are often table contents with spaces that can not be converted into custom types. For example:
-     *            '1234 ' contain a space cannot be converted to int.
-     */
-    public ExcelReader(InputStream in, Object customContent, AnalysisEventListener eventListener,
-        List<Converter> converters, boolean trim) {
-        this(in, ExcelTypeEnum.valueOf(in), customContent, eventListener, converters, trim);
-    }
-
-    public ExcelReader(InputStream in, Object excelTypeEnum, AnalysisEventListener<Object> eventListener,
-        boolean trim) {
-        this(in, ExcelTypeEnum.valueOf(in), null, eventListener, null, trim);
-    }
-
-    public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
-        AnalysisEventListener eventListener, List<Converter> converters, boolean trim) {
-        validateParam(in, eventListener);
-        analyser = new ExcelAnalyserImpl(in, excelTypeEnum, customContent, eventListener, trim);
-        initConverters(analyser, converters);
-    }
-
-    private void initConverters(ExcelAnalyser analyser, List<Converter> converters) {
-        if (converters != null && converters.size() > 0) {
-            for (Converter c : converters) {
-                analyser.getAnalysisContext().getConverterRegistryCenter().register(c);
-            }
+        ReadWorkbook readWorkbook = new ReadWorkbook();
+        readWorkbook.setInputStream(in);
+        readWorkbook.setExcelType(excelTypeEnum);
+        readWorkbook.setCustomObject(customContent);
+        if (eventListener != null) {
+            List<ReadListener> customReadListenerList = new ArrayList<ReadListener>();
+            customReadListenerList.add(eventListener);
+            readWorkbook.setCustomReadListenerList(customReadListenerList);
         }
+        readWorkbook.setAutoTrim(trim);
+        readWorkbook.setAutoCloseStream(Boolean.FALSE);
+        readWorkbook.setMandatoryUseInputStream(Boolean.TRUE);
+        readWorkbook.setReadCache(new MapCache());
+        readWorkbook.setConvertAllFiled(Boolean.FALSE);
+        excelAnalyser = new ExcelAnalyserImpl(readWorkbook);
+    }
+
+    public ExcelReader(ReadWorkbook readWorkbook) {
+        excelAnalyser = new ExcelAnalyserImpl(readWorkbook);
     }
 
     /**
@@ -160,9 +153,21 @@ public class ExcelReader {
             LOGGER.warn("Excel doesn't have any sheets.");
             return;
         }
-        for (Sheet sheet : excelExecutor.sheetList()) {
-            read(sheet);
+        for (ReadSheet readSheet : excelExecutor.sheetList()) {
+            read(readSheet);
         }
+    }
+
+    /**
+     * Parse the specified sheet，SheetNo start from 1
+     *
+     * @param readSheet
+     *            Read sheet
+     */
+    public ExcelReader read(ReadSheet readSheet) {
+        checkFinished();
+        excelAnalyser.analysis(readSheet);
+        return this;
     }
 
     /**
@@ -170,10 +175,20 @@ public class ExcelReader {
      *
      * @param sheet
      *            Read sheet
+     * @deprecated please us {@link #read(ReadSheet)}
      */
+    @Deprecated
     public void read(Sheet sheet) {
-        checkFinished();
-        excelAnalyser.analysis(sheet);
+        ReadSheet readSheet = null;
+        if (sheet != null) {
+            readSheet = new ReadSheet();
+            readSheet.setSheetNo(sheet.getSheetNo() - 1);
+            readSheet.setSheetName(sheet.getSheetName());
+            readSheet.setClazz(sheet.getClazz());
+            readSheet.setHead(sheet.getHead());
+            readSheet.setHeadRowNumber(sheet.getHeadLineMun());
+        }
+        read(readSheet);
     }
 
     /**
@@ -223,7 +238,17 @@ public class ExcelReader {
      */
     @Deprecated
     public List<Sheet> getSheets() {
-        return excelExecutor().sheetList();
+        List<ReadSheet> sheetList = excelExecutor().sheetList();
+        List<Sheet> sheets = new ArrayList<Sheet>();
+        if (sheetList == null || sheetList.isEmpty()) {
+            return sheets;
+        }
+        for (ReadSheet readSheet : sheetList) {
+            Sheet sheet = new Sheet(readSheet.getSheetNo() + 1);
+            sheet.setSheetName(readSheet.getSheetName());
+            sheets.add(sheet);
+        }
+        return sheets;
     }
 
     /**

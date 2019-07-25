@@ -14,7 +14,7 @@ import com.alibaba.excel.write.handler.WriteHandler;
  **/
 public class WriteWorkbook extends WriteBasicParameter {
     /**
-     * Excel type
+     * Excel type.The default is xlsx
      */
     private ExcelTypeEnum excelType;
     /**

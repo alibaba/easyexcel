@@ -1,7 +1,7 @@
 package com.alibaba.excel.analysis;
 
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.read.metadata.ReadSheet;
 
 /**
  * Excel file analyser
@@ -12,9 +12,9 @@ public interface ExcelAnalyser {
     /**
      * parse one sheet
      *
-     * @param sheetParam
+     * @param readSheet
      */
-    void analysis(Sheet sheetParam);
+    void analysis(ReadSheet readSheet);
 
     /**
      * Complete the entire read file.Release the cache and close stream

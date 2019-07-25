@@ -5,8 +5,8 @@ import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.write.metadata.Sheet;
-import com.alibaba.excel.write.metadata.Workbook;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -18,14 +18,14 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
     private ExcelExecutor excelExecutor;
 
-    public ExcelAnalyserImpl(Workbook workbook) {
-        analysisContext = new AnalysisContextImpl(workbook);
+    public ExcelAnalyserImpl(ReadWorkbook readWorkbook) {
+        analysisContext = new AnalysisContextImpl(readWorkbook);
         choiceExcelExecutor();
     }
 
     private void choiceExcelExecutor() {
         try {
-            ExcelTypeEnum excelType = analysisContext.currentWorkbookHolder().getExcelType();
+            ExcelTypeEnum excelType = analysisContext.readWorkbookHolder().getExcelType();
             if (excelType == null) {
                 excelExecutor = new XlsxSaxAnalyser(analysisContext);
                 return;
@@ -46,11 +46,14 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     }
 
     @Override
-    public void analysis(Sheet sheet) {
-        analysisContext.currentSheet(sheet);
+    public void analysis(ReadSheet readSheet) {
+        analysisContext.currentSheet(excelExecutor, readSheet);
         excelExecutor.execute();
-        analysisContext.getEventListener().doAfterAllAnalysed(analysisContext);
+        analysisContext.readSheetHolder().notifyAfterAllAnalysed(analysisContext);
     }
+
+    @Override
+    public void finish() {}
 
     @Override
     public com.alibaba.excel.analysis.ExcelExecutor excelExecutor() {

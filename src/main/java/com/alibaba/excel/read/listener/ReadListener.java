@@ -11,7 +11,7 @@ import com.alibaba.excel.event.Listener;
 public interface ReadListener<T> extends Listener {
     /**
      * All listeners receive this method when any one Listener does an error report. If an exception is thrown here, the
-     * * entire read will terminate.
+     * entire read will terminate.
      * 
      * @param exception
      * @param context

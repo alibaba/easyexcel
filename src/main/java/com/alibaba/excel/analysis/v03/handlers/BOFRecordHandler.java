@@ -1,29 +1,33 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.write.metadata.Sheet;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import org.apache.poi.hssf.record.BOFRecord;
 import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.metadata.ReadSheet;
 
 public class BOFRecordHandler extends AbstractXlsRecordHandler {
     private List<BoundSheetRecord> boundSheetRecords = new ArrayList<BoundSheetRecord>();
     private BoundSheetRecord[] orderedBSRs;
     private int sheetIndex;
-    private List<Sheet> sheets;
+    private List<ReadSheet> sheets;
     private AnalysisContext context;
     private boolean analyAllSheet;
     private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
-    public BOFRecordHandler(EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener, AnalysisContext context, List<Sheet> sheets) {
+
+    public BOFRecordHandler(EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener,
+        AnalysisContext context, List<ReadSheet> sheets) {
         this.context = context;
         this.workbookBuildingListener = workbookBuildingListener;
         this.sheets = sheets;
     }
+
     @Override
     public boolean support(Record record) {
         return BoundSheetRecord.sid == record.getSid() || BOFRecord.sid == record.getSid();
@@ -40,12 +44,10 @@ public class BOFRecordHandler extends AbstractXlsRecordHandler {
                     orderedBSRs = BoundSheetRecord.orderByBofPosition(boundSheetRecords);
                 }
                 sheetIndex++;
-
-                Sheet sheet = new Sheet(sheetIndex, 0);
-                sheet.setSheetName(orderedBSRs[sheetIndex - 1].getSheetname());
-                sheets.add(sheet);
+                ReadSheet readSheet = new ReadSheet(sheetIndex, orderedBSRs[sheetIndex - 1].getSheetname());
+                sheets.add(readSheet);
                 if (this.analyAllSheet) {
-                    context.setCurrentSheet(sheet);
+                    context.currentSheet(null, readSheet);
                 }
             }
         }
@@ -53,7 +55,7 @@ public class BOFRecordHandler extends AbstractXlsRecordHandler {
 
     @Override
     public void init() {
-        if (context.getCurrentSheet() == null) {
+        if (context.readSheetHolder() == null) {
             this.analyAllSheet = true;
         }
         sheetIndex = 0;

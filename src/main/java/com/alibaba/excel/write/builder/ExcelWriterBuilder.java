@@ -7,15 +7,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.write.metadata.Workbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.metadata.WriteWorkbook;
 
 /**
  * Build ExcelBuilder
@@ -26,35 +25,20 @@ public class ExcelWriterBuilder {
     /**
      * Workbook
      */
-    private Workbook workbook;
+    private WriteWorkbook writeWorkbook;
 
     public ExcelWriterBuilder() {
-        this.workbook = new Workbook();
-    }
-
-    /**
-     * Count the number of added heads when read sheet.
-     *
-     * <li>0 - This Sheet has no head ,since the first row are the data
-     * <li>1 - This Sheet has one row head , this is the default
-     * <li>2 - This Sheet has two row head ,since the third row is the data
-     *
-     * @param readHeadRowNumber
-     * @return
-     */
-    public ExcelWriterBuilder readHeadRowNumber(Integer readHeadRowNumber) {
-        workbook.setReadHeadRowNumber(readHeadRowNumber);
-        return this;
+        this.writeWorkbook = new WriteWorkbook();
     }
 
     /**
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
      *
-     * @param writeRelativeHeadRowIndex
+     * @param relativeHeadRowIndex
      * @return
      */
-    public ExcelWriterBuilder writeRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
-        workbook.setWriteRelativeHeadRowIndex(writeRelativeHeadRowIndex);
+    public ExcelWriterBuilder relativeHeadRowIndex(Integer relativeHeadRowIndex) {
+        writeWorkbook.setRelativeHeadRowIndex(relativeHeadRowIndex);
         return this;
     }
 
@@ -65,7 +49,7 @@ public class ExcelWriterBuilder {
      * @return
      */
     public ExcelWriterBuilder head(List<List<String>> head) {
-        workbook.setHead(head);
+        writeWorkbook.setHead(head);
         return this;
     }
 
@@ -76,7 +60,7 @@ public class ExcelWriterBuilder {
      * @return
      */
     public ExcelWriterBuilder head(Class clazz) {
-        workbook.setClazz(clazz);
+        writeWorkbook.setClazz(clazz);
         return this;
     }
 
@@ -84,7 +68,7 @@ public class ExcelWriterBuilder {
      * Need Head
      */
     public ExcelWriterBuilder needHead(Boolean needHead) {
-        workbook.setNeedHead(needHead);
+        writeWorkbook.setNeedHead(needHead);
         return this;
     }
 
@@ -95,7 +79,7 @@ public class ExcelWriterBuilder {
      * @return
      */
     public ExcelWriterBuilder autoCloseStream(Boolean autoCloseStream) {
-        workbook.setAutoCloseStream(autoCloseStream);
+        writeWorkbook.setAutoCloseStream(autoCloseStream);
         return this;
     }
 
@@ -111,7 +95,7 @@ public class ExcelWriterBuilder {
      */
     @Deprecated
     public ExcelWriterBuilder convertAllFiled(Boolean convertAllFiled) {
-        workbook.setConvertAllFiled(convertAllFiled);
+        writeWorkbook.setConvertAllFiled(convertAllFiled);
         return this;
     }
 
@@ -122,10 +106,10 @@ public class ExcelWriterBuilder {
      * @return
      */
     public ExcelWriterBuilder registerConverter(Converter converter) {
-        if (workbook.getCustomConverterMap() == null) {
-            workbook.setCustomConverterMap(new HashMap<Class, Converter>());
+        if (writeWorkbook.getCustomConverterList() == null) {
+            writeWorkbook.setCustomConverterList(new ArrayList<Converter>());
         }
-        workbook.getCustomConverterMap().put(converter.supportJavaTypeKey(), converter);
+        writeWorkbook.getCustomConverterList().add(converter);
         return this;
     }
 
@@ -136,46 +120,46 @@ public class ExcelWriterBuilder {
      * @return
      */
     public ExcelWriterBuilder registerWriteHandler(WriteHandler writeHandler) {
-        if (workbook.getCustomWriteHandlerList() == null) {
-            workbook.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
+        if (writeWorkbook.getCustomWriteHandlerList() == null) {
+            writeWorkbook.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
         }
-        workbook.getCustomWriteHandlerList().add(writeHandler);
+        writeWorkbook.getCustomWriteHandlerList().add(writeHandler);
         return this;
     }
 
     public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
-        workbook.setExcelType(excelType);
+        writeWorkbook.setExcelType(excelType);
         return this;
     }
 
-    public ExcelWriterBuilder outputFile(OutputStream outputStream) {
-        workbook.setOutputStream(outputStream);
+    public ExcelWriterBuilder file(OutputStream outputStream) {
+        writeWorkbook.setOutputStream(outputStream);
         return this;
     }
 
-    public ExcelWriterBuilder outputFile(File outputFile) {
+    public ExcelWriterBuilder file(File outputFile) {
         try {
-            return outputFile(new FileOutputStream(outputFile));
+            return file(new FileOutputStream(outputFile));
         } catch (FileNotFoundException e) {
             throw new ExcelGenerateException("Can not create file", e);
         }
     }
 
-    public ExcelWriterBuilder outputFile(String outputPathName) {
-        return outputFile(new File(outputPathName));
+    public ExcelWriterBuilder file(String outputPathName) {
+        return file(new File(outputPathName));
     }
 
     public ExcelWriterBuilder outputFile(URI outputUri) {
-        return outputFile(new File(outputUri));
+        return file(new File(outputUri));
     }
 
-    public ExcelWriterBuilder withTemplate(InputStream inputStream) {
-        workbook.setInputStream(inputStream);
+    public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {
+        writeWorkbook.setTemplateInputStream(templateInputStream);
         return this;
     }
 
-    public ExcelWriterBuilder withTemplate(File file) {
-        workbook.setFile(file);
+    public ExcelWriterBuilder withTemplate(File templateFile) {
+        writeWorkbook.setTemplateFile(templateFile);
         return this;
     }
 
@@ -194,11 +178,35 @@ public class ExcelWriterBuilder {
      */
     @Deprecated
     public ExcelWriterBuilder registerWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
-        workbook.setWriteHandler(writeHandler);
+        writeWorkbook.setWriteHandler(writeHandler);
         return this;
     }
 
     public ExcelWriter build() {
-        return new ExcelWriter(workbook);
+        return new ExcelWriter(writeWorkbook);
     }
+
+    public ExcelWriterSheetBuilder sheet() {
+        return sheet(null, null);
+    }
+
+    public ExcelWriterSheetBuilder sheet(Integer sheetNo) {
+        return sheet(sheetNo, null);
+    }
+
+    public ExcelWriterSheetBuilder sheet(String sheetName) {
+        return sheet(null, sheetName);
+    }
+
+    public ExcelWriterSheetBuilder sheet(Integer sheetNo, String sheetName) {
+        ExcelWriterSheetBuilder excelWriterSheetBuilder = new ExcelWriterSheetBuilder(build());
+        if (sheetNo != null) {
+            excelWriterSheetBuilder.sheetNo(sheetNo);
+        }
+        if (sheetName != null) {
+            excelWriterSheetBuilder.sheetName(sheetName);
+        }
+        return new ExcelWriterSheetBuilder(build());
+    }
+
 }

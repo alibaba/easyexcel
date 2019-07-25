@@ -6,9 +6,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.write.metadata.holder.SheetHolder;
-import com.alibaba.excel.write.metadata.holder.TableHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.sun.istack.internal.Nullable;
 
 /**
@@ -24,16 +24,18 @@ public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandl
     }
 
     @Override
-    public void beforeCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Row row, Head head,
-                                 int relativeRowIndex, boolean isHead) {}
+    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
+        Head head, int relativeRowIndex, boolean isHead) {
+
+    }
 
     @Override
-    public void afterCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Cell cell, Head head,
-                                int relativeRowIndex, boolean isHead) {
+    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
+        Head head, int relativeRowIndex, boolean isHead) {
         if (!isHead && relativeRowIndex != 0) {
             return;
         }
-        setColumnWidth(sheetHolder.getSheet(), cell, head);
+        setColumnWidth(writeSheetHolder.getSheet(), cell, head);
     }
 
     /**

@@ -13,8 +13,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 /**
  * 
@@ -22,28 +22,28 @@ import com.alibaba.excel.support.ExcelTypeEnum;
  */
 public class WorkBookUtil {
 
-    public static Workbook createWorkBook(WorkbookHolder workbookHolder)
+    public static Workbook createWorkBook(WriteWorkbookHolder writeWorkbookHolder)
         throws IOException, InvalidFormatException {
-        if (ExcelTypeEnum.XLSX.equals(workbookHolder.getExcelType())) {
-            if (workbookHolder.getFile() != null) {
-                return new SXSSFWorkbook(new XSSFWorkbook(workbookParam.getFile()));
+        if (ExcelTypeEnum.XLSX.equals(writeWorkbookHolder.getExcelType())) {
+            if (writeWorkbookHolder.getTemplateFile() != null) {
+                return new SXSSFWorkbook(new XSSFWorkbook(writeWorkbookHolder.getTemplateFile()));
             }
-            if (workbookParam.getInputStream() != null) {
-                return new SXSSFWorkbook(new XSSFWorkbook(workbookParam.getInputStream()));
+            if (writeWorkbookHolder.getTemplateInputStream() != null) {
+                return new SXSSFWorkbook(new XSSFWorkbook(writeWorkbookHolder.getTemplateInputStream()));
             }
             return new SXSSFWorkbook(500);
         }
-        if (workbookParam.getFile() != null) {
-            return new HSSFWorkbook(new POIFSFileSystem(workbookParam.getFile()));
+        if (writeWorkbookHolder.getTemplateFile() != null) {
+            return new HSSFWorkbook(new POIFSFileSystem(writeWorkbookHolder.getTemplateFile()));
         }
-        if (workbookParam.getInputStream() != null) {
-            return new HSSFWorkbook(new POIFSFileSystem(workbookParam.getInputStream()));
+        if (writeWorkbookHolder.getTemplateInputStream() != null) {
+            return new HSSFWorkbook(new POIFSFileSystem(writeWorkbookHolder.getTemplateInputStream()));
         }
         return new HSSFWorkbook();
     }
 
-    public static Sheet createSheet(Workbook workbook, com.alibaba.excel.write.metadata.Sheet sheet) {
-        return workbook.createSheet(sheet.getSheetName() != null ? sheet.getSheetName() : sheet.getSheetNo() + "");
+    public static Sheet createSheet(Workbook workbook, String sheetName) {
+        return workbook.createSheet(sheetName);
     }
 
     public static Row createRow(Sheet sheet, int rowNum) {

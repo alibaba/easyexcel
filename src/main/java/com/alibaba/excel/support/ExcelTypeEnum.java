@@ -1,16 +1,25 @@
 package com.alibaba.excel.support;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.poi.poifs.filesystem.FileMagic;
 
+import com.alibaba.excel.exception.ExcelCommonException;
+
 /**
  * @author jipengfei
  */
 public enum ExcelTypeEnum {
-
-    XLS(".xls"), XLSX(".xlsx");
+    /**
+     * xls
+     */
+    XLS(".xls"),
+    /**
+     * xlsx
+     */
+    XLSX(".xlsx");
 
     private String value;
 
@@ -18,22 +27,26 @@ public enum ExcelTypeEnum {
         this.setValue(value);
     }
 
-    public static ExcelTypeEnum valueOf(InputStream inputStream) {
+    public static ExcelTypeEnum valueOf(File file, InputStream inputStream) {
         try {
-            if (!inputStream.markSupported()) {
-                return null;
+            FileMagic fileMagic = null;
+            if (file != null) {
+                fileMagic = FileMagic.valueOf(file);
+            } else {
+                fileMagic = FileMagic.valueOf(inputStream);
             }
-            FileMagic fileMagic = FileMagic.valueOf(inputStream);
             if (FileMagic.OLE2.equals(fileMagic)) {
                 return XLS;
             }
             if (FileMagic.OOXML.equals(fileMagic)) {
                 return XLSX;
             }
-            return null;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ExcelCommonException(
+                "Convert excel format exception.You can try specifying the 'excelType' yourself", e);
         }
+        throw new ExcelCommonException(
+            "Convert excel format exception.You can try specifying the 'excelType' yourself");
     }
 
     public String getValue() {

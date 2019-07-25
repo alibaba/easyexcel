@@ -15,6 +15,17 @@ public class ReadSheet extends ReadBasicParameter {
      */
     private String sheetName;
 
+    public ReadSheet() {}
+
+    public ReadSheet(Integer sheetNo) {
+        this.sheetNo = sheetNo;
+    }
+
+    public ReadSheet(Integer sheetNo, String sheetName) {
+        this.sheetNo = sheetNo;
+        this.sheetName = sheetName;
+    }
+
     public Integer getSheetNo() {
         return sheetNo;
     }

@@ -27,9 +27,10 @@ import com.alibaba.excel.analysis.v03.handlers.NumberRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.RKRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.SSTRecordHandler;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.util.CollectionUtils;
 
 /**
@@ -59,26 +60,25 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private FormatTrackingHSSFListener formatListener;
     private List<String> records;
     private boolean notAllEmpty = false;
-    private List<Sheet> sheets = new ArrayList<Sheet>();
+    private List<ReadSheet> sheets = new ArrayList<ReadSheet>();
     private HSSFWorkbook stubWorkbook;
     private List<XlsRecordHandler> recordHandlers = new ArrayList<XlsRecordHandler>();
+    private AnalysisContext analysisContext;
 
     public XlsSaxAnalyser(AnalysisContext context) throws IOException {
         this.analysisContext = context;
         this.records = new ArrayList<String>();
-        context.setCurrentRowNum(0);
-        this.fs = new POIFSFileSystem(analysisContext.getInputStream());
-
+        ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
+        if (readWorkbookHolder.getFile() != null) {
+            this.fs = new POIFSFileSystem(readWorkbookHolder.getFile());
+        } else {
+            this.fs = new POIFSFileSystem(readWorkbookHolder.getInputStream());
+        }
     }
 
     @Override
-    public List<Sheet> getSheets() {
+    public List<ReadSheet> sheetList() {
         return sheets;
-    }
-
-    @Override
-    public List<Sheet> sheetList() {
-        return null;
     }
 
     @Override
@@ -112,10 +112,11 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         lastColumnNumber = 0;
         records = new ArrayList<String>();
         notAllEmpty = false;
-        sheets = new ArrayList<Sheet>();
+        sheets = new ArrayList<ReadSheet>();
         buildXlsRecordHandlers();
     }
 
+    @Override
     public void processRecord(Record record) {
         int thisRow = -1;
         int thisColumn = -1;
@@ -129,10 +130,9 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
                 break;
             }
         }
-
         // If we got something to print out, do so
         if (thisStr != null) {
-            if (analysisContext.trim()) {
+            if (analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
                 thisStr = thisStr.trim();
             }
             if (!"".equals(thisStr)) {
@@ -165,9 +165,9 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
             if (lastColumnNumber == -1) {
                 lastColumnNumber = 0;
             }
-            analysisContext.setCurrentRowNum(row);
             if (notAllEmpty) {
-                notify(new EachRowAnalysisFinishEvent(new ArrayList<String>(records)));
+                analysisContext.readSheetHolder()
+                    .notifyEndOneRow(new EachRowAnalysisFinishEvent(new ArrayList<String>(records)), analysisContext);
             }
             records.clear();
             lastColumnNumber = -1;

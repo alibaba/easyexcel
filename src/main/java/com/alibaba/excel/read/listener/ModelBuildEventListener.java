@@ -10,13 +10,13 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
-import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.event.AbstractIgnoreExceptionReadListener;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.read.metadata.read.ReadConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.metadata.property.ExcelHeadProperty;
+import com.alibaba.excel.read.metadata.holder.ReadHolder;
+import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -25,40 +25,38 @@ import net.sf.cglib.beans.BeanMap;
  * 
  * @author jipengfei
  */
-public class ModelBuildEventListener extends AnalysisEventListener<List<CellData>> {
-    @Override
-    public void onException(Exception exception, AnalysisContext context) throws Exception {}
+public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener<List<CellData>> {
 
     @Override
     public void invoke(List<CellData> data, AnalysisContext context) {
-        ReadConfiguration readConfiguration = context.currentConfiguration();
-        if (HeadKindEnum.CLASS.equals(context.currentSheetHolder().getExcelHeadProperty().getHeadKind())) {
-            context.setCurrentRowAnalysisResult(buildUserModel(data, readConfiguration));
+        ReadHolder currentReadHolder = context.currentReadHolder();
+        if (HeadKindEnum.CLASS.equals(currentReadHolder.excelReadHeadProperty().getHeadKind())) {
+            context.readRowHolder().setCurrentRowAnalysisResult(buildUserModel(data, currentReadHolder));
             return;
         }
-        context.setCurrentRowAnalysisResult(buildStringList(data, readConfiguration));
+        context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(data, currentReadHolder));
     }
 
-    private Object buildStringList(List<CellData> data, ReadConfiguration readConfiguration) {
+    private Object buildStringList(List<CellData> data, ReadHolder currentReadHolder) {
         List<String> list = new ArrayList<String>();
         for (CellData cellData : data) {
-            list.add((String)convertValue(cellData, String.class, null, readConfiguration.readConverterMap()));
+            list.add((String)convertValue(cellData, String.class, null, currentReadHolder.converterMap()));
         }
         return list;
     }
 
-    private Object buildUserModel(List<CellData> data, ReadConfiguration readConfiguration) {
-        ExcelHeadProperty excelHeadProperty = readConfiguration.excelHeadProperty();
+    private Object buildUserModel(List<CellData> data, ReadHolder currentReadHolder) {
+        ExcelReadHeadProperty excelReadHeadProperty = currentReadHolder.excelReadHeadProperty();
         Object resultModel;
         try {
-            resultModel = excelHeadProperty.getHeadClazz().newInstance();
+            resultModel = excelReadHeadProperty.getHeadClazz().newInstance();
         } catch (Exception e) {
-            throw new ExcelDataConvertException("Can not instance class: " + excelHeadProperty.getHeadClazz().getName(),
-                e);
+            throw new ExcelDataConvertException(
+                "Can not instance class: " + excelReadHeadProperty.getHeadClazz().getName(), e);
         }
         Map<String, Object> map = new HashMap<String, Object>();
-        Map<Integer, Head> headMap = excelHeadProperty.getHeadMap();
-        Map<Integer, ExcelContentProperty> contentPropertyMap = excelHeadProperty.getContentPropertyMap();
+        Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();
+        Map<Integer, ExcelContentProperty> contentPropertyMap = excelReadHeadProperty.getContentPropertyMap();
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Integer index = entry.getKey();
             if (index >= data.size()) {
@@ -70,7 +68,7 @@ public class ModelBuildEventListener extends AnalysisEventListener<List<CellData
             }
             ExcelContentProperty excelContentProperty = contentPropertyMap.get(index);
             Object value = convertValue(cellData, excelContentProperty.getField().getClass(), excelContentProperty,
-                readConfiguration.readConverterMap());
+                currentReadHolder.converterMap());
             if (value != null) {
                 map.put(excelContentProperty.getField().getName(), value);
             }

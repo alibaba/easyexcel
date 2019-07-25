@@ -8,7 +8,9 @@ import java.util.List;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.event.WriteHandler;
-import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.read.builder.ExcelReaderBuilder;
+import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
@@ -29,7 +31,9 @@ public class EasyExcelFactory {
      * @param sheet
      *            read sheet.
      * @return analysis result.
+     * @deprecated  please use 'EasyExcelFactory.read().file(in).sheet(sheetNo).doReadSync();'
      */
+    @Deprecated
     public static List<Object> read(InputStream in, Sheet sheet) {
         final List<Object> rows = new ArrayList<Object>();
         new ExcelReader(in, null, new AnalysisEventListener<Object>() {
@@ -53,7 +57,9 @@ public class EasyExcelFactory {
      *            read sheet.
      * @param listener
      *            Callback method after each row is parsed.
+     * @deprecated please use 'EasyExcelFactory.read().registerReadListener(listener).file(in).sheet(sheetNo).doRead().finish();'
      */
+    @Deprecated
     public static void readBySax(InputStream in, Sheet sheet, AnalysisEventListener listener) {
         new ExcelReader(in, null, listener).read(sheet);
     }
@@ -66,7 +72,9 @@ public class EasyExcelFactory {
      * @param listener
      *            Callback method after each row is parsed.
      * @return ExcelReader.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
+    @Deprecated
     public static ExcelReader getReader(InputStream in, AnalysisEventListener listener) {
         return new ExcelReader(in, null, listener);
     }
@@ -77,12 +85,11 @@ public class EasyExcelFactory {
      * @param outputStream
      *            the java OutputStream you wish to write the value to.
      * @return new ExcelWriter.
-     * @deprecated please use {@link EasyExcelFactory#writerBuilder()}
+     * @deprecated please use {@link EasyExcelFactory#write()}
      */
     @Deprecated
     public static ExcelWriter getWriter(OutputStream outputStream) {
-        return writerBuilder().outputFile(outputStream).autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE)
-            .build();
+        return write().file(outputStream).autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE).build();
     }
 
     /**
@@ -95,12 +102,12 @@ public class EasyExcelFactory {
      * @param needHead
      *            Do you need to write the header to the file?
      * @return new ExcelWriter
-     * @deprecated please use {@link EasyExcelFactory#writerBuilder()}
+     * @deprecated please use {@link EasyExcelFactory#write()}
      */
     @Deprecated
     public static ExcelWriter getWriter(OutputStream outputStream, ExcelTypeEnum typeEnum, boolean needHead) {
-        return writerBuilder().outputFile(outputStream).excelType(typeEnum).needHead(needHead)
-            .autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE).build();
+        return write().file(outputStream).excelType(typeEnum).needHead(needHead).autoCloseStream(Boolean.FALSE)
+            .convertAllFiled(Boolean.FALSE).build();
     }
 
     /**
@@ -114,12 +121,12 @@ public class EasyExcelFactory {
      * @param typeEnum
      *            03 or 07
      * @return new ExcelWriter
-     * @deprecated please use {@link EasyExcelFactory#writerBuilder()}
+     * @deprecated please use {@link EasyExcelFactory#write()}
      */
     @Deprecated
     public static ExcelWriter getWriterWithTemp(InputStream temp, OutputStream outputStream, ExcelTypeEnum typeEnum,
         boolean needHead) {
-        return writerBuilder().withTemplate(temp).outputFile(outputStream).excelType(typeEnum).needHead(needHead)
+        return write().withTemplate(temp).file(outputStream).excelType(typeEnum).needHead(needHead)
             .autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE).build();
     }
 
@@ -137,24 +144,32 @@ public class EasyExcelFactory {
      * @param handler
      *            User-defined callback
      * @return new ExcelWriter
-     * @deprecated please use {@link EasyExcelFactory#writerBuilder()}
+     * @deprecated please use {@link EasyExcelFactory#write()}
      */
     @Deprecated
     public static ExcelWriter getWriterWithTempAndHandler(InputStream temp, OutputStream outputStream,
         ExcelTypeEnum typeEnum, boolean needHead, WriteHandler handler) {
-        return writerBuilder().withTemplate(temp).outputFile(outputStream).excelType(typeEnum).needHead(needHead)
+        return write().withTemplate(temp).file(outputStream).excelType(typeEnum).needHead(needHead)
             .registerWriteHandler(handler).autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE).build();
     }
 
-    public static ExcelWriterBuilder writerBuilder() {
+    public static ExcelWriterBuilder write() {
         return new ExcelWriterBuilder();
     }
 
-    public static ExcelWriterSheetBuilder writerSheetBuilder() {
+    public static ExcelWriterSheetBuilder writerSheet() {
         return new ExcelWriterSheetBuilder();
     }
 
-    public static ExcelWriterTableBuilder writerTableBuilder() {
+    public static ExcelWriterTableBuilder writerTable() {
         return new ExcelWriterTableBuilder();
+    }
+
+    public static ExcelReaderBuilder read() {
+        return new ExcelReaderBuilder();
+    }
+
+    public static ExcelReaderSheetBuilder readSheet() {
+        return new ExcelReaderSheetBuilder();
     }
 }

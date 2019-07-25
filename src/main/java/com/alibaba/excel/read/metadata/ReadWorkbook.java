@@ -3,6 +3,9 @@ package com.alibaba.excel.read.metadata;
 import java.io.File;
 import java.io.InputStream;
 
+import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -28,13 +31,24 @@ public class ReadWorkbook extends ReadBasicParameter {
      */
     private File file;
     /**
+     * Mandatory use 'inputStream' .Default is false.
+     * <li>if false,Will transfer 'inputStream' to temporary files to improve efficiency
+     */
+    private Boolean mandatoryUseInputStream;
+    /**
      * Default true
      */
     private Boolean autoCloseStream;
     /**
-     * Mandatory use 'inputStream' .Default is false
+     * This object can be read in the Listener {@link AnalysisEventListener#invoke(Object, AnalysisContext)}
+     * {@link AnalysisContext#getCustom()}
+     *
      */
-    private Boolean mandatoryUseInputStream;
+    private Object customObject;
+    /**
+     * A cache that stores temp data to save memory.Default use {@link com.alibaba.excel.cache.Ehcache}
+     */
+    private ReadCache readCache;
     /**
      * The default is all excel objects.Default is true.
      * <li>if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
@@ -77,12 +91,28 @@ public class ReadWorkbook extends ReadBasicParameter {
         this.autoCloseStream = autoCloseStream;
     }
 
+    public Object getCustomObject() {
+        return customObject;
+    }
+
+    public void setCustomObject(Object customObject) {
+        this.customObject = customObject;
+    }
+
     public Boolean getMandatoryUseInputStream() {
         return mandatoryUseInputStream;
     }
 
     public void setMandatoryUseInputStream(Boolean mandatoryUseInputStream) {
         this.mandatoryUseInputStream = mandatoryUseInputStream;
+    }
+
+    public ReadCache getReadCache() {
+        return readCache;
+    }
+
+    public void setReadCache(ReadCache readCache) {
+        this.readCache = readCache;
     }
 
     public Boolean getConvertAllFiled() {

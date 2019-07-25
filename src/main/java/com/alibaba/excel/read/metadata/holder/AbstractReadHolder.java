@@ -9,6 +9,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKey;
 import com.alibaba.excel.enums.HeadKindEnum;
+import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelDataConvertException;
@@ -16,6 +17,7 @@ import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.listener.ReadListenerRegistryCenter;
 import com.alibaba.excel.read.listener.event.AnalysisFinishEvent;
@@ -77,6 +79,10 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         } else {
             this.readListenerList = new ArrayList<ReadListener>(parentAbstractReadHolder.getReadListenerList());
         }
+        if (HolderEnum.WORKBOOK.equals(holderType())
+            && HeadKindEnum.CLASS.equals(excelReadHeadProperty.getHeadKind())) {
+            readListenerList.add(new ModelBuildEventListener());
+        }
         if (readBasicParameter.getCustomReadListenerList() != null
             && !readBasicParameter.getCustomReadListenerList().isEmpty()) {
             this.readListenerList.addAll(readBasicParameter.getCustomReadListenerList());
@@ -103,11 +109,12 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     @Override
     public void notifyEndOneRow(AnalysisFinishEvent event, AnalysisContext analysisContext) {
         List<CellData> cellDataList = (List<CellData>)event.getAnalysisResult();
-        if (analysisContext.currentRowHolder().getRow().getRowNum() > analysisContext.currentSheetHolder()
-            .getReadHeadRowNumber()) {
+        ReadRowHolder readRowHolder = analysisContext.readRowHolder();
+
+        if (readRowHolder.getRowIndex() >= analysisContext.readSheetHolder().getHeadRowNumber()) {
             for (ReadListener readListener : readListenerList) {
                 try {
-                    readListener.invoke(analysisContext.currentRowAnalysisResult(), analysisContext);
+                    readListener.invoke(readRowHolder.getCurrentRowAnalysisResult(), analysisContext);
                 } catch (Exception e) {
                     for (ReadListener readListenerException : readListenerList) {
                         try {
@@ -118,9 +125,10 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                     }
                 }
             }
+            return;
         }
         // Now is header
-        if (analysisContext.currentRowNum().equals(analysisContext.currentSheetHolder().getReadHeadRowNumber())) {
+        if (analysisContext.readSheetHolder().getHeadRowNumber().equals(readRowHolder.getRowIndex() + 1)) {
             buildHead(analysisContext, cellDataList);
         }
     }
@@ -133,11 +141,11 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     }
 
     private void buildHead(AnalysisContext analysisContext, List<CellData> cellDataList) {
-        if (!HeadKindEnum.CLASS.equals(analysisContext.currentConfiguration().excelReadHeadProperty().getHeadKind())) {
+        if (!HeadKindEnum.CLASS.equals(analysisContext.currentReadHolder().excelReadHeadProperty().getHeadKind())) {
             return;
         }
-        List<String> dataList = (List<String>)buildStringList(cellDataList, analysisContext.currentConfiguration());
-        ExcelReadHeadProperty excelHeadPropertyData = analysisContext.currentConfiguration().excelReadHeadProperty();
+        List<String> dataList = (List<String>)buildStringList(cellDataList, analysisContext.currentReadHolder());
+        ExcelReadHeadProperty excelHeadPropertyData = analysisContext.readSheetHolder().excelReadHeadProperty();
         Map<Integer, Head> headMapData = excelHeadPropertyData.getHeadMap();
         Map<Integer, ExcelContentProperty> contentPropertyMapData = excelHeadPropertyData.getContentPropertyMap();
         Map<Integer, Head> tmpHeadMap = new HashMap<Integer, Head>(headMapData.size() * 4 / 3 + 1);
@@ -156,7 +164,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                 if (StringUtils.isEmpty(headString)) {
                     continue;
                 }
-                if (analysisContext.currentSheetHolder().getAutoTrim()) {
+                if (analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
                     headString = headString.trim();
                 }
                 if (headName.equals(headString)) {
@@ -171,12 +179,11 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         excelHeadPropertyData.setContentPropertyMap(tmpContentPropertyMap);
     }
 
-    private Object buildStringList(List<CellData> data,
-        com.alibaba.excel.read.metadata.read.ReadConfiguration readConfiguration) {
+    private Object buildStringList(List<CellData> data, ReadHolder readHolder) {
         List<String> list = new ArrayList<String>();
         for (CellData cellData : data) {
-            Converter converter = readConfiguration.readConverterMap()
-                .get(ConverterKey.buildConverterKey(String.class, cellData.getType()));
+            Converter converter =
+                readHolder.converterMap().get(ConverterKey.buildConverterKey(String.class, cellData.getType()));
             if (converter == null) {
                 throw new ExcelDataConvertException(
                     "Converter not found, convert " + cellData.getType() + " to String");

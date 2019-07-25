@@ -21,15 +21,8 @@ public class CellData {
      * {@link CellDataTypeEnum#BOOLEAN}
      */
     private Boolean booleanValue;
-
-    /**
-     * Support only when reading
-     */
-    private Boolean readIsFormula;
-    /**
-     * Support only when reading
-     */
-    private String readFormula;
+    private Boolean formula;
+    private String formulaValue;
 
     public CellData(String stringValue) {
         this(CellDataTypeEnum.STRING, stringValue);
@@ -44,7 +37,7 @@ public class CellData {
         }
         this.type = type;
         this.stringValue = stringValue;
-        this.readIsFormula = Boolean.FALSE;
+        this.formula = Boolean.FALSE;
     }
 
     public CellData(Double doubleValue) {
@@ -53,7 +46,7 @@ public class CellData {
         }
         this.type = CellDataTypeEnum.NUMBER;
         this.doubleValue = doubleValue;
-        this.readIsFormula = Boolean.FALSE;
+        this.formula = Boolean.FALSE;
     }
 
     public CellData(Boolean booleanValue) {
@@ -62,7 +55,7 @@ public class CellData {
         }
         this.type = CellDataTypeEnum.BOOLEAN;
         this.booleanValue = booleanValue;
-        this.readIsFormula = Boolean.FALSE;
+        this.formula = Boolean.FALSE;
     }
 
     public CellData(CellDataTypeEnum type) {
@@ -70,7 +63,7 @@ public class CellData {
             throw new IllegalArgumentException("Type can not be null");
         }
         this.type = type;
-        this.readIsFormula = Boolean.FALSE;
+        this.formula = Boolean.FALSE;
     }
 
     public CellDataTypeEnum getType() {
@@ -105,20 +98,20 @@ public class CellData {
         this.booleanValue = booleanValue;
     }
 
-    public Boolean getReadIsFormula() {
-        return readIsFormula;
+    public Boolean getFormula() {
+        return formula;
     }
 
-    public void setReadIsFormula(Boolean readIsFormula) {
-        this.readIsFormula = readIsFormula;
+    public void setFormula(Boolean formula) {
+        this.formula = formula;
     }
 
-    public String getReadFormula() {
-        return readFormula;
+    public String getFormulaValue() {
+        return formulaValue;
     }
 
-    public void setReadFormula(String readFormula) {
-        this.readFormula = readFormula;
+    public void setFormulaValue(String formulaValue) {
+        this.formulaValue = formulaValue;
     }
 
     @Override

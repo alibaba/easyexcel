@@ -1,11 +1,11 @@
 package com.alibaba.excel.context;
 
-import com.alibaba.excel.write.metadata.Table;
-import com.alibaba.excel.write.metadata.holder.WriteConfiguration;
-import com.alibaba.excel.write.metadata.holder.SheetHolder;
-import com.alibaba.excel.write.metadata.holder.TableHolder;
-import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
-import com.alibaba.excel.write.metadata.Sheet;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.WriteTable;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 /**
  * Write context
@@ -16,44 +16,44 @@ public interface WriteContext {
     /**
      * If the current sheet already exists, select it; if not, create it
      * 
-     * @param sheet
+     * @param writeSheet
      */
-    void currentSheet(Sheet sheet);
+    void currentSheet(WriteSheet writeSheet);
 
     /**
      * If the current table already exists, select it; if not, create it
      * 
-     * @param table
+     * @param writeTable
      */
-    void currentTable(Table table);
-
-    /**
-     * Configuration of currently operated cell
-     * 
-     * @return
-     */
-    WriteConfiguration currentConfiguration();
+    void currentTable(WriteTable writeTable);
 
     /**
      * All information about the workbook you are currently working on
      * 
      * @return
      */
-    WorkbookHolder currentWorkbookHolder();
+    WriteWorkbookHolder writeWorkbookHolder();
 
     /**
      * All information about the sheet you are currently working on
      * 
      * @return
      */
-    SheetHolder currentSheetHolder();
+    WriteSheetHolder writeSheetHolder();
 
     /**
      * All information about the table you are currently working on
      * 
      * @return
      */
-    TableHolder currentTableHolder();
+    WriteTableHolder writeTableHolder();
+
+    /**
+     * Configuration of currently operated cell. May be 'writeSheetHolder' or 'writeTableHolder' or 'writeWorkbookHolder'
+     *
+     * @return
+     */
+    WriteHolder currentWriteHolder();
 
     /**
      * close

@@ -1,7 +1,7 @@
 package com.alibaba.excel.write.handler;
 
-import com.alibaba.excel.write.metadata.holder.SheetHolder;
-import com.alibaba.excel.write.metadata.holder.WorkbookHolder;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 /**
  * intercepts handle sheet creation
@@ -13,16 +13,16 @@ public interface SheetWriteHandler extends WriteHandler {
     /**
      * called before create the sheet
      * 
-     * @param workbookHolder
-     * @param sheetHolder
+     * @param writeWorkbookHolder
+     * @param writeSheetHolder
      */
-    void beforeSheetCreate(WorkbookHolder workbookHolder, SheetHolder sheetHolder);
+    void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder);
 
     /**
      * called after the sheet is created
      * 
-     * @param workbookHolder
-     * @param sheetHolder
+     * @param writeWorkbookHolder
+     * @param writeSheetHolder
      */
-    void afterSheetCreate(WorkbookHolder workbookHolder, SheetHolder sheetHolder);
+    void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder);
 }

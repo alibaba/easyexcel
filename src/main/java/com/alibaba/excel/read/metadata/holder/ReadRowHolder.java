@@ -1,7 +1,5 @@
 package com.alibaba.excel.read.metadata.holder;
 
-import org.apache.poi.ss.usermodel.Row;
-
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.Holder;
@@ -12,11 +10,6 @@ import com.alibaba.excel.metadata.Holder;
  * @author zhuangjiaju
  */
 public class ReadRowHolder implements Holder {
-
-    /***
-     * poi row
-     */
-    private Row row;
     /**
      * Some global variables
      */
@@ -26,17 +19,9 @@ public class ReadRowHolder implements Holder {
      */
     private Object currentRowAnalysisResult;
     /**
-     * Data starting from the first row after the head is removed.Start form 1
+     * Returns row index of a row in the sheet that contains this cell.Start form 0.
      */
-    private int relativeRowIndex;
-
-    public Row getRow() {
-        return row;
-    }
-
-    public void setRow(Row row) {
-        this.row = row;
-    }
+    private int rowIndex;
 
     public GlobalConfiguration getGlobalConfiguration() {
         return globalConfiguration;
@@ -54,12 +39,12 @@ public class ReadRowHolder implements Holder {
         this.currentRowAnalysisResult = currentRowAnalysisResult;
     }
 
-    public int getRelativeRowIndex() {
-        return relativeRowIndex;
+    public int getRowIndex() {
+        return rowIndex;
     }
 
-    public void setRelativeRowIndex(int relativeRowIndex) {
-        this.relativeRowIndex = relativeRowIndex;
+    public void setRowIndex(int rowIndex) {
+        this.rowIndex = rowIndex;
     }
 
     @Override

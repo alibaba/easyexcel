@@ -1,12 +1,14 @@
 package com.alibaba.excel.write.builder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.write.metadata.Table;
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.WriteTable;
 
 /**
  * Build sheet
@@ -14,38 +16,32 @@ import com.alibaba.excel.write.handler.WriteHandler;
  * @author zhuangjiaju
  */
 public class ExcelWriterTableBuilder {
+
+    private ExcelWriter excelWriter;
+
+    private WriteSheet writeSheet;
     /**
      * table
      */
-    private Table table;
+    private WriteTable writeTable;
 
     public ExcelWriterTableBuilder() {
-        this.table = new Table();
+        this.writeTable = new WriteTable();
     }
 
-    /**
-     * Count the number of added heads when read sheet.
-     *
-     * <li>0 - This Sheet has no head ,since the first row are the data
-     * <li>1 - This Sheet has one row head , this is the default
-     * <li>2 - This Sheet has two row head ,since the third row is the data
-     *
-     * @param readHeadRowNumber
-     * @return
-     */
-    public ExcelWriterTableBuilder readHeadRowNumber(Integer readHeadRowNumber) {
-        table.setReadHeadRowNumber(readHeadRowNumber);
-        return this;
+    public ExcelWriterTableBuilder(ExcelWriter excelWriter, WriteSheet writeSheet) {
+        this.excelWriter = excelWriter;
+        this.writeSheet = writeSheet;
     }
 
     /**
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
      *
-     * @param writeRelativeHeadRowIndex
+     * @param relativeHeadRowIndex
      * @return
      */
-    public ExcelWriterTableBuilder writeRelativeHeadRowIndex(Integer writeRelativeHeadRowIndex) {
-        table.setWriteRelativeHeadRowIndex(writeRelativeHeadRowIndex);
+    public ExcelWriterTableBuilder relativeHeadRowIndex(Integer relativeHeadRowIndex) {
+        writeTable.setRelativeHeadRowIndex(relativeHeadRowIndex);
         return this;
     }
 
@@ -57,7 +53,7 @@ public class ExcelWriterTableBuilder {
      * @return
      */
     public ExcelWriterTableBuilder head(List<List<String>> head) {
-        table.setHead(head);
+        writeTable.setHead(head);
         return this;
     }
 
@@ -69,7 +65,7 @@ public class ExcelWriterTableBuilder {
      * @return
      */
     public ExcelWriterTableBuilder head(Class clazz) {
-        table.setClazz(clazz);
+        writeTable.setClazz(clazz);
         return this;
     }
 
@@ -77,7 +73,7 @@ public class ExcelWriterTableBuilder {
      * Need Head
      */
     public ExcelWriterTableBuilder needHead(Boolean needHead) {
-        table.setNeedHead(needHead);
+        writeTable.setNeedHead(needHead);
         return this;
     }
 
@@ -88,10 +84,10 @@ public class ExcelWriterTableBuilder {
      * @return
      */
     public ExcelWriterTableBuilder registerConverter(Converter converter) {
-        if (table.getCustomConverterMap() == null) {
-            table.setCustomConverterMap(new HashMap<Class, Converter>());
+        if (writeTable.getCustomConverterList() == null) {
+            writeTable.setCustomConverterList(new ArrayList<Converter>());
         }
-        table.getCustomConverterMap().put(converter.supportJavaTypeKey(), converter);
+        writeTable.getCustomConverterList().add(converter);
         return this;
     }
 
@@ -102,10 +98,10 @@ public class ExcelWriterTableBuilder {
      * @return
      */
     public ExcelWriterTableBuilder registerWriteHandler(WriteHandler writeHandler) {
-        if (table.getCustomWriteHandlerList() == null) {
-            table.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
+        if (writeTable.getCustomWriteHandlerList() == null) {
+            writeTable.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
         }
-        table.getCustomWriteHandlerList().add(writeHandler);
+        writeTable.getCustomWriteHandlerList().add(writeHandler);
         return this;
     }
 
@@ -116,12 +112,20 @@ public class ExcelWriterTableBuilder {
      * @return
      */
     public ExcelWriterTableBuilder tableNo(Integer tableNo) {
-        table.setTableNo(tableNo);
+        writeTable.setTableNo(tableNo);
         return this;
     }
 
-    public Table build() {
-        return table;
+    public WriteTable build() {
+        return writeTable;
+    }
+
+    public ExcelWriterTableBuilder doWrite(List data) {
+        if (excelWriter == null) {
+            throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet().table()' to call this method");
+        }
+        excelWriter.write(data, writeSheet, build());
+        return new ExcelWriterTableBuilder(excelWriter, writeSheet);
     }
 
 }

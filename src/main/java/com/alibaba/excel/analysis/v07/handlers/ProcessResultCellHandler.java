@@ -28,7 +28,7 @@ public class ProcessResultCellHandler implements XlsxCellHandler {
 
     @Override
     public void endHandle(String name) {
-        analysisContext.currentSheetHolder().notifyEndOneRow(
+        analysisContext.readSheetHolder().notifyEndOneRow(
             new EachRowAnalysisFinishEvent(rowResultHandler.getCurRowContent(), rowResultHandler.getColumnSize()),
             analysisContext);
         rowResultHandler.clearResult();

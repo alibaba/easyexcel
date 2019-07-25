@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.enums.HolderEnum;
-import com.alibaba.excel.read.metadata.holder.TableHolder;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
 /**
@@ -34,11 +33,11 @@ public class WriteSheetHolder extends AbstractWriteHolder {
     /***
      * poi sheet
      */
-    private WriteWorkbookHolder parentWorkBook;
+    private WriteWorkbookHolder parentWriteWorkbookHolder;
     /***
      * has been initialized table
      */
-    private Map<Integer, TableHolder> hasBeenInitializedTable;
+    private Map<Integer, WriteTableHolder> hasBeenInitializedTable;
 
     public WriteSheetHolder(WriteSheet writeSheet, WriteWorkbookHolder writeWorkbookHolder) {
         super(writeSheet, writeWorkbookHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
@@ -49,8 +48,8 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         } else {
             this.sheetName = writeSheet.getSheetName();
         }
-        this.parentWorkBook = writeWorkbookHolder;
-        this.hasBeenInitializedTable = new HashMap<Integer, TableHolder>();
+        this.parentWriteWorkbookHolder = writeWorkbookHolder;
+        this.hasBeenInitializedTable = new HashMap<Integer, WriteTableHolder>();
     }
 
     public WriteSheet getWriteSheet() {
@@ -85,20 +84,19 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         this.sheetName = sheetName;
     }
 
-    public WriteWorkbookHolder getParentWorkBook() {
-        return parentWorkBook;
+    public WriteWorkbookHolder getParentWriteWorkbookHolder() {
+        return parentWriteWorkbookHolder;
     }
 
-    public void setParentWorkBook(WriteWorkbookHolder parentWorkBook) {
-        this.parentWorkBook = parentWorkBook;
+    public void setParentWriteWorkbookHolder(WriteWorkbookHolder parentWriteWorkbookHolder) {
+        this.parentWriteWorkbookHolder = parentWriteWorkbookHolder;
     }
 
-    public Map<Integer, TableHolder> getHasBeenInitializedTable() {
+    public Map<Integer, WriteTableHolder> getHasBeenInitializedTable() {
         return hasBeenInitializedTable;
     }
 
-    public void setHasBeenInitializedTable(
-        Map<Integer, TableHolder> hasBeenInitializedTable) {
+    public void setHasBeenInitializedTable(Map<Integer, WriteTableHolder> hasBeenInitializedTable) {
         this.hasBeenInitializedTable = hasBeenInitializedTable;
     }
 

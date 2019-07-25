@@ -2,9 +2,9 @@ package com.alibaba.excel.write;
 
 import java.util.List;
 
-import com.alibaba.excel.write.metadata.Sheet;
-import com.alibaba.excel.write.metadata.Table;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.WriteTable;
 
 /**
  * @author jipengfei
@@ -16,24 +16,24 @@ public interface ExcelBuilder {
      *
      * @param data
      *            java basic type or java model extend BaseModel
-     * @param sheetParam
+     * @param writeSheet
      *            Write the sheet
-     * @deprecated please use{@link ExcelBuilder#addContent(List, Sheet, Table)}
+     * @deprecated please use{@link ExcelBuilder#addContent(List, WriteSheet, WriteTable)}
      */
     @Deprecated
-    void addContent(List data, Sheet sheetParam);
+    void addContent(List data, WriteSheet writeSheet);
 
     /**
      * WorkBook increase value
      *
      * @param data
      *            java basic type or java model extend BaseModel
-     * @param sheetParam
+     * @param writeSheet
      *            Write the sheet
-     * @param table
+     * @param writeTable
      *            Write the table
      */
-    void addContent(List data, Sheet sheetParam, Table table);
+    void addContent(List data, WriteSheet writeSheet, WriteTable writeTable);
 
     /**
      * Creates new cell range. Indexes are zero-based.

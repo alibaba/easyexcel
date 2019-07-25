@@ -4,8 +4,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.write.metadata.holder.SheetHolder;
-import com.alibaba.excel.write.metadata.holder.TableHolder;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.sun.istack.internal.Nullable;
 
 /**
@@ -18,26 +18,26 @@ public interface CellWriteHandler extends WriteHandler {
     /**
      * called before create the cell
      * 
-     * @param sheetHolder
-     * @param tableHolder
+     * @param writeSheetHolder
+     * @param writeTableHolder
      * @param row
      * @param head
      * @param relativeRowIndex
      * @param isHead
      */
-    void beforeCellCreate(SheetHolder sheetHolder, @Nullable TableHolder tableHolder, Row row, Head head,
-                          int relativeRowIndex, boolean isHead);
+    void beforeCellCreate(WriteSheetHolder writeSheetHolder, @Nullable WriteTableHolder writeTableHolder, Row row,
+        Head head, int relativeRowIndex, boolean isHead);
 
     /**
      * called after the cell is created
      * 
-     * @param sheetHolder
-     * @param tableHolder
+     * @param writeSheetHolder
+     * @param writeTableHolder
      * @param cell
      * @param head
      * @param relativeRowIndex
      * @param isHead
      */
-    void afterCellCreate(SheetHolder sheetHolder, @Nullable TableHolder tableHolder, Cell cell, Head head,
-                         int relativeRowIndex, boolean isHead);
+    void afterCellCreate(WriteSheetHolder writeSheetHolder, @Nullable WriteTableHolder writeTableHolder, Cell cell,
+        Head head, int relativeRowIndex, boolean isHead);
 }
