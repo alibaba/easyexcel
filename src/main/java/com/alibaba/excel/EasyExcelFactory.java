@@ -1,7 +1,9 @@
 package com.alibaba.excel;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
+import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
@@ -19,6 +22,20 @@ import com.alibaba.excel.write.builder.ExcelWriterTableBuilder;
 /**
  * Reader and writer factory class
  *
+ * <h1>Quick start</h1>
+ * <h2>Read</h2>
+ * <h3>Sample1</h3>
+ *
+ * <h3>Sample2</h3>
+ *
+ * <h2>Write</h2>
+ *
+ * <h3>Sample1</h3>
+ *
+ * <h3>Sample2</h3>
+ *
+ *
+ * 
  * @author jipengfei
  */
 public class EasyExcelFactory {
@@ -31,7 +48,7 @@ public class EasyExcelFactory {
      * @param sheet
      *            read sheet.
      * @return analysis result.
-     * @deprecated  please use 'EasyExcelFactory.read().file(in).sheet(sheetNo).doReadSync();'
+     * @deprecated please use 'EasyExcelFactory.read(in).sheet(sheetNo).doReadSync();'
      */
     @Deprecated
     public static List<Object> read(InputStream in, Sheet sheet) {
@@ -57,7 +74,7 @@ public class EasyExcelFactory {
      *            read sheet.
      * @param listener
      *            Callback method after each row is parsed.
-     * @deprecated please use 'EasyExcelFactory.read().registerReadListener(listener).file(in).sheet(sheetNo).doRead().finish();'
+     * @deprecated please use 'EasyExcelFactory.read(in,head,listener).sheet(sheetNo).doRead().finish();'
      */
     @Deprecated
     public static void readBySax(InputStream in, Sheet sheet, AnalysisEventListener listener) {
@@ -153,23 +170,406 @@ public class EasyExcelFactory {
             .registerWriteHandler(handler).autoCloseStream(Boolean.FALSE).convertAllFiled(Boolean.FALSE).build();
     }
 
+    /**
+     * Build excel the write
+     * 
+     * @return
+     */
     public static ExcelWriterBuilder write() {
         return new ExcelWriterBuilder();
     }
 
+    /**
+     * Build excel the write
+     * 
+     * @param file
+     * @return
+     */
+    public static ExcelWriterBuilder write(File file) {
+        return write(file, null);
+    }
+
+    /**
+     * Build excel the write
+     * 
+     * @param file
+     * @param head
+     * @return
+     */
+    public static ExcelWriterBuilder write(File file, Class head) {
+        ExcelWriterBuilder excelWriterBuilder = new ExcelWriterBuilder();
+        excelWriterBuilder.file(file);
+        if (head != null) {
+            excelWriterBuilder.head(head);
+        }
+        return excelWriterBuilder;
+    }
+
+    /**
+     * Build excel the write
+     * 
+     * @param pathName
+     * @return
+     */
+    public static ExcelWriterBuilder write(String pathName) {
+        return write(pathName, null);
+    }
+
+    /**
+     * Build excel the write
+     * 
+     * @param pathName
+     * @param head
+     * @return
+     */
+    public static ExcelWriterBuilder write(String pathName, Class head) {
+        ExcelWriterBuilder excelWriterBuilder = new ExcelWriterBuilder();
+        excelWriterBuilder.file(pathName);
+        if (head != null) {
+            excelWriterBuilder.head(head);
+        }
+        return excelWriterBuilder;
+    }
+
+    /**
+     * Build excel the write
+     * 
+     * @param outputStream
+     * @return
+     */
+    public static ExcelWriterBuilder write(OutputStream outputStream) {
+        return write(outputStream, null);
+    }
+
+    /**
+     * Build excel the write
+     * 
+     * @param outputStream
+     * @param head
+     * @return
+     */
+    public static ExcelWriterBuilder write(OutputStream outputStream, Class head) {
+        ExcelWriterBuilder excelWriterBuilder = new ExcelWriterBuilder();
+        excelWriterBuilder.file(outputStream);
+        if (head != null) {
+            excelWriterBuilder.head(head);
+        }
+        return excelWriterBuilder;
+    }
+
+    /**
+     * Build excel the write
+     * 
+     * @param uri
+     * @return
+     */
+    public static ExcelWriterBuilder write(URI uri) {
+        return write(uri, null);
+    }
+
+    /**
+     * Build excel the write
+     * 
+     * @param uri
+     * @param head
+     * @return
+     */
+    public static ExcelWriterBuilder write(URI uri, Class head) {
+        ExcelWriterBuilder excelWriterBuilder = new ExcelWriterBuilder();
+        excelWriterBuilder.file(uri);
+        if (head != null) {
+            excelWriterBuilder.head(head);
+        }
+        return excelWriterBuilder;
+    }
+
+    /**
+     * Build excel the 'writerSheet'
+     * 
+     * @return
+     */
     public static ExcelWriterSheetBuilder writerSheet() {
+        return writerSheet(null, null);
+    }
+
+    /**
+     * Build excel the 'writerSheet'
+     * 
+     * @param sheetNo
+     * @return
+     */
+    public static ExcelWriterSheetBuilder writerSheet(Integer sheetNo) {
+        return writerSheet(sheetNo, null);
+    }
+
+    /**
+     * Build excel the 'writerSheet'
+     * 
+     * @param sheetName
+     * @return
+     */
+    public static ExcelWriterSheetBuilder writerSheet(String sheetName) {
+        return writerSheet(null, sheetName);
+    }
+
+    /**
+     * Build excel the 'writerSheet'
+     * 
+     * @param sheetNo
+     * @param sheetName
+     * @return
+     */
+    public static ExcelWriterSheetBuilder writerSheet(Integer sheetNo, String sheetName) {
+        ExcelWriterSheetBuilder excelWriterSheetBuilder = new ExcelWriterSheetBuilder();
+        if (sheetNo != null) {
+            excelWriterSheetBuilder.sheetNo(sheetNo);
+        }
+        if (sheetName != null) {
+            excelWriterSheetBuilder.sheetName(sheetName);
+        }
         return new ExcelWriterSheetBuilder();
     }
 
+    /**
+     * Build excel the 'writerTable'
+     * 
+     * @return
+     */
     public static ExcelWriterTableBuilder writerTable() {
-        return new ExcelWriterTableBuilder();
+        return writerTable(null);
     }
 
+    /**
+     * Build excel the 'writerTable'
+     * 
+     * @param tableNo
+     * @return
+     */
+    public static ExcelWriterTableBuilder writerTable(Integer tableNo) {
+        ExcelWriterTableBuilder excelWriterTableBuilder = new ExcelWriterTableBuilder();
+        if (tableNo != null) {
+            excelWriterTableBuilder.tableNo(tableNo);
+        }
+        return excelWriterTableBuilder;
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @return
+     */
     public static ExcelReaderBuilder read() {
         return new ExcelReaderBuilder();
     }
 
+    /**
+     * Build excel the read
+     * 
+     * @param file
+     * @return
+     */
+    public static ExcelReaderBuilder read(File file) {
+        return read(file, null, null);
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param file
+     * @param readListener
+     * @return
+     */
+    public static ExcelReaderBuilder read(File file, ReadListener readListener) {
+        return read(file, null, readListener);
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param file
+     * @param head
+     * @param readListener
+     * @return
+     */
+    public static ExcelReaderBuilder read(File file, Class head, ReadListener readListener) {
+        ExcelReaderBuilder excelReaderBuilder = new ExcelReaderBuilder();
+        excelReaderBuilder.file(file);
+        if (head != null) {
+            excelReaderBuilder.head(head);
+        }
+        if (readListener != null) {
+            excelReaderBuilder.registerReadListener(readListener);
+        }
+        return excelReaderBuilder;
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param pathName
+     * @return
+     */
+    public static ExcelReaderBuilder read(String pathName) {
+        return read(pathName, null, null);
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param pathName
+     * @param readListener
+     * @return
+     */
+    public static ExcelReaderBuilder read(String pathName, ReadListener readListener) {
+        return read(pathName, null, readListener);
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param pathName
+     * @param head
+     * @param readListener
+     * @return
+     */
+    public static ExcelReaderBuilder read(String pathName, Class head, ReadListener readListener) {
+        ExcelReaderBuilder excelReaderBuilder = new ExcelReaderBuilder();
+        excelReaderBuilder.file(pathName);
+        if (head != null) {
+            excelReaderBuilder.head(head);
+        }
+        if (readListener != null) {
+            excelReaderBuilder.registerReadListener(readListener);
+        }
+        return excelReaderBuilder;
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param inputStream
+     * @return
+     */
+    public static ExcelReaderBuilder read(InputStream inputStream) {
+        return read(inputStream, null, null);
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param inputStream
+     * @param readListener
+     * @return
+     */
+    public static ExcelReaderBuilder read(InputStream inputStream, ReadListener readListener) {
+        return read(inputStream, null, readListener);
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param inputStream
+     * @param head
+     * @param readListener
+     * @return
+     */
+    public static ExcelReaderBuilder read(InputStream inputStream, Class head, ReadListener readListener) {
+        ExcelReaderBuilder excelReaderBuilder = new ExcelReaderBuilder();
+        excelReaderBuilder.file(inputStream);
+        if (head != null) {
+            excelReaderBuilder.head(head);
+        }
+        if (readListener != null) {
+            excelReaderBuilder.registerReadListener(readListener);
+        }
+        return excelReaderBuilder;
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param uri
+     * @return
+     */
+    public static ExcelReaderBuilder read(URI uri) {
+        return read(uri, null, null);
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param uri
+     * @param readListener
+     * @return
+     */
+    public static ExcelReaderBuilder read(URI uri, ReadListener readListener) {
+        return read(uri, null, readListener);
+    }
+
+    /**
+     * Build excel the read
+     * 
+     * @param uri
+     * @param head
+     * @param readListener
+     * @return
+     */
+    public static ExcelReaderBuilder read(URI uri, Class head, ReadListener readListener) {
+        ExcelReaderBuilder excelReaderBuilder = new ExcelReaderBuilder();
+        excelReaderBuilder.file(uri);
+        if (head != null) {
+            excelReaderBuilder.head(head);
+        }
+        if (readListener != null) {
+            excelReaderBuilder.registerReadListener(readListener);
+        }
+        return excelReaderBuilder;
+    }
+
+    /**
+     * Build excel the 'readSheet'
+     * 
+     * @return
+     */
     public static ExcelReaderSheetBuilder readSheet() {
+        return readSheet(null, null);
+    }
+
+    /**
+     * Build excel the 'readSheet'
+     * 
+     * @param sheetNo
+     * @return
+     */
+    public static ExcelReaderSheetBuilder readSheet(Integer sheetNo) {
+        return readSheet(sheetNo, null);
+    }
+
+    /**
+     * Build excel the 'readSheet'
+     * 
+     * @param sheetName
+     * @return
+     */
+    public static ExcelReaderSheetBuilder readSheet(String sheetName) {
+        return readSheet(null, sheetName);
+    }
+
+    /**
+     * Build excel the 'readSheet'
+     * 
+     * @param sheetNo
+     * @param sheetName
+     * @return
+     */
+    public static ExcelReaderSheetBuilder readSheet(Integer sheetNo, String sheetName) {
+        ExcelReaderSheetBuilder excelReaderSheetBuilder = new ExcelReaderSheetBuilder();
+        if (sheetNo != null) {
+            excelReaderSheetBuilder.sheetNo(sheetNo);
+        }
+        if (sheetName != null) {
+            excelReaderSheetBuilder.sheetName(sheetName);
+        }
         return new ExcelReaderSheetBuilder();
     }
 }

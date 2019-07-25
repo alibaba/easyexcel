@@ -1,27 +1,31 @@
 package com.alibaba.excel.read.metadata.holder;
 
-import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.metadata.GlobalConfiguration;
-import com.alibaba.excel.metadata.Holder;
 
 /**
  * sheet holder
  *
  * @author zhuangjiaju
  */
-public class ReadRowHolder implements Holder {
+public class ReadRowHolder {
     /**
-     * Some global variables
+     * Returns row index of a row in the sheet that contains this cell.Start form 0.
      */
-    private GlobalConfiguration globalConfiguration;
+    private int rowIndex;
+
     /**
      * The result of the previous listener
      */
     private Object currentRowAnalysisResult;
     /**
-     * Returns row index of a row in the sheet that contains this cell.Start form 0.
+     * Some global variables
      */
-    private int rowIndex;
+    private GlobalConfiguration globalConfiguration;
+
+    public ReadRowHolder(int rowIndex, GlobalConfiguration globalConfiguration) {
+        this.rowIndex = rowIndex;
+        this.globalConfiguration = globalConfiguration;
+    }
 
     public GlobalConfiguration getGlobalConfiguration() {
         return globalConfiguration;
@@ -45,20 +49,5 @@ public class ReadRowHolder implements Holder {
 
     public void setRowIndex(int rowIndex) {
         this.rowIndex = rowIndex;
-    }
-
-    @Override
-    public HolderEnum holderType() {
-        return HolderEnum.ROW;
-    }
-
-    @Override
-    public boolean isNew() {
-        return true;
-    }
-
-    @Override
-    public GlobalConfiguration globalConfiguration() {
-        return getGlobalConfiguration();
     }
 }

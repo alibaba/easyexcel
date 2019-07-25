@@ -17,6 +17,7 @@ import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
@@ -55,7 +56,8 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             if (nextRow > curRow) {
                 curRow = nextRow;
             }
-            analysisContext.setCurrentRowNum(curRow);
+            analysisContext
+                .readRowHolder(new ReadRowHolder(curRow, analysisContext.readSheetHolder().getGlobalConfiguration()));
             curCol = PositionUtils.getCol(currentCellIndex);
 
             // t="s" ,it's means String
@@ -68,7 +70,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
         }
         // cell is formula
         if (CELL_FORMULA_TAG.equals(name)) {
-            currentCellData.setReadIsFormula(Boolean.TRUE);
+            currentCellData.setFormula(Boolean.TRUE);
         }
     }
 
@@ -78,7 +80,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             ensureSize();
             // Have to go "sharedStrings.xml" and get it
             if (currentCellData.getType() == CellDataTypeEnum.STRING) {
-                currentCellData.setStringValue(analysisContext.currentWorkbookHolder().getReadCache()
+                currentCellData.setStringValue(analysisContext.readWorkbookHolder().getReadCache()
                     .get(Integer.valueOf(currentCellData.getStringValue())));
             }
             curRowContent[curCol] = currentCellData;
@@ -108,7 +110,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             return;
         }
         if (CELL_FORMULA_TAG.equals(currentTag)) {
-            currentCellData.setReadFormula(currentCellValue);
+            currentCellData.setFormulaValue(currentCellValue);
             return;
         }
         CellDataTypeEnum oldType = currentCellData.getType();

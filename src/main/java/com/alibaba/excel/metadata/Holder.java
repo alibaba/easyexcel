@@ -1,5 +1,8 @@
 package com.alibaba.excel.metadata;
 
+import java.util.Map;
+
+import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.HolderEnum;
 
 /**
@@ -31,4 +34,11 @@ public interface Holder {
      * @return
      */
     GlobalConfiguration globalConfiguration();
+
+    /**
+     * What converter does the currently operated cell need to execute
+     *
+     * @return
+     */
+    Map<String, Converter> converterMap();
 }

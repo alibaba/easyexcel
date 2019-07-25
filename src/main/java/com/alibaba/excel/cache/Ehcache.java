@@ -31,8 +31,8 @@ public class Ehcache implements ReadCache {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Ehcache.class);
 
-    private static final int BATCH_COUNT = 500;
-    private static final int CHECK_INTERVAL = 1000;
+    private static final int BATCH_COUNT = 1000;
+    private static final int CHECK_INTERVAL = 500;
     private static final int MAX_CACHE_ACTIVATE = 10;
 
     private static final String CACHE = "cache";
@@ -43,6 +43,12 @@ public class Ehcache implements ReadCache {
     private static final String ESCAPED_KEY_VALUE_SEPARATOR = "&kv;";
     private static final String ESCAPED_SPECIAL_SEPARATOR = "&s;";
 
+    private static final int DEBUG_WRITE_SIZE = 100 * 10000;
+    private static final int DEBUG_CACHE_MISS_SIZE = 1000;
+
+    /**
+     * Key index
+     */
     private int index = 0;
     private StringBuilder data = new StringBuilder();
     private CacheManager cacheManager;
@@ -76,10 +82,10 @@ public class Ehcache implements ReadCache {
 
     @Override
     public void init(AnalysisContext analysisContext) {
-        File readTempFile = analysisContext.currentWorkbookHolder().getReadTempFile();
+        File readTempFile = analysisContext.readWorkbookHolder().getTempFile();
         if (readTempFile == null) {
             readTempFile = FileUtils.createCacheTmpFile();
-            analysisContext.currentWorkbookHolder().setReadTempFile(readTempFile);
+            analysisContext.readWorkbookHolder().setTempFile(readTempFile);
         }
         File cacheFile = new File(readTempFile.getPath(), UUID.randomUUID().toString());
         PersistentCacheManager persistentCacheManager =
@@ -99,6 +105,11 @@ public class Ehcache implements ReadCache {
             data = new StringBuilder();
         }
         index++;
+        if (LOGGER.isDebugEnabled()) {
+            if (index % DEBUG_WRITE_SIZE == 0) {
+                LOGGER.debug("Already put :{}", index);
+            }
+        }
     }
 
     private String escape(String str) {
@@ -130,9 +141,9 @@ public class Ehcache implements ReadCache {
         int route = key / BATCH_COUNT;
         if (cacheMap.containsKey(route)) {
             lastCheckIntervalUsedSet.add(route);
-            countList.add(route);
+            String value = cacheMap.get(route).get(key);
             checkClear();
-            return cacheMap.get(route).get(key);
+            return value;
         }
         Map<Integer, String> tempCacheMap = new HashMap<Integer, String>(BATCH_COUNT / 3 * 4 + 1);
         String batchData = cache.get(route);
@@ -141,13 +152,17 @@ public class Ehcache implements ReadCache {
             String[] keyValue = dataString.split(KEY_VALUE_SEPARATOR);
             tempCacheMap.put(Integer.valueOf(keyValue[0]), unescape(keyValue[1]));
         }
+        countList.add(route);
         cacheMap.put(route, tempCacheMap);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Cache misses count:{}", cacheMiss++);
+            if (cacheMiss++ % DEBUG_CACHE_MISS_SIZE == 0) {
+                LOGGER.debug("Cache misses count:{}", cacheMiss);
+            }
         }
         lastCheckIntervalUsedSet.add(route);
+        String value = tempCacheMap.get(key);
         checkClear();
-        return tempCacheMap.get(key);
+        return value;
     }
 
     private void checkClear() {
@@ -167,6 +182,9 @@ public class Ehcache implements ReadCache {
             }
             // Last 'CHECK_INTERVAL' not use
             iterator.remove();
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Cache remove because {} times unused.", CHECK_INTERVAL);
+            }
             Iterator<Integer> countIterator = countList.iterator();
             while (countIterator.hasNext()) {
                 Integer route = countIterator.next();

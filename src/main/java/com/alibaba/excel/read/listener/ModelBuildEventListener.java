@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.converters.ConverterKey;
+import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.event.AbstractIgnoreExceptionReadListener;
@@ -67,7 +67,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                 continue;
             }
             ExcelContentProperty excelContentProperty = contentPropertyMap.get(index);
-            Object value = convertValue(cellData, excelContentProperty.getField().getClass(), excelContentProperty,
+            Object value = convertValue(cellData, excelContentProperty.getField().getType(), excelContentProperty,
                 currentReadHolder.converterMap());
             if (value != null) {
                 map.put(excelContentProperty.getField().getName(), value);
@@ -78,8 +78,8 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
     }
 
     private Object convertValue(CellData cellData, Class clazz, ExcelContentProperty contentProperty,
-        Map<ConverterKey, Converter> readConverterMap) {
-        Converter converter = readConverterMap.get(ConverterKey.buildConverterKey(clazz, cellData.getType()));
+        Map<String, Converter> converterMap) {
+        Converter converter = converterMap.get(ConverterKeyBuild.buildKey(clazz, cellData.getType()));
         if (converter == null) {
             throw new ExcelDataConvertException(
                 "Converter not found, convert " + cellData.getType() + " to " + clazz.getName());

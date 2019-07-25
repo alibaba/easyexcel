@@ -1,16 +1,20 @@
 package com.alibaba.excel.context;
 
+import java.io.InputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.ExcelExecutor;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.StringUtils;
 
 /**
@@ -118,5 +122,45 @@ public class AnalysisContextImpl implements AnalysisContext {
     @Override
     public Object getCustom() {
         return readWorkbookHolder.getCustomObject();
+    }
+
+    @Override
+    public Sheet getCurrentSheet() {
+        Sheet sheet = new Sheet(readSheetHolder.getSheetNo() + 1);
+        sheet.setSheetName(readSheetHolder.getSheetName());
+        sheet.setHead(readSheetHolder.getHead());
+        sheet.setClazz(readSheetHolder.getClazz());
+        sheet.setHeadLineMun(readSheetHolder.getHeadRowNumber());
+        return sheet;
+    }
+
+    @Override
+    public ExcelTypeEnum getExcelType() {
+        return readWorkbookHolder.getExcelType();
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return readWorkbookHolder.getInputStream();
+    }
+
+    @Override
+    public Integer getCurrentRowNum() {
+        return readRowHolder.getRowIndex();
+    }
+
+    @Override
+    public Integer getTotalCount() {
+        return readSheetHolder.getTotal();
+    }
+
+    @Override
+    public Object getCurrentRowAnalysisResult() {
+        return readRowHolder.getCurrentRowAnalysisResult();
+    }
+
+    @Override
+    public void interrupt() {
+        throw new ExcelAnalysisException("interrupt error");
     }
 }

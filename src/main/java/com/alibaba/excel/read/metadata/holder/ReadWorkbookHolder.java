@@ -74,11 +74,11 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     public ReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook, null, readWorkbook.getConvertAllFiled());
         this.readWorkbook = readWorkbook;
+        this.inputStream = readWorkbook.getInputStream();
+        this.file = readWorkbook.getFile();
         if (file == null && inputStream == null) {
             throw new ExcelAnalysisException("File and inputStream must be a non-null.");
         }
-        this.inputStream = readWorkbook.getInputStream();
-        this.file = readWorkbook.getFile();
         if (readWorkbook.getMandatoryUseInputStream() == null) {
             this.mandatoryUseInputStream = Boolean.FALSE;
         } else {

@@ -112,12 +112,6 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         return sheetList;
     }
 
-    @Override
-    public void execute() {
-        parseXmlSource(sheetMap.get(analysisContext.readSheetHolder().getSheetNo()),
-            new XlsxRowHandler(analysisContext));
-    }
-
     private void parseXmlSource(InputStream inputStream, ContentHandler handler) {
         InputSource inputSource = new InputSource(inputStream);
         try {
@@ -141,6 +135,12 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
                 }
             }
         }
+    }
+
+    @Override
+    public void execute() {
+        parseXmlSource(sheetMap.get(analysisContext.readSheetHolder().getSheetNo()),
+            new XlsxRowHandler(analysisContext));
     }
 
 }

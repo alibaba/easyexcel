@@ -32,7 +32,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
     private Integer total;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
-        super(readSheet, null, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
+        super(readSheet, readWorkbookHolder, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
         this.readSheet = readSheet;
         this.parentReadWorkbookHolder = readWorkbookHolder;
         this.sheetNo = readSheet.getSheetNo();

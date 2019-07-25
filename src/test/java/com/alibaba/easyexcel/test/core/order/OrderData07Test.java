@@ -1,14 +1,9 @@
-package com.alibaba.easyexcel.test.wirte.order;
+package com.alibaba.easyexcel.test.core.order;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-
-import com.alibaba.easyexcel.test.util.FileUtil;
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.Sheet;
 
 /**
  * Order data test
@@ -19,11 +14,11 @@ public class OrderData07Test {
 
     @Test
     public void simple() {
-        ExcelWriter writer = EasyExcelFactory.writerBuilder().outputFile(FileUtil.createNewWriteFile("order07.xlsx"))
-            .head(OrderData.class).build();
-        Sheet sheet = EasyExcelFactory.writerSheetBuilder().sheetNo(0).sheetName("order").build();
-        writer.write(createData(10000 * 100), sheet);
-        writer.finish();
+        // ExcelWriter writer = EasyExcelFactory.writerBuilder().outputFile(TestFileUtil.createNewWriteFile("order07.xlsx"))
+        // .head(OrderData.class).build();
+        // Sheet sheet = EasyExcelFactory.writerSheetBuilder().sheetNo(0).sheetName("order").build();
+        // writer.write(createData(10000 * 100), sheet);
+        // writer.finish();
     }
 
     private List<OrderData> createData(int count) {

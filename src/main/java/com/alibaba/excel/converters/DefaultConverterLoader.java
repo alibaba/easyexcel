@@ -39,8 +39,8 @@ public class DefaultConverterLoader {
      *
      * @return
      */
-    public static Map<Class, Converter> loadDefaultWriteConverter() {
-        Map<Class, Converter> converterMap = new HashMap<Class, Converter>();
+    public static Map<String, Converter> loadDefaultWriteConverter() {
+        Map<String, Converter> converterMap = new HashMap<String, Converter>();
         putWriteConverter(converterMap, new BigDecimalNumberConverter());
         putWriteConverter(converterMap, new BooleanBooleanConverter());
         putWriteConverter(converterMap, new ByteNumberConverter());
@@ -54,8 +54,8 @@ public class DefaultConverterLoader {
         return converterMap;
     }
 
-    private static void putWriteConverter(Map<Class, Converter> converterMap, Converter converter) {
-        converterMap.put(converter.supportJavaTypeKey(), converter);
+    private static void putWriteConverter(Map<String, Converter> converterMap, Converter converter) {
+        converterMap.put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
     }
 
     /**
@@ -63,8 +63,8 @@ public class DefaultConverterLoader {
      *
      * @return
      */
-    public static Map<ConverterKey, Converter> loadDefaultReadConverter() {
-        Map<ConverterKey, Converter> converterMap = new HashMap<ConverterKey, Converter>();
+    public static Map<String, Converter> loadDefaultReadConverter() {
+        Map<String, Converter> converterMap = new HashMap<String, Converter>();
         putReadConverter(converterMap, new BigDecimalBooleanConverter());
         putReadConverter(converterMap, new BigDecimalNumberConverter());
         putReadConverter(converterMap, new BigDecimalStringConverter());
@@ -107,7 +107,8 @@ public class DefaultConverterLoader {
         return converterMap;
     }
 
-    private static void putReadConverter(Map<ConverterKey, Converter> converterMap, Converter converter) {
-        converterMap.put(ConverterKey.buildConverterKey(converter), converter);
+    private static void putReadConverter(Map<String, Converter> converterMap, Converter converter) {
+        converterMap.put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey(), converter.supportExcelTypeKey()),
+            converter);
     }
 }

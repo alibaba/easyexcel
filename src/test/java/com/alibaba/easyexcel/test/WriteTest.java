@@ -2,11 +2,11 @@ package com.alibaba.easyexcel.test;
 
 import com.alibaba.easyexcel.test.listen.AfterExcelWriteHandlerImpl;
 import com.alibaba.easyexcel.test.model.WriteModel;
-import com.alibaba.easyexcel.test.util.FileUtil;
+import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.Sheet;
-import com.alibaba.excel.write.metadata.Table;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import org.junit.Test;
 
@@ -64,7 +64,7 @@ public class WriteTest {
 
     @Test
     public void writeV2007WithTemplate() throws IOException {
-        InputStream inputStream = FileUtil.getResourcesFileInputStream("temp.xlsx");
+        InputStream inputStream = TestFileUtil.getResourcesFileInputStream("temp.xlsx");
         OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
         ExcelWriter writer = EasyExcelFactory.getWriterWithTemp(inputStream,out,ExcelTypeEnum.XLSX,true);
         //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
@@ -108,7 +108,7 @@ public class WriteTest {
 
     @Test
     public void writeV2007WithTemplateAndHandler() throws IOException {
-        InputStream inputStream = FileUtil.getResourcesFileInputStream("temp.xlsx");
+        InputStream inputStream = TestFileUtil.getResourcesFileInputStream("temp.xlsx");
         OutputStream out = new FileOutputStream("/Users/jipengfei/2007.xlsx");
         ExcelWriter writer = EasyExcelFactory.getWriterWithTempAndHandler(inputStream,out,ExcelTypeEnum.XLSX,true,
             new AfterExcelWriteHandlerImpl());

@@ -1,11 +1,16 @@
 package com.alibaba.excel.context;
 
+import java.io.InputStream;
+
 import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  *
@@ -61,4 +66,67 @@ public interface AnalysisContext {
      * Custom attribute
      */
     Object getCustom();
+
+    /**
+     * get current sheet
+     *
+     * @return current analysis sheet
+     * @deprecated please use {@link #readSheetHolder()}
+     */
+    @Deprecated
+    Sheet getCurrentSheet();
+
+    /**
+     *
+     * get excel type
+     * 
+     * @return excel type
+     * @deprecated please use {@link #readWorkbookHolder()}
+     */
+    @Deprecated
+    ExcelTypeEnum getExcelType();
+
+    /**
+     * get in io
+     * 
+     * @return file io
+     * @deprecated please use {@link #readWorkbookHolder()}
+     */
+    @Deprecated
+    InputStream getInputStream();
+
+    /**
+     * get current row
+     * 
+     * @return
+     * @deprecated please use {@link #readRowHolder()}
+     */
+    @Deprecated
+    Integer getCurrentRowNum();
+
+    /**
+     * get total row ,Data may be inaccurate
+     * 
+     * @return
+     * @deprecated please use {@link #readRowHolder()}
+     */
+    @Deprecated
+    Integer getTotalCount();
+
+    /**
+     * get current result
+     *
+     * @return get current result
+     * @deprecated please use {@link #readRowHolder()}
+     */
+    @Deprecated
+    Object getCurrentRowAnalysisResult();
+
+    /**
+     * Interrupt execution
+     * 
+     * @deprecated please use {@link AnalysisEventListener#hasNext(AnalysisContext)}
+     */
+    @Deprecated
+    void interrupt();
 }

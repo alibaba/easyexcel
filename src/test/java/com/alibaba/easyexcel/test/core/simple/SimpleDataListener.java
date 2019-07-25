@@ -1,8 +1,9 @@
-package com.alibaba.easyexcel.test.read.simple;
+package com.alibaba.easyexcel.test.core.simple;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,19 +14,18 @@ import com.alibaba.fastjson.JSON;
 /**
  * @author zhuangjiaju
  */
-public class SimpleDataListener extends AnalysisEventListener<Object> {
+public class SimpleDataListener extends AnalysisEventListener<SimpleData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleDataListener.class);
-
-    List<Object> list = new ArrayList<Object>();
+    List<SimpleData> list = new ArrayList<SimpleData>();
 
     @Override
-    public void invoke(Object object, AnalysisContext context) {
-        list.add(object);
-        LOGGER.info("data:{}", JSON.toJSONString(object));
+    public void invoke(SimpleData data, AnalysisContext context) {
+        list.add(data);
     }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        assert list.size() == 10;
+        Assert.assertEquals(list.size(), 10);
+        LOGGER.debug("First row:{}", JSON.toJSONString(list.get(0)));
     }
 }

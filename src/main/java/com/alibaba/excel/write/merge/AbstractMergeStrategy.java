@@ -5,9 +5,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.write.metadata.holder.SheetHolder;
-import com.alibaba.excel.write.metadata.holder.TableHolder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
 /**
  * Merge strategy
@@ -15,18 +15,19 @@ import com.alibaba.excel.write.handler.CellWriteHandler;
  * @author zhuangjiaju
  */
 public abstract class AbstractMergeStrategy implements CellWriteHandler {
+    @Override
+    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
+        Head head, int relativeRowIndex, boolean isHead) {
+
+    }
 
     @Override
-    public void beforeCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Row row, Head head,
-                                 int relativeRowIndex, boolean isHead) {}
-
-    @Override
-    public void afterCellCreate(SheetHolder sheetHolder, TableHolder tableHolder, Cell cell, Head head,
-                                int relativeRowIndex, boolean isHead) {
+    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
+        Head head, int relativeRowIndex, boolean isHead) {
         if (isHead) {
             return;
         }
-        merge(sheetHolder.getSheet(), cell, head, relativeRowIndex);
+        merge(writeSheetHolder.getSheet(), cell, head, relativeRowIndex);
     }
 
     /**

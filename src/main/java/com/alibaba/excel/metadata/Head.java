@@ -42,15 +42,17 @@ public class Head {
         this.fieldName = fieldName;
         headNameList = new ArrayList<String>();
         headNameList.add(headName);
+        this.forceIndex = Boolean.FALSE;
     }
 
-    public Head(Integer columnIndex, String fieldName, List<String> headNameList) {
+    public Head(Integer columnIndex, String fieldName, List<String> headNameList, Boolean forceIndex) {
         this.columnIndex = columnIndex;
         this.fieldName = fieldName;
         if (headNameList == null) {
             headNameList = new ArrayList<String>();
         }
         this.headNameList = headNameList;
+        this.forceIndex = forceIndex;
     }
 
     public Integer getColumnIndex() {

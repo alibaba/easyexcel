@@ -1,4 +1,4 @@
-package com.alibaba.easyexcel.test.wirte.order;
+package com.alibaba.easyexcel.test.core.order;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 

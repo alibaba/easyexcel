@@ -6,6 +6,7 @@ import java.util.List;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.event.SyncReadListener;
+import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -166,7 +167,7 @@ public class ExcelReaderSheetBuilder {
      */
     public void finish() {
         if (excelReader == null) {
-            throw new ExcelGenerateException("Must use 'EasyExcelFactory.read().sheet()' to call this method");
+            throw new ExcelAnalysisException("Must use 'EasyExcelFactory.read().sheet()' to call this method");
         }
         excelReader.finish();
     }
@@ -178,7 +179,7 @@ public class ExcelReaderSheetBuilder {
      */
     public List<Object> doReadSync() {
         if (excelReader == null) {
-            throw new ExcelGenerateException("Must use 'EasyExcelFactory.read().sheet()' to call this method");
+            throw new ExcelAnalysisException("Must use 'EasyExcelFactory.read().sheet()' to call this method");
         }
         SyncReadListener syncReadListener = new SyncReadListener();
         registerReadListener(syncReadListener);

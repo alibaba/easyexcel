@@ -57,7 +57,7 @@ public class ExcelHeadProperty {
         headRowNumber = 0;
         if (head != null && !head.isEmpty()) {
             for (int i = 0; i < head.size(); i++) {
-                headMap.put(i, new Head(i, null, head.get(i)));
+                headMap.put(i, new Head(i, null, head.get(i), Boolean.FALSE));
                 contentPropertyMap.put(i, null);
             }
             headKind = HeadKindEnum.STRING;
@@ -135,21 +135,21 @@ public class ExcelHeadProperty {
         int index = 0;
         for (Field field : defaultFieldList) {
             while (customFiledMap.containsKey(index)) {
-                initOneColumnProperty(index, customFiledMap.get(index));
+                initOneColumnProperty(index, customFiledMap.get(index), Boolean.TRUE);
                 customFiledMap.remove(index);
                 index++;
             }
-            initOneColumnProperty(index, field);
+            initOneColumnProperty(index, field, Boolean.FALSE);
             index++;
         }
         for (Map.Entry<Integer, Field> entry : customFiledMap.entrySet()) {
-            initOneColumnProperty(index, entry.getValue());
+            initOneColumnProperty(index, entry.getValue(), Boolean.FALSE);
             index++;
         }
         headKind = HeadKindEnum.CLASS;
     }
 
-    private void initOneColumnProperty(int index, Field field) {
+    private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         List<String> tmpHeadList = new ArrayList<String>();
         if (excelProperty != null) {
@@ -160,7 +160,7 @@ public class ExcelHeadProperty {
         if (tmpHeadList.isEmpty() || StringUtils.isEmpty(tmpHeadList.get(0))) {
             tmpHeadList.add(field.getName());
         }
-        Head head = new Head(index, field.getName(), tmpHeadList);
+        Head head = new Head(index, field.getName(), tmpHeadList, forceIndex);
         ExcelContentProperty excelContentProperty = new ExcelContentProperty();
         excelContentProperty.setHead(head);
         excelContentProperty.setField(field);

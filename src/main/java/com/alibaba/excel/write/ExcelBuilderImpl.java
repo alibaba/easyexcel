@@ -13,7 +13,9 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.exception.ExcelDataConvertException;
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
@@ -38,9 +40,17 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     private WriteContext context;
 
     public ExcelBuilderImpl(WriteWorkbook writeWorkbook) {
-        // Create temporary cache directory at initialization time to avoid POI concurrent write bugs
-        FileUtils.createPoiFilesDirectory();
-        context = new WriteContextImpl(writeWorkbook);
+        try {
+            // Create temporary cache directory at initialization time to avoid POI concurrent write bugs
+            FileUtils.createPoiFilesDirectory();
+            context = new WriteContextImpl(writeWorkbook);
+        } catch (RuntimeException e) {
+            finish();
+            throw e;
+        } catch (Throwable e) {
+            finish();
+            throw new ExcelGenerateException(e);
+        }
     }
 
     private void doAddContent(List data) {
@@ -65,9 +75,18 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     @Override
     public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable) {
-        context.currentSheet(writeSheet);
-        context.currentTable(writeTable);
-        doAddContent(data);
+        try {
+
+            context.currentSheet(writeSheet);
+            context.currentTable(writeTable);
+            doAddContent(data);
+        } catch (RuntimeException e) {
+            finish();
+            throw e;
+        } catch (Throwable e) {
+            finish();
+            throw new ExcelGenerateException(e);
+        }
     }
 
     @Override
@@ -235,7 +254,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (value == null) {
             return;
         }
-        Converter converter = currentWriteHolder.converterMap().get(clazz);
+        Converter converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
         if (converter == null) {
             throw new ExcelDataConvertException(
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");

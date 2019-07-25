@@ -7,7 +7,8 @@ import java.util.Map;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.converters.ConverterKey;
+import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -47,10 +48,6 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
      * Read listener
      */
     private List<ReadListener> readListenerList;
-    /**
-     * Converter for workbook
-     */
-    private Map<ConverterKey, Converter> converterMap;
 
     public AbstractReadHolder(ReadBasicParameter readBasicParameter, AbstractReadHolder parentAbstractReadHolder,
         Boolean convertAllFiled) {
@@ -89,14 +86,16 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         }
 
         if (parentAbstractReadHolder == null) {
-            this.converterMap = new HashMap<ConverterKey, Converter>();
+            setConverterMap(DefaultConverterLoader.loadDefaultReadConverter());
         } else {
-            this.converterMap = new HashMap<ConverterKey, Converter>(parentAbstractReadHolder.getConverterMap());
+            setConverterMap(new HashMap<String, Converter>(parentAbstractReadHolder.getConverterMap()));
         }
         if (readBasicParameter.getCustomConverterList() != null
             && !readBasicParameter.getCustomConverterList().isEmpty()) {
             for (Converter converter : readBasicParameter.getCustomConverterList()) {
-                converterMap.put(ConverterKey.buildConverterKey(converter), converter);
+                getConverterMap().put(
+                    ConverterKeyBuild.buildKey(converter.supportJavaTypeKey(), converter.supportExcelTypeKey()),
+                    converter);
             }
         }
     }
@@ -110,13 +109,14 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     public void notifyEndOneRow(AnalysisFinishEvent event, AnalysisContext analysisContext) {
         List<CellData> cellDataList = (List<CellData>)event.getAnalysisResult();
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
+        readRowHolder.setCurrentRowAnalysisResult(cellDataList);
 
         if (readRowHolder.getRowIndex() >= analysisContext.readSheetHolder().getHeadRowNumber()) {
-            for (ReadListener readListener : readListenerList) {
+            for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
                 try {
                     readListener.invoke(readRowHolder.getCurrentRowAnalysisResult(), analysisContext);
                 } catch (Exception e) {
-                    for (ReadListener readListenerException : readListenerList) {
+                    for (ReadListener readListenerException : analysisContext.currentReadHolder().readListenerList()) {
                         try {
                             readListenerException.onException(e, analysisContext);
                         } catch (Exception exception) {
@@ -183,7 +183,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         List<String> list = new ArrayList<String>();
         for (CellData cellData : data) {
             Converter converter =
-                readHolder.converterMap().get(ConverterKey.buildConverterKey(String.class, cellData.getType()));
+                readHolder.converterMap().get(ConverterKeyBuild.buildKey(String.class, cellData.getType()));
             if (converter == null) {
                 throw new ExcelDataConvertException(
                     "Converter not found, convert " + cellData.getType() + " to String");
@@ -205,14 +205,6 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         this.readListenerList = readListenerList;
     }
 
-    public Map<ConverterKey, Converter> getConverterMap() {
-        return converterMap;
-    }
-
-    public void setConverterMap(Map<ConverterKey, Converter> converterMap) {
-        this.converterMap = converterMap;
-    }
-
     public ExcelReadHeadProperty getExcelReadHeadProperty() {
         return excelReadHeadProperty;
     }
@@ -232,11 +224,6 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     @Override
     public List<ReadListener> readListenerList() {
         return getReadListenerList();
-    }
-
-    @Override
-    public Map<ConverterKey, Converter> converterMap() {
-        return getConverterMap();
     }
 
     @Override

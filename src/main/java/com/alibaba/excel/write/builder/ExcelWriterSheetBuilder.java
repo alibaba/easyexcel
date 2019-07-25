@@ -135,6 +135,13 @@ public class ExcelWriterSheetBuilder {
         return new ExcelWriterSheetBuilder(excelWriter);
     }
 
+    public void finish() {
+        if (excelWriter == null) {
+            throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
+        }
+        excelWriter.finish();
+    }
+
     public ExcelWriterTableBuilder table() {
         return table(null);
     }

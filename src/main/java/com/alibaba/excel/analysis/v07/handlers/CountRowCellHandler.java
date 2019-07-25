@@ -11,10 +11,11 @@ import com.alibaba.excel.context.AnalysisContext;
 public class CountRowCellHandler implements XlsxCellHandler {
 
     private final AnalysisContext analysisContext;
-    
+
     public CountRowCellHandler(AnalysisContext analysisContext) {
         this.analysisContext = analysisContext;
     }
+
     @Override
     public boolean support(String name) {
         return DIMENSION.equals(name);
@@ -25,12 +26,12 @@ public class CountRowCellHandler implements XlsxCellHandler {
         String d = attributes.getValue(DIMENSION_REF);
         String totalStr = d.substring(d.indexOf(":") + 1, d.length());
         String c = totalStr.toUpperCase().replaceAll("[A-Z]", "");
-        analysisContext.setTotalCount(Integer.parseInt(c));
+        analysisContext.readSheetHolder().setTotal(Integer.parseInt(c));
     }
 
     @Override
     public void endHandle(String name) {
-        
+
     }
 
 }

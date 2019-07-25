@@ -149,7 +149,7 @@ public class ExcelWriterBuilder {
         return file(new File(outputPathName));
     }
 
-    public ExcelWriterBuilder outputFile(URI outputUri) {
+    public ExcelWriterBuilder file(URI outputUri) {
         return file(new File(outputUri));
     }
 

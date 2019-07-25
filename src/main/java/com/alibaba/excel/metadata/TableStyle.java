@@ -2,6 +2,8 @@ package com.alibaba.excel.metadata;
 
 import org.apache.poi.ss.usermodel.IndexedColors;
 
+import com.alibaba.excel.write.style.RowCellStyleStrategy;
+
 /**
  * @author jipengfei
  * @deprecated please use {@link RowCellStyleStrategy}

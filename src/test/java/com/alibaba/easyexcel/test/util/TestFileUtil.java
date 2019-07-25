@@ -3,18 +3,14 @@ package com.alibaba.easyexcel.test.util;
 import java.io.File;
 import java.io.InputStream;
 
-public class FileUtil {
+public class TestFileUtil {
 
     public static InputStream getResourcesFileInputStream(String fileName) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream("" + fileName);
     }
 
-    public static InputStream readFile(String fileName) {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream("read/" + fileName);
-    }
-
     public static String getPath() {
-        return FileUtil.class.getResource("/").getPath();
+        return TestFileUtil.class.getResource("/").getPath();
     }
 
     public static File createNewFile(String pathName) {

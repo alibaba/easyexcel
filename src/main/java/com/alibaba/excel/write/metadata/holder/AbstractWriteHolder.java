@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.event.NotRepeatExecutor;
@@ -60,10 +61,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      * Write handler for workbook
      */
     private Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap;
-    /**
-     * Converter for workbook
-     */
-    private Map<Class, Converter> converterMap;
 
     public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder,
         Boolean convertAllFiled) {
@@ -122,14 +119,14 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
         // Set converterMap
         if (parentAbstractWriteHolder == null) {
-            this.converterMap = DefaultConverterLoader.loadDefaultWriteConverter();
+            setConverterMap(DefaultConverterLoader.loadDefaultWriteConverter());
         } else {
-            this.converterMap = new HashMap<Class, Converter>(parentAbstractWriteHolder.getConverterMap());
+            setConverterMap(new HashMap<String, Converter>(parentAbstractWriteHolder.getConverterMap()));
         }
         if (writeBasicParameter.getCustomConverterList() != null
             && !writeBasicParameter.getCustomConverterList().isEmpty()) {
             for (Converter converter : writeBasicParameter.getCustomConverterList()) {
-                converterMap.put(converter.getClass(), converter);
+                getConverterMap().put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
             }
         }
     }
@@ -368,14 +365,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         this.writeHandlerMap = writeHandlerMap;
     }
 
-    public Map<Class, Converter> getConverterMap() {
-        return converterMap;
-    }
-
-    public void setConverterMap(Map<Class, Converter> converterMap) {
-        this.converterMap = converterMap;
-    }
-
     public ExcelWriteHeadProperty getExcelWriteHeadProperty() {
         return excelWriteHeadProperty;
     }
@@ -400,11 +389,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     @Override
     public Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap() {
         return getWriteHandlerMap();
-    }
-
-    @Override
-    public Map<Class, Converter> converterMap() {
-        return getConverterMap();
     }
 
     @Override

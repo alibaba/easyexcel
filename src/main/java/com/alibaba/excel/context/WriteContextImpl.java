@@ -1,12 +1,14 @@
 package com.alibaba.excel.context;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -337,6 +339,9 @@ public class WriteContextImpl implements WriteContext {
 
     @Override
     public void finish() {
+        if (writeWorkbookHolder == null) {
+            return;
+        }
         try {
             writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
             writeWorkbookHolder.getWorkbook().close();
@@ -354,5 +359,25 @@ public class WriteContextImpl implements WriteContext {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Finished write.");
         }
+    }
+
+    @Override
+    public Sheet getCurrentSheet() {
+        return writeSheetHolder.getSheet();
+    }
+
+    @Override
+    public boolean needHead() {
+        return writeSheetHolder.needHead();
+    }
+
+    @Override
+    public OutputStream getOutputStream() {
+        return writeWorkbookHolder.getOutputStream();
+    }
+
+    @Override
+    public Workbook getWorkbook() {
+        return writeWorkbookHolder.getWorkbook();
     }
 }

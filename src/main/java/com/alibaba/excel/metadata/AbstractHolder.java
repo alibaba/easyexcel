@@ -1,6 +1,9 @@
 package com.alibaba.excel.metadata;
 
 import java.util.List;
+import java.util.Map;
+
+import com.alibaba.excel.converters.Converter;
 
 /**
  * Write/read holder
@@ -25,10 +28,24 @@ public abstract class AbstractHolder implements Holder {
      */
     private GlobalConfiguration globalConfiguration;
 
+    /**
+     * <li>Read key:
+     * <li>Write key:
+     */
+    private Map<String, Converter> converterMap;
+
     public AbstractHolder(BasicParameter basicParameter, AbstractHolder prentAbstractHolder) {
         this.newInitialization = Boolean.TRUE;
-        this.head = basicParameter.getHead();
-        this.clazz = basicParameter.getClazz();
+        if (basicParameter.getHead() == null && prentAbstractHolder != null) {
+            this.head = prentAbstractHolder.getHead();
+        } else {
+            this.head = basicParameter.getHead();
+        }
+        if (basicParameter.getClazz() == null && prentAbstractHolder != null) {
+            this.clazz = prentAbstractHolder.getClazz();
+        } else {
+            this.clazz = basicParameter.getClazz();
+        }
         this.globalConfiguration = new GlobalConfiguration();
         if (basicParameter.getAutoTrim() == null) {
             if (prentAbstractHolder == null) {
@@ -71,6 +88,19 @@ public abstract class AbstractHolder implements Holder {
 
     public void setGlobalConfiguration(GlobalConfiguration globalConfiguration) {
         this.globalConfiguration = globalConfiguration;
+    }
+
+    public Map<String, Converter> getConverterMap() {
+        return converterMap;
+    }
+
+    public void setConverterMap(Map<String, Converter> converterMap) {
+        this.converterMap = converterMap;
+    }
+
+    @Override
+    public Map<String, Converter> converterMap() {
+        return getConverterMap();
     }
 
     @Override

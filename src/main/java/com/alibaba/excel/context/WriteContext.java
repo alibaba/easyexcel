@@ -1,5 +1,10 @@
 package com.alibaba.excel.context;
 
+import java.io.OutputStream;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
@@ -49,7 +54,8 @@ public interface WriteContext {
     WriteTableHolder writeTableHolder();
 
     /**
-     * Configuration of currently operated cell. May be 'writeSheetHolder' or 'writeTableHolder' or 'writeWorkbookHolder'
+     * Configuration of currently operated cell. May be 'writeSheetHolder' or 'writeTableHolder' or
+     * 'writeWorkbookHolder'
      *
      * @return
      */
@@ -59,4 +65,37 @@ public interface WriteContext {
      * close
      */
     void finish();
+
+    /**
+     *
+     * @return
+     * @deprecated please us e{@link #writeSheetHolder()}
+     */
+    @Deprecated
+    Sheet getCurrentSheet();
+
+    /**
+     *
+     * @return
+     * @deprecated please us e{@link #writeSheetHolder()}
+     */
+    @Deprecated
+    boolean needHead();
+
+    /**
+     *
+     * @return
+     * @deprecated please us e{@link #writeWorkbookHolder()} ()}
+     */
+    @Deprecated
+    OutputStream getOutputStream();
+
+    /**
+     *
+     * @return
+     * @deprecated please us e{@link #writeWorkbookHolder()} ()}
+     */
+    @Deprecated
+    Workbook getWorkbook();
+
 }
