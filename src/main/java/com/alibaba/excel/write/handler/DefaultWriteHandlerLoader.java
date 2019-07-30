@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.IndexedColors;
 
-import com.alibaba.excel.metadata.CellStyle;
-import com.alibaba.excel.metadata.Font;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.RowCellStyleStrategy;
 
 /**
  * Load default handler
- * 
+ *
  * @author zhuangjiaju
  */
 public class DefaultWriteHandlerLoader {
@@ -23,14 +23,14 @@ public class DefaultWriteHandlerLoader {
      */
     public static List<WriteHandler> loadDefaultHandler() {
         List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
-        CellStyle headCellStyle = new CellStyle();
-        Font font = new Font();
-        headCellStyle.setFont(font);
-        font.setFontName("宋体");
-        font.setFontHeightInPoints((short)14);
-        font.setBold(true);
-        headCellStyle.setIndexedColors(IndexedColors.GREY_25_PERCENT);
-        handlerList.add(new RowCellStyleStrategy(headCellStyle, new ArrayList<CellStyle>()));
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+        headWriteCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        WriteFont headWriteFont = new WriteFont();
+        headWriteFont.setFontName("宋体");
+        headWriteFont.setFontHeightInPoints((short)14);
+        headWriteFont.setBold(true);
+        headWriteCellStyle.setWriteFont(headWriteFont);
+        handlerList.add(new RowCellStyleStrategy(headWriteCellStyle, new ArrayList<WriteCellStyle>()));
         return handlerList;
     }
 

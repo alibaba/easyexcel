@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.alibaba.excel.metadata.CellStyle;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 /**
  *
@@ -18,50 +19,50 @@ import com.alibaba.excel.util.StyleUtil;
  */
 public class RowCellStyleStrategy extends AbstractCellStyleStrategy {
 
+    private WriteCellStyle headWriteCellStyle;
+    private List<WriteCellStyle> contentWriteCellStyleList;
+
     private CellStyle headCellStyle;
     private List<CellStyle> contentCellStyleList;
 
-    private org.apache.poi.ss.usermodel.CellStyle poiHeadCellStyle;
-    private List<org.apache.poi.ss.usermodel.CellStyle> poiContentCellStyleList;
-
-    public RowCellStyleStrategy(CellStyle headCellStyle, List<CellStyle> contentCellStyleList) {
-        this.headCellStyle = headCellStyle;
-        this.contentCellStyleList = contentCellStyleList;
+    public RowCellStyleStrategy(WriteCellStyle headWriteCellStyle, List<WriteCellStyle> contentWriteCellStyleList) {
+        this.headWriteCellStyle = headWriteCellStyle;
+        this.contentWriteCellStyleList = contentWriteCellStyleList;
     }
 
-    public RowCellStyleStrategy(CellStyle headCellStyle, CellStyle contentCellStyle) {
-        this.headCellStyle = headCellStyle;
-        contentCellStyleList = new ArrayList<CellStyle>();
-        contentCellStyleList.add(contentCellStyle);
+    public RowCellStyleStrategy(WriteCellStyle headWriteCellStyle, WriteCellStyle contentWriteCellStyle) {
+        this.headWriteCellStyle = headWriteCellStyle;
+        contentWriteCellStyleList = new ArrayList<WriteCellStyle>();
+        contentWriteCellStyleList.add(contentWriteCellStyle);
     }
 
     @Override
     protected void initCellStyle(Workbook workbook) {
-        if (headCellStyle != null) {
-            poiHeadCellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle);
+        if (headWriteCellStyle != null) {
+            headCellStyle = StyleUtil.buildHeadCellStyle(workbook, headWriteCellStyle);
         }
-        if (contentCellStyleList != null && !contentCellStyleList.isEmpty()) {
-            poiContentCellStyleList = new ArrayList<org.apache.poi.ss.usermodel.CellStyle>();
-            for (CellStyle cellStyle : contentCellStyleList) {
-                poiContentCellStyleList.add(StyleUtil.buildContentCellStyle(workbook, cellStyle));
+        if (contentWriteCellStyleList != null && !contentWriteCellStyleList.isEmpty()) {
+            contentCellStyleList = new ArrayList<CellStyle>();
+            for (WriteCellStyle writeCellStyle : contentWriteCellStyleList) {
+                contentCellStyleList.add(StyleUtil.buildContentCellStyle(workbook, writeCellStyle));
             }
         }
     }
 
     @Override
     protected void setHeadCellStyle(Cell cell, Head head, int relativeRowIndex) {
-        if (poiHeadCellStyle == null) {
+        if (headCellStyle == null) {
             return;
         }
-        cell.setCellStyle(poiHeadCellStyle);
+        cell.setCellStyle(headCellStyle);
     }
 
     @Override
     protected void setContentCellStyle(Cell cell, Head head, int relativeRowIndex) {
-        if (poiContentCellStyleList == null || poiContentCellStyleList.isEmpty()) {
+        if (contentCellStyleList == null || contentCellStyleList.isEmpty()) {
             return;
         }
-        cell.setCellStyle(poiContentCellStyleList.get(relativeRowIndex % poiContentCellStyleList.size()));
+        cell.setCellStyle(contentCellStyleList.get(relativeRowIndex % contentCellStyleList.size()));
     }
 
 }

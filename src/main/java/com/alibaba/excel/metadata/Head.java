@@ -3,7 +3,6 @@ package com.alibaba.excel.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.excel.metadata.property.CellStyleProperty;
 import com.alibaba.excel.metadata.property.ColumnWidthProperty;
 
 /**
@@ -28,10 +27,6 @@ public class Head {
      * Whether index is specified
      */
     private Boolean forceIndex;
-    /**
-     * Cell style property
-     */
-    private CellStyleProperty cellStyleProperty;
     /**
      * column with
      */
@@ -77,14 +72,6 @@ public class Head {
 
     public void setHeadNameList(List<String> headNameList) {
         this.headNameList = headNameList;
-    }
-
-    public CellStyleProperty getCellStyleProperty() {
-        return cellStyleProperty;
-    }
-
-    public void setCellStyleProperty(CellStyleProperty cellStyleProperty) {
-        this.cellStyleProperty = cellStyleProperty;
     }
 
     public ColumnWidthProperty getColumnWidthProperty() {

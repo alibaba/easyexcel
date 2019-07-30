@@ -7,13 +7,10 @@ import java.util.Map;
 
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
-import com.alibaba.excel.annotation.write.style.ContentStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
-import com.alibaba.excel.annotation.write.style.HeadStyle;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.property.CellStyleProperty;
 import com.alibaba.excel.metadata.property.ColumnWidthProperty;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
@@ -38,29 +35,17 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
         this.contentRowHeightProperty =
             RowHeightProperty.build((ContentRowHeight)headClazz.getAnnotation(ContentRowHeight.class));
 
-        HeadStyle parentHeadStyle = (HeadStyle)headClazz.getAnnotation(HeadStyle.class);
-        ContentStyle parentContentStyle = (ContentStyle)headClazz.getAnnotation(ContentStyle.class);
         ColumnWidth parentColumnWidth = (ColumnWidth)headClazz.getAnnotation(ColumnWidth.class);
         for (Map.Entry<Integer, ExcelContentProperty> entry : getContentPropertyMap().entrySet()) {
             Integer index = entry.getKey();
             ExcelContentProperty excelContentPropertyData = entry.getValue();
             Field field = excelContentPropertyData.getField();
             Head headData = getHeadMap().get(index);
-            HeadStyle headStyle = field.getAnnotation(HeadStyle.class);
-            if (headStyle == null) {
-                headStyle = parentHeadStyle;
-            }
-            headData.setCellStyleProperty(CellStyleProperty.build(headStyle));
             ColumnWidth columnWidth = field.getAnnotation(ColumnWidth.class);
             if (columnWidth == null) {
                 columnWidth = parentColumnWidth;
             }
             headData.setColumnWidthProperty(ColumnWidthProperty.build(columnWidth));
-            ContentStyle contentStyle = field.getAnnotation(ContentStyle.class);
-            if (contentStyle == null) {
-                contentStyle = parentContentStyle;
-            }
-            excelContentPropertyData.setCellStyleProperty(CellStyleProperty.build(contentStyle));
         }
 
     }

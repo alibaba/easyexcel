@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.sun.istack.internal.Nullable;
 
 /**
@@ -38,11 +39,11 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
             }
             return;
         }
-        com.alibaba.excel.metadata.CellStyle headCellStyle = headCellStyle(head);
+        WriteCellStyle headCellStyle = headCellStyle(head);
         if (headCellStyle == null) {
             headCellStyleCache.put(columnIndex, null);
         } else {
-            CellStyle cellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle(head));
+            CellStyle cellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle);
             headCellStyleCache.put(columnIndex, cellStyle);
             cell.setCellStyle(cellStyle);
         }
@@ -58,11 +59,11 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
             }
             return;
         }
-        com.alibaba.excel.metadata.CellStyle contentCellStyle = contentCellStyle(head);
+        WriteCellStyle contentCellStyle = contentCellStyle(head);
         if (contentCellStyle == null) {
             contentCellStyleCache.put(columnIndex, null);
         } else {
-            CellStyle cellStyle = StyleUtil.buildContentCellStyle(workbook, contentCellStyle(head));
+            CellStyle cellStyle = StyleUtil.buildContentCellStyle(workbook, contentCellStyle);
             contentCellStyleCache.put(columnIndex, cellStyle);
             cell.setCellStyle(cellStyle);
         }
@@ -74,7 +75,7 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
      * @param head
      * @return
      */
-    protected abstract com.alibaba.excel.metadata.CellStyle headCellStyle(@Nullable Head head);
+    protected abstract WriteCellStyle headCellStyle(@Nullable Head head);
 
     /**
      * Returns the column width corresponding to each column head
@@ -82,6 +83,6 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
      * @param head
      * @return
      */
-    protected abstract com.alibaba.excel.metadata.CellStyle contentCellStyle(@Nullable Head head);
+    protected abstract WriteCellStyle contentCellStyle(@Nullable Head head);
 
 }

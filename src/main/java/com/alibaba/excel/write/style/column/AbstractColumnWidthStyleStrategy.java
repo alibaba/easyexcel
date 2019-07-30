@@ -13,7 +13,7 @@ import com.sun.istack.internal.Nullable;
 
 /**
  * Column width style strategy
- * 
+ *
  * @author zhuangjiaju
  */
 public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandler, NotRepeatExecutor {
@@ -40,7 +40,7 @@ public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandl
 
     /**
      * Sets the column width when head create
-     * 
+     *
      * @param sheet
      * @param cell
      * @param head

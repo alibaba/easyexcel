@@ -21,7 +21,6 @@ public class ExcelContentProperty {
      * Custom defined converters
      */
     private Converter converter;
-    private CellStyleProperty cellStyleProperty;
     private DateTimeFormatProperty dateTimeFormatProperty;
     private NumberFormatProperty numberFormatProperty;
 
@@ -39,14 +38,6 @@ public class ExcelContentProperty {
 
     public void setHead(Head head) {
         this.head = head;
-    }
-
-    public CellStyleProperty getCellStyleProperty() {
-        return cellStyleProperty;
-    }
-
-    public void setCellStyleProperty(CellStyleProperty cellStyleProperty) {
-        this.cellStyleProperty = cellStyleProperty;
     }
 
     public DateTimeFormatProperty getDateTimeFormatProperty() {
