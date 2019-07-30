@@ -2,6 +2,7 @@ package com.alibaba.excel.support;
 
 import org.apache.poi.poifs.filesystem.FileMagic;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,8 +29,9 @@ public enum ExcelTypeEnum {
 
     public static ExcelTypeEnum valueOf(InputStream inputStream){
         try {
-            if (!inputStream.markSupported()) {
-                return null;
+             if (!inputStream.markSupported()) {
+                // if markSupported is false,Then turn it into BufferedInputStream
+                inputStream = new BufferedInputStream(inputStream);
             }
             FileMagic fileMagic =  FileMagic.valueOf(inputStream);
             if(FileMagic.OLE2.equals(fileMagic)){
