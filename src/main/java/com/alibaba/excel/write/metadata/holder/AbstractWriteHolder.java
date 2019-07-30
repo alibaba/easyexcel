@@ -8,9 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
@@ -37,7 +35,6 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 import com.alibaba.excel.write.style.RowCellStyleStrategy;
-import com.alibaba.excel.write.style.column.AbstractColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
@@ -248,15 +245,16 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     }
 
     private void dealColumnWidth(List<WriteHandler> handlerList) {
-        WriteHandler columnWidthStyleStrategy = new AbstractColumnWidthStyleStrategy() {
+        WriteHandler columnWidthStyleStrategy = new AbstractHeadColumnWidthStyleStrategy() {
             @Override
-            protected void setColumnWidth(Sheet sheet, Cell cell, Head head) {
+            protected Integer columnWidth(Head head) {
                 if (head == null) {
-                    return;
+                    return null;
                 }
                 if (head.getColumnWidthProperty() != null) {
-                    sheet.setColumnWidth(head.getColumnIndex(), head.getColumnWidthProperty().getWidth());
+                    return head.getColumnWidthProperty().getWidth();
                 }
+                return null;
             }
         };
         handlerList.add(columnWidthStyleStrategy);
