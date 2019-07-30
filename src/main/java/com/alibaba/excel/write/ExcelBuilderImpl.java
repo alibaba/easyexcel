@@ -76,7 +76,6 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable) {
         try {
-
             context.currentSheet(writeSheet);
             context.currentTable(writeTable);
             doAddContent(data);
@@ -254,15 +253,21 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (value == null) {
             return;
         }
-        Converter converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
+        if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
+            value = ((String)value).trim();
+        }
+        Converter converter = excelContentProperty.getConverter();
+        if (converter == null) {
+            converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
+        }
         if (converter == null) {
             throw new ExcelDataConvertException(
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
         }
-
         CellData cellData;
         try {
-            cellData = converter.convertToExcelData(value, excelContentProperty);
+            cellData =
+                converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
         } catch (Exception e) {
             throw new ExcelDataConvertException("Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(),
                 e);

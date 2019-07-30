@@ -6,6 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.alibaba.excel.converters.AutoConverter;
+import com.alibaba.excel.converters.Converter;
+
 /**
  * @author jipengfei
  */
@@ -16,10 +19,10 @@ public @interface ExcelProperty {
 
     /**
      * The name of the sheet header.
-     * 
+     *
      * <li>write: It automatically merges when you have more than one head
      * <li>read: When you have multiple heads, take the first one
-     * 
+     *
      * @return
      */
     String[] value() default {""};
@@ -28,10 +31,17 @@ public @interface ExcelProperty {
      * Index of column
      *
      * Read or write it on the index of column,If it's equal to -1, it's sorted by Java class
-     * 
+     *
      * @return
      */
     int index() default -1;
+
+    /**
+     * Force the current field to use this converter.
+     *
+     * @return
+     */
+    Class<? extends Converter> converter() default AutoConverter.class;
 
     /**
      *

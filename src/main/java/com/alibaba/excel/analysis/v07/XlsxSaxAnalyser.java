@@ -83,6 +83,8 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         CTWorkbookPr prefix = wb.getWorkbookPr();
         if (prefix != null && prefix.getDate1904()) {
             readWorkbookHolder.getGlobalConfiguration().setUse1904windowing(Boolean.TRUE);
+        } else {
+            readWorkbookHolder.getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
         }
     }
 

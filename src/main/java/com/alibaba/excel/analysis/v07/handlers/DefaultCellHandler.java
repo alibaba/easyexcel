@@ -21,6 +21,7 @@ import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
+
 /**
  * Cell Handler
  *
@@ -84,8 +85,12 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             ensureSize();
             // Have to go "sharedStrings.xml" and get it
             if (currentCellData.getType() == CellDataTypeEnum.STRING) {
-                currentCellData.setStringValue(analysisContext.readWorkbookHolder().getReadCache()
-                    .get(Integer.valueOf(currentCellData.getStringValue())));
+                String stringValue = analysisContext.readWorkbookHolder().getReadCache()
+                    .get(Integer.valueOf(currentCellData.getStringValue()));
+                if (stringValue != null && analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
+                    stringValue = stringValue.trim();
+                }
+                currentCellData.setStringValue(stringValue);
             }
             curRowContent[curCol] = currentCellData;
         }
@@ -93,7 +98,11 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
         if (CELL_INLINE_STRING_VALUE_TAG.equals(name)) {
             ensureSize();
             XSSFRichTextString richTextString = new XSSFRichTextString(currentCellData.getStringValue());
-            currentCellData.setStringValue(richTextString.toString());
+            String stringValue = richTextString.toString();
+            if (stringValue != null && analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
+                stringValue = stringValue.trim();
+            }
+            currentCellData.setStringValue(stringValue);
             curRowContent[curCol] = currentCellData;
         }
     }

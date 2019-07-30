@@ -1,37 +1,36 @@
-package com.alibaba.excel.converters.string;
+package com.alibaba.excel.converters;
 
-import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
- * String and string converter
+ * An empty converter.It's automatically converted by type.
  *
  * @author zhuangjiaju
  */
-public class StringStringConverter implements Converter<String> {
+public class AutoConverter implements Converter {
+
     @Override
     public Class supportJavaTypeKey() {
-        return String.class;
+        return null;
     }
 
     @Override
     public CellDataTypeEnum supportExcelTypeKey() {
-        return CellDataTypeEnum.STRING;
+        return null;
     }
 
     @Override
-    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Object convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return cellData.getStringValue();
+        return null;
     }
 
     @Override
-    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
+    public CellData convertToExcelData(Object value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(value);
+        return null;
     }
-
 }

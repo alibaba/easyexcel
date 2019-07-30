@@ -6,6 +6,7 @@ import java.util.Date;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.DateUtils;
 
@@ -26,7 +27,8 @@ public class DateStringConverter implements Converter<Date> {
     }
 
     @Override
-    public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) throws ParseException {
+    public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) throws ParseException {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
             return DateUtils.parseDate(cellData.getStringValue(), null);
         } else {
@@ -36,7 +38,8 @@ public class DateStringConverter implements Converter<Date> {
     }
 
     @Override
-    public CellData convertToExcelData(Date value, ExcelContentProperty contentProperty) {
+    public CellData convertToExcelData(Date value, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
             return new CellData(DateUtils.format(value, null));
         } else {

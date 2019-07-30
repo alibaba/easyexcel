@@ -6,7 +6,8 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * Created by jipengfei on 17/2/19.
- * 
+ *
+ * @author jipengfei
  * @deprecated please use {@link com.alibaba.excel.write.builder.ExcelWriterBuilder} build ExcelWriter
  */
 @Deprecated

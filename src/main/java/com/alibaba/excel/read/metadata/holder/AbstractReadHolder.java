@@ -189,7 +189,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                     "Converter not found, convert " + cellData.getType() + " to String");
             }
             try {
-                list.add((String)(converter.convertToJavaData(cellData, null)));
+                list.add((String)(converter.convertToJavaData(cellData, null, readHolder.globalConfiguration())));
             } catch (Exception e) {
                 throw new ExcelDataConvertException("Convert data " + cellData + " to String error ", e);
             }

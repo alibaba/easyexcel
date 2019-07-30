@@ -7,11 +7,12 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
  * Date and number converter
- * 
+ *
  * @author zhuangjiaju
  */
 public class DateNumberConverter implements Converter<Date> {
@@ -27,13 +28,10 @@ public class DateNumberConverter implements Converter<Date> {
     }
 
     @Override
-    public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
+    public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
-            Boolean use1904windowing = Boolean.FALSE;
-            if (contentProperty != null && contentProperty.getUse1904windowing() != null) {
-                use1904windowing = contentProperty.getUse1904windowing();
-            }
-            return HSSFDateUtil.getJavaDate(cellData.getDoubleValue(), use1904windowing, null);
+            return HSSFDateUtil.getJavaDate(cellData.getDoubleValue(), globalConfiguration.getUse1904windowing(), null);
         } else {
             return HSSFDateUtil.getJavaDate(cellData.getDoubleValue(),
                 contentProperty.getDateTimeFormatProperty().getUse1904windowing(), null);
@@ -41,7 +39,8 @@ public class DateNumberConverter implements Converter<Date> {
     }
 
     @Override
-    public CellData convertToExcelData(Date value, ExcelContentProperty contentProperty) {
+    public CellData convertToExcelData(Date value, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         return new CellData((double)(value.getTime()));
     }
 }

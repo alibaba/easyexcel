@@ -2,6 +2,7 @@ package com.alibaba.excel.metadata.property;
 
 import java.lang.reflect.Field;
 
+import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.Head;
 
 /**
@@ -16,17 +17,13 @@ public class ExcelContentProperty {
      * Excel head
      */
     private Head head;
+    /**
+     * Custom defined converters
+     */
+    private Converter converter;
     private CellStyleProperty cellStyleProperty;
     private DateTimeFormatProperty dateTimeFormatProperty;
     private NumberFormatProperty numberFormatProperty;
-    /**
-     * true if date uses 1904 windowing, or false if using 1900 date windowing.
-     *
-     * default is false
-     * 
-     * @return
-     */
-    private Boolean use1904windowing;
 
     public Field getField() {
         return field;
@@ -68,11 +65,11 @@ public class ExcelContentProperty {
         this.numberFormatProperty = numberFormatProperty;
     }
 
-    public Boolean getUse1904windowing() {
-        return use1904windowing;
+    public Converter getConverter() {
+        return converter;
     }
 
-    public void setUse1904windowing(Boolean use1904windowing) {
-        this.use1904windowing = use1904windowing;
+    public void setConverter(Converter converter) {
+        this.converter = converter;
     }
 }

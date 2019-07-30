@@ -10,7 +10,7 @@ import com.alibaba.excel.converters.Converter;
  *
  * @author zhuangjiaju
  */
-public abstract class AbstractHolder implements Holder {
+public abstract class AbstractHolder implements ConfigurationHolder {
     /**
      * Record whether it's new or from cache
      */

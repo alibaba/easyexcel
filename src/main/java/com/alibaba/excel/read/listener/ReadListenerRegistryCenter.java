@@ -28,6 +28,7 @@ public interface ReadListenerRegistryCenter {
     void notifyEndOneRow(AnalysisFinishEvent event, AnalysisContext analysisContext);
 
     /**
+     * Notify after all analysed
      * 
      * @param analysisContext
      */

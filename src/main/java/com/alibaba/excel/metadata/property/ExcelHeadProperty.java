@@ -14,7 +14,10 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
+import com.alibaba.excel.converters.AutoConverter;
+import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.HeadKindEnum;
+import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.StringUtils;
@@ -162,6 +165,17 @@ public class ExcelHeadProperty {
         }
         Head head = new Head(index, field.getName(), tmpHeadList, forceIndex);
         ExcelContentProperty excelContentProperty = new ExcelContentProperty();
+        if (excelProperty != null && excelProperty.converter() != null) {
+            Class<? extends Converter> convertClazz = excelProperty.converter();
+            if (convertClazz != AutoConverter.class) {
+                try {
+                    Converter converter = convertClazz.newInstance();
+                    excelContentProperty.setConverter(converter);
+                } catch (Exception e) {
+                    throw new ExcelCommonException("Can not instance custom converter:" + convertClazz.getName());
+                }
+            }
+        }
         excelContentProperty.setHead(head);
         excelContentProperty.setField(field);
         excelContentProperty

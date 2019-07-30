@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.NumberUtils;
@@ -27,7 +28,8 @@ public class StringNumberConverter implements Converter<String> {
     }
 
     @Override
-    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
+    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         // If there are "DateTimeFormat", read as date
         if (contentProperty != null && contentProperty.getDateTimeFormatProperty() != null) {
             return DateUtils.format(
@@ -40,7 +42,8 @@ public class StringNumberConverter implements Converter<String> {
     }
 
     @Override
-    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty) {
+    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         return new CellData(Double.valueOf(value));
     }
 }

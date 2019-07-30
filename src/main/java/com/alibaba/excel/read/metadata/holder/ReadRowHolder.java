@@ -1,13 +1,15 @@
 package com.alibaba.excel.read.metadata.holder;
 
+import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.Holder;
 
 /**
  * sheet holder
  *
  * @author zhuangjiaju
  */
-public class ReadRowHolder {
+public class ReadRowHolder implements Holder {
     /**
      * Returns row index of a row in the sheet that contains this cell.Start form 0.
      */
@@ -49,5 +51,10 @@ public class ReadRowHolder {
 
     public void setRowIndex(int rowIndex) {
         this.rowIndex = rowIndex;
+    }
+
+    @Override
+    public HolderEnum holderType() {
+        return HolderEnum.ROW;
     }
 }

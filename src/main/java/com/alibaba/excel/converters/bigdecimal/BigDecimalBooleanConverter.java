@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
@@ -25,7 +26,8 @@ public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty) {
+    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         if (cellData.getBooleanValue()) {
             return BigDecimal.ONE;
         }
@@ -33,7 +35,8 @@ public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty) {
+    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         if (BigDecimal.ONE.equals(value)) {
             return new CellData(Boolean.TRUE);
         }
