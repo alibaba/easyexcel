@@ -107,9 +107,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
 
     @Override
     public void notifyEndOneRow(AnalysisFinishEvent event, AnalysisContext analysisContext) {
-        List<CellData> cellDataList = event.getAnalysisResult();
+        Map<Integer, CellData> cellDataMap = event.getAnalysisResult();
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
-        readRowHolder.setCurrentRowAnalysisResult(cellDataList);
+        readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
 
         if (readRowHolder.getRowIndex() >= analysisContext.readSheetHolder().getHeadRowNumber()) {
             for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
@@ -129,7 +129,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         }
         // Now is header
         if (analysisContext.readSheetHolder().getHeadRowNumber().equals(readRowHolder.getRowIndex() + 1)) {
-            buildHead(analysisContext, cellDataList);
+            buildHead(analysisContext, cellDataMap);
         }
     }
 
@@ -140,11 +140,11 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         }
     }
 
-    private void buildHead(AnalysisContext analysisContext, List<CellData> cellDataList) {
+    private void buildHead(AnalysisContext analysisContext, Map<Integer, CellData> cellDataMap) {
         if (!HeadKindEnum.CLASS.equals(analysisContext.currentReadHolder().excelReadHeadProperty().getHeadKind())) {
             return;
         }
-        List<String> dataList = (List<String>)buildStringList(cellDataList, analysisContext.currentReadHolder());
+        List<String> dataList = (List<String>)buildStringList(cellDataMap, analysisContext.currentReadHolder());
         ExcelReadHeadProperty excelHeadPropertyData = analysisContext.readSheetHolder().excelReadHeadProperty();
         Map<Integer, Head> headMapData = excelHeadPropertyData.getHeadMap();
         Map<Integer, ExcelContentProperty> contentPropertyMapData = excelHeadPropertyData.getContentPropertyMap();
@@ -153,7 +153,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             new HashMap<Integer, ExcelContentProperty>(contentPropertyMapData.size() * 4 / 3 + 1);
         for (Map.Entry<Integer, Head> entry : headMapData.entrySet()) {
             Head headData = entry.getValue();
-            if (headData.getForceIndex()) {
+            if (headData.getForceIndex() || !headData.getForceName()) {
                 tmpHeadMap.put(entry.getKey(), headData);
                 tmpContentPropertyMap.put(entry.getKey(), contentPropertyMapData.get(entry.getKey()));
                 continue;
@@ -179,9 +179,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         excelHeadPropertyData.setContentPropertyMap(tmpContentPropertyMap);
     }
 
-    private Object buildStringList(List<CellData> data, ReadHolder readHolder) {
+    private Object buildStringList(Map<Integer, CellData> cellDataMa, ReadHolder readHolder) {
         List<String> list = new ArrayList<String>();
-        for (CellData cellData : data) {
+        for (CellData cellData : cellDataMa.values()) {
             Converter converter =
                 readHolder.converterMap().get(ConverterKeyBuild.buildKey(String.class, cellData.getType()));
             if (converter == null) {

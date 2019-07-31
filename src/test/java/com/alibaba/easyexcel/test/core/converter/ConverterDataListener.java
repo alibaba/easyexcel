@@ -45,6 +45,7 @@ public class ConverterDataListener extends AnalysisEventListener<ConverterData> 
         Assert.assertEquals(data.getDoubleData(), 1.0, 0.0);
         Assert.assertEquals(data.getFloatData(), (float)1.0, 0.0);
         Assert.assertEquals(data.getString(), "测试");
+        Assert.assertEquals(data.getCellData().getStringValue(), "自定义");
         LOGGER.debug("First row:{}", JSON.toJSONString(list.get(0)));
     }
 }

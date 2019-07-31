@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -20,11 +21,17 @@ import com.alibaba.excel.EasyExcelFactory;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SimpleDataTest {
 
-    private File file07 = TestFileUtil.createNewFile("simple07.xlsx");
-    private File file03 = TestFileUtil.createNewFile("simple03.xls");
+    private static File file07;
+    private static File file03;
+
+    @BeforeClass
+    public static void init() {
+        file07 = TestFileUtil.createNewFile("simple07.xlsx");
+        file03 = TestFileUtil.createNewFile("simple03.xls");
+    }
 
     @Test
-    public void T01ReadAndWrite() {
+    public void T01ReadAndWrite07() {
         readAndWrite(file07);
     }
 
@@ -47,8 +54,6 @@ public class SimpleDataTest {
     public void T04SynchronousRead03() {
         synchronousRead(file03);
     }
-
-
 
     private void synchronousRead(File file) {
         // Synchronous read file

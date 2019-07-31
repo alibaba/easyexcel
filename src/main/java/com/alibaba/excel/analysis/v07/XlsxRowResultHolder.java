@@ -1,6 +1,6 @@
 package com.alibaba.excel.analysis.v07;
 
-import java.util.List;
+import java.util.Map;
 
 import com.alibaba.excel.metadata.CellData;
 
@@ -27,12 +27,5 @@ public interface XlsxRowResultHolder {
      *
      * @return
      */
-    List<CellData> getCurRowContent();
-
-    /**
-     * get column size
-     *
-     * @return
-     */
-    int getColumnSize();
+    Map<Integer, CellData> getCurRowContent();
 }

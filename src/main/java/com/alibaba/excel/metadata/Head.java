@@ -28,19 +28,16 @@ public class Head {
      */
     private Boolean forceIndex;
     /**
+     * Whether to specify a name
+     */
+    private Boolean forceName;
+    /**
      * column with
      */
     private ColumnWidthProperty columnWidthProperty;
 
-    public Head(Integer columnIndex, String fieldName, String headName) {
-        this.columnIndex = columnIndex;
-        this.fieldName = fieldName;
-        headNameList = new ArrayList<String>();
-        headNameList.add(headName);
-        this.forceIndex = Boolean.FALSE;
-    }
-
-    public Head(Integer columnIndex, String fieldName, List<String> headNameList, Boolean forceIndex) {
+    public Head(Integer columnIndex, String fieldName, List<String> headNameList, Boolean forceIndex,
+        Boolean forceName) {
         this.columnIndex = columnIndex;
         this.fieldName = fieldName;
         if (headNameList == null) {
@@ -48,6 +45,7 @@ public class Head {
         }
         this.headNameList = headNameList;
         this.forceIndex = forceIndex;
+        this.forceName = forceName;
     }
 
     public Integer getColumnIndex() {
@@ -88,5 +86,13 @@ public class Head {
 
     public void setForceIndex(Boolean forceIndex) {
         this.forceIndex = forceIndex;
+    }
+
+    public Boolean getForceName() {
+        return forceName;
+    }
+
+    public void setForceName(Boolean forceName) {
+        this.forceName = forceName;
     }
 }

@@ -17,7 +17,7 @@ public class ShortBooleanConverter implements Converter<Short> {
 
     @Override
     public Class supportJavaTypeKey() {
-        return Long.class;
+        return Short.class;
     }
 
     @Override

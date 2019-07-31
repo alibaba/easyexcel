@@ -17,7 +17,7 @@ public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
 
     @Override
     public Class supportJavaTypeKey() {
-        return Byte.class;
+        return BigDecimal.class;
     }
 
     @Override

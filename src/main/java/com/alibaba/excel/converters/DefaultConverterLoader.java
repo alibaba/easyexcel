@@ -14,23 +14,29 @@ import com.alibaba.excel.converters.byteconverter.ByteNumberConverter;
 import com.alibaba.excel.converters.byteconverter.ByteStringConverter;
 import com.alibaba.excel.converters.date.DateNumberConverter;
 import com.alibaba.excel.converters.date.DateStringConverter;
+import com.alibaba.excel.converters.doubleconverter.DoubleBooleanConverter;
 import com.alibaba.excel.converters.doubleconverter.DoubleNumberConverter;
 import com.alibaba.excel.converters.doubleconverter.DoubleStringConverter;
+import com.alibaba.excel.converters.floatconverter.FloatBooleanConverter;
 import com.alibaba.excel.converters.floatconverter.FloatNumberConverter;
 import com.alibaba.excel.converters.floatconverter.FloatStringConverter;
+import com.alibaba.excel.converters.integer.IntegerBooleanConverter;
 import com.alibaba.excel.converters.integer.IntegerNumberConverter;
 import com.alibaba.excel.converters.integer.IntegerStringConverter;
+import com.alibaba.excel.converters.longconverter.LongBooleanConverter;
 import com.alibaba.excel.converters.longconverter.LongNumberConverter;
 import com.alibaba.excel.converters.longconverter.LongStringConverter;
+import com.alibaba.excel.converters.shortconverter.ShortBooleanConverter;
 import com.alibaba.excel.converters.shortconverter.ShortNumberConverter;
 import com.alibaba.excel.converters.shortconverter.ShortStringConverter;
+import com.alibaba.excel.converters.string.StringBooleanConverter;
 import com.alibaba.excel.converters.string.StringErrorConverter;
 import com.alibaba.excel.converters.string.StringNumberConverter;
 import com.alibaba.excel.converters.string.StringStringConverter;
 
 /**
  * Load default handler
- * 
+ *
  * @author zhuangjiaju
  */
 public class DefaultConverterLoader {
@@ -80,27 +86,27 @@ public class DefaultConverterLoader {
         putReadConverter(converterMap, new DateNumberConverter());
         putReadConverter(converterMap, new DateStringConverter());
 
-        putReadConverter(converterMap, new DoubleNumberConverter());
+        putReadConverter(converterMap, new DoubleBooleanConverter());
         putReadConverter(converterMap, new DoubleNumberConverter());
         putReadConverter(converterMap, new DoubleStringConverter());
 
-        putReadConverter(converterMap, new FloatNumberConverter());
+        putReadConverter(converterMap, new FloatBooleanConverter());
         putReadConverter(converterMap, new FloatNumberConverter());
         putReadConverter(converterMap, new FloatStringConverter());
 
-        putReadConverter(converterMap, new IntegerNumberConverter());
+        putReadConverter(converterMap, new IntegerBooleanConverter());
         putReadConverter(converterMap, new IntegerNumberConverter());
         putReadConverter(converterMap, new IntegerStringConverter());
 
-        putReadConverter(converterMap, new LongNumberConverter());
+        putReadConverter(converterMap, new LongBooleanConverter());
         putReadConverter(converterMap, new LongNumberConverter());
         putReadConverter(converterMap, new LongStringConverter());
 
-        putReadConverter(converterMap, new ShortNumberConverter());
+        putReadConverter(converterMap, new ShortBooleanConverter());
         putReadConverter(converterMap, new ShortNumberConverter());
         putReadConverter(converterMap, new ShortStringConverter());
 
-        putReadConverter(converterMap, new StringNumberConverter());
+        putReadConverter(converterMap, new StringBooleanConverter());
         putReadConverter(converterMap, new StringNumberConverter());
         putReadConverter(converterMap, new StringStringConverter());
         putReadConverter(converterMap, new StringErrorConverter());

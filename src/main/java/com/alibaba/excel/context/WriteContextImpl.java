@@ -352,6 +352,10 @@ public class WriteContextImpl implements WriteContext {
                 if (writeWorkbookHolder.getTemplateInputStream() != null) {
                     writeWorkbookHolder.getTemplateInputStream().close();
                 }
+            } else {
+                if (writeWorkbookHolder.getFile() != null && writeWorkbookHolder.getOutputStream() != null) {
+                    writeWorkbookHolder.getOutputStream().close();
+                }
             }
         } catch (IOException e) {
             throw new ExcelGenerateException("Can not close IO", e);

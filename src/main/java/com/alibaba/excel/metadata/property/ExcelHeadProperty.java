@@ -60,7 +60,7 @@ public class ExcelHeadProperty {
         headRowNumber = 0;
         if (head != null && !head.isEmpty()) {
             for (int i = 0; i < head.size(); i++) {
-                headMap.put(i, new Head(i, null, head.get(i), Boolean.FALSE));
+                headMap.put(i, new Head(i, null, head.get(i), Boolean.FALSE, Boolean.TRUE));
                 contentPropertyMap.put(i, null);
             }
             headKind = HeadKindEnum.STRING;
@@ -155,15 +155,18 @@ public class ExcelHeadProperty {
     private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         List<String> tmpHeadList = new ArrayList<String>();
+        Boolean forceName = Boolean.TRUE;
         if (excelProperty != null) {
             tmpHeadList = Arrays.asList(excelProperty.value());
         } else {
+            forceName = Boolean.FALSE;
             tmpHeadList.add(field.getName());
         }
         if (tmpHeadList.isEmpty() || StringUtils.isEmpty(tmpHeadList.get(0))) {
+            forceName = Boolean.FALSE;
             tmpHeadList.add(field.getName());
         }
-        Head head = new Head(index, field.getName(), tmpHeadList, forceIndex);
+        Head head = new Head(index, field.getName(), tmpHeadList, forceIndex, forceName);
         ExcelContentProperty excelContentProperty = new ExcelContentProperty();
         if (excelProperty != null && excelProperty.converter() != null) {
             Class<? extends Converter> convertClazz = excelProperty.converter();

@@ -13,6 +13,10 @@ public class TestFileUtil {
         return TestFileUtil.class.getResource("/").getPath();
     }
 
+    public static File readFile(String pathName) {
+        return new File(getPath() + pathName);
+    }
+
     public static File createNewFile(String pathName) {
         File file = new File(getPath() + pathName);
         if (file.exists()) {
@@ -25,7 +29,4 @@ public class TestFileUtil {
         return file;
     }
 
-    public static File createNewWriteFile(String pathName) {
-        return createNewFile("wirte/" + pathName);
-    }
 }

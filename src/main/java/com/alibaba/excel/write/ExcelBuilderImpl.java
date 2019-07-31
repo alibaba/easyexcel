@@ -256,25 +256,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
             value = ((String)value).trim();
         }
-        Converter converter = null;
-        if (excelContentProperty != null) {
-            converter = excelContentProperty.getConverter();
-        }
-        if (converter == null) {
-            converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
-        }
-        if (converter == null) {
-            throw new ExcelDataConvertException(
-                "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
-        }
-        CellData cellData;
-        try {
-            cellData =
-                converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
-        } catch (Exception e) {
-            throw new ExcelDataConvertException("Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(),
-                e);
-        }
+        CellData cellData = convert(currentWriteHolder, clazz, cell, value, excelContentProperty);
         if (cellData == null || cellData.getType() == null) {
             throw new ExcelDataConvertException(
                 "Convert data:" + value + " return null,at row:" + cell.getRow().getRowNum());
@@ -296,5 +278,32 @@ public class ExcelBuilderImpl implements ExcelBuilder {
                 throw new ExcelDataConvertException("Not supported data:" + value + " return type:" + cell.getCellType()
                     + "at row:" + cell.getRow().getRowNum());
         }
+    }
+
+    private CellData convert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
+        ExcelContentProperty excelContentProperty) {
+        if (value instanceof CellData) {
+            return (CellData)value;
+        }
+        Converter converter = null;
+        if (excelContentProperty != null) {
+            converter = excelContentProperty.getConverter();
+        }
+        if (converter == null) {
+            converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
+        }
+        if (converter == null) {
+            throw new ExcelDataConvertException(
+                "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
+        }
+        CellData cellData;
+        try {
+            cellData =
+                converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
+        } catch (Exception e) {
+            throw new ExcelDataConvertException("Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(),
+                e);
+        }
+        return cellData;
     }
 }

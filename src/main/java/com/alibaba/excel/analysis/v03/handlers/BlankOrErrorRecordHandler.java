@@ -31,7 +31,7 @@ public class BlankOrErrorRecordHandler extends AbstractXlsRecordHandler {
             BoolErrRecord ber = (BoolErrRecord)record;
             this.row = ber.getRow();
             this.column = ber.getColumn();
-            this.cellData = new CellData(CellDataTypeEnum.EMPTY);
+            this.cellData = new CellData(ber.getBooleanValue());
         }
     }
 

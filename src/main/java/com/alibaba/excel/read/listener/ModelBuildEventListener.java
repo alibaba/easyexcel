@@ -26,28 +26,28 @@ import net.sf.cglib.beans.BeanMap;
  *
  * @author jipengfei
  */
-public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener<List<CellData>> {
+public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener<Map<Integer, CellData>> {
 
     @Override
-    public void invoke(List<CellData> data, AnalysisContext context) {
+    public void invoke(Map<Integer, CellData> cellDataMap, AnalysisContext context) {
         ReadHolder currentReadHolder = context.currentReadHolder();
         if (HeadKindEnum.CLASS.equals(currentReadHolder.excelReadHeadProperty().getHeadKind())) {
-            context.readRowHolder().setCurrentRowAnalysisResult(buildUserModel(data, currentReadHolder));
+            context.readRowHolder().setCurrentRowAnalysisResult(buildUserModel(cellDataMap, currentReadHolder));
             return;
         }
-        context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(data, currentReadHolder));
+        context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(cellDataMap, currentReadHolder));
     }
 
-    private Object buildStringList(List<CellData> data, ReadHolder currentReadHolder) {
+    private Object buildStringList(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder) {
         List<String> list = new ArrayList<String>();
-        for (CellData cellData : data) {
+        for (CellData cellData : cellDataMap.values()) {
             list.add((String)convertValue(cellData, String.class, null, currentReadHolder.converterMap(),
                 currentReadHolder.globalConfiguration()));
         }
         return list;
     }
 
-    private Object buildUserModel(List<CellData> data, ReadHolder currentReadHolder) {
+    private Object buildUserModel(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder) {
         ExcelReadHeadProperty excelReadHeadProperty = currentReadHolder.excelReadHeadProperty();
         Object resultModel;
         try {
@@ -61,10 +61,10 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
         Map<Integer, ExcelContentProperty> contentPropertyMap = excelReadHeadProperty.getContentPropertyMap();
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Integer index = entry.getKey();
-            if (index >= data.size()) {
+            if (index >= cellDataMap.size()) {
                 continue;
             }
-            CellData cellData = data.get(index);
+            CellData cellData = cellDataMap.get(index);
             if (cellData.getType() == CellDataTypeEnum.EMPTY) {
                 continue;
             }
@@ -81,6 +81,9 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
 
     private Object convertValue(CellData cellData, Class clazz, ExcelContentProperty contentProperty,
         Map<String, Converter> converterMap, GlobalConfiguration globalConfiguration) {
+        if (clazz == CellData.class) {
+            return cellData;
+        }
         Converter converter = null;
         if (contentProperty != null) {
             converter = contentProperty.getConverter();

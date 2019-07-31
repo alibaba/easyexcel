@@ -5,12 +5,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.util.DateUtils;
 
 /**
@@ -21,8 +23,14 @@ import com.alibaba.excel.util.DateUtils;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ConverterDataTest {
 
-    private File file07 = TestFileUtil.createNewFile("converter07.xlsx");
-    private File file03 = TestFileUtil.createNewFile("converter03.xls");
+    private static File file07;
+    private static File file03;
+
+    @BeforeClass
+    public static void init() {
+        file07 = TestFileUtil.createNewFile("converter07.xlsx");
+        file03 = TestFileUtil.createNewFile("converter03.xls");
+    }
 
     @Test
     public void T01ReadAndWrite07() throws Exception {
@@ -39,6 +47,22 @@ public class ConverterDataTest {
         EasyExcelFactory.read(file, ConverterData.class, new ConverterDataListener()).sheet().doRead().finish();
     }
 
+    @Test
+    public void T03ReadAllConverter07() {
+        readAllConverter("converter" + File.separator + "converter07.xlsx");
+    }
+
+    @Test
+    public void T03ReadAllConverter03() {
+        readAllConverter("converter" + File.separator + "converter03.xls");
+    }
+
+    private void readAllConverter(String fileName) {
+        EasyExcelFactory
+            .read(TestFileUtil.readFile(fileName), ReadAllConverterData.class, new ReadAllConverterDataListener())
+            .sheet().doRead().finish();
+    }
+
     private List<ConverterData> data() throws Exception {
         List<ConverterData> list = new ArrayList<ConverterData>();
         ConverterData converterData = new ConverterData();
@@ -52,6 +76,7 @@ public class ConverterDataTest {
         converterData.setDoubleData(1.0);
         converterData.setFloatData((float)1.0);
         converterData.setString("测试");
+        converterData.setCellData(new CellData("自定义"));
         list.add(converterData);
         return list;
     }

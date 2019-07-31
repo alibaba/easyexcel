@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
@@ -62,7 +64,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
      */
     private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
     private FormatTrackingHSSFListener formatListener;
-    private List<CellData> records;
+    private Map<Integer, CellData> records;
     private List<ReadSheet> sheets = new ArrayList<ReadSheet>();
     private HSSFWorkbook stubWorkbook;
     private List<XlsRecordHandler> recordHandlers = new ArrayList<XlsRecordHandler>();
@@ -70,7 +72,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
 
     public XlsSaxAnalyser(AnalysisContext context) throws IOException {
         this.analysisContext = context;
-        this.records = new ArrayList<CellData>();
+        this.records = new TreeMap<Integer, CellData>();
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
         if (readWorkbookHolder.getFile() != null) {
             this.fs = new POIFSFileSystem(readWorkbookHolder.getFile());
@@ -114,7 +116,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private void init() {
         lastRowNumber = 0;
         lastColumnNumber = 0;
-        records = new ArrayList<CellData>();
+        records = new TreeMap<Integer, CellData>();
         sheets = new ArrayList<ReadSheet>();
         buildXlsRecordHandlers();
     }
@@ -131,7 +133,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
                 thisColumn = handler.getColumn();
                 cellData = handler.getCellData();
                 if (cellData != null) {
-                    records.add(cellData);
+                    records.put(thisColumn, cellData);
                 }
                 break;
             }

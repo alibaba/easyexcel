@@ -1,6 +1,6 @@
 package com.alibaba.excel.read.listener.event;
 
-import java.util.List;
+import java.util.Map;
 
 import com.alibaba.excel.metadata.CellData;
 
@@ -16,5 +16,5 @@ public interface AnalysisFinishEvent {
      *
      * @return
      */
-    List<CellData> getAnalysisResult();
+    Map<Integer, CellData> getAnalysisResult();
 }
