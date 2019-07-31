@@ -9,8 +9,6 @@ import lombok.Data;
  */
 @Data
 public class SimpleData {
-    @ExcelProperty("字符串1")
-    private String string1;
-    @ExcelProperty("字符串2")
-    private String string2;
+    @ExcelProperty("姓名")
+    private String name;
 }

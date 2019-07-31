@@ -2,15 +2,17 @@ package com.alibaba.excel.analysis.v03;
 
 import org.apache.poi.hssf.record.Record;
 
+import com.alibaba.excel.metadata.CellData;
+
 /**
  * Intercepts handle xls reads.
- * 
+ *
  * @author Dan Zheng
  */
 public interface XlsRecordHandler extends Comparable<XlsRecordHandler> {
     /**
      * Which tags are supported
-     * 
+     *
      * @param record
      * @return
      */
@@ -23,35 +25,35 @@ public interface XlsRecordHandler extends Comparable<XlsRecordHandler> {
 
     /**
      * Processing record
-     * 
+     *
      * @param record
      */
     void processRecord(Record record);
 
     /**
      * Get row
-     * 
+     *
      * @return
      */
     int getRow();
 
     /**
      * Get column
-     * 
+     *
      * @return
      */
     int getColumn();
 
     /**
      * Get value
-     * 
+     *
      * @return
      */
-    String getValue();
+    CellData getCellData();
 
     /**
      * Get order
-     * 
+     *
      * @return
      */
     int getOrder();

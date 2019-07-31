@@ -4,8 +4,6 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 
 /**
  * Convert between Java objects and excel objects
@@ -33,23 +31,29 @@ public interface Converter<T> {
      * Convert excel objects to Java objects
      *
      * @param cellData
+     *            NotNull
      * @param contentProperty
+     *            Nullable
      * @param globalConfiguration
+     *            NotNull
      * @return
      * @throws Exception
      */
-    T convertToJavaData(@NotNull CellData cellData, @Nullable ExcelContentProperty contentProperty,
-        @NotNull GlobalConfiguration globalConfiguration) throws Exception;
+    T convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) throws Exception;
 
     /**
      * Convert Java objects to excel objects
      *
      * @param value
+     *            NotNull
      * @param contentProperty
+     *            Nullable
      * @param globalConfiguration
+     *            NotNull
      * @return
      * @throws Exception
      */
-    CellData convertToExcelData(@NotNull T value, @Nullable ExcelContentProperty contentProperty,
-        @NotNull GlobalConfiguration globalConfiguration) throws Exception;
+    CellData convertToExcelData(T value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration)
+        throws Exception;
 }

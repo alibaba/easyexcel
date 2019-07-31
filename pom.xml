@@ -152,14 +152,6 @@
                             <goal>check</goal>
                         </goals>
                     </execution>
-                    <!-- 绑定pmd:pmd到site生命周期 -->
-                    <execution>
-                        <id>pmd-pmd-site</id>
-                        <phase>site</phase>
-                        <goals>
-                            <goal>pmd</goal>
-                        </goals>
-                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>

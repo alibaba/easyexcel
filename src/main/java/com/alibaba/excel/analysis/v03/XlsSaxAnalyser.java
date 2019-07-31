@@ -27,9 +27,12 @@ import com.alibaba.excel.analysis.v03.handlers.NumberRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.RkRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.SstRecordHandler;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.util.CollectionUtils;
 
@@ -53,13 +56,13 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private POIFSFileSystem fs;
     private int lastRowNumber;
     private int lastColumnNumber;
+    private boolean notAllEmpty = false;
     /**
      * For parsing Formulas
      */
     private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
     private FormatTrackingHSSFListener formatListener;
-    private List<String> records;
-    private boolean notAllEmpty = false;
+    private List<CellData> records;
     private List<ReadSheet> sheets = new ArrayList<ReadSheet>();
     private HSSFWorkbook stubWorkbook;
     private List<XlsRecordHandler> recordHandlers = new ArrayList<XlsRecordHandler>();
@@ -67,13 +70,14 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
 
     public XlsSaxAnalyser(AnalysisContext context) throws IOException {
         this.analysisContext = context;
-        this.records = new ArrayList<String>();
+        this.records = new ArrayList<CellData>();
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
         if (readWorkbookHolder.getFile() != null) {
             this.fs = new POIFSFileSystem(readWorkbookHolder.getFile());
         } else {
             this.fs = new POIFSFileSystem(readWorkbookHolder.getInputStream());
         }
+
     }
 
     @Override
@@ -110,8 +114,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private void init() {
         lastRowNumber = 0;
         lastColumnNumber = 0;
-        records = new ArrayList<String>();
-        notAllEmpty = false;
+        records = new ArrayList<CellData>();
         sheets = new ArrayList<ReadSheet>();
         buildXlsRecordHandlers();
     }
@@ -120,25 +123,28 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     public void processRecord(Record record) {
         int thisRow = -1;
         int thisColumn = -1;
-        String thisStr = null;
+        CellData cellData = null;
         for (XlsRecordHandler handler : this.recordHandlers) {
             if (handler.support(record)) {
                 handler.processRecord(record);
                 thisRow = handler.getRow();
                 thisColumn = handler.getColumn();
-                thisStr = handler.getValue();
+                cellData = handler.getCellData();
+                if (cellData != null) {
+                    records.add(cellData);
+                }
                 break;
             }
         }
         // If we got something to print out, do so
-        if (thisStr != null) {
-            if (analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
-                thisStr = thisStr.trim();
+        if (cellData != null) {
+            if (analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()
+                && CellDataTypeEnum.STRING == cellData.getType()) {
+                cellData.setStringValue(cellData.getStringValue().trim());
             }
-            if (!"".equals(thisStr)) {
+            if (CellDataTypeEnum.EMPTY != cellData.getType()) {
                 notAllEmpty = true;
             }
-            records.add(thisStr);
         }
 
         // Handle new row
@@ -161,17 +167,17 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         // Handle end of row
         if (record instanceof LastCellOfRowDummyRecord) {
             int row = ((LastCellOfRowDummyRecord)record).getRow();
-
             if (lastColumnNumber == -1) {
                 lastColumnNumber = 0;
             }
             if (notAllEmpty) {
-                analysisContext.readSheetHolder()
-                    .notifyEndOneRow(new EachRowAnalysisFinishEvent(new ArrayList<String>(records)), analysisContext);
+                analysisContext.readRowHolder(
+                    new ReadRowHolder(lastRowNumber, analysisContext.readSheetHolder().getGlobalConfiguration()));
+                analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records),
+                    analysisContext);
             }
             records.clear();
             lastColumnNumber = -1;
-            notAllEmpty = false;
         }
     }
 

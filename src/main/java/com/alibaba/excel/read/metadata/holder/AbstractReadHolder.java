@@ -107,7 +107,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
 
     @Override
     public void notifyEndOneRow(AnalysisFinishEvent event, AnalysisContext analysisContext) {
-        List<CellData> cellDataList = (List<CellData>)event.getAnalysisResult();
+        List<CellData> cellDataList = event.getAnalysisResult();
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
         readRowHolder.setCurrentRowAnalysisResult(cellDataList);
 

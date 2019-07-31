@@ -2,8 +2,10 @@ package com.alibaba.excel.write.property;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
@@ -73,56 +75,46 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
      */
     public List<CellRange> headCellRangeList() {
         List<CellRange> cellRangeList = new ArrayList<CellRange>();
-        int i = 0;
-        for (Map.Entry<Integer, Head> entry : getHeadMap().entrySet()) {
-            Head head = entry.getValue();
-            List<String> columnValues = head.getHeadNameList();
-            for (int j = 0; j < columnValues.size(); j++) {
-                int lastRow = getLastRangNum(j, columnValues.get(j), columnValues);
-                int lastColumn = getLastRangNum(i, columnValues.get(j), head.getHeadNameList());
-                if ((lastRow > j || lastColumn > i) && lastRow >= 0 && lastColumn >= 0) {
-                    cellRangeList.add(new CellRange(j, lastRow, i, lastColumn));
+        Set<String> alreadyRangeSet = new HashSet<String>();
+        List<Head> headList = new ArrayList<Head>(getHeadMap().values());
+        for (int i = 0; i < headList.size(); i++) {
+            Head head = headList.get(i);
+            List<String> headNameList = head.getHeadNameList();
+            for (int j = 0; j < headNameList.size(); j++) {
+                if (alreadyRangeSet.contains(i + "-" + j)) {
+                    continue;
                 }
+                String headName = headNameList.get(j);
+                int endX = i;
+                int endY = j;
+                for (int k = i + 1; k < headList.size(); k++) {
+                    if (headList.get(k).getHeadNameList().get(j).equals(headName)) {
+                        alreadyRangeSet.add(k + "-" + j);
+                        endX = k;
+                    } else {
+                        break;
+                    }
+                }
+                // The current cells are not merged
+                if (endX == i) {
+                    continue;
+                }
+                Set<String> tempAlreadyRangeSet = new HashSet<String>();
+                outer:
+                for (int k = j + 1; k < headNameList.size(); k++) {
+                    for (int l = i; l < endX; l++) {
+                        if (headList.get(l).getHeadNameList().get(k).equals(headName)) {
+                            tempAlreadyRangeSet.add(k + "-" + j);
+                        } else {
+                            break outer;
+                        }
+                    }
+                    endY = k;
+                    alreadyRangeSet.addAll(tempAlreadyRangeSet);
+                }
+                cellRangeList.add(new CellRange(i, endY, j, endX));
             }
-            i++;
         }
         return cellRangeList;
     }
-
-    /**
-     * Get the last consecutive string position
-     *
-     * @param j
-     *            current value position
-     * @param value
-     *            value content
-     * @param values
-     *            values
-     * @return the last consecutive string position
-     */
-    private int getLastRangNum(int j, String value, List<String> values) {
-        if (value == null) {
-            return -1;
-        }
-        if (j > 0) {
-            String preValue = values.get(j - 1);
-            if (value.equals(preValue)) {
-                return -1;
-            }
-        }
-        int last = j;
-        for (int i = last + 1; i < values.size(); i++) {
-            String current = values.get(i);
-            if (value.equals(current)) {
-                last = i;
-            } else {
-                // if i>j && !value.equals(current) Indicates that the continuous range is exceeded
-                if (i > j) {
-                    break;
-                }
-            }
-        }
-        return last;
-    }
-
 }

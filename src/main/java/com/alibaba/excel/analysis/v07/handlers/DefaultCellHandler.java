@@ -6,7 +6,8 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.Attributes;
@@ -33,7 +34,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private String currentCellIndex;
     private int curRow;
     private int curCol;
-    private CellData[] curRowContent = new CellData[20];
+    private List<CellData> curRowContent = new ArrayList<CellData>();
     private CellData currentCellData;
 
     public DefaultCellHandler(AnalysisContext analysisContext) {
@@ -42,7 +43,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
 
     @Override
     public void clearResult() {
-        curRowContent = new CellData[20];
+        curRowContent.clear();
     }
 
     @Override
@@ -69,6 +70,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             // t="inlineStr" ,it's means String
             // t="b" ,it's means Boolean
             // t="e" ,it's means Error
+            // t="n" ,it's means Number
             // t is null ,it's means Empty or Number
             CellDataTypeEnum type = CellDataTypeEnum.buildFromCellType(attributes.getValue(CELL_VALUE_TYPE_TAG));
             currentCellData = new CellData(type);
@@ -82,7 +84,6 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     @Override
     public void endHandle(String name) {
         if (CELL_VALUE_TAG.equals(name)) {
-            ensureSize();
             // Have to go "sharedStrings.xml" and get it
             if (currentCellData.getType() == CellDataTypeEnum.STRING) {
                 String stringValue = analysisContext.readWorkbookHolder().getReadCache()
@@ -92,25 +93,17 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
                 }
                 currentCellData.setStringValue(stringValue);
             }
-            curRowContent[curCol] = currentCellData;
+            curRowContent.set(curCol, currentCellData);
         }
         // This is a special form of string
         if (CELL_INLINE_STRING_VALUE_TAG.equals(name)) {
-            ensureSize();
             XSSFRichTextString richTextString = new XSSFRichTextString(currentCellData.getStringValue());
             String stringValue = richTextString.toString();
             if (stringValue != null && analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
                 stringValue = stringValue.trim();
             }
             currentCellData.setStringValue(stringValue);
-            curRowContent[curCol] = currentCellData;
-        }
-    }
-
-    private void ensureSize() {
-        // try to size
-        if (curCol >= curRowContent.length) {
-            curRowContent = Arrays.copyOf(curRowContent, (int)(curCol * 1.5));
+            curRowContent.set(curCol, currentCellData);
         }
     }
 
@@ -135,6 +128,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             case BOOLEAN:
                 currentCellData.setBooleanValue(BooleanUtils.valueOf(currentCellValue));
                 break;
+            case NUMBER:
             case EMPTY:
                 currentCellData.setType(CellDataTypeEnum.NUMBER);
                 currentCellData.setDoubleValue(Double.valueOf(currentCellValue));
@@ -145,7 +139,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     }
 
     @Override
-    public CellData[] getCurRowContent() {
+    public List<CellData> getCurRowContent() {
         return this.curRowContent;
     }
 

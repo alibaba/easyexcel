@@ -79,7 +79,9 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
         try {
-            readWorkbookHolder.getReadCache().destroy();
+            if (readWorkbookHolder.getReadCache() != null) {
+                readWorkbookHolder.getReadCache().destroy();
+            }
             if (analysisContext.readWorkbookHolder().getAutoCloseStream()
                 && readWorkbookHolder.getInputStream() != null) {
                 readWorkbookHolder.getInputStream().close();

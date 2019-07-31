@@ -5,6 +5,8 @@ import org.apache.poi.hssf.record.BoolErrRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.CellData;
 
 /**
  * Record handler
@@ -24,12 +26,12 @@ public class BlankOrErrorRecordHandler extends AbstractXlsRecordHandler {
             BlankRecord br = (BlankRecord)record;
             this.row = br.getRow();
             this.column = br.getColumn();
-            this.value = "";
+            this.cellData = new CellData(CellDataTypeEnum.EMPTY);
         } else if (record.getSid() == BoolErrRecord.sid) {
             BoolErrRecord ber = (BoolErrRecord)record;
             this.row = ber.getRow();
             this.column = ber.getColumn();
-            this.value = "";
+            this.cellData = new CellData(CellDataTypeEnum.EMPTY);
         }
     }
 

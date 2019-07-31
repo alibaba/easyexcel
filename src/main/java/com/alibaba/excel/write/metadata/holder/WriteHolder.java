@@ -16,6 +16,8 @@ import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 public interface WriteHolder extends ConfigurationHolder {
     /**
      * What 'ExcelWriteHeadProperty' does the currently operated cell need to execute
+     *
+     * @return
      */
     ExcelWriteHeadProperty excelWriteHeadProperty();
 

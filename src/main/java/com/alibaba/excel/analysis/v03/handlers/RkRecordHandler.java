@@ -4,6 +4,8 @@ import org.apache.poi.hssf.record.RKRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.CellData;
 
 /**
  * Record handler
@@ -22,7 +24,7 @@ public class RkRecordHandler extends AbstractXlsRecordHandler {
 
         this.row = rkrec.getRow();
         this.row = rkrec.getColumn();
-        this.value = "";
+        this.cellData = new CellData(CellDataTypeEnum.EMPTY);
     }
 
     @Override

@@ -256,7 +256,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
             value = ((String)value).trim();
         }
-        Converter converter = excelContentProperty.getConverter();
+        Converter converter = null;
+        if (excelContentProperty != null) {
+            converter = excelContentProperty.getConverter();
+        }
         if (converter == null) {
             converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
         }

@@ -1,5 +1,7 @@
 package com.alibaba.excel.analysis.v03;
 
+import com.alibaba.excel.metadata.CellData;
+
 /**
  *
  * @author Dan Zheng
@@ -7,7 +9,7 @@ package com.alibaba.excel.analysis.v03;
 public abstract class AbstractXlsRecordHandler implements XlsRecordHandler {
     protected int row = -1;
     protected int column = -1;
-    protected String value = null;
+    protected CellData cellData;
 
     @Override
     public int getRow() {
@@ -20,8 +22,8 @@ public abstract class AbstractXlsRecordHandler implements XlsRecordHandler {
     }
 
     @Override
-    public String getValue() {
-        return value;
+    public CellData getCellData() {
+        return cellData;
     }
 
     @Override

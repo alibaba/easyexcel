@@ -4,6 +4,8 @@ import org.apache.poi.hssf.record.NoteRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.CellData;
 
 /**
  * Record handler
@@ -19,10 +21,9 @@ public class NoteRecordHandler extends AbstractXlsRecordHandler {
     @Override
     public void processRecord(Record record) {
         NoteRecord nrec = (NoteRecord)record;
-
         this.row = nrec.getRow();
         this.column = nrec.getColumn();
-        this.value = "(TODO)";
+        this.cellData = new CellData(CellDataTypeEnum.EMPTY);
     }
 
     @Override

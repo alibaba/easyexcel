@@ -33,17 +33,18 @@ public enum CellDataTypeEnum {
      */
     ERROR;
 
-    private static final Map<String, CellDataTypeEnum> TYPE_ROUTING_MAP = new HashMap<String, CellDataTypeEnum>(8);
+    private static final Map<String, CellDataTypeEnum> TYPE_ROUTING_MAP = new HashMap<String, CellDataTypeEnum>(16);
     static {
         TYPE_ROUTING_MAP.put("s", STRING);
         TYPE_ROUTING_MAP.put("inlineStr", STRING);
         TYPE_ROUTING_MAP.put("e", ERROR);
         TYPE_ROUTING_MAP.put("b", BOOLEAN);
+        TYPE_ROUTING_MAP.put("n", NUMBER);
     }
 
     /**
      * Build data types
-     * 
+     *
      * @param cellType
      * @return
      */

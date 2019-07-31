@@ -9,7 +9,6 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
-import com.sun.istack.internal.Nullable;
 
 /**
  * Column width style strategy
@@ -44,7 +43,6 @@ public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandl
      * @param relativeRowIndex
      * @param isHead
      */
-    protected abstract void setColumnWidth(Sheet sheet, Cell cell, @Nullable Head head, int relativeRowIndex,
-        boolean isHead);
+    protected abstract void setColumnWidth(Sheet sheet, Cell cell, Head head, int relativeRowIndex, boolean isHead);
 
 }

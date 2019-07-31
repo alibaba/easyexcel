@@ -5,6 +5,8 @@ import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.SSTRecord;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.CellData;
 
 /**
  * Record handler
@@ -25,13 +27,12 @@ public class SstRecordHandler extends AbstractXlsRecordHandler {
             sstRecord = (SSTRecord)record;
         } else if (record.getSid() == LabelSSTRecord.sid) {
             LabelSSTRecord lsrec = (LabelSSTRecord)record;
-
             this.row = lsrec.getRow();
             this.column = lsrec.getColumn();
             if (sstRecord == null) {
-                this.value = "";
+                this.cellData = new CellData(CellDataTypeEnum.EMPTY);
             } else {
-                this.value = sstRecord.getString(lsrec.getSSTIndex()).toString();
+                this.cellData = new CellData(sstRecord.getString(lsrec.getSSTIndex()).toString());
             }
         }
     }

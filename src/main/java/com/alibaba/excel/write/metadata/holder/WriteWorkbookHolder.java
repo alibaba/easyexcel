@@ -1,6 +1,8 @@
 package com.alibaba.excel.write.metadata.holder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.enums.HolderEnum;
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
@@ -30,6 +33,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * current param
      */
     private WriteWorkbook writeWorkbook;
+    /**
+     * Final output file
+     * <p>
+     * If 'outputStream' and 'file' all not empty,file first
+     */
+    private File file;
     /**
      * Final output stream
      */
@@ -66,7 +75,16 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
         this.writeWorkbook = writeWorkbook;
-        this.outputStream = writeWorkbook.getOutputStream();
+        this.file = writeWorkbook.getFile();
+        if (file != null) {
+            try {
+                this.outputStream = new FileOutputStream(file);
+            } catch (FileNotFoundException e) {
+                throw new ExcelGenerateException("Can not found file.", e);
+            }
+        } else {
+            this.outputStream = writeWorkbook.getOutputStream();
+        }
         this.templateInputStream = writeWorkbook.getTemplateInputStream();
         this.templateFile = writeWorkbook.getTemplateFile();
         if (writeWorkbook.getAutoCloseStream() == null) {
@@ -75,10 +93,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.autoCloseStream = writeWorkbook.getAutoCloseStream();
         }
         if (writeWorkbook.getExcelType() == null) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("The default specified xlsx.");
+            if (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue())) {
+                this.excelType = ExcelTypeEnum.XLS;
+            } else {
+                this.excelType = ExcelTypeEnum.XLSX;
             }
-            this.excelType = ExcelTypeEnum.XLSX;
         } else {
             this.excelType = writeWorkbook.getExcelType();
         }
@@ -112,6 +131,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
     public void setWriteWorkbook(WriteWorkbook writeWorkbook) {
         this.writeWorkbook = writeWorkbook;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public OutputStream getOutputStream() {

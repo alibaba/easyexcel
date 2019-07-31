@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -65,6 +66,24 @@ public class AnalysisContextImpl implements AnalysisContext {
     }
 
     private void selectSheet(ExcelExecutor excelExecutor) {
+        if (excelExecutor instanceof XlsxSaxAnalyser) {
+            selectSheet07(excelExecutor);
+        } else {
+            selectSheet03();
+        }
+    }
+
+    private void selectSheet03() {
+        if (readSheetHolder.getSheetNo() != null && readSheetHolder.getSheetNo() >= 0) {
+            return;
+        }
+        if (!StringUtils.isEmpty(readSheetHolder.getSheetName())) {
+            LOGGER.warn("Excel 2003 does not support matching sheets by name, defaults to the first one.");
+        }
+        readSheetHolder.setSheetNo(0);
+    }
+
+    private void selectSheet07(ExcelExecutor excelExecutor) {
         if (readSheetHolder.getSheetNo() != null && readSheetHolder.getSheetNo() >= 0) {
             for (ReadSheet readSheetExcel : excelExecutor.sheetList()) {
                 if (readSheetExcel.getSheetNo().equals(readSheetHolder.getSheetNo())) {

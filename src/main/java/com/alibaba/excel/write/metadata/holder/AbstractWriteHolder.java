@@ -300,7 +300,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
         // classify
         Map<Class<? extends WriteHandler>, List<WriteHandler>> result =
-            new HashMap<Class<? extends WriteHandler>, List<WriteHandler>>();
+            new HashMap<Class<? extends WriteHandler>, List<WriteHandler>>(16);
         result.put(WriteHandler.class, new ArrayList<WriteHandler>());
         result.put(WorkbookWriteHandler.class, new ArrayList<WriteHandler>());
         result.put(SheetWriteHandler.class, new ArrayList<WriteHandler>());

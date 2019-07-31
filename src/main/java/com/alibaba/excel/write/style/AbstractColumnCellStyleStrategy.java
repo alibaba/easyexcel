@@ -10,7 +10,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.sun.istack.internal.Nullable;
 
 /**
  *
@@ -73,16 +72,18 @@ public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleS
      * Returns the column width corresponding to each column head
      *
      * @param head
+     *            Nullable
      * @return
      */
-    protected abstract WriteCellStyle headCellStyle(@Nullable Head head);
+    protected abstract WriteCellStyle headCellStyle(Head head);
 
     /**
      * Returns the column width corresponding to each column head
      *
      * @param head
+     *            Nullable
      * @return
      */
-    protected abstract WriteCellStyle contentCellStyle(@Nullable Head head);
+    protected abstract WriteCellStyle contentCellStyle(Head head);
 
 }

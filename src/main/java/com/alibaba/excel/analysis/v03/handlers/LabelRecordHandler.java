@@ -4,6 +4,7 @@ import org.apache.poi.hssf.record.LabelRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.metadata.CellData;
 
 /**
  * Record handler
@@ -21,7 +22,7 @@ public class LabelRecordHandler extends AbstractXlsRecordHandler {
         LabelRecord lrec = (LabelRecord)record;
         this.row = lrec.getRow();
         this.column = lrec.getColumn();
-        this.value = lrec.getValue();
+        this.cellData = new CellData(lrec.getValue());
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.alibaba.excel.write.builder;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -11,14 +9,13 @@ import java.util.List;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
 /**
  * Build ExcelBuilder
- * 
+ *
  * @author zhuangjiaju
  */
 public class ExcelWriterBuilder {
@@ -88,7 +85,7 @@ public class ExcelWriterBuilder {
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
      * <p>
      * Default true
-     * 
+     *
      * @param convertAllFiled
      * @return
      * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
@@ -138,11 +135,8 @@ public class ExcelWriterBuilder {
     }
 
     public ExcelWriterBuilder file(File outputFile) {
-        try {
-            return file(new FileOutputStream(outputFile));
-        } catch (FileNotFoundException e) {
-            throw new ExcelGenerateException("Can not create file", e);
-        }
+        writeWorkbook.setFile(outputFile);
+        return this;
     }
 
     public ExcelWriterBuilder file(String outputPathName) {

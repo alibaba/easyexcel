@@ -5,6 +5,7 @@ import org.apache.poi.hssf.record.NumberRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.metadata.CellData;
 
 /**
  * Record handler
@@ -28,8 +29,7 @@ public class NumberRecordHandler extends AbstractXlsRecordHandler {
         NumberRecord numrec = (NumberRecord)record;
         this.row = numrec.getRow();
         this.column = numrec.getColumn();
-        // Format
-        this.value = formatListener.formatNumberDateCell(numrec);
+        this.cellData = new CellData(numrec.getValue());
     }
 
     @Override

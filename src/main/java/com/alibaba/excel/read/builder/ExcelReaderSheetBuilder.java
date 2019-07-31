@@ -13,7 +13,7 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 
 /**
  * Build sheet
- * 
+ *
  * @author zhuangjiaju
  */
 public class ExcelReaderSheetBuilder {
@@ -149,7 +149,7 @@ public class ExcelReaderSheetBuilder {
 
     /**
      * Sax read
-     * 
+     *
      * @return
      */
     public ExcelReaderSheetBuilder doRead() {
@@ -174,7 +174,7 @@ public class ExcelReaderSheetBuilder {
 
     /**
      * Synchronous reads return results
-     * 
+     *
      * @return
      */
     public List<Object> doReadSync() {
@@ -184,6 +184,7 @@ public class ExcelReaderSheetBuilder {
         SyncReadListener syncReadListener = new SyncReadListener();
         registerReadListener(syncReadListener);
         excelReader.read(build());
+        excelReader.finish();
         return syncReadListener.getList();
     }
 

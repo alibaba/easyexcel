@@ -18,20 +18,26 @@ public class WriteWorkbook extends WriteBasicParameter {
      */
     private ExcelTypeEnum excelType;
     /**
+     * Final output file
+     * <p>
+     * If 'outputStream' and 'file' all not empty,file first
+     */
+    private File file;
+    /**
      * Final output stream
+     * <p>
+     * If 'outputStream' and 'file' all not empty,file first
      */
     private OutputStream outputStream;
     /**
-     * <li>write: Template input stream
-     * <li>read: Read InputStream
+     * Template input stream
      * <p>
      * If 'inputStream' and 'file' all not empty,file first
      */
     private InputStream templateInputStream;
 
     /**
-     * <li>write: Template file
-     * <li>read: Read file
+     * Template file
      * <p>
      * If 'inputStream' and 'file' all not empty,file first
      */
@@ -48,14 +54,14 @@ public class WriteWorkbook extends WriteBasicParameter {
      * The default is all excel objects.Default is true.
      * <li>if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
      * <li>if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
-     * 
+     *
      * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
      */
     @Deprecated
     private Boolean convertAllFiled;
     /**
      * Write handler
-     * 
+     *
      * @deprecated please use {@link WriteHandler}
      */
     @Deprecated
@@ -67,6 +73,14 @@ public class WriteWorkbook extends WriteBasicParameter {
 
     public void setExcelType(ExcelTypeEnum excelType) {
         this.excelType = excelType;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public OutputStream getOutputStream() {

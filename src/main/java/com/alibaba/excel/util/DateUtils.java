@@ -22,7 +22,7 @@ public class DateUtils {
 
     /**
      * convert string to date
-     * 
+     *
      * @param dateString
      * @param dateFormat
      * @return
@@ -43,7 +43,7 @@ public class DateUtils {
      * @throws ParseException
      */
     public static Date parseDate(String dateString) throws ParseException {
-        return parseDate(switchDateFormat(dateString), null);
+        return parseDate(dateString, switchDateFormat(dateString));
     }
 
     /**
@@ -74,7 +74,7 @@ public class DateUtils {
      * Format date
      * <p>
      * yyyy-MM-dd HH:mm:ss
-     * 
+     *
      * @param date
      * @return
      */
@@ -84,7 +84,7 @@ public class DateUtils {
 
     /**
      * Format date
-     * 
+     *
      * @param date
      * @param dateFormat
      * @return
