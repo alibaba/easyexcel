@@ -15,6 +15,7 @@ import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.enums.WriteLastRowType;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
@@ -30,6 +31,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -58,13 +60,21 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (CollectionUtils.isEmpty(data)) {
             return;
         }
-        Sheet currentSheet = context.writeSheetHolder().getSheet();
-        int rowNum = currentSheet.getLastRowNum();
+        WriteSheetHolder writeSheetHolder = context.writeSheetHolder();
+        Sheet currentSheet = writeSheetHolder.getSheet();
+        int lastRowNum = currentSheet.getLastRowNum();
+        // 'lastRowNum' doesn't matter if it has one or zero,is's zero
+        if (lastRowNum == 0 && WriteLastRowType.EMPTY == writeSheetHolder.getWriteLastRowType()) {
+            lastRowNum--;
+        }
+        if (!data.isEmpty()) {
+            context.writeSheetHolder().setWriteLastRowType(WriteLastRowType.HAVE_DATA);
+        }
         if (context.currentWriteHolder().isNew()) {
-            rowNum += context.currentWriteHolder().relativeHeadRowIndex();
+            lastRowNum += context.currentWriteHolder().relativeHeadRowIndex();
         }
         for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {
-            int n = relativeRowIndex + rowNum + 1;
+            int n = relativeRowIndex + lastRowNum + 1;
             addOneRowOfDataToExcel(data.get(relativeRowIndex), n, relativeRowIndex);
         }
     }

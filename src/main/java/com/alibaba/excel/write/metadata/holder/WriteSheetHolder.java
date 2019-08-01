@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.enums.HolderEnum;
+import com.alibaba.excel.enums.WriteLastRowType;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
 /**
@@ -39,6 +40,14 @@ public class WriteSheetHolder extends AbstractWriteHolder {
      */
     private Map<Integer, WriteTableHolder> hasBeenInitializedTable;
 
+    /**
+     * last column type
+     *
+     * @param writeSheet
+     * @param writeWorkbookHolder
+     */
+    private WriteLastRowType writeLastRowType;
+
     public WriteSheetHolder(WriteSheet writeSheet, WriteWorkbookHolder writeWorkbookHolder) {
         super(writeSheet, writeWorkbookHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
         this.writeSheet = writeSheet;
@@ -50,6 +59,11 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         }
         this.parentWriteWorkbookHolder = writeWorkbookHolder;
         this.hasBeenInitializedTable = new HashMap<Integer, WriteTableHolder>();
+        if (writeWorkbookHolder.getTemplateInputStream() == null && writeWorkbookHolder.getTemplateFile() == null) {
+            writeLastRowType = WriteLastRowType.EMPTY;
+        } else {
+            writeLastRowType = WriteLastRowType.HAVE_DATA;
+        }
     }
 
     public WriteSheet getWriteSheet() {
@@ -98,6 +112,14 @@ public class WriteSheetHolder extends AbstractWriteHolder {
 
     public void setHasBeenInitializedTable(Map<Integer, WriteTableHolder> hasBeenInitializedTable) {
         this.hasBeenInitializedTable = hasBeenInitializedTable;
+    }
+
+    public WriteLastRowType getWriteLastRowType() {
+        return writeLastRowType;
+    }
+
+    public void setWriteLastRowType(WriteLastRowType writeLastRowType) {
+        this.writeLastRowType = writeLastRowType;
     }
 
     @Override

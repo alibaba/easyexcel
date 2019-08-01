@@ -61,7 +61,7 @@ public class AnalysisContextImpl implements AnalysisContext {
         currentReadHolder = readSheetHolder;
         selectSheet(excelExecutor);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Began to read：{}", readSheet);
+            LOGGER.debug("Began to read：{}", readSheetHolder);
         }
     }
 

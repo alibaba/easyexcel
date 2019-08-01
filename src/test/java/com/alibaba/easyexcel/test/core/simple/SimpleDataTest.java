@@ -14,7 +14,6 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 
 /**
- * Simple data test
  *
  * @author zhuangjiaju
  */

@@ -2,7 +2,7 @@ package com.alibaba.excel.metadata.property;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +113,7 @@ public class ExcelHeadProperty {
         // When the parent class is null, it indicates that the parent class (Object class) has reached the top
         // level.
         while (tempClass != null) {
-            fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
+            Collections.addAll(fieldList, tempClass.getDeclaredFields());
             // Get the parent class and give it to yourself
             tempClass = tempClass.getSuperclass();
         }
@@ -167,7 +167,7 @@ public class ExcelHeadProperty {
         if (notForceName) {
             tmpHeadList.add(field.getName());
         } else {
-            tmpHeadList = Arrays.asList(excelProperty.value());
+            Collections.addAll(tmpHeadList, excelProperty.value());
         }
         Head head = new Head(index, field.getName(), tmpHeadList, forceIndex, !notForceName);
         ExcelContentProperty excelContentProperty = new ExcelContentProperty();

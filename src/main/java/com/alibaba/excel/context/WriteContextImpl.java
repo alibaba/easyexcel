@@ -13,6 +13,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.excel.enums.WriteLastRowType;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.WorkBookUtil;
@@ -198,6 +199,11 @@ public class WriteContextImpl implements WriteContext {
             return;
         }
         int lastRowNum = writeSheetHolder.getSheet().getLastRowNum();
+        // 'lastRowNum' doesn't matter if it has one or zero,is's zero
+        if (lastRowNum == 0 && WriteLastRowType.HAVE_DATA == writeSheetHolder.getWriteLastRowType()) {
+            lastRowNum = 1;
+        }
+        writeSheetHolder.setWriteLastRowType(WriteLastRowType.HAVE_DATA);
         int rowIndex = lastRowNum + currentWriteHolder.relativeHeadRowIndex();
         // Combined head
         addMergedRegionToCurrentSheet(excelWriteHeadProperty, rowIndex);

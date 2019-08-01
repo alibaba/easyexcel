@@ -60,25 +60,28 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             getGlobalConfiguration().setUse1904windowing(readBasicParameter.getUse1904windowing());
         }
 
+        // Initialization property
+        this.excelReadHeadProperty = new ExcelReadHeadProperty(getClazz(), getHead(), convertAllFiled);
         if (readBasicParameter.getHeadRowNumber() == null) {
             if (parentAbstractReadHolder == null) {
-                this.headRowNumber = 1;
+                if (excelReadHeadProperty.hasHead()) {
+                    this.headRowNumber = excelReadHeadProperty.getHeadRowNumber();
+                } else {
+                    this.headRowNumber = 1;
+                }
             } else {
                 this.headRowNumber = parentAbstractReadHolder.getHeadRowNumber();
             }
         } else {
             this.headRowNumber = readBasicParameter.getHeadRowNumber();
         }
-        // Initialization property
-        this.excelReadHeadProperty = new ExcelReadHeadProperty(getClazz(), getHead(), convertAllFiled);
 
         if (parentAbstractReadHolder == null) {
             this.readListenerList = new ArrayList<ReadListener>();
         } else {
             this.readListenerList = new ArrayList<ReadListener>(parentAbstractReadHolder.getReadListenerList());
         }
-        if (HolderEnum.WORKBOOK.equals(holderType())
-            && HeadKindEnum.CLASS.equals(excelReadHeadProperty.getHeadKind())) {
+        if (HolderEnum.WORKBOOK.equals(holderType())) {
             readListenerList.add(new ModelBuildEventListener());
         }
         if (readBasicParameter.getCustomReadListenerList() != null

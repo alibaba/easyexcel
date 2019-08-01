@@ -84,6 +84,7 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 if (alreadyRangeSet.contains(i + "-" + j)) {
                     continue;
                 }
+                alreadyRangeSet.add(i + "-" + j);
                 String headName = headNameList.get(j);
                 int endX = i;
                 int endY = j;
@@ -95,16 +96,12 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                         break;
                     }
                 }
-                // The current cells are not merged
-                if (endX == i) {
-                    continue;
-                }
                 Set<String> tempAlreadyRangeSet = new HashSet<String>();
                 outer:
                 for (int k = j + 1; k < headNameList.size(); k++) {
-                    for (int l = i; l < endX; l++) {
+                    for (int l = i; l <= endX; l++) {
                         if (headList.get(l).getHeadNameList().get(k).equals(headName)) {
-                            tempAlreadyRangeSet.add(k + "-" + j);
+                            tempAlreadyRangeSet.add(l + "-" + k);
                         } else {
                             break outer;
                         }
@@ -112,7 +109,7 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                     endY = k;
                     alreadyRangeSet.addAll(tempAlreadyRangeSet);
                 }
-                cellRangeList.add(new CellRange(i, endY, j, endX));
+                cellRangeList.add(new CellRange(j, endY, i, endX));
             }
         }
         return cellRangeList;

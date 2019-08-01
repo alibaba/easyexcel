@@ -36,7 +36,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.readSheet = readSheet;
         this.parentReadWorkbookHolder = readWorkbookHolder;
         this.sheetNo = readSheet.getSheetNo();
-        this.sheetName=readSheet.getSheetName();
+        this.sheetName = readSheet.getSheetName();
     }
 
     public ReadSheet getReadSheet() {
@@ -82,5 +82,10 @@ public class ReadSheetHolder extends AbstractReadHolder {
     @Override
     public HolderEnum holderType() {
         return HolderEnum.SHEET;
+    }
+
+    @Override
+    public String toString() {
+        return "ReadSheetHolder{" + "sheetNo=" + sheetNo + ", sheetName='" + sheetName + '\'' + "} " + super.toString();
     }
 }
