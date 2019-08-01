@@ -4,7 +4,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 /**
  * Set the head column high and content column high
- * 
+ *
  * @author zhuangjiaju
  */
 public class SimpleRowHeightStyleStrategy extends AbstractRowHeightStyleStrategy {
@@ -19,14 +19,14 @@ public class SimpleRowHeightStyleStrategy extends AbstractRowHeightStyleStrategy
     @Override
     protected void setHeadColumnHeight(Row row, int relativeRowIndex) {
         if (headRowHeight != null) {
-            row.setHeight(headRowHeight);
+            row.setHeightInPoints(headRowHeight);
         }
     }
 
     @Override
     protected void setContentColumnHeight(Row row, int relativeRowIndex) {
         if (contentRowHeight != null) {
-            row.setHeight(contentRowHeight);
+            row.setHeightInPoints(contentRowHeight);
         }
     }
 

@@ -36,6 +36,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.readSheet = readSheet;
         this.parentReadWorkbookHolder = readWorkbookHolder;
         this.sheetNo = readSheet.getSheetNo();
+        this.sheetName=readSheet.getSheetName();
     }
 
     public ReadSheet getReadSheet() {

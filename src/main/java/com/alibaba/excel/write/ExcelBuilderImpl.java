@@ -1,5 +1,6 @@
 package com.alibaba.excel.write;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,9 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     @Override
     public void finish() {
-        context.finish();
+        if (context != null) {
+            context.finish();
+        }
     }
 
     @Override
@@ -206,9 +209,11 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (cellIndex != 0) {
             cellIndex++;
         }
+        Map<String, Field> ignoreMap = context.currentWriteHolder().excelWriteHeadProperty().getIgnoreMap();
         Set<Map.Entry<String, Object>> entrySet = beanMap.entrySet();
         for (Map.Entry<String, Object> entry : entrySet) {
-            if (entry.getValue() == null || beanMapHandledSet.contains(entry.getKey())) {
+            if (entry.getValue() == null || beanMapHandledSet.contains(entry.getKey())
+                || ignoreMap.containsKey(entry.getKey())) {
                 continue;
             }
             beforeCellCreate(row, null, relativeRowIndex);

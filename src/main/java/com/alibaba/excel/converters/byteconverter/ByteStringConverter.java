@@ -1,5 +1,7 @@
 package com.alibaba.excel.converters.byteconverter;
 
+import java.text.ParseException;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -26,8 +28,8 @@ public class ByteStringConverter implements Converter<Byte> {
 
     @Override
     public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return Byte.valueOf(cellData.getStringValue());
+        GlobalConfiguration globalConfiguration) throws ParseException {
+        return NumberUtils.parseByte(cellData.getStringValue(), contentProperty);
     }
 
     @Override

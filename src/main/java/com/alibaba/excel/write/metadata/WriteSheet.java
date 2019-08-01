@@ -9,7 +9,7 @@ import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
 
 /**
  * Write sheet
- * 
+ *
  * @author jipengfei
  */
 public class WriteSheet extends WriteBasicParameter {
@@ -23,7 +23,7 @@ public class WriteSheet extends WriteBasicParameter {
     private String sheetName;
     /**
      * column with
-     * 
+     *
      * @deprecated please use {@link SimpleColumnWidthStyleStrategy}
      */
     @Deprecated
@@ -65,5 +65,10 @@ public class WriteSheet extends WriteBasicParameter {
 
     public void setTableStyle(TableStyle tableStyle) {
         this.tableStyle = tableStyle;
+    }
+
+    @Override
+    public String toString() {
+        return "WriteSheet{" + "sheetNo=" + sheetNo + ", sheetName='" + sheetName + '\'' + "} " + super.toString();
     }
 }

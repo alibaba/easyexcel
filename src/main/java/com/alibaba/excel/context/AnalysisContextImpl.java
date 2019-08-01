@@ -103,7 +103,7 @@ public class AnalysisContextImpl implements AnalysisContext {
                     sheetName = sheetName.trim();
                 }
                 if (sheetName.equals(readSheetHolder.getSheetName())) {
-                    readSheetHolder.setSheetNo(readSheetHolder.getSheetNo());
+                    readSheetHolder.setSheetNo(readSheetExcel.getSheetNo());
                     return;
                 }
             }

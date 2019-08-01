@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -35,7 +37,7 @@ import com.alibaba.excel.write.builder.ExcelWriterTableBuilder;
  * <h3>Sample2</h3>
  *
  *
- * 
+ *
  * @author jipengfei
  */
 public class EasyExcelFactory {
@@ -62,7 +64,15 @@ public class EasyExcelFactory {
             @Override
             public void doAfterAllAnalysed(AnalysisContext context) {}
         }, false).read(sheet);
-        return rows;
+        if (rows.size() == 0 || !(rows.get(0) instanceof Map)) {
+            return rows;
+        }
+        List<Object> listRow = new ArrayList<Object>();
+        for (Object obj : rows) {
+            Map<Integer, String> oneRow = (Map<Integer, String>)obj;
+            listRow.add(new ArrayList<String>(new TreeMap<Integer, String>(oneRow).values()));
+        }
+        return listRow;
     }
 
     /**
@@ -172,7 +182,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @return
      */
     public static ExcelWriterBuilder write() {
@@ -181,7 +191,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @param file
      * @return
      */
@@ -191,7 +201,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @param file
      * @param head
      * @return
@@ -207,7 +217,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @param pathName
      * @return
      */
@@ -217,7 +227,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @param pathName
      * @param head
      * @return
@@ -233,7 +243,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @param outputStream
      * @return
      */
@@ -243,7 +253,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @param outputStream
      * @param head
      * @return
@@ -259,7 +269,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @param uri
      * @return
      */
@@ -269,7 +279,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the write
-     * 
+     *
      * @param uri
      * @param head
      * @return
@@ -285,7 +295,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'writerSheet'
-     * 
+     *
      * @return
      */
     public static ExcelWriterSheetBuilder writerSheet() {
@@ -294,7 +304,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'writerSheet'
-     * 
+     *
      * @param sheetNo
      * @return
      */
@@ -304,7 +314,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'writerSheet'
-     * 
+     *
      * @param sheetName
      * @return
      */
@@ -314,7 +324,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'writerSheet'
-     * 
+     *
      * @param sheetNo
      * @param sheetName
      * @return
@@ -332,7 +342,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'writerTable'
-     * 
+     *
      * @return
      */
     public static ExcelWriterTableBuilder writerTable() {
@@ -341,7 +351,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'writerTable'
-     * 
+     *
      * @param tableNo
      * @return
      */
@@ -355,7 +365,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @return
      */
     public static ExcelReaderBuilder read() {
@@ -364,7 +374,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param file
      * @return
      */
@@ -374,7 +384,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param file
      * @param readListener
      * @return
@@ -385,7 +395,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param file
      * @param head
      * @param readListener
@@ -405,7 +415,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param pathName
      * @return
      */
@@ -415,7 +425,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param pathName
      * @param readListener
      * @return
@@ -426,7 +436,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param pathName
      * @param head
      * @param readListener
@@ -446,7 +456,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param inputStream
      * @return
      */
@@ -456,7 +466,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param inputStream
      * @param readListener
      * @return
@@ -467,7 +477,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param inputStream
      * @param head
      * @param readListener
@@ -487,7 +497,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param uri
      * @return
      */
@@ -497,7 +507,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param uri
      * @param readListener
      * @return
@@ -508,7 +518,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the read
-     * 
+     *
      * @param uri
      * @param head
      * @param readListener
@@ -528,7 +538,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'readSheet'
-     * 
+     *
      * @return
      */
     public static ExcelReaderSheetBuilder readSheet() {
@@ -537,7 +547,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'readSheet'
-     * 
+     *
      * @param sheetNo
      * @return
      */
@@ -547,7 +557,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'readSheet'
-     * 
+     *
      * @param sheetName
      * @return
      */
@@ -557,7 +567,7 @@ public class EasyExcelFactory {
 
     /**
      * Build excel the 'readSheet'
-     * 
+     *
      * @param sheetNo
      * @param sheetName
      * @return

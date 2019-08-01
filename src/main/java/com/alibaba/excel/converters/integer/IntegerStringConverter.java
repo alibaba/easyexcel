@@ -1,5 +1,7 @@
 package com.alibaba.excel.converters.integer;
 
+import java.text.ParseException;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -26,8 +28,8 @@ public class IntegerStringConverter implements Converter<Integer> {
 
     @Override
     public Integer convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return Integer.valueOf(cellData.getStringValue());
+        GlobalConfiguration globalConfiguration) throws ParseException {
+        return NumberUtils.parseInteger(cellData.getStringValue(), contentProperty);
     }
 
     @Override

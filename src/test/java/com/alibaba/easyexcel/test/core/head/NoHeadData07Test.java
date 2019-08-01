@@ -1,11 +1,6 @@
 package com.alibaba.easyexcel.test.core.head;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
-
-import com.alibaba.easyexcel.test.core.order.OrderData;
 
 /**
  * Order data test
@@ -21,16 +16,5 @@ public class NoHeadData07Test {
         // Sheet sheet = EasyExcelFactory.writerSheetBuilder().sheetNo(0).sheetName("order").build();
         // writer.write(createData(10000 * 100), sheet);
         // writer.finish();
-    }
-
-    private List<OrderData> createData(int count) {
-        List<OrderData> list = new ArrayList<OrderData>();
-        for (int i = 0; i < count; i++) {
-            OrderData orderData = new OrderData();
-            orderData.setIndex1("排序1：" + i);
-            orderData.setIndex10("排序10:" + i);
-            list.add(orderData);
-        }
-        return list;
     }
 }

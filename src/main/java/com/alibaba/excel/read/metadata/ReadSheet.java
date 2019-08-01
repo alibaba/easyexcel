@@ -2,7 +2,7 @@ package com.alibaba.excel.read.metadata;
 
 /**
  * Read sheet
- * 
+ *
  * @author jipengfei
  */
 public class ReadSheet extends ReadBasicParameter {
@@ -40,5 +40,10 @@ public class ReadSheet extends ReadBasicParameter {
 
     public void setSheetName(String sheetName) {
         this.sheetName = sheetName;
+    }
+
+    @Override
+    public String toString() {
+        return "ReadSheet{" + "sheetNo=" + sheetNo + ", sheetName='" + sheetName + '\'' + "} " + super.toString();
     }
 }

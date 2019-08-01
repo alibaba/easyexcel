@@ -9,6 +9,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -144,7 +145,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         if (!HeadKindEnum.CLASS.equals(analysisContext.currentReadHolder().excelReadHeadProperty().getHeadKind())) {
             return;
         }
-        List<String> dataList = (List<String>)buildStringList(cellDataMap, analysisContext.currentReadHolder());
+        Map<Integer, String> dataMap = buildStringMap(cellDataMap, analysisContext.currentReadHolder());
         ExcelReadHeadProperty excelHeadPropertyData = analysisContext.readSheetHolder().excelReadHeadProperty();
         Map<Integer, Head> headMapData = excelHeadPropertyData.getHeadMap();
         Map<Integer, ExcelContentProperty> contentPropertyMapData = excelHeadPropertyData.getContentPropertyMap();
@@ -159,8 +160,10 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                 continue;
             }
             String headName = headData.getHeadNameList().get(0);
-            for (int i = 0; i < dataList.size(); i++) {
-                String headString = dataList.get(i);
+
+            for (Map.Entry<Integer, String> stringEntry : dataMap.entrySet()) {
+                String headString = stringEntry.getValue();
+                Integer stringKey = stringEntry.getKey();
                 if (StringUtils.isEmpty(headString)) {
                     continue;
                 }
@@ -168,9 +171,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                     headString = headString.trim();
                 }
                 if (headName.equals(headString)) {
-                    headData.setColumnIndex(i);
-                    tmpHeadMap.put(i, headData);
-                    tmpContentPropertyMap.put(i, contentPropertyMapData.get(entry.getKey()));
+                    headData.setColumnIndex(stringKey);
+                    tmpHeadMap.put(stringKey, headData);
+                    tmpContentPropertyMap.put(stringKey, contentPropertyMapData.get(entry.getKey()));
                     break;
                 }
             }
@@ -179,9 +182,14 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         excelHeadPropertyData.setContentPropertyMap(tmpContentPropertyMap);
     }
 
-    private Object buildStringList(Map<Integer, CellData> cellDataMa, ReadHolder readHolder) {
-        List<String> list = new ArrayList<String>();
-        for (CellData cellData : cellDataMa.values()) {
+    private Map<Integer, String> buildStringMap(Map<Integer, CellData> cellDataMap, ReadHolder readHolder) {
+        Map<Integer, String> stringMap = new HashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
+        for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
+            CellData cellData = entry.getValue();
+            if (cellData.getType() == CellDataTypeEnum.EMPTY) {
+                stringMap.put(entry.getKey(), null);
+                continue;
+            }
             Converter converter =
                 readHolder.converterMap().get(ConverterKeyBuild.buildKey(String.class, cellData.getType()));
             if (converter == null) {
@@ -189,12 +197,13 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                     "Converter not found, convert " + cellData.getType() + " to String");
             }
             try {
-                list.add((String)(converter.convertToJavaData(cellData, null, readHolder.globalConfiguration())));
+                stringMap.put(entry.getKey(),
+                    (String)(converter.convertToJavaData(cellData, null, readHolder.globalConfiguration())));
             } catch (Exception e) {
                 throw new ExcelDataConvertException("Convert data " + cellData + " to String error ", e);
             }
         }
-        return list;
+        return stringMap;
     }
 
     public List<ReadListener> getReadListenerList() {

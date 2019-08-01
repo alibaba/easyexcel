@@ -1,5 +1,7 @@
 package com.alibaba.excel.converters.shortconverter;
 
+import java.text.ParseException;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -26,8 +28,8 @@ public class ShortStringConverter implements Converter<Short> {
 
     @Override
     public Short convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return Short.valueOf(cellData.getStringValue());
+        GlobalConfiguration globalConfiguration) throws ParseException {
+        return NumberUtils.parseShort(cellData.getStringValue(), contentProperty);
     }
 
     @Override

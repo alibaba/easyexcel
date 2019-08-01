@@ -1,5 +1,7 @@
 package com.alibaba.excel.converters.longconverter;
 
+import java.text.ParseException;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -26,8 +28,8 @@ public class LongStringConverter implements Converter<Long> {
 
     @Override
     public Long convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return Long.valueOf(cellData.getStringValue());
+        GlobalConfiguration globalConfiguration) throws ParseException {
+        return NumberUtils.parseLong(cellData.getStringValue(), contentProperty);
     }
 
     @Override

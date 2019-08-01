@@ -54,27 +54,11 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
 
         OPCPackage pkg = readOpcPackage(readWorkbookHolder);
-
         PackagePart sharedStringsTablePackagePart =
             pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType()).get(0);
-        if (readWorkbookHolder.getReadCache() == null) {
-            long size = sharedStringsTablePackagePart.getSize();
-            if (size < 0) {
-                size = sharedStringsTablePackagePart.getInputStream().available();
-            }
-            if (size < USE_MAP_CACHE_SIZE) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.info("Use map cache.size:{}", size);
-                }
-                readWorkbookHolder.setReadCache(new MapCache());
-            } else {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.info("Use ehcache.size:{}", size);
-                }
-                readWorkbookHolder.setReadCache(new Ehcache());
-            }
-        }
-        readWorkbookHolder.getReadCache().init(analysisContext);
+
+        // Specify default cache
+        defaultReadCache(readWorkbookHolder, sharedStringsTablePackagePart);
 
         // Analysis sharedStringsTable.xml
         analysisSharedStringsTable(sharedStringsTablePackagePart.getInputStream(), readWorkbookHolder);
@@ -96,6 +80,30 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
             sheetMap.put(index, inputStream);
             index++;
         }
+    }
+
+    private void defaultReadCache(ReadWorkbookHolder readWorkbookHolder, PackagePart sharedStringsTablePackagePart)
+        throws IOException {
+        if (readWorkbookHolder.getReadCache() != null) {
+            readWorkbookHolder.getReadCache().init(analysisContext);
+            return;
+        }
+        long size = sharedStringsTablePackagePart.getSize();
+        if (size < 0) {
+            size = sharedStringsTablePackagePart.getInputStream().available();
+        }
+        if (size < USE_MAP_CACHE_SIZE) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.info("Use map cache.size:{}", size);
+            }
+            readWorkbookHolder.setReadCache(new MapCache());
+        } else {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.info("Use ehcache.size:{}", size);
+            }
+            readWorkbookHolder.setReadCache(new Ehcache());
+        }
+        readWorkbookHolder.getReadCache().init(analysisContext);
     }
 
     private void analysisUse1904WindowDate(XSSFReader xssfReader, ReadWorkbookHolder readWorkbookHolder)

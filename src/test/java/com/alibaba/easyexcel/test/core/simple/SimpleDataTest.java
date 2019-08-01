@@ -55,6 +55,12 @@ public class SimpleDataTest {
         synchronousRead(file03);
     }
 
+    @Test
+    public void T05SheetNameRead07() {
+        EasyExcelFactory.read(TestFileUtil.readFile("simple" + File.separator + "simple07.xlsx"), SimpleData.class,
+            new SimpleDataSheetNameListener()).sheet("simple").doRead().finish();
+    }
+
     private void synchronousRead(File file) {
         // Synchronous read file
         List<Object> list = EasyExcelFactory.read(file).head(SimpleData.class).sheet().doReadSync();

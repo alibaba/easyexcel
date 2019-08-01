@@ -1,8 +1,6 @@
 package com.alibaba.excel.read.listener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.context.AnalysisContext;
@@ -39,12 +37,17 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
     }
 
     private Object buildStringList(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder) {
-        List<String> list = new ArrayList<String>();
-        for (CellData cellData : cellDataMap.values()) {
-            list.add((String)convertValue(cellData, String.class, null, currentReadHolder.converterMap(),
+        Map<Integer, String> map = new HashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
+        for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
+            CellData cellData = entry.getValue();
+            if (cellData.getType() == CellDataTypeEnum.EMPTY) {
+                map.put(entry.getKey(), null);
+                continue;
+            }
+            map.put(entry.getKey(), (String)convertValue(cellData, String.class, null, currentReadHolder.converterMap(),
                 currentReadHolder.globalConfiguration()));
         }
-        return list;
+        return map;
     }
 
     private Object buildUserModel(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder) {
@@ -61,7 +64,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
         Map<Integer, ExcelContentProperty> contentPropertyMap = excelReadHeadProperty.getContentPropertyMap();
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Integer index = entry.getKey();
-            if (index >= cellDataMap.size()) {
+            if (!cellDataMap.containsKey(index)) {
                 continue;
             }
             CellData cellData = cellDataMap.get(index);

@@ -1,6 +1,7 @@
 package com.alibaba.excel.converters.bigdecimal;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -28,8 +29,8 @@ public class BigDecimalStringConverter implements Converter<BigDecimal> {
 
     @Override
     public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return new BigDecimal(cellData.getStringValue());
+        GlobalConfiguration globalConfiguration) throws ParseException {
+        return NumberUtils.parseBigDecimal(cellData.getStringValue(), contentProperty);
     }
 
     @Override

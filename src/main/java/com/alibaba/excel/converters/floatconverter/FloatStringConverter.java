@@ -1,5 +1,7 @@
 package com.alibaba.excel.converters.floatconverter;
 
+import java.text.ParseException;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -26,8 +28,8 @@ public class FloatStringConverter implements Converter<Float> {
 
     @Override
     public Float convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return Float.valueOf(cellData.getStringValue());
+        GlobalConfiguration globalConfiguration) throws ParseException {
+        return NumberUtils.parseFloat(cellData.getStringValue(), contentProperty);
     }
 
     @Override

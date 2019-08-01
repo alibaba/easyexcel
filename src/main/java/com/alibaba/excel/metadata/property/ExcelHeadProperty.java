@@ -3,6 +3,7 @@ package com.alibaba.excel.metadata.property;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,11 +52,16 @@ public class ExcelHeadProperty {
      * Configuration column information
      */
     private Map<Integer, ExcelContentProperty> contentPropertyMap;
+    /**
+     * Fields ignored
+     */
+    private Map<String, Field> ignoreMap;
 
     public ExcelHeadProperty(Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
         this.headClazz = headClazz;
         headMap = new TreeMap<Integer, Head>();
         contentPropertyMap = new TreeMap<Integer, ExcelContentProperty>();
+        ignoreMap = new HashMap<String, Field>(16);
         headKind = HeadKindEnum.NONE;
         headRowNumber = 0;
         if (head != null && !head.isEmpty()) {
@@ -118,10 +124,12 @@ public class ExcelHeadProperty {
         for (Field field : fieldList) {
             ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
             if (excelIgnore != null) {
+                ignoreMap.put(field.getName(), field);
                 continue;
             }
             ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
             if (excelProperty == null && convertAllFiled != null && !convertAllFiled) {
+                ignoreMap.put(field.getName(), field);
                 continue;
             }
             if (excelProperty == null || excelProperty.index() < 0) {
@@ -146,8 +154,7 @@ public class ExcelHeadProperty {
             index++;
         }
         for (Map.Entry<Integer, Field> entry : customFiledMap.entrySet()) {
-            initOneColumnProperty(index, entry.getValue(), Boolean.FALSE);
-            index++;
+            initOneColumnProperty(entry.getKey(), entry.getValue(), Boolean.TRUE);
         }
         headKind = HeadKindEnum.CLASS;
     }
@@ -155,20 +162,16 @@ public class ExcelHeadProperty {
     private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         List<String> tmpHeadList = new ArrayList<String>();
-        Boolean forceName = Boolean.TRUE;
-        if (excelProperty != null) {
-            tmpHeadList = Arrays.asList(excelProperty.value());
+        boolean notForceName = excelProperty == null || excelProperty.value().length <= 0
+            || (excelProperty.value().length == 1 && StringUtils.isEmpty((excelProperty.value())[0]));
+        if (notForceName) {
+            tmpHeadList.add(field.getName());
         } else {
-            forceName = Boolean.FALSE;
-            tmpHeadList.add(field.getName());
+            tmpHeadList = Arrays.asList(excelProperty.value());
         }
-        if (tmpHeadList.isEmpty() || StringUtils.isEmpty(tmpHeadList.get(0))) {
-            forceName = Boolean.FALSE;
-            tmpHeadList.add(field.getName());
-        }
-        Head head = new Head(index, field.getName(), tmpHeadList, forceIndex, forceName);
+        Head head = new Head(index, field.getName(), tmpHeadList, forceIndex, !notForceName);
         ExcelContentProperty excelContentProperty = new ExcelContentProperty();
-        if (excelProperty != null && excelProperty.converter() != null) {
+        if (excelProperty != null) {
             Class<? extends Converter> convertClazz = excelProperty.converter();
             if (convertClazz != AutoConverter.class) {
                 try {
@@ -233,4 +236,11 @@ public class ExcelHeadProperty {
         this.contentPropertyMap = contentPropertyMap;
     }
 
+    public Map<String, Field> getIgnoreMap() {
+        return ignoreMap;
+    }
+
+    public void setIgnoreMap(Map<String, Field> ignoreMap) {
+        this.ignoreMap = ignoreMap;
+    }
 }
