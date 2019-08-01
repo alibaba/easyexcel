@@ -3,6 +3,9 @@ package com.alibaba.excel.read.metadata.holder;
 import java.io.File;
 import java.io.InputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.HolderEnum;
@@ -17,6 +20,8 @@ import com.alibaba.excel.support.ExcelTypeEnum;
  * @author zhuangjiaju
  */
 public class ReadWorkbookHolder extends AbstractReadHolder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReadWorkbookHolder.class);
+
     /**
      * current param
      */
@@ -94,8 +99,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         } else {
             this.excelType = readWorkbook.getExcelType();
         }
+        if (ExcelTypeEnum.XLS == excelType && getGlobalConfiguration().getUse1904windowing() == null) {
+            getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
+        }
         this.customObject = readWorkbook.getCustomObject();
         this.readCache = readWorkbook.getReadCache();
+        if (readCache != null && ExcelTypeEnum.XLS == excelType) {
+            LOGGER.warn("Xls not support 'readCache'!");
+        }
     }
 
     public ReadWorkbook getReadWorkbook() {

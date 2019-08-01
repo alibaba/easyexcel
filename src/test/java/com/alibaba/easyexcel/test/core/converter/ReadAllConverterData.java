@@ -36,10 +36,10 @@ public class ReadAllConverterData {
     private Short shortBoolean;
     private Short shortNumber;
     private Short shortString;
-    private String StringBoolean;
-    private String StringNumber;
-    private String StringString;
-    private String StringError;
-    private String StringFormulaNumber;
-    private String StringFormulaString;
+    private String stringBoolean;
+    private String stringNumber;
+    private String stringString;
+    private String stringError;
+    private String stringFormulaNumber;
+    private String stringFormulaString;
 }

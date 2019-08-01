@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.UUID;
 
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelGenerateException;
 
 /**
  *
@@ -24,7 +25,7 @@ public class FileUtils {
 
     /**
      * Write inputStream to file
-     * 
+     *
      * @param file
      * @param inputStream
      */
@@ -65,12 +66,16 @@ public class FileUtils {
 
     public static File createCacheTmpFile() {
         File directory = createTmpDirectory(CACHE);
-        return new File(directory.getPath(), UUID.randomUUID().toString());
+        File cache = new File(directory.getPath(), UUID.randomUUID().toString());
+        if (!cache.mkdir()) {
+            throw new ExcelGenerateException("Can not create temp file!");
+        }
+        return cache;
     }
 
     /**
      * delete file
-     * 
+     *
      * @param file
      */
     public static void delete(File file) {

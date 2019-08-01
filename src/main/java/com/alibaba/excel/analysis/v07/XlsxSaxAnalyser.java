@@ -13,17 +13,21 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.WorkbookDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import com.alibaba.excel.analysis.ExcelExecutor;
 import com.alibaba.excel.cache.Ehcache;
+import com.alibaba.excel.cache.MapCache;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -35,6 +39,11 @@ import com.alibaba.excel.util.FileUtils;
  * @author jipengfei
  */
 public class XlsxSaxAnalyser implements ExcelExecutor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(XlsxSaxAnalyser.class);
+    /**
+     * If it's less than 5M, use map cache, or use ehcache.
+     */
+    private static final long USE_MAP_CACHE_SIZE = 5 * 1000 * 1000L;
     private AnalysisContext analysisContext;
     private List<ReadSheet> sheetList;
     private Map<Integer, InputStream> sheetMap;
@@ -43,15 +52,32 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         this.analysisContext = analysisContext;
         // Initialize cache
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
-        if (readWorkbookHolder.getReadCache() == null) {
-            readWorkbookHolder.setReadCache(new Ehcache());
-        }
-        readWorkbookHolder.getReadCache().init(analysisContext);
 
         OPCPackage pkg = readOpcPackage(readWorkbookHolder);
 
+        PackagePart sharedStringsTablePackagePart =
+            pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType()).get(0);
+        if (readWorkbookHolder.getReadCache() == null) {
+            long size = sharedStringsTablePackagePart.getSize();
+            if (size < 0) {
+                size = sharedStringsTablePackagePart.getInputStream().available();
+            }
+            if (size < USE_MAP_CACHE_SIZE) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.info("Use map cache.size:{}", size);
+                }
+                readWorkbookHolder.setReadCache(new MapCache());
+            } else {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.info("Use ehcache.size:{}", size);
+                }
+                readWorkbookHolder.setReadCache(new Ehcache());
+            }
+        }
+        readWorkbookHolder.getReadCache().init(analysisContext);
+
         // Analysis sharedStringsTable.xml
-        analysisSharedStringsTable(pkg, readWorkbookHolder);
+        analysisSharedStringsTable(sharedStringsTablePackagePart.getInputStream(), readWorkbookHolder);
 
         XSSFReader xssfReader = new XSSFReader(pkg);
 
@@ -88,10 +114,10 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         }
     }
 
-    private void analysisSharedStringsTable(OPCPackage pkg, ReadWorkbookHolder readWorkbookHolder) throws Exception {
+    private void analysisSharedStringsTable(InputStream sharedStringsTableInputStream,
+        ReadWorkbookHolder readWorkbookHolder) throws Exception {
         ContentHandler handler = new SharedStringsTableHandler(readWorkbookHolder.getReadCache());
-        parseXmlSource(pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType()).get(0).getInputStream(),
-            handler);
+        parseXmlSource(sharedStringsTableInputStream, handler);
         readWorkbookHolder.getReadCache().putFinished();
     }
 
@@ -105,7 +131,7 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         File readTempFile = FileUtils.createCacheTmpFile();
         readWorkbookHolder.setTempFile(readTempFile);
         File tempFile = new File(readTempFile.getPath(), UUID.randomUUID().toString() + ".xlsx");
-        FileUtils.writeToFile(readTempFile, readWorkbookHolder.getInputStream());
+        FileUtils.writeToFile(tempFile, readWorkbookHolder.getInputStream());
         return OPCPackage.open(tempFile);
     }
 

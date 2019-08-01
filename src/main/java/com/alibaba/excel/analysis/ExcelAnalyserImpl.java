@@ -35,25 +35,20 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
     }
 
-    private void choiceExcelExecutor() {
-        try {
-            ExcelTypeEnum excelType = analysisContext.readWorkbookHolder().getExcelType();
-            if (excelType == null) {
+    private void choiceExcelExecutor() throws Exception {
+        ExcelTypeEnum excelType = analysisContext.readWorkbookHolder().getExcelType();
+        if (excelType == null) {
+            excelExecutor = new XlsxSaxAnalyser(analysisContext);
+            return;
+        }
+        switch (excelType) {
+            case XLS:
+                excelExecutor = new XlsSaxAnalyser(analysisContext);
+                break;
+            case XLSX:
                 excelExecutor = new XlsxSaxAnalyser(analysisContext);
-                return;
-            }
-            switch (excelType) {
-                case XLS:
-                    excelExecutor = new XlsSaxAnalyser(analysisContext);
-                    break;
-                case XLSX:
-                    excelExecutor = new XlsxSaxAnalyser(analysisContext);
-                    break;
-                default:
-            }
-        } catch (Exception e) {
-            throw new ExcelAnalysisException("File type error，io must be available markSupported,you can do like "
-                + "this <code> new BufferedInputStream(new FileInputStream(\\\"/xxxx\\\"))</code> \"", e);
+                break;
+            default:
         }
     }
 

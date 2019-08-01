@@ -82,7 +82,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
     private Object convertValue(CellData cellData, Class clazz, ExcelContentProperty contentProperty,
         Map<String, Converter> converterMap, GlobalConfiguration globalConfiguration) {
         if (clazz == CellData.class) {
-            return cellData;
+            return new CellData(cellData);
         }
         Converter converter = null;
         if (contentProperty != null) {

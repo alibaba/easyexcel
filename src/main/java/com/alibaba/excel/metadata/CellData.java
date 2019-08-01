@@ -24,6 +24,15 @@ public class CellData {
     private Boolean formula;
     private String formulaValue;
 
+    public CellData(CellData other) {
+        this.type = other.type;
+        this.doubleValue = other.doubleValue;
+        this.stringValue = other.stringValue;
+        this.booleanValue = other.booleanValue;
+        this.formula = other.formula;
+        this.formulaValue = other.formulaValue;
+    }
+
     public CellData(String stringValue) {
         this(CellDataTypeEnum.STRING, stringValue);
     }
@@ -128,4 +137,5 @@ public class CellData {
                 return "empty";
         }
     }
+
 }
