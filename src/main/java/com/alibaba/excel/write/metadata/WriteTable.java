@@ -1,11 +1,11 @@
 package com.alibaba.excel.write.metadata;
 
 import com.alibaba.excel.metadata.TableStyle;
-import com.alibaba.excel.write.style.RowCellStyleStrategy;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 
 /**
  * table
- * 
+ *
  * @author jipengfei
  */
 public class WriteTable extends WriteBasicParameter {
@@ -15,7 +15,7 @@ public class WriteTable extends WriteBasicParameter {
     private Integer tableNo;
     /**
      *
-     * @deprecated please use{@link RowCellStyleStrategy}
+     * @deprecated please use{@link HorizontalCellStyleStrategy}
      */
     @Deprecated
     private TableStyle tableStyle;

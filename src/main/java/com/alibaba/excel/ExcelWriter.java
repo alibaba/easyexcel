@@ -21,12 +21,12 @@ import com.alibaba.excel.write.metadata.WriteWorkbook;
 /**
  * Excel Writer This tool is used to write value out to Excel via POI. This object can perform the following two
  * functions.
- * 
+ *
  * <pre>
  *    1. Create a new empty Excel workbook, write the value to the stream after the value is filled.
  *    2. Edit existing Excel, write the original Excel file, or write it to other places.}
  * </pre>
- * 
+ *
  * @author jipengfei
  */
 public class ExcelWriter {
@@ -34,7 +34,7 @@ public class ExcelWriter {
 
     /**
      * Create new writer
-     * 
+     *
      * @param writeWorkbook
      */
     public ExcelWriter(WriteWorkbook writeWorkbook) {
@@ -197,6 +197,7 @@ public class ExcelWriter {
             writeSheet.setClazz(sheet.getClazz());
             writeSheet.setHead(sheet.getHead());
             writeSheet.setTableStyle(sheet.getTableStyle());
+            writeSheet.setRelativeHeadRowIndex(sheet.getHeadLineMun());
             writeSheet.setColumnWidthMap(sheet.getColumnWidthMap());
         }
 

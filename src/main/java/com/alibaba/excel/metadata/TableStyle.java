@@ -2,11 +2,11 @@ package com.alibaba.excel.metadata;
 
 import org.apache.poi.ss.usermodel.IndexedColors;
 
-import com.alibaba.excel.write.style.RowCellStyleStrategy;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 
 /**
  * @author jipengfei
- * @deprecated please use {@link RowCellStyleStrategy}
+ * @deprecated please use {@link HorizontalCellStyleStrategy}
  */
 @Deprecated
 public class TableStyle {

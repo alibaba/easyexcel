@@ -29,7 +29,7 @@ public enum ExcelTypeEnum {
 
     public static ExcelTypeEnum valueOf(File file, InputStream inputStream) {
         try {
-            FileMagic fileMagic = null;
+            FileMagic fileMagic;
             if (file != null) {
                 fileMagic = FileMagic.valueOf(file);
                 if (!FileMagic.OLE2.equals(fileMagic) && !FileMagic.OOXML.equals(fileMagic)) {

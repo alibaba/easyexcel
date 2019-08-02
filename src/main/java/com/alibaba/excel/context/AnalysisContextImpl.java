@@ -55,11 +55,15 @@ public class AnalysisContextImpl implements AnalysisContext {
     @Override
     public void currentSheet(ExcelExecutor excelExecutor, ReadSheet readSheet) {
         if (readSheet == null) {
-            throw new IllegalArgumentException("Sheet argument cannot be null");
+            throw new IllegalArgumentException("Sheet argument cannot be null.");
         }
         readSheetHolder = new ReadSheetHolder(readSheet, readWorkbookHolder);
         currentReadHolder = readSheetHolder;
         selectSheet(excelExecutor);
+        if (readWorkbookHolder.getHasReadSheet().contains(readSheetHolder.getSheetNo())) {
+            throw new ExcelAnalysisException("Cannot read sheet repeatedly.");
+        }
+        readWorkbookHolder.getHasReadSheet().add(readSheetHolder.getSheetNo());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Began to read：{}", readSheetHolder);
         }
@@ -135,7 +139,7 @@ public class AnalysisContextImpl implements AnalysisContext {
 
     @Override
     public ReadHolder currentReadHolder() {
-        return readSheetHolder;
+        return currentReadHolder;
     }
 
     @Override

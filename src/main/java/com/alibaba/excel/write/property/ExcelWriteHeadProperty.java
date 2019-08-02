@@ -109,6 +109,9 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                     endY = k;
                     alreadyRangeSet.addAll(tempAlreadyRangeSet);
                 }
+                if (j == endY && i == endX) {
+                    continue;
+                }
                 cellRangeList.add(new CellRange(j, endY, i, endX));
             }
         }

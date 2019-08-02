@@ -193,14 +193,15 @@ public class ExcelWriterBuilder {
     }
 
     public ExcelWriterSheetBuilder sheet(Integer sheetNo, String sheetName) {
-        ExcelWriterSheetBuilder excelWriterSheetBuilder = new ExcelWriterSheetBuilder(build());
+        ExcelWriter excelWriter = build();
+        ExcelWriterSheetBuilder excelWriterSheetBuilder = new ExcelWriterSheetBuilder(excelWriter);
         if (sheetNo != null) {
             excelWriterSheetBuilder.sheetNo(sheetNo);
         }
         if (sheetName != null) {
             excelWriterSheetBuilder.sheetName(sheetName);
         }
-        return new ExcelWriterSheetBuilder(build());
+        return new ExcelWriterSheetBuilder(excelWriter);
     }
 
 }

@@ -17,7 +17,7 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
  *
  * @author zhuangjiaju
  */
-public class RowCellStyleStrategy extends AbstractCellStyleStrategy {
+public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     private WriteCellStyle headWriteCellStyle;
     private List<WriteCellStyle> contentWriteCellStyleList;
@@ -25,12 +25,12 @@ public class RowCellStyleStrategy extends AbstractCellStyleStrategy {
     private CellStyle headCellStyle;
     private List<CellStyle> contentCellStyleList;
 
-    public RowCellStyleStrategy(WriteCellStyle headWriteCellStyle, List<WriteCellStyle> contentWriteCellStyleList) {
+    public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle, List<WriteCellStyle> contentWriteCellStyleList) {
         this.headWriteCellStyle = headWriteCellStyle;
         this.contentWriteCellStyleList = contentWriteCellStyleList;
     }
 
-    public RowCellStyleStrategy(WriteCellStyle headWriteCellStyle, WriteCellStyle contentWriteCellStyle) {
+    public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle, WriteCellStyle contentWriteCellStyle) {
         this.headWriteCellStyle = headWriteCellStyle;
         contentWriteCellStyleList = new ArrayList<WriteCellStyle>();
         contentWriteCellStyleList.add(contentWriteCellStyle);

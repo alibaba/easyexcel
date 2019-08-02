@@ -7,7 +7,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
-import com.alibaba.excel.write.style.RowCellStyleStrategy;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 
 /**
  * Load default handler
@@ -30,7 +30,7 @@ public class DefaultWriteHandlerLoader {
         headWriteFont.setFontHeightInPoints((short)14);
         headWriteFont.setBold(true);
         headWriteCellStyle.setWriteFont(headWriteFont);
-        handlerList.add(new RowCellStyleStrategy(headWriteCellStyle, new ArrayList<WriteCellStyle>()));
+        handlerList.add(new HorizontalCellStyleStrategy(headWriteCellStyle, new ArrayList<WriteCellStyle>()));
         return handlerList;
     }
 

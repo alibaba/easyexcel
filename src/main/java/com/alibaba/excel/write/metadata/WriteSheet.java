@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.excel.metadata.TableStyle;
-import com.alibaba.excel.write.style.RowCellStyleStrategy;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
 
 /**
@@ -30,7 +30,7 @@ public class WriteSheet extends WriteBasicParameter {
     private Map<Integer, Integer> columnWidthMap = new HashMap<Integer, Integer>();
     /**
      *
-     * @deprecated please use{@link RowCellStyleStrategy}
+     * @deprecated please use{@link HorizontalCellStyleStrategy}
      */
     @Deprecated
     private TableStyle tableStyle;

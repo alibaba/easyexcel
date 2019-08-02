@@ -68,9 +68,9 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             lastRowNum--;
         }
         if (!data.isEmpty()) {
-            context.writeSheetHolder().setWriteLastRowType(WriteLastRowType.HAVE_DATA);
+            writeSheetHolder.setWriteLastRowType(WriteLastRowType.HAVE_DATA);
         }
-        if (context.currentWriteHolder().isNew()) {
+        if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
             lastRowNum += context.currentWriteHolder().relativeHeadRowIndex();
         }
         for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {

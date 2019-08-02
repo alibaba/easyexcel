@@ -29,8 +29,10 @@ public class StyleUtil {
         newCellStyle.setLocked(true);
         newCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         newCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        newCellStyle.setBorderTop(BorderStyle.THIN);
         newCellStyle.setBorderBottom(BorderStyle.THIN);
         newCellStyle.setBorderLeft(BorderStyle.THIN);
+        newCellStyle.setBorderRight(BorderStyle.THIN);
         return newCellStyle;
     }
 

@@ -17,7 +17,7 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
  *
  * @author zhuangjiaju
  */
-public abstract class AbstractColumnCellStyleStrategy extends AbstractCellStyleStrategy {
+public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     private Workbook workbook;
     private Map<Integer, CellStyle> headCellStyleCache = new HashMap<Integer, CellStyle>();

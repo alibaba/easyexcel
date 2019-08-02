@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
 import com.alibaba.excel.converters.Converter;
@@ -34,7 +35,7 @@ import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
-import com.alibaba.excel.write.style.RowCellStyleStrategy;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
@@ -102,12 +103,8 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         compatibleOldCode(writeBasicParameter);
 
         // Set writeHandlerMap
-        List<WriteHandler> handlerList;
-        if (parentAbstractWriteHolder == null) {
-            handlerList = DefaultWriteHandlerLoader.loadDefaultHandler();
-        } else {
-            handlerList = new ArrayList<WriteHandler>();
-        }
+        List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
+
         // Initialization Annotation
         initAnnotationConfig(handlerList);
 
@@ -119,7 +116,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         Map<Class<? extends WriteHandler>, List<WriteHandler>> parentWriteHandlerMap = null;
         if (parentAbstractWriteHolder != null) {
             parentWriteHandlerMap = parentAbstractWriteHolder.getWriteHandlerMap();
+        } else {
+            handlerList.addAll(DefaultWriteHandlerLoader.loadDefaultHandler());
         }
+
         this.writeHandlerMap = sortAndClearUpHandler(handlerList, parentWriteHandlerMap);
 
         // Set converterMap
@@ -166,7 +166,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             writeBasicParameter.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
         }
         writeBasicParameter.getCustomWriteHandlerList()
-            .add(new RowCellStyleStrategy(
+            .add(new HorizontalCellStyleStrategy(
                 buildWriteCellStyle(tableStyle.getTableHeadFont(), tableStyle.getTableHeadBackGroundColor()),
                 buildWriteCellStyle(tableStyle.getTableContentFont(), tableStyle.getTableContentBackGroundColor())));
     }
@@ -175,6 +175,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     private WriteCellStyle buildWriteCellStyle(Font font, IndexedColors indexedColors) {
         WriteCellStyle writeCellStyle = new WriteCellStyle();
         if (indexedColors != null) {
+            writeCellStyle.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
             writeCellStyle.setFillForegroundColor(indexedColors.getIndex());
         }
         if (font != null) {
@@ -199,7 +200,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             @Override
             protected Integer columnWidth(Head head) {
                 if (columnWidthMap.containsKey(head.getColumnIndex())) {
-                    columnWidthMap.get(head.getColumnIndex());
+                    return columnWidthMap.get(head.getColumnIndex()) / 256;
                 }
                 return 20;
             }

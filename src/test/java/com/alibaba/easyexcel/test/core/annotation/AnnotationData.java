@@ -17,7 +17,7 @@ import lombok.Data;
  * @author zhuangjiaju
  */
 @Data
-@ColumnWidth(30 * 256)
+@ColumnWidth(30)
 @HeadRowHeight(15)
 @ContentRowHeight(20)
 public class AnnotationData {

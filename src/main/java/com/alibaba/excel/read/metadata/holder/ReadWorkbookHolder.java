@@ -2,6 +2,8 @@ package com.alibaba.excel.read.metadata.holder;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +78,11 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     @Deprecated
     private Boolean convertAllFiled;
 
+    /**
+     * Prevent repeating sheet
+     */
+    private Set<Integer> hasReadSheet;
+
     public ReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook, null, readWorkbook.getConvertAllFiled());
         this.readWorkbook = readWorkbook;
@@ -107,6 +114,7 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         if (readCache != null && ExcelTypeEnum.XLS == excelType) {
             LOGGER.warn("Xls not support 'readCache'!");
         }
+        this.hasReadSheet = new HashSet<Integer>();
     }
 
     public ReadWorkbook getReadWorkbook() {
@@ -187,6 +195,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
 
     public void setConvertAllFiled(Boolean convertAllFiled) {
         this.convertAllFiled = convertAllFiled;
+    }
+
+    public Set<Integer> getHasReadSheet() {
+        return hasReadSheet;
+    }
+
+    public void setHasReadSheet(Set<Integer> hasReadSheet) {
+        this.hasReadSheet = hasReadSheet;
     }
 
     @Override

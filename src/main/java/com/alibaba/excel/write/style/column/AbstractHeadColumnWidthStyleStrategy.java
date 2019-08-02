@@ -18,7 +18,8 @@ public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColum
         }
         Integer width = columnWidth(head);
         if (width != null) {
-            sheet.setColumnWidth(cell.getColumnIndex(), columnWidth(head));
+            width = width * 256;
+            sheet.setColumnWidth(cell.getColumnIndex(), width);
         }
     }
 
@@ -29,9 +30,7 @@ public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColum
      *
      * @param head
      *            Nullable
-     * @return the width in units of 1/256th of a character width . Using the Calibri font as an example, the maximum
-     *         digit width of 11 point font size is 7 pixels (at 96 dpi). If you set a column width to be eight
-     *         characters wide, e.g. you need return 8*256
+     * @return
      */
     protected abstract Integer columnWidth(Head head);
 }
