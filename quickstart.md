@@ -12,17 +12,6 @@
 ## *写Excel时一个sheet可以写多个Table<br />
 ## *写Excel时候自定义是否需要写表头<br />
 
-## 二方包依赖
-
-使用前最好咨询下最新版，或者到mvn仓库搜索先easyexcel的最新版
-
-```
-<dependency>
-	<groupId>com.alibaba</groupId>
-	<artifactId>easyexcel</artifactId>
-    <version>1.0.0-RELEASE</version>
-</dependency>
-```
 ## 读Excel
 
 使用easyexcel解析03、07版本的Excel只是ExcelTypeEnum不同，其他使用完全相同，使用者无需知道底层解析的差异。
