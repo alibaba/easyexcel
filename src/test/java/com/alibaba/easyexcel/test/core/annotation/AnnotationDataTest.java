@@ -37,8 +37,9 @@ public class AnnotationDataTest {
     }
 
     private void readAndWrite(File file) throws Exception {
-        EasyExcelFactory.write(file, AnnotationData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file, AnnotationData.class, new AnnotationDataListener()).sheet().doRead().finish();
+        EasyExcelFactory.write().file(file).head(AnnotationData.class).sheet().doWrite(data()).finish();
+        EasyExcelFactory.read().file(file).head(AnnotationData.class).registerReadListener(new AnnotationDataListener())
+            .sheet().doRead().finish();
     }
 
     private List<AnnotationData> data() throws Exception {

@@ -70,7 +70,7 @@ public class RepetitionDataTest {
     private void readAndWriteTable(File file) {
         ExcelWriter excelWriter = EasyExcelFactory.write(file, RepetitionData.class).build();
         WriteSheet writeSheet = EasyExcelFactory.writerSheet(0).build();
-        WriteTable writeTable = EasyExcelFactory.writerTable(0).build();
+        WriteTable writeTable = EasyExcelFactory.writerTable(0).relativeHeadRowIndex(0).build();
         excelWriter.write(data(), writeSheet, writeTable).write(data(), writeSheet, writeTable).finish();
         ExcelReader excelReader =
             EasyExcelFactory.read(file, RepetitionData.class, new RepetitionDataListener()).build();

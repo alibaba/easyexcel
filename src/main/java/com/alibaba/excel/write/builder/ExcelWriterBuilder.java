@@ -3,7 +3,6 @@ package com.alibaba.excel.write.builder;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,10 +142,6 @@ public class ExcelWriterBuilder {
         return file(new File(outputPathName));
     }
 
-    public ExcelWriterBuilder file(URI outputUri) {
-        return file(new File(outputUri));
-    }
-
     public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {
         writeWorkbook.setTemplateInputStream(templateInputStream);
         return this;
@@ -159,10 +154,6 @@ public class ExcelWriterBuilder {
 
     public ExcelWriterBuilder withTemplate(String pathName) {
         return withTemplate(new File(pathName));
-    }
-
-    public ExcelWriterBuilder withTemplate(URI uri) {
-        return withTemplate(new File(uri));
     }
 
     /**

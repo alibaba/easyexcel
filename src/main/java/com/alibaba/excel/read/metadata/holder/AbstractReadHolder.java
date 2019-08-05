@@ -14,6 +14,7 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.CellData;
@@ -127,6 +128,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                             throw new ExcelAnalysisException("Listen error!", exception);
                         }
                     }
+                }
+                if (!readListener.hasNext(analysisContext)) {
+                    throw new ExcelAnalysisStopException();
                 }
             }
             return;

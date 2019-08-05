@@ -160,6 +160,8 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
             xmlReader.setContentHandler(handler);
             xmlReader.parse(inputSource);
             inputStream.close();
+        } catch (ExcelAnalysisException e) {
+            throw e;
         } catch (Exception e) {
             throw new ExcelAnalysisException(e);
         } finally {

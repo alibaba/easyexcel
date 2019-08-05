@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+
 /**
  * Excel基础模型
  *
@@ -17,6 +19,7 @@ public class BaseRowModel {
     /**
      * 每列样式
      */
+    @ExcelIgnore
     private Map<Integer, CellStyle> cellStyleMap = new HashMap<Integer, CellStyle>();
 
     public void addStyle(Integer row, CellStyle cellStyle) {

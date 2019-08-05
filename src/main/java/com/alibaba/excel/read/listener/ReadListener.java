@@ -5,14 +5,14 @@ import com.alibaba.excel.event.Listener;
 
 /**
  * Interface to listen for read results
- * 
+ *
  * @author zhuangjiaju
  */
 public interface ReadListener<T> extends Listener {
     /**
      * All listeners receive this method when any one Listener does an error report. If an exception is thrown here, the
      * entire read will terminate.
-     * 
+     *
      * @param exception
      * @param context
      * @throws Exception
@@ -23,7 +23,7 @@ public interface ReadListener<T> extends Listener {
      * when analysis one row trigger invoke function.
      *
      * @param data
-     *            one row value. Is is same as {@link AnalysisContext#currentRowAnalysisResult()}
+     *            one row value. Is is same as {@link AnalysisContext#readRowHolder()}
      * @param context
      *            analysis context
      */

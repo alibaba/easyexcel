@@ -200,8 +200,8 @@ public class WriteContextImpl implements WriteContext {
         }
         int lastRowNum = writeSheetHolder.getSheet().getLastRowNum();
         // 'lastRowNum' doesn't matter if it has one or zero,is's zero
-        if (lastRowNum == 0 && WriteLastRowType.HAVE_DATA == writeSheetHolder.getWriteLastRowType()) {
-            lastRowNum = 1;
+        if (WriteLastRowType.HAVE_DATA == writeSheetHolder.getWriteLastRowType()) {
+            lastRowNum++;
         }
         writeSheetHolder.setWriteLastRowType(WriteLastRowType.HAVE_DATA);
         int rowIndex = lastRowNum + currentWriteHolder.relativeHeadRowIndex();

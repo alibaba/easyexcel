@@ -1,7 +1,9 @@
 package com.alibaba.easyexcel.test.core.compatibility;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,16 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.metadata.TableStyle;
+import com.alibaba.excel.parameter.AnalysisParam;
+import com.alibaba.excel.parameter.GenerateParam;
 
 /**
  *
@@ -47,8 +53,12 @@ public class CompatibilityDataTest {
 
     private void readAndWrite(File file) throws Exception {
         OutputStream out = new FileOutputStream(file);
-        ExcelWriter writer = EasyExcelFactory.getWriter(out);
-        // sheet1 width,string head,stirng data
+        GenerateParam generateParam = new GenerateParam("", null, out);
+        generateParam.setSheetName("");
+        generateParam.setOutputStream(out);
+        generateParam.setClazz(null);
+        ExcelWriter writer = new ExcelWriter(generateParam);
+        // sheet1 width,string head,string data
         Sheet sheet1 = new Sheet(1, 3);
         sheet1.setSheetName("第一个sheet");
         Map columnWidth = new HashMap();
@@ -60,8 +70,10 @@ public class CompatibilityDataTest {
 
         // sheet2 style,class head
         Sheet sheet2 = new Sheet(2, 3, CompatibilityData.class, "第二个sheet", null);
+        sheet2.setStartRow(5);
         sheet2.setTableStyle(style());
         writer.write(data(), sheet2);
+        writer.merge(8, 8, 0, 1);
 
         // sheet3 table
         Sheet sheet3 = new Sheet(3, 0);
@@ -78,8 +90,23 @@ public class CompatibilityDataTest {
         writer.finish();
         out.close();
 
-        // EasyExcelFactory.write(file, AnnotationData.class).sheet().doWrite(data()).finish();
-        // EasyExcelFactory.read(file, AnnotationData.class, new AnnotationDataListener()).sheet().doRead().finish();
+        InputStream inputStream = new FileInputStream(file);
+        List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(1, 1));
+        Assert.assertEquals(data.size(), 1);
+        List<String> dataList = (List<String>)data.get(0);
+        Assert.assertEquals(dataList.get(0), "字符串00");
+        inputStream.close();
+
+        inputStream = new FileInputStream(file);
+        AnalysisParam param = new AnalysisParam(inputStream, null, new Object());
+        param.setIn(inputStream);
+        param.setExcelTypeEnum(null);
+        param.setCustomContent(null);
+        ExcelReader excelReader = new ExcelReader(param, new CompatibilityDataListener());
+        excelReader.read(new Sheet(2, 6));
+        Assert.assertEquals(excelReader.getSheets().size(), 3);
+        Assert.assertTrue(excelReader.getAnalysisContext() != null);
+        inputStream.close();
     }
 
     private List<List<String>> head() {
@@ -96,8 +123,8 @@ public class CompatibilityDataTest {
     private List<List<Object>> listData() {
         List<List<Object>> list = new ArrayList<List<Object>>();
         List<Object> data0 = new ArrayList<Object>();
-        data0.add("字符串0");
-        data0.add(1);
+        data0.add("字符串00");
+        data0.add(11);
         list.add(data0);
         return list;
     }

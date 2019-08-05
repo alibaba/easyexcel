@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.parameter.GenerateParam;
@@ -187,17 +186,13 @@ public class ExcelWriter {
     public ExcelWriter write(List data, Sheet sheet, Table table) {
         WriteSheet writeSheet = null;
         if (sheet != null) {
-            if (sheet.getStartRow() != 0) {
-                throw new ExcelGenerateException(
-                    "Specifying a line to start is no longer supported.Please 'WriteSheet.relativeHeadRowIndex' him instead.");
-            }
             writeSheet = new WriteSheet();
             writeSheet.setSheetNo(sheet.getSheetNo() - 1);
             writeSheet.setSheetName(sheet.getSheetName());
             writeSheet.setClazz(sheet.getClazz());
             writeSheet.setHead(sheet.getHead());
             writeSheet.setTableStyle(sheet.getTableStyle());
-            writeSheet.setRelativeHeadRowIndex(sheet.getHeadLineMun());
+            writeSheet.setRelativeHeadRowIndex(sheet.getStartRow());
             writeSheet.setColumnWidthMap(sheet.getColumnWidthMap());
         }
 

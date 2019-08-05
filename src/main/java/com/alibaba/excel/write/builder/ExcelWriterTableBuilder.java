@@ -12,7 +12,7 @@ import com.alibaba.excel.write.metadata.WriteTable;
 
 /**
  * Build sheet
- * 
+ *
  * @author zhuangjiaju
  */
 public class ExcelWriterTableBuilder {
@@ -32,6 +32,7 @@ public class ExcelWriterTableBuilder {
     public ExcelWriterTableBuilder(ExcelWriter excelWriter, WriteSheet writeSheet) {
         this.excelWriter = excelWriter;
         this.writeSheet = writeSheet;
+        this.writeTable = new WriteTable();
     }
 
     /**
@@ -126,6 +127,13 @@ public class ExcelWriterTableBuilder {
         }
         excelWriter.write(data, writeSheet, build());
         return new ExcelWriterTableBuilder(excelWriter, writeSheet);
+    }
+
+    public void finish() {
+        if (excelWriter == null) {
+            throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
+        }
+        excelWriter.finish();
     }
 
 }

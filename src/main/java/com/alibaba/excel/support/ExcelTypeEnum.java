@@ -36,7 +36,6 @@ public enum ExcelTypeEnum {
                     String fileName = file.getName();
                     if (fileName.endsWith(XLSX.getValue())) {
                         return XLSX;
-
                     } else if (fileName.endsWith(XLS.getValue())) {
                         return XLS;
                     } else {

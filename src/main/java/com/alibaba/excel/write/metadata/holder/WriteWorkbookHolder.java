@@ -1,5 +1,6 @@
 package com.alibaba.excel.write.metadata.holder;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -85,7 +86,13 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.outputStream = writeWorkbook.getOutputStream();
         }
-        this.templateInputStream = writeWorkbook.getTemplateInputStream();
+        if (writeWorkbook.getTemplateInputStream() != null) {
+            if (writeWorkbook.getTemplateInputStream().markSupported()) {
+                this.templateInputStream = writeWorkbook.getTemplateInputStream();
+            } else {
+                this.templateInputStream = new BufferedInputStream(writeWorkbook.getTemplateInputStream());
+            }
+        }
         this.templateFile = writeWorkbook.getTemplateFile();
         if (writeWorkbook.getAutoCloseStream() == null) {
             this.autoCloseStream = Boolean.TRUE;

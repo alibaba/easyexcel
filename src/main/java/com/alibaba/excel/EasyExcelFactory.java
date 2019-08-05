@@ -3,11 +3,8 @@ package com.alibaba.excel;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -64,15 +61,7 @@ public class EasyExcelFactory {
             @Override
             public void doAfterAllAnalysed(AnalysisContext context) {}
         }, false).read(sheet);
-        if (rows.size() == 0 || !(rows.get(0) instanceof Map)) {
-            return rows;
-        }
-        List<Object> listRow = new ArrayList<Object>();
-        for (Object obj : rows) {
-            Map<Integer, String> oneRow = (Map<Integer, String>)obj;
-            listRow.add(new ArrayList<String>(new TreeMap<Integer, String>(oneRow).values()));
-        }
-        return listRow;
+        return rows;
     }
 
     /**
@@ -261,32 +250,6 @@ public class EasyExcelFactory {
     public static ExcelWriterBuilder write(OutputStream outputStream, Class head) {
         ExcelWriterBuilder excelWriterBuilder = new ExcelWriterBuilder();
         excelWriterBuilder.file(outputStream);
-        if (head != null) {
-            excelWriterBuilder.head(head);
-        }
-        return excelWriterBuilder;
-    }
-
-    /**
-     * Build excel the write
-     *
-     * @param uri
-     * @return
-     */
-    public static ExcelWriterBuilder write(URI uri) {
-        return write(uri, null);
-    }
-
-    /**
-     * Build excel the write
-     *
-     * @param uri
-     * @param head
-     * @return
-     */
-    public static ExcelWriterBuilder write(URI uri, Class head) {
-        ExcelWriterBuilder excelWriterBuilder = new ExcelWriterBuilder();
-        excelWriterBuilder.file(uri);
         if (head != null) {
             excelWriterBuilder.head(head);
         }
@@ -486,47 +449,6 @@ public class EasyExcelFactory {
     public static ExcelReaderBuilder read(InputStream inputStream, Class head, ReadListener readListener) {
         ExcelReaderBuilder excelReaderBuilder = new ExcelReaderBuilder();
         excelReaderBuilder.file(inputStream);
-        if (head != null) {
-            excelReaderBuilder.head(head);
-        }
-        if (readListener != null) {
-            excelReaderBuilder.registerReadListener(readListener);
-        }
-        return excelReaderBuilder;
-    }
-
-    /**
-     * Build excel the read
-     *
-     * @param uri
-     * @return
-     */
-    public static ExcelReaderBuilder read(URI uri) {
-        return read(uri, null, null);
-    }
-
-    /**
-     * Build excel the read
-     *
-     * @param uri
-     * @param readListener
-     * @return
-     */
-    public static ExcelReaderBuilder read(URI uri, ReadListener readListener) {
-        return read(uri, null, readListener);
-    }
-
-    /**
-     * Build excel the read
-     *
-     * @param uri
-     * @param head
-     * @param readListener
-     * @return
-     */
-    public static ExcelReaderBuilder read(URI uri, Class head, ReadListener readListener) {
-        ExcelReaderBuilder excelReaderBuilder = new ExcelReaderBuilder();
-        excelReaderBuilder.file(uri);
         if (head != null) {
             excelReaderBuilder.head(head);
         }

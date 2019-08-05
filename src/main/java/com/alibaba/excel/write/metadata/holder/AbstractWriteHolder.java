@@ -183,6 +183,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             writeFont.setFontName(font.getFontName());
             writeFont.setFontHeightInPoints(font.getFontHeightInPoints());
             writeFont.setBold(font.isBold());
+            writeCellStyle.setWriteFont(writeFont);
         }
         return writeCellStyle;
     }
@@ -263,12 +264,16 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
     protected Map<Class<? extends WriteHandler>, List<WriteHandler>> sortAndClearUpHandler(
         List<WriteHandler> handlerList, Map<Class<? extends WriteHandler>, List<WriteHandler>> parentHandlerMap) {
+
         // add
+        Set<WriteHandler> noRepeatSet = new HashSet<WriteHandler>();
         if (parentHandlerMap != null) {
             for (List<WriteHandler> parentHandlerList : parentHandlerMap.values()) {
-                handlerList.addAll(parentHandlerList);
+                noRepeatSet.addAll(parentHandlerList);
             }
         }
+        handlerList.addAll(noRepeatSet);
+
         // sort
         Map<Integer, List<WriteHandler>> orderExcelWriteHandlerMap = new TreeMap<Integer, List<WriteHandler>>();
         for (WriteHandler handler : handlerList) {

@@ -137,6 +137,7 @@ public class ExcelReader {
         readWorkbook.setMandatoryUseInputStream(Boolean.TRUE);
         readWorkbook.setReadCache(new MapCache());
         readWorkbook.setConvertAllFiled(Boolean.FALSE);
+        readWorkbook.setDefaultReturnMap(Boolean.FALSE);
         excelAnalyser = new ExcelAnalyserImpl(readWorkbook);
     }
 
@@ -211,7 +212,7 @@ public class ExcelReader {
 
     /**
      * Context for the entire execution process
-     * 
+     *
      * @return
      */
     public AnalysisContext analysisContext() {
@@ -221,7 +222,7 @@ public class ExcelReader {
 
     /**
      * Current executor
-     * 
+     *
      * @return
      */
     public ExcelExecutor excelExecutor() {
@@ -252,7 +253,7 @@ public class ExcelReader {
     }
 
     /**
-     * 
+     *
      * @return
      * @deprecated please use {@link #analysisContext()}
      */
@@ -274,7 +275,7 @@ public class ExcelReader {
 
     /**
      * Prevents calls to {@link #finish} from freeing the cache
-     * 
+     *
      * @throws Throwable
      */
     @Override

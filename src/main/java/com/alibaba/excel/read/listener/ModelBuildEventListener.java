@@ -1,6 +1,8 @@
 package com.alibaba.excel.read.listener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.context.AnalysisContext;
@@ -33,21 +35,37 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
             context.readRowHolder().setCurrentRowAnalysisResult(buildUserModel(cellDataMap, currentReadHolder));
             return;
         }
-        context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(cellDataMap, currentReadHolder));
+        context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(cellDataMap, currentReadHolder, context));
     }
 
-    private Object buildStringList(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder) {
-        Map<Integer, String> map = new HashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
-        for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
-            CellData cellData = entry.getValue();
-            if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                map.put(entry.getKey(), null);
-                continue;
+    private Object buildStringList(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder,
+        AnalysisContext context) {
+        if (context.readWorkbookHolder().getDefaultReturnMap()) {
+            Map<Integer, String> map = new HashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
+            for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
+                CellData cellData = entry.getValue();
+                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
+                    map.put(entry.getKey(), null);
+                    continue;
+                }
+                map.put(entry.getKey(), (String)convertValue(cellData, String.class, null,
+                    currentReadHolder.converterMap(), currentReadHolder.globalConfiguration()));
             }
-            map.put(entry.getKey(), (String)convertValue(cellData, String.class, null, currentReadHolder.converterMap(),
-                currentReadHolder.globalConfiguration()));
+            return map;
+        } else {
+            // Compatible with the old code the old code returns a list
+            List<String> list = new ArrayList<String>();
+            for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
+                CellData cellData = entry.getValue();
+                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
+                    list.add(null);
+                    continue;
+                }
+                list.add((String)convertValue(cellData, String.class, null, currentReadHolder.converterMap(),
+                    currentReadHolder.globalConfiguration()));
+            }
+            return list;
         }
-        return map;
     }
 
     private Object buildUserModel(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder) {

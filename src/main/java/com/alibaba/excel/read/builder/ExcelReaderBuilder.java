@@ -2,7 +2,6 @@ package com.alibaba.excel.read.builder;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * Build ExcelWriter
- * 
+ *
  * @author zhuangjiaju
  */
 public class ExcelReaderBuilder {
@@ -64,14 +63,6 @@ public class ExcelReaderBuilder {
         return file(new File(pathName));
     }
 
-    /**
-     * Read file
-     * <p>
-     * If 'inputStream' and 'file' all not empty,file first
-     */
-    public ExcelReaderBuilder file(URI uri) {
-        return file(new File(uri));
-    }
 
     /**
      * Mandatory use 'inputStream' .Default is false.
@@ -96,7 +87,7 @@ public class ExcelReaderBuilder {
     /**
      * This object can be read in the Listener {@link AnalysisEventListener#invoke(Object, AnalysisContext)}
      * {@link AnalysisContext#getCustom()}
-     * 
+     *
      * @param customObject
      * @return
      */
@@ -107,7 +98,7 @@ public class ExcelReaderBuilder {
 
     /**
      * A cache that stores temp data to save memory.Default use {@link com.alibaba.excel.cache.Ehcache}
-     * 
+     *
      * @param readCache
      * @return
      */
@@ -117,28 +108,12 @@ public class ExcelReaderBuilder {
     }
 
     /**
-     * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
-     * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
-     * <p>
-     * Default true
-     *
-     * @param convertAllFiled
-     * @return
-     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
-     */
-    @Deprecated
-    public ExcelReaderBuilder convertAllFiled(Boolean convertAllFiled) {
-        readWorkbook.setConvertAllFiled(convertAllFiled);
-        return this;
-    }
-
-    /**
      * Count the number of added heads when read sheet.
      *
      * <li>0 - This Sheet has no head ,since the first row are the data
      * <li>1 - This Sheet has one row head , this is the default
      * <li>2 - This Sheet has two row head ,since the third row is the data
-     * 
+     *
      * @param headRowNumber
      * @return
      */
@@ -201,7 +176,7 @@ public class ExcelReaderBuilder {
      * true if date uses 1904 windowing, or false if using 1900 date windowing.
      *
      * default is false
-     * 
+     *
      * @param use1904windowing
      * @return
      */
@@ -212,7 +187,7 @@ public class ExcelReaderBuilder {
 
     /**
      * Automatic trim includes sheet name and content
-     * 
+     *
      * @param autoTrim
      * @return
      */

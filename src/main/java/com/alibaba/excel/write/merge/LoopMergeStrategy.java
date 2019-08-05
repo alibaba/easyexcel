@@ -8,7 +8,7 @@ import com.alibaba.excel.metadata.Head;
 
 /**
  * The regions of the loop merge
- * 
+ *
  * @author zhuangjiaju
  */
 public class LoopMergeStrategy extends AbstractMergeStrategy {
@@ -26,8 +26,8 @@ public class LoopMergeStrategy extends AbstractMergeStrategy {
     @Override
     protected void merge(Sheet sheet, Cell cell, Head head, int relativeRowIndex) {
         if (relativeRowIndex % eachRow == 0 && head.getColumnIndex() % eachColumn == 0) {
-            CellRangeAddress cellRangeAddress = new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex() + eachRow,
-                cell.getColumnIndex(), cell.getColumnIndex() + eachColumn);
+            CellRangeAddress cellRangeAddress = new CellRangeAddress(cell.getRowIndex(),
+                cell.getRowIndex() + eachRow - 1, cell.getColumnIndex(), cell.getColumnIndex() + eachColumn - 1);
             sheet.addMergedRegion(cellRangeAddress);
         }
     }

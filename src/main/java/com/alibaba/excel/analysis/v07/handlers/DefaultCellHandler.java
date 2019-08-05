@@ -127,15 +127,23 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             case DIRECT_STRING:
             case STRING:
             case ERROR:
-                currentCellData.setStringValue(currentCellValue);
+                if (currentCellData.getStringValue() == null) {
+                    currentCellData.setStringValue(currentCellValue);
+                } else {
+                    currentCellData.setStringValue(currentCellData.getStringValue() + currentCellValue);
+                }
                 break;
             case BOOLEAN:
-                currentCellData.setBooleanValue(BooleanUtils.valueOf(currentCellValue));
+                if (currentCellData.getBooleanValue() == null) {
+                    currentCellData.setBooleanValue(BooleanUtils.valueOf(currentCellValue));
+                }
                 break;
             case NUMBER:
             case EMPTY:
                 currentCellData.setType(CellDataTypeEnum.NUMBER);
-                currentCellData.setDoubleValue(Double.valueOf(currentCellValue));
+                if (currentCellData.getDoubleValue() == null) {
+                    currentCellData.setDoubleValue(Double.valueOf(currentCellValue));
+                }
                 break;
             default:
                 throw new IllegalStateException("Cannot set values now");

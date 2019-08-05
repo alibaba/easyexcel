@@ -1,6 +1,8 @@
 package com.alibaba.excel.write;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.enums.WriteLastRowType;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.exception.ExcelGenerateException;
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
@@ -50,7 +53,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         } catch (RuntimeException e) {
             finish();
             throw e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             finish();
             throw new ExcelGenerateException(e);
         }
@@ -73,9 +76,11 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
             lastRowNum += context.currentWriteHolder().relativeHeadRowIndex();
         }
+        // Beanmap is out of order,so use fieldList
+        List<Field> fieldList = new ArrayList<Field>();
         for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {
             int n = relativeRowIndex + lastRowNum + 1;
-            addOneRowOfDataToExcel(data.get(relativeRowIndex), n, relativeRowIndex);
+            addOneRowOfDataToExcel(data.get(relativeRowIndex), n, relativeRowIndex, fieldList);
         }
     }
 
@@ -93,7 +98,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         } catch (RuntimeException e) {
             finish();
             throw e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             finish();
             throw new ExcelGenerateException(e);
         }
@@ -112,14 +117,14 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         context.writeSheetHolder().getSheet().addMergedRegion(cra);
     }
 
-    private void addOneRowOfDataToExcel(Object oneRowData, int n, int relativeRowIndex) {
+    private void addOneRowOfDataToExcel(Object oneRowData, int n, int relativeRowIndex, List<Field> fieldList) {
         beforeRowCreate(n, relativeRowIndex);
         Row row = WorkBookUtil.createRow(context.writeSheetHolder().getSheet(), n);
         afterRowCreate(row, relativeRowIndex);
         if (oneRowData instanceof List) {
             addBasicTypeToExcel((List)oneRowData, row, relativeRowIndex);
         } else {
-            addJavaObjectToExcel(oneRowData, row, relativeRowIndex);
+            addJavaObjectToExcel(oneRowData, row, relativeRowIndex, fieldList);
         }
     }
 
@@ -188,7 +193,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         afterCellCreate(head, cell, relativeRowIndex);
     }
 
-    private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex) {
+    private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex, List<Field> fieldList) {
         WriteHolder currentWriteHolder = context.currentWriteHolder();
         BeanMap beanMap = BeanMap.create(oneRowData);
         Set<String> beanMapHandledSet = new HashSet<String>();
@@ -220,16 +225,35 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             cellIndex++;
         }
         Map<String, Field> ignoreMap = context.currentWriteHolder().excelWriteHeadProperty().getIgnoreMap();
-        Set<Map.Entry<String, Object>> entrySet = beanMap.entrySet();
-        for (Map.Entry<String, Object> entry : entrySet) {
-            if (entry.getValue() == null || beanMapHandledSet.contains(entry.getKey())
-                || ignoreMap.containsKey(entry.getKey())) {
+        initFieldList(oneRowData.getClass(), fieldList);
+        for (Field field : fieldList) {
+            String filedName = field.getName();
+            boolean uselessData = !beanMap.containsKey(filedName) || beanMapHandledSet.contains(filedName)
+                || ignoreMap.containsKey(filedName);
+            if (uselessData) {
+                continue;
+            }
+            Object value = beanMap.get(filedName);
+            if (value == null) {
                 continue;
             }
             beforeCellCreate(row, null, relativeRowIndex);
             Cell cell = WorkBookUtil.createCell(row, cellIndex++);
-            converterAndSet(currentWriteHolder, entry.getValue().getClass(), cell, entry.getValue(), null);
+            converterAndSet(currentWriteHolder, value.getClass(), cell, value, null);
             afterCellCreate(null, cell, relativeRowIndex);
+        }
+    }
+
+    private void initFieldList(Class clazz, List<Field> fieldList) {
+        if (!fieldList.isEmpty()) {
+            return;
+        }
+        Class tempClass = clazz;
+        while (tempClass != null) {
+            if (tempClass != BaseRowModel.class) {
+                Collections.addAll(fieldList, tempClass.getDeclaredFields());
+            }
+            tempClass = tempClass.getSuperclass();
         }
     }
 

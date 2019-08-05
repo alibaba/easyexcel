@@ -2,11 +2,15 @@ package com.alibaba.excel.analysis;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
@@ -17,6 +21,7 @@ import com.alibaba.excel.util.FileUtils;
  * @author jipengfei
  */
 public class ExcelAnalyserImpl implements ExcelAnalyser {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelAnalyserImpl.class);
 
     private AnalysisContext analysisContext;
 
@@ -29,7 +34,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         } catch (RuntimeException e) {
             finish();
             throw e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             finish();
             throw new ExcelAnalysisException(e);
         }
@@ -56,12 +61,18 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     public void analysis(ReadSheet readSheet) {
         try {
             analysisContext.currentSheet(excelExecutor, readSheet);
-            excelExecutor.execute();
+            try {
+                excelExecutor.execute();
+            } catch (ExcelAnalysisStopException e) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Custom stop!");
+                }
+            }
             analysisContext.readSheetHolder().notifyAfterAllAnalysed(analysisContext);
         } catch (RuntimeException e) {
             finish();
             throw e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             finish();
             throw new ExcelAnalysisException(e);
         }

@@ -53,11 +53,17 @@ public class ReadWorkbook extends ReadBasicParameter {
      * The default is all excel objects.Default is true.
      * <li>if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
      * <li>if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
-     * 
+     *
      * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
      */
     @Deprecated
     private Boolean convertAllFiled;
+
+    /**
+     * List is returned by default, now map is returned by default
+     */
+    @Deprecated
+    private Boolean defaultReturnMap;
 
     public ExcelTypeEnum getExcelType() {
         return excelType;
@@ -121,5 +127,13 @@ public class ReadWorkbook extends ReadBasicParameter {
 
     public void setConvertAllFiled(Boolean convertAllFiled) {
         this.convertAllFiled = convertAllFiled;
+    }
+
+    public Boolean getDefaultReturnMap() {
+        return defaultReturnMap;
+    }
+
+    public void setDefaultReturnMap(Boolean defaultReturnMap) {
+        this.defaultReturnMap = defaultReturnMap;
     }
 }

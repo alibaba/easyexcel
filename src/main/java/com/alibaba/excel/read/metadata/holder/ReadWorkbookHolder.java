@@ -1,5 +1,6 @@
 package com.alibaba.excel.read.metadata.holder;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -79,6 +80,12 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     private Boolean convertAllFiled;
 
     /**
+     * List is returned by default, now map is returned by default
+     */
+    @Deprecated
+    private Boolean defaultReturnMap;
+
+    /**
      * Prevent repeating sheet
      */
     private Set<Integer> hasReadSheet;
@@ -86,7 +93,13 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     public ReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook, null, readWorkbook.getConvertAllFiled());
         this.readWorkbook = readWorkbook;
-        this.inputStream = readWorkbook.getInputStream();
+        if (readWorkbook.getInputStream() != null) {
+            if (readWorkbook.getInputStream().markSupported()) {
+                this.inputStream = readWorkbook.getInputStream();
+            } else {
+                this.inputStream = new BufferedInputStream(readWorkbook.getInputStream());
+            }
+        }
         this.file = readWorkbook.getFile();
         if (file == null && inputStream == null) {
             throw new ExcelAnalysisException("File and inputStream must be a non-null.");
@@ -113,6 +126,11 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.readCache = readWorkbook.getReadCache();
         if (readCache != null && ExcelTypeEnum.XLS == excelType) {
             LOGGER.warn("Xls not support 'readCache'!");
+        }
+        if (readWorkbook.getDefaultReturnMap() == null) {
+            this.defaultReturnMap = Boolean.TRUE;
+        } else {
+            this.defaultReturnMap = readWorkbook.getDefaultReturnMap();
         }
         this.hasReadSheet = new HashSet<Integer>();
     }
@@ -203,6 +221,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
 
     public void setHasReadSheet(Set<Integer> hasReadSheet) {
         this.hasReadSheet = hasReadSheet;
+    }
+
+    public Boolean getDefaultReturnMap() {
+        return defaultReturnMap;
+    }
+
+    public void setDefaultReturnMap(Boolean defaultReturnMap) {
+        this.defaultReturnMap = defaultReturnMap;
     }
 
     @Override
