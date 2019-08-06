@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.DateUtils;
 
 /**
@@ -37,9 +37,9 @@ public class AnnotationDataTest {
     }
 
     private void readAndWrite(File file) throws Exception {
-        EasyExcelFactory.write().file(file).head(AnnotationData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read().file(file).head(AnnotationData.class).registerReadListener(new AnnotationDataListener())
-            .sheet().doRead().finish();
+        EasyExcel.write().file(file).head(AnnotationData.class).sheet().doWrite(data());
+        EasyExcel.read().file(file).head(AnnotationData.class).registerReadListener(new AnnotationDataListener())
+            .sheet().doRead();
     }
 
     private List<AnnotationData> data() throws Exception {

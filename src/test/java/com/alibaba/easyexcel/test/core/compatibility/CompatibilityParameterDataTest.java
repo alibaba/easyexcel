@@ -12,7 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
@@ -42,7 +42,7 @@ public class CompatibilityParameterDataTest {
 
     private void readAndWrite1(File file) throws Exception {
         OutputStream out = new FileOutputStream(file);
-        ExcelWriter writer = EasyExcelFactory.getWriter(out);
+        ExcelWriter writer = EasyExcel.getWriter(out);
         Sheet sheet1 = new Sheet(1, 0);
         sheet1.setSheetName("第一个sheet");
         writer.write0(data(), sheet1);
@@ -50,13 +50,13 @@ public class CompatibilityParameterDataTest {
         out.close();
 
         InputStream inputStream = new FileInputStream(file);
-        EasyExcelFactory.readBySax(inputStream, new Sheet(1, 0), new CompatibilityDataListener());
+        EasyExcel.readBySax(inputStream, new Sheet(1, 0), new CompatibilityDataListener());
         inputStream.close();
     }
 
     private void readAndWrite2(File file) throws Exception {
         OutputStream out = new FileOutputStream(file);
-        ExcelWriter writer = EasyExcelFactory.getWriter(out, null, false);
+        ExcelWriter writer = EasyExcel.getWriter(out, null, false);
         Sheet sheet1 = new Sheet(1, 0);
         sheet1.setSheetName("第一个sheet");
         writer.write0(data(), sheet1);
@@ -64,7 +64,7 @@ public class CompatibilityParameterDataTest {
         out.close();
 
         InputStream inputStream = new FileInputStream(file);
-        EasyExcelFactory.readBySax(inputStream, new Sheet(1, 0), new CompatibilityDataListener());
+        EasyExcel.readBySax(inputStream, new Sheet(1, 0), new CompatibilityDataListener());
         inputStream.close();
     }
 
@@ -101,7 +101,7 @@ public class CompatibilityParameterDataTest {
 
     private void readAndWrite5(File file) throws Exception {
         OutputStream out = new FileOutputStream(file);
-        ExcelWriter writer = EasyExcelFactory.getWriterWithTemp(null, out, null, false);
+        ExcelWriter writer = EasyExcel.getWriterWithTemp(null, out, null, false);
         Sheet sheet1 = new Sheet(1, 0);
         sheet1.setSheetName("第一个sheet");
         writer.write0(data(), sheet1, null);
@@ -109,14 +109,14 @@ public class CompatibilityParameterDataTest {
         out.close();
 
         InputStream inputStream = new FileInputStream(file);
-        ExcelReader excelReader = EasyExcelFactory.getReader(inputStream, new CompatibilityDataListener());
+        ExcelReader excelReader = EasyExcel.getReader(inputStream, new CompatibilityDataListener());
         excelReader.read(new Sheet(1, 0));
         inputStream.close();
     }
 
     private void readAndWrite6(File file) throws Exception {
         OutputStream out = new FileOutputStream(file);
-        ExcelWriter writer = EasyExcelFactory.getWriterWithTempAndHandler(null, out, null, false, null);
+        ExcelWriter writer = EasyExcel.getWriterWithTempAndHandler(null, out, null, false, null);
         Sheet sheet1 = new Sheet(1, 0);
         sheet1.setSheetName("第一个sheet");
         writer.write0(data(), sheet1, null);
@@ -124,7 +124,7 @@ public class CompatibilityParameterDataTest {
         out.close();
 
         InputStream inputStream = new FileInputStream(file);
-        ExcelReader excelReader = EasyExcelFactory.getReader(inputStream, new CompatibilityDataListener());
+        ExcelReader excelReader = EasyExcel.getReader(inputStream, new CompatibilityDataListener());
         excelReader.read(new Sheet(1, 0));
         inputStream.close();
     }

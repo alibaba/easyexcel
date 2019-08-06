@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.DateUtils;
 
 /**
@@ -38,8 +38,8 @@ public class ListHeadDataTest {
     }
 
     private void readAndWrite(File file) throws Exception {
-        EasyExcelFactory.write(file).head(head()).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file).registerReadListener(new ListHeadDataListener()).sheet().doRead().finish();
+        EasyExcel.write(file).head(head()).sheet().doWrite(data());
+        EasyExcel.read(file).registerReadListener(new ListHeadDataListener()).sheet().doRead();
     }
 
     private List<List<String>> head() {

@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Font;
@@ -91,7 +91,7 @@ public class CompatibilityDataTest {
         out.close();
 
         InputStream inputStream = new FileInputStream(file);
-        List<Object> data = EasyExcelFactory.read(inputStream, new Sheet(1, 1));
+        List<Object> data = EasyExcel.read(inputStream, new Sheet(1, 1));
         Assert.assertEquals(data.size(), 1);
         List<String> dataList = (List<String>)data.get(0);
         Assert.assertEquals(dataList.get(0), "字符串00");

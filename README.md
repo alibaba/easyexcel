@@ -45,8 +45,8 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
     @Test
     public void simpleRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
-        EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead().finish();
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
+        EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead();
     }
 ```
 
@@ -60,10 +60,10 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
      */
     @Test
     public void simpleWrite() {
-        String fileName = TestFileUtil.getPath() + "write.xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后千万别忘记 finish
+        String fileName = TestFileUtil.getPath() + "write" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
-        EasyExcelFactory.write(fileName, DemoData.class).sheet("模板").doWrite(data()).finish();
+        EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
     }
 ```
 
@@ -81,7 +81,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("Content-disposition", "attachment;filename=demo.xlsx");
-        EasyExcelFactory.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data()).finish();
+        EasyExcel.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data());
     }
 
     /**
@@ -93,8 +93,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
     @PostMapping("upload")
     @ResponseBody
     public String upload(MultipartFile file) throws IOException {
-        EasyExcelFactory.read(file.getInputStream(), UploadData.class, new UploadDataListener()).sheet().doRead()
-            .finish();
+        EasyExcel.read(file.getInputStream(), UploadData.class, new UploadDataListener()).sheet().doRead();
         return "success";
     }
 ```

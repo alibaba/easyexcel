@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 
 /**
  *
@@ -41,9 +41,9 @@ public class ExceptionDataTest {
     }
 
     private void readAndWrite(File file) throws Exception {
-        EasyExcelFactory.write(new FileOutputStream(file), ExceptionData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(new FileInputStream(file), ExceptionData.class, new ExceptionDataListener()).sheet()
-            .doRead().finish();
+        EasyExcel.write(new FileOutputStream(file), ExceptionData.class).sheet().doWrite(data());
+        EasyExcel.read(new FileInputStream(file), ExceptionData.class, new ExceptionDataListener()).sheet()
+            .doRead();
     }
 
     private List<ExceptionData> data() {

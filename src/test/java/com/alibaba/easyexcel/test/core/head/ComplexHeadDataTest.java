@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 
 /**
  *
@@ -36,8 +36,8 @@ public class ComplexHeadDataTest {
     }
 
     private void readAndWrite(File file) {
-        EasyExcelFactory.write(file, ComplexHeadData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file, ComplexHeadData.class, new ComplexDataListener()).sheet().doRead().finish();
+        EasyExcel.write(file, ComplexHeadData.class).sheet().doWrite(data());
+        EasyExcel.read(file, ComplexHeadData.class, new ComplexDataListener()).sheet().doRead();
     }
 
     private List<ComplexHeadData> data() {

@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 
 /**
  *
@@ -39,19 +39,17 @@ public class TemplateDataTest {
     }
 
     private void readAndWrite07(File file) {
-        EasyExcelFactory.write(file, TemplateData.class)
+        EasyExcel.write(file, TemplateData.class)
             .withTemplate(TestFileUtil.readFile("template" + File.separator + "template07.xlsx")).sheet()
-            .doWrite(data()).finish();
-        EasyExcelFactory.read(file, TemplateData.class, new TemplateDataListener()).headRowNumber(2).sheet().doRead()
-            .finish();
+            .doWrite(data());
+        EasyExcel.read(file, TemplateData.class, new TemplateDataListener()).headRowNumber(2).sheet().doRead();
     }
 
     private void readAndWrite03(File file) {
-        EasyExcelFactory.write(file, TemplateData.class)
-            .withTemplate(TestFileUtil.readFile("template" + File.separator + "template03.xls")).sheet().doWrite(data())
-            .finish();
-        EasyExcelFactory.read(file, TemplateData.class, new TemplateDataListener()).headRowNumber(2).sheet().doRead()
-            .finish();
+        EasyExcel.write(file, TemplateData.class)
+            .withTemplate(TestFileUtil.readFile("template" + File.separator + "template03.xls")).sheet()
+            .doWrite(data());
+        EasyExcel.read(file, TemplateData.class, new TemplateDataListener()).headRowNumber(2).sheet().doRead();
     }
 
     private List<TemplateData> data() {

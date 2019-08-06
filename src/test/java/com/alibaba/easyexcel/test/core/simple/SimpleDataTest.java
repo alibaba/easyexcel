@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 
 /**
  *
@@ -40,8 +40,8 @@ public class SimpleDataTest {
     }
 
     private void readAndWrite(File file) {
-        EasyExcelFactory.write(file, SimpleData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file, SimpleData.class, new SimpleDataListener()).sheet().doRead().finish();
+        EasyExcel.write(file, SimpleData.class).sheet().doWrite(data());
+        EasyExcel.read(file, SimpleData.class, new SimpleDataListener()).sheet().doRead();
     }
 
     @Test
@@ -56,13 +56,13 @@ public class SimpleDataTest {
 
     @Test
     public void T05SheetNameRead07() {
-        EasyExcelFactory.read(TestFileUtil.readFile("simple" + File.separator + "simple07.xlsx"), SimpleData.class,
-            new SimpleDataSheetNameListener()).sheet("simple").doRead().finish();
+        EasyExcel.read(TestFileUtil.readFile("simple" + File.separator + "simple07.xlsx"), SimpleData.class,
+            new SimpleDataSheetNameListener()).sheet("simple").doRead();
     }
 
     private void synchronousRead(File file) {
         // Synchronous read file
-        List<Object> list = EasyExcelFactory.read(file).head(SimpleData.class).sheet().doReadSync();
+        List<Object> list = EasyExcel.read(file).head(SimpleData.class).sheet().doReadSync();
         Assert.assertEquals(list.size(), 10);
         Assert.assertTrue(list.get(0) instanceof SimpleData);
         Assert.assertEquals(((SimpleData)list.get(0)).getName(), "姓名0");

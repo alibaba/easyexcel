@@ -11,7 +11,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.util.DateUtils;
 
@@ -42,8 +43,8 @@ public class ConverterDataTest {
     }
 
     private void readAndWrite(File file) throws Exception {
-        EasyExcelFactory.write(file, ConverterData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file, ConverterData.class, new ConverterDataListener()).sheet().doRead().finish();
+        EasyExcel.write(file, ConverterData.class).sheet().doWrite(data());
+        EasyExcel.read(file, ConverterData.class, new ConverterDataListener()).sheet().doRead();
     }
 
     @Test
@@ -57,9 +58,9 @@ public class ConverterDataTest {
     }
 
     private void readAllConverter(String fileName) {
-        EasyExcelFactory
+        EasyExcel
             .read(TestFileUtil.readFile(fileName), ReadAllConverterData.class, new ReadAllConverterDataListener())
-            .sheet().doRead().finish();
+            .sheet().doRead();
     }
 
     private List<ConverterData> data() throws Exception {

@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.cache.MapCache;
@@ -46,81 +46,79 @@ public class ParameterDataTest {
     }
 
     private void readAndWrite1() {
-        EasyExcelFactory.write(file.getPath()).head(ParameterData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file.getPath()).head(ParameterData.class)
-            .registerReadListener(new ParameterDataListener()).sheet().doRead().finish();
+        EasyExcel.write(file.getPath()).head(ParameterData.class).sheet().doWrite(data());
+        EasyExcel.read(file.getPath()).head(ParameterData.class)
+            .registerReadListener(new ParameterDataListener()).sheet().doRead();
     }
 
     private void readAndWrite2() {
-        EasyExcelFactory.write(file.getPath(), ParameterData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file.getPath(), ParameterData.class, new ParameterDataListener()).sheet().doRead()
-            .finish();
+        EasyExcel.write(file.getPath(), ParameterData.class).sheet().doWrite(data());
+        EasyExcel.read(file.getPath(), ParameterData.class, new ParameterDataListener()).sheet().doRead();
     }
 
     private void readAndWrite3() throws Exception {
-        EasyExcelFactory.write(new FileOutputStream(file)).head(ParameterData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file.getPath()).head(ParameterData.class)
-            .registerReadListener(new ParameterDataListener()).sheet().doRead().finish();
+        EasyExcel.write(new FileOutputStream(file)).head(ParameterData.class).sheet().doWrite(data());
+        EasyExcel.read(file.getPath()).head(ParameterData.class)
+            .registerReadListener(new ParameterDataListener()).sheet().doRead();
     }
 
     private void readAndWrite4() throws Exception {
-        EasyExcelFactory.write(new FileOutputStream(file), ParameterData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class).sheet().doRead()
-            .finish();
+        EasyExcel.write(new FileOutputStream(file), ParameterData.class).sheet().doWrite(data());
+        EasyExcel.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class).sheet().doRead();
     }
 
     private void readAndWrite5() throws Exception {
-        ExcelWriter excelWriter = EasyExcelFactory.write(new FileOutputStream(file)).head(ParameterData.class)
+        ExcelWriter excelWriter = EasyExcel.write(new FileOutputStream(file)).head(ParameterData.class)
             .relativeHeadRowIndex(0).build();
-        WriteSheet writeSheet = EasyExcelFactory.writerSheet(0).relativeHeadRowIndex(0).needHead(Boolean.FALSE).build();
-        WriteTable writeTable = EasyExcelFactory.writerTable(0).relativeHeadRowIndex(0).needHead(Boolean.TRUE).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet(0).relativeHeadRowIndex(0).needHead(Boolean.FALSE).build();
+        WriteTable writeTable = EasyExcel.writerTable(0).relativeHeadRowIndex(0).needHead(Boolean.TRUE).build();
         excelWriter.write(data(), writeSheet, writeTable);
         excelWriter.finish();
 
         ExcelReader excelReader =
-            EasyExcelFactory.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class)
+            EasyExcel.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class)
                 .mandatoryUseInputStream(Boolean.FALSE).autoCloseStream(Boolean.TRUE).readCache(new MapCache()).build();
-        ReadSheet readSheet = EasyExcelFactory.readSheet().head(ParameterData.class).use1904windowing(Boolean.FALSE)
+        ReadSheet readSheet = EasyExcel.readSheet().head(ParameterData.class).use1904windowing(Boolean.FALSE)
             .headRowNumber(1).sheetNo(0).sheetName("0").build();
         excelReader.read(readSheet);
         excelReader.finish();
 
-        excelReader = EasyExcelFactory.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class)
+        excelReader = EasyExcel.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class)
             .mandatoryUseInputStream(Boolean.FALSE).autoCloseStream(Boolean.TRUE).readCache(new MapCache()).build();
         excelReader.read();
         excelReader.finish();
     }
 
     private void readAndWrite6() throws Exception {
-        ExcelWriter excelWriter = EasyExcelFactory.write(new FileOutputStream(file)).head(ParameterData.class)
+        ExcelWriter excelWriter = EasyExcel.write(new FileOutputStream(file)).head(ParameterData.class)
             .relativeHeadRowIndex(0).build();
-        WriteSheet writeSheet = EasyExcelFactory.writerSheet(0).relativeHeadRowIndex(0).needHead(Boolean.FALSE).build();
-        WriteTable writeTable = EasyExcelFactory.writerTable(0).registerConverter(new StringStringConverter())
+        WriteSheet writeSheet = EasyExcel.writerSheet(0).relativeHeadRowIndex(0).needHead(Boolean.FALSE).build();
+        WriteTable writeTable = EasyExcel.writerTable(0).registerConverter(new StringStringConverter())
             .relativeHeadRowIndex(0).needHead(Boolean.TRUE).build();
         excelWriter.write(data(), writeSheet, writeTable);
         excelWriter.finish();
 
         ExcelReader excelReader =
-            EasyExcelFactory.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class)
+            EasyExcel.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class)
                 .mandatoryUseInputStream(Boolean.FALSE).autoCloseStream(Boolean.TRUE).readCache(new MapCache()).build();
-        ReadSheet readSheet = EasyExcelFactory.readSheet("0").head(ParameterData.class).use1904windowing(Boolean.FALSE)
+        ReadSheet readSheet = EasyExcel.readSheet("0").head(ParameterData.class).use1904windowing(Boolean.FALSE)
             .headRowNumber(1).sheetNo(0).build();
         excelReader.read(readSheet);
         excelReader.finish();
 
-        excelReader = EasyExcelFactory.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class)
+        excelReader = EasyExcel.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class)
             .mandatoryUseInputStream(Boolean.FALSE).autoCloseStream(Boolean.TRUE).readCache(new MapCache()).build();
         excelReader.read();
         excelReader.finish();
     }
 
-    private void readAndWrite7() throws Exception {
-        EasyExcelFactory.write(file, ParameterData.class).registerConverter(new StringStringConverter()).sheet()
+    private void readAndWrite7() {
+        EasyExcel.write(file, ParameterData.class).registerConverter(new StringStringConverter()).sheet()
             .registerConverter(new StringStringConverter()).needHead(Boolean.FALSE).table(0).needHead(Boolean.TRUE)
-            .doWrite(data()).finish();
-        EasyExcelFactory.read(file.getPath()).head(ParameterData.class)
+            .doWrite(data());
+        EasyExcel.read(file.getPath()).head(ParameterData.class)
             .registerReadListener(new ParameterDataListener()).sheet().registerConverter(new StringStringConverter())
-            .doRead().finish();
+            .doRead();
     }
 
     private List<ParameterData> data() {

@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 
 /**
  * Annotation data test
@@ -37,9 +37,9 @@ public class AnnotationIndexAndNameDataTest {
     }
 
     private void readAndWrite(File file) {
-        EasyExcelFactory.write(file, AnnotationIndexAndNameData.class).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file, AnnotationIndexAndNameData.class, new AnnotationIndexAndNameDataListener()).sheet()
-            .doRead().finish();
+        EasyExcel.write(file, AnnotationIndexAndNameData.class).sheet().doWrite(data());
+        EasyExcel.read(file, AnnotationIndexAndNameData.class, new AnnotationIndexAndNameDataListener()).sheet()
+            .doRead();
     }
 
     private List<AnnotationIndexAndNameData> data() {

@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 
 /**
  *
@@ -36,9 +36,8 @@ public class NoHeadDataTest {
     }
 
     private void readAndWrite(File file) {
-        EasyExcelFactory.write(file, NoHeadData.class).needHead(Boolean.FALSE).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file, NoHeadData.class, new NoHeadDataListener()).headRowNumber(0).sheet().doRead()
-            .finish();
+        EasyExcel.write(file, NoHeadData.class).needHead(Boolean.FALSE).sheet().doWrite(data());
+        EasyExcel.read(file, NoHeadData.class, new NoHeadDataListener()).headRowNumber(0).sheet().doRead();
     }
 
     private List<NoHeadData> data() {

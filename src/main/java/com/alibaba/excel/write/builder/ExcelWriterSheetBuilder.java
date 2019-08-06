@@ -127,18 +127,11 @@ public class ExcelWriterSheetBuilder {
         return writeSheet;
     }
 
-    public ExcelWriterSheetBuilder doWrite(List data) {
+    public void doWrite(List data) {
         if (excelWriter == null) {
             throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
         }
         excelWriter.write(data, build());
-        return new ExcelWriterSheetBuilder(excelWriter);
-    }
-
-    public void finish() {
-        if (excelWriter == null) {
-            throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
-        }
         excelWriter.finish();
     }
 

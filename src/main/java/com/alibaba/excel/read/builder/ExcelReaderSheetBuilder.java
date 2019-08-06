@@ -152,23 +152,11 @@ public class ExcelReaderSheetBuilder {
      *
      * @return
      */
-    public ExcelReaderSheetBuilder doRead() {
+    public void doRead() {
         if (excelReader == null) {
             throw new ExcelGenerateException("Must use 'EasyExcelFactory.read().sheet()' to call this method");
         }
         excelReader.read(build());
-        return new ExcelReaderSheetBuilder(excelReader);
-    }
-
-    /**
-     * Sax read
-     *
-     * @return
-     */
-    public void finish() {
-        if (excelReader == null) {
-            throw new ExcelAnalysisException("Must use 'EasyExcelFactory.read().sheet()' to call this method");
-        }
         excelReader.finish();
     }
 

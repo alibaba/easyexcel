@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
@@ -107,14 +107,14 @@ public class StyleDataTest {
                 return writeCellStyle;
             }
         };
-        EasyExcelFactory.write(file07, StyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
-            .doWrite(data()).finish();
+        EasyExcel.write(file07, StyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
+            .doWrite(data());
     }
 
     @Test
     public void T04LoopMergeStrategy() {
-        EasyExcelFactory.write(file07, StyleData.class).sheet().registerWriteHandler(new LoopMergeStrategy(2, 1))
-            .doWrite(data10()).finish();
+        EasyExcel.write(file07, StyleData.class).sheet().registerWriteHandler(new LoopMergeStrategy(2, 1))
+            .doWrite(data10());
     }
 
     private void readAndWrite(File file) {
@@ -137,10 +137,10 @@ public class StyleDataTest {
             new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
 
         OnceAbsoluteMergeStrategy onceAbsoluteMergeStrategy = new OnceAbsoluteMergeStrategy(2, 2, 0, 1);
-        EasyExcelFactory.write(file, StyleData.class).registerWriteHandler(simpleColumnWidthStyleStrategy)
+        EasyExcel.write(file, StyleData.class).registerWriteHandler(simpleColumnWidthStyleStrategy)
             .registerWriteHandler(simpleRowHeightStyleStrategy).registerWriteHandler(horizontalCellStyleStrategy)
-            .registerWriteHandler(onceAbsoluteMergeStrategy).sheet().doWrite(data()).finish();
-        EasyExcelFactory.read(file, StyleData.class, new StyleDataListener()).sheet().doRead().finish();
+            .registerWriteHandler(onceAbsoluteMergeStrategy).sheet().doWrite(data());
+        EasyExcel.read(file, StyleData.class, new StyleDataListener()).sheet().doRead();
     }
 
     private List<StyleData> data() {
