@@ -192,7 +192,7 @@ public class ExcelWriterBuilder {
         if (sheetName != null) {
             excelWriterSheetBuilder.sheetName(sheetName);
         }
-        return new ExcelWriterSheetBuilder(excelWriter);
+        return excelWriterSheetBuilder;
     }
 
 }

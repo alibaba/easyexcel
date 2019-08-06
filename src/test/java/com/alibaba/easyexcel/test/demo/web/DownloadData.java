@@ -1,4 +1,4 @@
-package com.alibaba.easyexcel.test.demo.write;
+package com.alibaba.easyexcel.test.demo.web;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import lombok.Data;
  * @author zhuangjiaju
  **/
 @Data
-public class DemoData {
+public class DownloadData {
     @ExcelProperty("字符串标题")
     private String string;
     @ExcelProperty("日期标题")

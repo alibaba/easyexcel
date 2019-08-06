@@ -67,27 +67,36 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
     }
 ```
 
-### web下载实例写法
-```
-public class Down {
-    @GetMapping("/a.htm")
-    public void cooperation(HttpServletRequest request, HttpServletResponse response) {
-        ServletOutputStream out = response.getOutputStream();
-         response.setContentType("multipart/form-data");
+### web上传、下载
+DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/test/demo/web/WebTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/web/WebTest.java)
+```java
+ /**
+     * 文件下载
+     * <li>1. 创建excel对应的实体对象 参照{@link DownloadData}
+     * <li>2. 设置返回的 参数
+     * <li>3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭异常问题不大
+     */
+    @GetMapping("download")
+    public void download(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
-        response.setHeader("Content-disposition", "attachment;filename="+fileName+".xlsx");
-        ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX, true);
-        String fileName = new String(("UserInfo " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
-                .getBytes(), "UTF-8");
-        Sheet sheet1 = new Sheet(1, 0);
-        sheet1.setSheetName("第一个sheet");
-        writer.write0(getListString(), sheet1);
-        writer.finish();
-      
-        out.flush();
-        }
+        response.setHeader("Content-disposition", "attachment;filename=demo.xlsx");
+        EasyExcelFactory.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data()).finish();
     }
-}
+
+    /**
+     * 文件上传
+     * <li>1. 创建excel对应的实体对象 参照{@link UploadData}
+     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
+     * <li>3. 直接读即可
+     */
+    @PostMapping("upload")
+    @ResponseBody
+    public String upload(MultipartFile file) throws IOException {
+        EasyExcelFactory.read(file.getInputStream(), UploadData.class, new UploadDataListener()).sheet().doRead()
+            .finish();
+        return "success";
+    }
 ```
 ### 联系我们
 有问题阿里同事可以通过钉钉找到我，阿里外同学可以通过git留言。其他技术非技术相关的也欢迎一起探讨。
