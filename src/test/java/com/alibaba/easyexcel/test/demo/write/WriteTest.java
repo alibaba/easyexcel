@@ -70,7 +70,7 @@ public class WriteTest {
     }
 
     /**
-     * 复杂头写入 指定写入的列
+     * 复杂头写入
      * <li>1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
      * <li>2. 使用{@link ExcelProperty}注解指定复杂的头
      * <li>3. 直接写即可
@@ -100,11 +100,10 @@ public class WriteTest {
         excelWriter.write(data(), writeSheet);
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
-
     }
 
     /**
-     * 日期、数字或者自定义格式转换。
+     * 日期、数字或者自定义格式转换
      * <li>1. 创建excel对应的实体对象 参照{@link ConverterData}
      * <li>2. 使用{@link ExcelProperty}配合使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
      * <li>3. 直接写即可
@@ -117,7 +116,7 @@ public class WriteTest {
     }
 
     /**
-     * 指定写入的列
+     * 根据模板写入
      * <li>1. 创建excel对应的实体对象 参照{@link IndexData}
      * <li>2. 使用{@link ExcelProperty}注解指定写入的列
      * <li>3. 使用withTemplate 读取模板
@@ -217,7 +216,6 @@ public class WriteTest {
         excelWriter.write(data(), writeSheet, writeTable1);
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
-
     }
 
     private List<DemoData> data() {
