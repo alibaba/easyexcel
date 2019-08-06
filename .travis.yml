@@ -6,4 +6,4 @@ cache:
 before_install:
   - chmod +x mvnw
 install:
-  - ./mvnw install -Dgpg.skip -B -V
+  - ./mvnw install -Dgpg.skip -B -V -Dmaven.test.skip=true
