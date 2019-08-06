@@ -40,28 +40,34 @@ import com.alibaba.excel.converters.string.StringStringConverter;
  * @author Jiaju Zhuang
  */
 public class DefaultConverterLoader {
+    private static Map<String, Converter> defaultWriteConverter;
+    private static Map<String, Converter> allConverter;
+
     /**
      * Load default write converter
      *
      * @return
      */
     public static Map<String, Converter> loadDefaultWriteConverter() {
-        Map<String, Converter> converterMap = new HashMap<String, Converter>(16);
-        putWriteConverter(converterMap, new BigDecimalNumberConverter());
-        putWriteConverter(converterMap, new BooleanBooleanConverter());
-        putWriteConverter(converterMap, new ByteNumberConverter());
-        putWriteConverter(converterMap, new DateStringConverter());
-        putWriteConverter(converterMap, new DoubleNumberConverter());
-        putWriteConverter(converterMap, new FloatNumberConverter());
-        putWriteConverter(converterMap, new IntegerNumberConverter());
-        putWriteConverter(converterMap, new LongNumberConverter());
-        putWriteConverter(converterMap, new ShortNumberConverter());
-        putWriteConverter(converterMap, new StringStringConverter());
-        return converterMap;
+        if (defaultWriteConverter != null) {
+            return defaultWriteConverter;
+        }
+        defaultWriteConverter = new HashMap<String, Converter>(16);
+        putWriteConverter(new BigDecimalNumberConverter());
+        putWriteConverter(new BooleanBooleanConverter());
+        putWriteConverter(new ByteNumberConverter());
+        putWriteConverter(new DateStringConverter());
+        putWriteConverter(new DoubleNumberConverter());
+        putWriteConverter(new FloatNumberConverter());
+        putWriteConverter(new IntegerNumberConverter());
+        putWriteConverter(new LongNumberConverter());
+        putWriteConverter(new ShortNumberConverter());
+        putWriteConverter(new StringStringConverter());
+        return defaultWriteConverter;
     }
 
-    private static void putWriteConverter(Map<String, Converter> converterMap, Converter converter) {
-        converterMap.put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
+    private static void putWriteConverter(Converter converter) {
+        defaultWriteConverter.put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
     }
 
     /**
@@ -70,51 +76,63 @@ public class DefaultConverterLoader {
      * @return
      */
     public static Map<String, Converter> loadDefaultReadConverter() {
-        Map<String, Converter> converterMap = new HashMap<String, Converter>(64);
-        putReadConverter(converterMap, new BigDecimalBooleanConverter());
-        putReadConverter(converterMap, new BigDecimalNumberConverter());
-        putReadConverter(converterMap, new BigDecimalStringConverter());
-
-        putReadConverter(converterMap, new BooleanBooleanConverter());
-        putReadConverter(converterMap, new BooleanNumberConverter());
-        putReadConverter(converterMap, new BooleanStringConverter());
-
-        putReadConverter(converterMap, new ByteBooleanConverter());
-        putReadConverter(converterMap, new ByteNumberConverter());
-        putReadConverter(converterMap, new ByteStringConverter());
-
-        putReadConverter(converterMap, new DateNumberConverter());
-        putReadConverter(converterMap, new DateStringConverter());
-
-        putReadConverter(converterMap, new DoubleBooleanConverter());
-        putReadConverter(converterMap, new DoubleNumberConverter());
-        putReadConverter(converterMap, new DoubleStringConverter());
-
-        putReadConverter(converterMap, new FloatBooleanConverter());
-        putReadConverter(converterMap, new FloatNumberConverter());
-        putReadConverter(converterMap, new FloatStringConverter());
-
-        putReadConverter(converterMap, new IntegerBooleanConverter());
-        putReadConverter(converterMap, new IntegerNumberConverter());
-        putReadConverter(converterMap, new IntegerStringConverter());
-
-        putReadConverter(converterMap, new LongBooleanConverter());
-        putReadConverter(converterMap, new LongNumberConverter());
-        putReadConverter(converterMap, new LongStringConverter());
-
-        putReadConverter(converterMap, new ShortBooleanConverter());
-        putReadConverter(converterMap, new ShortNumberConverter());
-        putReadConverter(converterMap, new ShortStringConverter());
-
-        putReadConverter(converterMap, new StringBooleanConverter());
-        putReadConverter(converterMap, new StringNumberConverter());
-        putReadConverter(converterMap, new StringStringConverter());
-        putReadConverter(converterMap, new StringErrorConverter());
-        return converterMap;
+        return loadAllConverter();
     }
 
-    private static void putReadConverter(Map<String, Converter> converterMap, Converter converter) {
-        converterMap.put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey(), converter.supportExcelTypeKey()),
+    /**
+     * Load all converter
+     *
+     * @return
+     */
+    public static Map<String, Converter> loadAllConverter() {
+        if (allConverter != null) {
+            return allConverter;
+        }
+        allConverter = new HashMap<String, Converter>(64);
+        putAllConverter(new BigDecimalBooleanConverter());
+        putAllConverter(new BigDecimalNumberConverter());
+        putAllConverter(new BigDecimalStringConverter());
+
+        putAllConverter(new BooleanBooleanConverter());
+        putAllConverter(new BooleanNumberConverter());
+        putAllConverter(new BooleanStringConverter());
+
+        putAllConverter(new ByteBooleanConverter());
+        putAllConverter(new ByteNumberConverter());
+        putAllConverter(new ByteStringConverter());
+
+        putAllConverter(new DateNumberConverter());
+        putAllConverter(new DateStringConverter());
+
+        putAllConverter(new DoubleBooleanConverter());
+        putAllConverter(new DoubleNumberConverter());
+        putAllConverter(new DoubleStringConverter());
+
+        putAllConverter(new FloatBooleanConverter());
+        putAllConverter(new FloatNumberConverter());
+        putAllConverter(new FloatStringConverter());
+
+        putAllConverter(new IntegerBooleanConverter());
+        putAllConverter(new IntegerNumberConverter());
+        putAllConverter(new IntegerStringConverter());
+
+        putAllConverter(new LongBooleanConverter());
+        putAllConverter(new LongNumberConverter());
+        putAllConverter(new LongStringConverter());
+
+        putAllConverter(new ShortBooleanConverter());
+        putAllConverter(new ShortNumberConverter());
+        putAllConverter(new ShortStringConverter());
+
+        putAllConverter(new StringBooleanConverter());
+        putAllConverter(new StringNumberConverter());
+        putAllConverter(new StringStringConverter());
+        putAllConverter(new StringErrorConverter());
+        return allConverter;
+    }
+
+    private static void putAllConverter(Converter converter) {
+        allConverter.put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey(), converter.supportExcelTypeKey()),
             converter);
     }
 }

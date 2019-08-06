@@ -26,7 +26,7 @@ public class WebTest {
      * 文件下载
      * <li>1. 创建excel对应的实体对象 参照{@link DownloadData}
      * <li>2. 设置返回的 参数
-     * <li>3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭异常问题不大
+     * <li>3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
      */
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {

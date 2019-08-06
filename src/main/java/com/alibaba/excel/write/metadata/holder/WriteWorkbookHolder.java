@@ -72,6 +72,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * prevent duplicate creation of sheet objects
      */
     private Map<Integer, WriteSheetHolder> hasBeenInitializedSheet;
+    /**
+     * When using SXSSFWorkbook, you can't get the actual last line.But we need to read the last line when we are using
+     * the template, so we cache it
+     */
+    private Map<Integer, Integer> templateLastRowMap;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
@@ -114,6 +119,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.mandatoryUseInputStream = writeWorkbook.getMandatoryUseInputStream();
         }
         this.hasBeenInitializedSheet = new HashMap<Integer, WriteSheetHolder>();
+        this.templateLastRowMap = new HashMap<Integer, Integer>(8);
     }
 
     public Workbook getWorkbook() {
@@ -194,6 +200,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
     public void setMandatoryUseInputStream(Boolean mandatoryUseInputStream) {
         this.mandatoryUseInputStream = mandatoryUseInputStream;
+    }
+
+    public Map<Integer, Integer> getTemplateLastRowMap() {
+        return templateLastRowMap;
+    }
+
+    public void setTemplateLastRowMap(Map<Integer, Integer> templateLastRowMap) {
+        this.templateLastRowMap = templateLastRowMap;
     }
 
     @Override

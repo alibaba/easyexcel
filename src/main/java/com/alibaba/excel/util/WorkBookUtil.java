@@ -25,11 +25,20 @@ public class WorkBookUtil {
     public static Workbook createWorkBook(WriteWorkbookHolder writeWorkbookHolder)
         throws IOException, InvalidFormatException {
         if (ExcelTypeEnum.XLSX.equals(writeWorkbookHolder.getExcelType())) {
+            XSSFWorkbook xssfWorkbook = null;
             if (writeWorkbookHolder.getTemplateFile() != null) {
-                return new SXSSFWorkbook(new XSSFWorkbook(writeWorkbookHolder.getTemplateFile()));
+                xssfWorkbook = new XSSFWorkbook(writeWorkbookHolder.getTemplateFile());
             }
             if (writeWorkbookHolder.getTemplateInputStream() != null) {
-                return new SXSSFWorkbook(new XSSFWorkbook(writeWorkbookHolder.getTemplateInputStream()));
+                xssfWorkbook = new XSSFWorkbook(writeWorkbookHolder.getTemplateInputStream());
+            }
+            // When using SXSSFWorkbook, you can't get the actual last line.But we need to read the last line when we
+            // are using the template, so we cache it
+            if (xssfWorkbook != null) {
+                for (int i = 0; i < xssfWorkbook.getNumberOfSheets(); i++) {
+                    writeWorkbookHolder.getTemplateLastRowMap().put(i, xssfWorkbook.getSheetAt(i).getLastRowNum());
+                }
+                return new SXSSFWorkbook(xssfWorkbook);
             }
             return new SXSSFWorkbook(500);
         }

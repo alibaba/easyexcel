@@ -7,9 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
+import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.converters.DefaultConverterLoader;
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
@@ -48,8 +52,16 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 columnWidth = parentColumnWidth;
             }
             headData.setColumnWidthProperty(ColumnWidthProperty.build(columnWidth));
-        }
 
+            // If have @NumberFormat, 'NumberStringConverter' is specified by default
+            if (excelContentPropertyData.getConverter() == null) {
+                NumberFormat numberFormat = field.getAnnotation(NumberFormat.class);
+                if (numberFormat != null) {
+                    excelContentPropertyData.setConverter(DefaultConverterLoader.loadAllConverter()
+                        .get(ConverterKeyBuild.buildKey(field.getType(), CellDataTypeEnum.STRING)));
+                }
+            }
+        }
     }
 
     public RowHeightProperty getHeadRowHeightProperty() {

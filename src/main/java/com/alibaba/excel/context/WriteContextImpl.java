@@ -13,7 +13,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.enums.WriteLastRowType;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.WorkBookUtil;
@@ -198,18 +197,13 @@ public class WriteContextImpl implements WriteContext {
         if (!currentWriteHolder.needHead() || !currentWriteHolder.excelWriteHeadProperty().hasHead()) {
             return;
         }
-        int lastRowNum = writeSheetHolder.getSheet().getLastRowNum();
-        // 'lastRowNum' doesn't matter if it has one or zero,is's zero
-        if (WriteLastRowType.HAVE_DATA == writeSheetHolder.getWriteLastRowType()) {
-            lastRowNum++;
-        }
-        writeSheetHolder.setWriteLastRowType(WriteLastRowType.HAVE_DATA);
-        int rowIndex = lastRowNum + currentWriteHolder.relativeHeadRowIndex();
+        int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
+        newRowIndex += currentWriteHolder.relativeHeadRowIndex();
         // Combined head
-        addMergedRegionToCurrentSheet(excelWriteHeadProperty, rowIndex);
-        for (int relativeRowIndex = 0, i = rowIndex; i < excelWriteHeadProperty.getHeadRowNumber() + rowIndex;
+        addMergedRegionToCurrentSheet(excelWriteHeadProperty, newRowIndex);
+        for (int relativeRowIndex = 0, i = newRowIndex; i < excelWriteHeadProperty.getHeadRowNumber() + newRowIndex;
             i++, relativeRowIndex++) {
-            beforeRowCreate(rowIndex, relativeRowIndex);
+            beforeRowCreate(newRowIndex, relativeRowIndex);
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             afterRowCreate(row, relativeRowIndex);
             addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);

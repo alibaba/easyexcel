@@ -1,4 +1,10 @@
 # easyexcel核心功能
+## 目录
+### 读
+DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
+* [最简单的读](#simpleRead)
+
+### 写
 
 ## *读任意大小的03、07版Excel不会OO]<br />
 ## *读Excel自动通过注解，把结果映射为java模型<br />
@@ -12,343 +18,304 @@
 ## *写Excel时一个sheet可以写多个Table<br />
 ## *写Excel时候自定义是否需要写表头<br />
 
-## 读Excel
 
-使用easyexcel解析03、07版本的Excel只是ExcelTypeEnum不同，其他使用完全相同，使用者无需知道底层解析的差异。
-
-### 无java模型直接把excel解析的每行结果以List&lt;String&gt;返回 在ExcelListener获取解析结果
-
-读excel代码示例如下：
+## 读excel样例
+### 最简单的读<span id="simpleRead" />
+#### excel示例<span id="simpleReadExcel" />
+![img](img/readme/quickstart/read/demo.png)
+#### 对象<span id="simpleReadObject" />
+```java
+@Data
+public class DemoData {
+    private String string;
+    private Date date;
+    private Double doubleData;
+}
 ```
-    @Test
-    public void testExcel2003NoModel() {
-        InputStream inputStream = getInputStream("loan1.xls");
-        try {
-            // 解析每行结果在listener中处理
-            ExcelListener listener = new ExcelListener();
+#### 监听器<span id="simpleReadListener" />
+```java
+public class DemoDataListener extends AnalysisEventListener<DemoData> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DemoDataListener.class);
+    /**
+     * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
+     */
+    private static final int BATCH_COUNT = 5;
+    List<DemoData> list = new ArrayList<DemoData>();
 
-            ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLS, null, listener);
-            excelReader.read();
-        } catch (Exception e) {
-
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    @Override
+    public void invoke(DemoData data, AnalysisContext context) {
+        LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
+        list.add(data);
+        if (list.size() >= BATCH_COUNT) {
+            saveData();
+            list.clear();
         }
     }
-```
-ExcelListener示例代码如下：
-```
- /* 解析监听器，
- * 每解析一行会回调invoke()方法。
- * 整个excel解析结束会执行doAfterAllAnalysed()方法
- *
- * 下面只是我写的一个样例而已，可以根据自己的逻辑修改该类。
- * @author jipengfei
- * @date 2017/03/14
- */
-public class ExcelListener extends AnalysisEventListener {
 
-    //自定义用于暂时存储data。
-    //可以通过实例获取该值
-    private List<Object> datas = new ArrayList<Object>();
-    public void invoke(Object object, AnalysisContext context) {
-        System.out.println("当前行："+context.getCurrentRowNum());
-        System.out.println(object);
-        datas.add(object);//数据存储到list，供批量处理，或后续自己业务逻辑处理。
-        doSomething(object);//根据自己业务做处理
-    }
-    private void doSomething(Object object) {
-        //1、入库调用接口
-    }
+    @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-       // datas.clear();//解析结束销毁不用的资源
+        saveData();
+        LOGGER.info("所有数据解析完成！");
     }
-    public List<Object> getDatas() {
-        return datas;
-    }
-    public void setDatas(List<Object> datas) {
-        this.datas = datas;
-    }
-}
-```
-### 有java模型映射 
-java模型写法如下：
-```
-public class LoanInfo extends BaseRowModel {
-    @ExcelProperty(index = 0)
-    private String bankLoanId;
-    
-    @ExcelProperty(index = 1)
-    private Long customerId;
-    
-    @ExcelProperty(index = 2,format = "yyyy/MM/dd")
-    private Date loanDate;
-    
-    @ExcelProperty(index = 3)
-    private BigDecimal quota;
-    
-    @ExcelProperty(index = 4)
-    private String bankInterestRate;
-    
-    @ExcelProperty(index = 5)
-    private Integer loanTerm;
-    
-    @ExcelProperty(index = 6,format = "yyyy/MM/dd")
-    private Date loanEndDate;
-    
-    @ExcelProperty(index = 7)
-    private BigDecimal interestPerMonth;
 
-    @ExcelProperty(value = {"一级表头","二级表头"})
-    private BigDecimal sax;
+    /**
+     * 加上存储数据库
+     */
+    private void saveData() {
+        LOGGER.info("{}条数据，开始存储数据库！", list.size());
+        LOGGER.info("存储数据库成功！");
+    }
 }
 ```
-@ExcelProperty(index = 3)数字代表该字段与excel对应列号做映射，也可以采用 @ExcelProperty(value = {"一级表头","二级表头"})用于解决不确切知道excel第几列和该字段映射，位置不固定，但表头的内容知道的情况。
-```
+#### 代码
+```java
+    /**
+     * 最简单的读
+     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * <li>3. 直接读即可
+     */
     @Test
-    public void testExcel2003WithReflectModel() {
-        InputStream inputStream = getInputStream("loan1.xls");
-        try {
-            // 解析每行结果在listener中处理
-            AnalysisEventListener listener = new ExcelListener();
+    public void simpleRead() {
+        // 写法1：
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
+        EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead();
 
-            ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLS, null, listener);
-
-            excelReader.read(new Sheet(1, 2, LoanInfo.class));
-        } catch (Exception e) {
-
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
+        // 写法2：
+        fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        ExcelReader excelReader = EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).build();
+        ReadSheet readSheet = EasyExcelFactory.readSheet(0).build();
+        excelReader.read(readSheet);
+        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
+        excelReader.finish();
     }
 ```
-带模型解析与不带模型解析主要在构造new Sheet(1, 2, LoanInfo.class)时候包含class。Class需要继承BaseRowModel暂时BaseRowModel没有任何内容，后面升级可能会增加一些默认的数据。
 
-## 写Excel
-
-### 每行数据是List&lt;String&gt;无表头
-
-```
-  OutputStream out = new FileOutputStream("/Users/jipengfei/77.xlsx");
-        try {
-            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX,false);
-            //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
-            Sheet sheet1 = new Sheet(1, 0);
-            sheet1.setSheetName("第一个sheet");
-            writer.write(getListString(), sheet1);
-            writer.finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-```
-
-### 每行数据是一个java模型有表头----表头层级为一
-
-生成Excel格式如下图
-![屏幕快照 2017-06-02 上午9.49.39.png](http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/dfcb44d05380e2e26bce93f850d9fc99.png)
-
-模型写法如下：
-```
-public class ExcelPropertyIndexModel extends BaseRowModel {
-
-    @ExcelProperty(value = "姓名" ,index = 0)
-    private String name;
-
-    @ExcelProperty(value = "年龄",index = 1)
-    private String age;
-
-    @ExcelProperty(value = "邮箱",index = 2)
-    private String email;
-
-    @ExcelProperty(value = "地址",index = 3)
-    private String address;
-
-    @ExcelProperty(value = "性别",index = 4)
-    private String sax;
-
-    @ExcelProperty(value = "高度",index = 5)
-    private String heigh;
-
-    @ExcelProperty(value = "备注",index = 6)
-    private String last;
+### 指定列的下标或者列名<span id="indexOrNameRead" />
+#### excel示例
+参照：[excel示例](#simpleReadExcel)
+#### 对象
+```java
+@Data
+public class IndexOrNameData {
+    /**
+     * 强制读取第三个 这里不建议 index 和 name 同时用，要么一个对象只用index，要么一个对象只用name去匹配
+     */
+    @ExcelProperty(index = 2)
+    private Double doubleData;
+    /**
+     * 用名字去匹配，这里需要注意，如果名字重复，会导致只有一个字段读取到数据
+     */
+    @ExcelProperty("字符串标题")
+    private String string;
+    @ExcelProperty("日期标题")
+    private Date date;
 }
 ```
-   @ExcelProperty(value = "姓名",index = 0) value是表头数据，默认会写在excel的表头位置，index代表第几列。
-```
- @Test
-    public void test1() throws FileNotFoundException {
-        OutputStream out = new FileOutputStream("/Users/jipengfei/78.xlsx");
-        try {
-            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX);
-            //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
-            Sheet sheet1 = new Sheet(1, 0,ExcelPropertyIndexModel.class);
-            writer.write(getData(), sheet1);
-            writer.finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+#### 监听器
+参照：[监听器](#simpleReadListener) 只是泛型变了而已
+#### 代码
+```java
+    /**
+     * 指定列的下标或者列名
+     *
+     * <li>1. 创建excel对应的实体对象,并使用{@link ExcelProperty}注解. 参照{@link IndexOrNameData}
+     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link IndexOrNameDataListener}
+     * <li>3. 直接读即可
+     */
+    @Test
+    public void indexOrNameRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里默认读取第一个sheet
+        EasyExcelFactory.read(fileName, IndexOrNameData.class, new IndexOrNameDataListener()).sheet().doRead();
     }
 ```
 
-### 每行数据是一个java模型有表头----表头层级为多层级
-
-生成Excel格式如下图：
-![屏幕快照 2017-06-02 上午9.53.07.png](http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/0cdb1673665e7940cd670871afb4b3d7.png)
-java模型写法如下：
+### 读多个sheet<span id="repeatedRead" />
+#### excel示例
+参照：[excel示例](#simpleReadExcel)
+#### 对象
+参照：[对象](#simpleReadObject)
+#### 监听器
+参照：[监听器](#simpleReadListener)
+#### 代码
+```java
+    /**
+     * 读多个sheet,这里注意一个sheet不能读取多次，一定要多次需要重新读取文件
+     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * <li>3. 直接读即可
+     */
+    @Test
+    public void repeatedRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        ExcelReader excelReader = EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).build();
+        ReadSheet readSheet1 = EasyExcelFactory.readSheet(0).build();
+        ReadSheet readSheet2 = EasyExcelFactory.readSheet(1).build();
+        excelReader.read(readSheet1);
+        excelReader.read(readSheet2);
+        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
+        excelReader.finish();
+    }
 ```
-public class MultiLineHeadExcelModel extends BaseRowModel {
 
-    @ExcelProperty(value = {"表头1","表头1","表头31"},index = 0)
-    private String p1;
-
-    @ExcelProperty(value = {"表头1","表头1","表头32"},index = 1)
-    private String p2;
-
-    @ExcelProperty(value = {"表头3","表头3","表头3"},index = 2)
-    private int p3;
-
-    @ExcelProperty(value = {"表头4","表头4","表头4"},index = 3)
-    private long p4;
-
-    @ExcelProperty(value = {"表头5","表头51","表头52"},index = 4)
-    private String p5;
-
-    @ExcelProperty(value = {"表头6","表头61","表头611"},index = 5)
-    private String p6;
-
-    @ExcelProperty(value = {"表头6","表头61","表头612"},index = 6)
-    private String p7;
-
-    @ExcelProperty(value = {"表头6","表头62","表头621"},index = 7)
-    private String p8;
-
-    @ExcelProperty(value = {"表头6","表头62","表头622"},index = 8)
-    private String p9;
+### 日期、数字或者自定义格式转换<span id="converterRead" />
+#### excel示例
+参照：[excel示例](#simpleReadExcel)
+#### 对象
+```java
+@Data
+public class ConverterData {
+    /**
+     * 我自定义 转换器，不管数据库传过来什么 。我给他加上“自定义：”
+     */
+    @ExcelProperty(converter = CustomStringStringConverter.class)
+    private String string;
+    /**
+     * 这里用string 去接日期才能格式化。我想接收年月日格式
+     */
+    @DateTimeFormat("yyyy年MM月dd日HH时mm分ss秒")
+    private String date;
+    /**
+     * 我想接收百分比的数字
+     */
+    @NumberFormat("#.##%")
+    private String doubleData;
 }
 ```
-写Excel写法同上，只需将ExcelPropertyIndexModel.class改为MultiLineHeadExcelModel.class
+#### 监听器
+参照：[监听器](#simpleReadListener) 只是泛型变了
+#### 自定义转换器
+````java
+public class CustomStringStringConverter implements Converter<String> {
+    @Override
+    public Class supportJavaTypeKey() {
+        return String.class;
+    }
 
+    @Override
+    public CellDataTypeEnum supportExcelTypeKey() {
+        return CellDataTypeEnum.STRING;
+    }
 
-### 一个Excel多个sheet写法
+    /**
+     * 这里读的时候会调用
+     *
+     * @param cellData
+     *            NotNull
+     * @param contentProperty
+     *            Nullable
+     * @param globalConfiguration
+     *            NotNull
+     * @return
+     */
+    @Override
+    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
+        return "自定义：" + cellData.getStringValue();
+    }
 
+    /**
+     * 这里是写的时候会调用 不用管
+     *
+     * @param value
+     *            NotNull
+     * @param contentProperty
+     *            Nullable
+     * @param globalConfiguration
+     *            NotNull
+     * @return
+     */
+    @Override
+    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
+        return new CellData(value);
+    }
+
+}
+````
+#### 代码
+```java
+    /**
+     * 日期、数字或者自定义格式转换
+     * <p>
+     * 默认读的转换器{@link DefaultConverterLoader#loadDefaultReadConverter()}
+     * <li>1. 创建excel对应的实体对象 参照{@link ConverterData}.里面可以使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
+     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link ConverterDataListener}
+     * <li>3. 直接读即可
+     */
+    @Test
+    public void converterRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        EasyExcelFactory.read(fileName, ConverterData.class, new ConverterDataListener())
+            // 这里注意 我们也可以registerConverter来指定自定义转换器， 但是这个转换变成全局了， 所有java为string,excel为string的都会用这个转换器。
+            // 如果就想单个字段使用请使用@ExcelProperty 指定converter
+            // .registerConverter(new CustomStringStringConverter())
+            // 读取sheet
+            .sheet().doRead();
+    }
 ```
- @Test
-    public void test1() throws FileNotFoundException {
 
-        OutputStream out = new FileOutputStream("/Users/jipengfei/77.xlsx");
-        try {
-            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX,false);
-            //写第一个sheet, sheet1  数据全是List<String> 无模型映射关系
-            Sheet sheet1 = new Sheet(1, 0);
-            sheet1.setSheetName("第一个sheet");
-            writer.write(getListString(), sheet1);
+### 多行头<span id="complexHeaderRead" />
+#### excel示例
+参照：[excel示例](#simpleReadExcel)
+#### 对象
+参照：[对象](#simpleReadObject)
+#### 监听器
+参照：[监听器](#simpleReadListener)
+#### 代码
+```java
+    /**
+     * 多行头
+     *
+     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * <li>3. 设置headRowNumber参数，然后读。 这里要注意headRowNumber如果不指定， 会根据你传入的class的{@link ExcelProperty#value()}里面的表头的数量来决定行数，
+     * 如果不传入class则默认为1.当然你指定了headRowNumber不管是否传入class都是以你传入的为准。
+     */
+    @Test
+    public void complexHeaderRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).sheet()
+            // 这里可以设置1，因为头就是一行。如果多行头，可以设置其他值。不传入也可以，因为默认会根据DemoData 来解析，他没有指定头，也就是默认1行
+            .headRowNumber(1).doRead();
+    }
+```
 
-            //写第二个sheet sheet2  模型上打有表头的注解，合并单元格
-            Sheet sheet2 = new Sheet(2, 3, MultiLineHeadExcelModel.class, "第二个sheet", null);
-            sheet2.setTableStyle(getTableStyle1());
-            writer.write(getModeldatas(), sheet2);
+### 同步的返回<span id="synchronousRead" />
+#### excel示例
+参照：[excel示例](#simpleReadExcel)
+#### 对象
+参照：[对象](#simpleReadObject)
+#### 代码
+```java
+    /**
+     * 同步的返回，不推荐使用，如果数据量大会把数据放到内存里面
+     */
+    @Test
+    public void synchronousRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 同步读取会自动finish
+        List<Object> list = EasyExcelFactory.read(fileName).head(DemoData.class).sheet().doReadSync();
+        for (Object obj : list) {
+            DemoData data = (DemoData)obj;
+            LOGGER.info("读取到数据:{}", JSON.toJSONString(data));
+        }
 
-            //写sheet3  模型上没有注解，表头数据动态传入
-            List<List<String>> head = new ArrayList<List<String>>();
-            List<String> headCoulumn1 = new ArrayList<String>();
-            List<String> headCoulumn2 = new ArrayList<String>();
-            List<String> headCoulumn3 = new ArrayList<String>();
-            headCoulumn1.add("第一列");
-            headCoulumn2.add("第二列");
-            headCoulumn3.add("第三列");
-            head.add(headCoulumn1);
-            head.add(headCoulumn2);
-            head.add(headCoulumn3);
-            Sheet sheet3 = new Sheet(3, 1, NoAnnModel.class, "第三个sheet", head);
-            writer.write(getNoAnnModels(), sheet3);
-            writer.finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        // 这里 也可以不指定class，返回一个list，然后读取第一个sheet 同步读取会自动finish
+        list = EasyExcelFactory.read(fileName).sheet().doReadSync();
+        for (Object obj : list) {
+            // 返回每条数据的键值对 表示所在的列 和所在列的值
+            Map<Integer, String> data = (Map<Integer, String>)obj;
+            LOGGER.info("读取到数据:{}", JSON.toJSONString(data));
         }
     }
 ```
 
-### 一个sheet中有多个表格
-
-```
-@Test
-    public void test2() throws FileNotFoundException {
-        OutputStream out = new FileOutputStream("/Users/jipengfei/77.xlsx");
-        try {
-            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLSX,false);
-
-            //写sheet1  数据全是List<String> 无模型映射关系
-            Sheet sheet1 = new Sheet(1, 0);
-            sheet1.setSheetName("第一个sheet");
-            Table table1 = new Table(1);
-            writer.write(getListString(), sheet1, table1);
-            writer.write(getListString(), sheet1, table1);
-
-            //写sheet2  模型上打有表头的注解
-            Table table2 = new Table(2);
-            table2.setTableStyle(getTableStyle1());
-            table2.setClazz(MultiLineHeadExcelModel.class);
-            writer.write(getModeldatas(), sheet1, table2);
-
-            //写sheet3  模型上没有注解，表头数据动态传入,此情况下模型field顺序与excel现实顺序一致
-            List<List<String>> head = new ArrayList<List<String>>();
-            List<String> headCoulumn1 = new ArrayList<String>();
-            List<String> headCoulumn2 = new ArrayList<String>();
-            List<String> headCoulumn3 = new ArrayList<String>();
-            headCoulumn1.add("第一列");
-            headCoulumn2.add("第二列");
-            headCoulumn3.add("第三列");
-            head.add(headCoulumn1);
-            head.add(headCoulumn2);
-            head.add(headCoulumn3);
-            Table table3 = new Table(3);
-            table3.setHead(head);
-            table3.setClazz(NoAnnModel.class);
-            table3.setTableStyle(getTableStyle2());
-            writer.write(getNoAnnModels(), sheet1, table3);
-            writer.write(getNoAnnModels(), sheet1, table3);
-
-            writer.finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-```
 ## 测试数据分析
-
 ![POI usermodel PK easyexcel(Excel 2003).png](http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/02c4bfbbab99a649788523d04f84a42f.png)
 ![POI usermodel PK easyexcel(Excel 2007).png](http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/f6a8a19ec959f0eb564e652de523fc9e.png)
 ![POI usermodel PK easyexcel(Excel 2003) (1).png](http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/26888f7ea1cb8dc56db494926544edf7.png)

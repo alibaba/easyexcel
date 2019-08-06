@@ -7,11 +7,15 @@ package com.alibaba.excel.enums;
  **/
 public enum WriteLastRowType {
     /**
-     * Tables are created without templates ,And any data has been written;
+     * Excel are created without templates ,And any data has been written;
      */
-    EMPTY,
+    COMMON_EMPTY,
     /**
-     * It's supposed to have data in it.Tables are created with templates ,or any data has been written;
+     * Excel are created with templates ,And any data has been written;
      */
-    HAVE_DATA,;
+    TEMPLATE_EMPTY,
+    /**
+     * Any data has been written;
+     */
+    HAS_DATA,;
 }

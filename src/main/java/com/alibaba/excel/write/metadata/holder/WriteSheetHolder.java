@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.enums.WriteLastRowType;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
 /**
@@ -60,9 +61,9 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         this.parentWriteWorkbookHolder = writeWorkbookHolder;
         this.hasBeenInitializedTable = new HashMap<Integer, WriteTableHolder>();
         if (writeWorkbookHolder.getTemplateInputStream() == null && writeWorkbookHolder.getTemplateFile() == null) {
-            writeLastRowType = WriteLastRowType.EMPTY;
+            writeLastRowType = WriteLastRowType.COMMON_EMPTY;
         } else {
-            writeLastRowType = WriteLastRowType.HAVE_DATA;
+            writeLastRowType = WriteLastRowType.TEMPLATE_EMPTY;
         }
     }
 
@@ -120,6 +121,36 @@ public class WriteSheetHolder extends AbstractWriteHolder {
 
     public void setWriteLastRowType(WriteLastRowType writeLastRowType) {
         this.writeLastRowType = writeLastRowType;
+    }
+
+    /**
+     * Get the last line of index,you have to make sure that the data is written next
+     *
+     * @return
+     */
+    public int getNewRowIndexAndStartDoWrite() {
+        // 'getLastRowNum' doesn't matter if it has one or zero,is's zero
+        int newRowIndex = 0;
+        switch (writeLastRowType) {
+            case TEMPLATE_EMPTY:
+                if (parentWriteWorkbookHolder.getExcelType() == ExcelTypeEnum.XLSX) {
+                    if (parentWriteWorkbookHolder.getTemplateLastRowMap().containsKey(sheetNo)) {
+                        newRowIndex = parentWriteWorkbookHolder.getTemplateLastRowMap().get(sheetNo);
+                    }
+                } else {
+                    newRowIndex = sheet.getLastRowNum();
+                }
+                newRowIndex++;
+                break;
+            case HAS_DATA:
+                newRowIndex = sheet.getLastRowNum();
+                newRowIndex++;
+                break;
+            default:
+                break;
+        }
+        writeLastRowType = WriteLastRowType.HAS_DATA;
+        return newRowIndex;
     }
 
     @Override

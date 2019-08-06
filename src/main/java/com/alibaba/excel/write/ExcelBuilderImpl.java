@@ -10,14 +10,12 @@ import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
-import com.alibaba.excel.enums.WriteLastRowType;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.BaseRowModel;
@@ -64,22 +62,14 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             return;
         }
         WriteSheetHolder writeSheetHolder = context.writeSheetHolder();
-        Sheet currentSheet = writeSheetHolder.getSheet();
-        int lastRowNum = currentSheet.getLastRowNum();
-        // 'lastRowNum' doesn't matter if it has one or zero,is's zero
-        if (lastRowNum == 0 && WriteLastRowType.EMPTY == writeSheetHolder.getWriteLastRowType()) {
-            lastRowNum--;
-        }
-        if (!data.isEmpty()) {
-            writeSheetHolder.setWriteLastRowType(WriteLastRowType.HAVE_DATA);
-        }
+        int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
         if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
-            lastRowNum += context.currentWriteHolder().relativeHeadRowIndex();
+            newRowIndex += context.currentWriteHolder().relativeHeadRowIndex();
         }
-        // Beanmap is out of order,so use fieldList
+        // BeanMap is out of order,so use fieldList
         List<Field> fieldList = new ArrayList<Field>();
         for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {
-            int n = relativeRowIndex + lastRowNum + 1;
+            int n = relativeRowIndex + newRowIndex;
             addOneRowOfDataToExcel(data.get(relativeRowIndex), n, relativeRowIndex, fieldList);
         }
     }

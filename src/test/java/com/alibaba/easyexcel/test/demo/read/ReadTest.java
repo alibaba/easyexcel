@@ -13,6 +13,8 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
+import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.fastjson.JSON;
@@ -50,7 +52,10 @@ public class ReadTest {
 
     /**
      * 指定列的下标或者列名
-     * <li>使用{@link com.alibaba.excel.annotation.ExcelProperty}注解即可
+     *
+     * <li>1. 创建excel对应的实体对象,并使用{@link ExcelProperty}注解. 参照{@link IndexOrNameData}
+     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link IndexOrNameDataListener}
+     * <li>3. 直接读即可
      */
     @Test
     public void indexOrNameRead() {
@@ -78,10 +83,10 @@ public class ReadTest {
     }
 
     /**
-     * 日期、数字或者自定义格式转换。
+     * 日期、数字或者自定义格式转换
      * <p>
      * 默认读的转换器{@link DefaultConverterLoader#loadDefaultReadConverter()}
-     * <li>1. 创建excel对应的实体对象 参照{@link ConverterData}.里面可以使用注解.
+     * <li>1. 创建excel对应的实体对象 参照{@link ConverterData}.里面可以使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
      * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link ConverterDataListener}
      * <li>3. 直接读即可
      */
@@ -98,7 +103,7 @@ public class ReadTest {
     }
 
     /**
-     * 多行头.
+     * 多行头
      *
      * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
      * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
@@ -134,7 +139,6 @@ public class ReadTest {
             Map<Integer, String> data = (Map<Integer, String>)obj;
             LOGGER.info("读取到数据:{}", JSON.toJSONString(data));
         }
-
     }
 
 }
