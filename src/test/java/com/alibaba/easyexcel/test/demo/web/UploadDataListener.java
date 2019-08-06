@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 /**
  * 模板的读取类
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class UploadDataListener extends AnalysisEventListener<UploadData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UploadDataListener.class);

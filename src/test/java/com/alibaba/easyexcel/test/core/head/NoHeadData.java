@@ -5,7 +5,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 /**
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 @Data
 public class NoHeadData {

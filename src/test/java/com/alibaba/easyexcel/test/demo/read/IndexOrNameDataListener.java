@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 /**
  * 模板的读取类
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class IndexOrNameDataListener extends AnalysisEventListener<IndexOrNameData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexOrNameDataListener.class);

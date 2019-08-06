@@ -31,7 +31,7 @@ import com.alibaba.excel.util.StringUtils;
 /**
  * Read Holder
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public abstract class AbstractReadHolder extends AbstractHolder implements ReadHolder, ReadListenerRegistryCenter {
     /**

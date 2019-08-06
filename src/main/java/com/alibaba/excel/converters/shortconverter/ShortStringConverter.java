@@ -12,7 +12,7 @@ import com.alibaba.excel.util.NumberUtils;
 /**
  * Short and string converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class ShortStringConverter implements Converter<Short> {
 

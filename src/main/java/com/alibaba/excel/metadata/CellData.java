@@ -5,7 +5,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 /**
  * excel internal cell data
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class CellData {
     private CellDataTypeEnum type;

@@ -13,7 +13,7 @@ import com.alibaba.excel.util.NumberUtils;
 /**
  * String and number converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class StringNumberConverter implements Converter<String> {
 

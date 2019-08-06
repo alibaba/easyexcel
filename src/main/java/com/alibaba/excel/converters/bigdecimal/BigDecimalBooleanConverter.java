@@ -11,7 +11,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * BigDecimal and boolean converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
 

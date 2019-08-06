@@ -5,14 +5,14 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 /**
  * intercepts handle sheet creation
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public interface SheetWriteHandler extends WriteHandler {
 
     /**
      * called before create the sheet
-     * 
+     *
      * @param writeWorkbookHolder
      * @param writeSheetHolder
      */
@@ -20,7 +20,7 @@ public interface SheetWriteHandler extends WriteHandler {
 
     /**
      * called after the sheet is created
-     * 
+     *
      * @param writeWorkbookHolder
      * @param writeSheetHolder
      */

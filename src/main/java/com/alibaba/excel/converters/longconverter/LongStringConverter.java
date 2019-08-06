@@ -12,7 +12,7 @@ import com.alibaba.excel.util.NumberUtils;
 /**
  * Long and string converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class LongStringConverter implements Converter<Long> {
 

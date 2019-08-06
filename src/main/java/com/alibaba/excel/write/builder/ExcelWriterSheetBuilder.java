@@ -11,8 +11,8 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 
 /**
  * Build sheet
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public class ExcelWriterSheetBuilder {
     private ExcelWriter excelWriter;
@@ -103,7 +103,7 @@ public class ExcelWriterSheetBuilder {
 
     /**
      * Starting from 0
-     * 
+     *
      * @param sheetNo
      * @return
      */
@@ -114,7 +114,7 @@ public class ExcelWriterSheetBuilder {
 
     /**
      * sheet name
-     * 
+     *
      * @param sheetName
      * @return
      */

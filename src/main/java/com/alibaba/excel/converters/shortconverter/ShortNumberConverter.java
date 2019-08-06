@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * Short and number converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class ShortNumberConverter implements Converter<Short> {
 

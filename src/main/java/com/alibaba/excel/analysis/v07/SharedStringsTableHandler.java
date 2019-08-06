@@ -6,8 +6,8 @@ import com.alibaba.excel.cache.ReadCache;
 
 /**
  * Sax read sharedStringsTable.xml
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public class SharedStringsTableHandler extends DefaultHandler {
     private static final String T_TAG = "t";

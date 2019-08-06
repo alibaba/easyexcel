@@ -8,8 +8,8 @@ import com.alibaba.excel.metadata.Head;
 
 /**
  * It only merges once when create cell(firstRowIndex,lastRowIndex)
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public class OnceAbsoluteMergeStrategy extends AbstractMergeStrategy {
 

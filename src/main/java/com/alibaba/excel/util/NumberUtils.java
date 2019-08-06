@@ -11,7 +11,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * Number utils
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class NumberUtils {
     private NumberUtils() {}

@@ -5,8 +5,8 @@ import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 
 /**
  * Configuration from annotations
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public class RowHeightProperty {
     private Short height;

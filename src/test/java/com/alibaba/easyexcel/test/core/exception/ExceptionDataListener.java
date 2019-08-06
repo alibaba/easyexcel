@@ -12,7 +12,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
 
 /**
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class ExceptionDataListener extends AnalysisEventListener<ExceptionData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionData.class);

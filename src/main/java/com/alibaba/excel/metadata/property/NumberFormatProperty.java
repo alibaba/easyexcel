@@ -7,7 +7,7 @@ import com.alibaba.excel.annotation.format.NumberFormat;
 /**
  * Configuration from annotations
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class NumberFormatProperty {
     private String format;

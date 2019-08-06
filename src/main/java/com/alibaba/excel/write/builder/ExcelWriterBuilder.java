@@ -15,7 +15,7 @@ import com.alibaba.excel.write.metadata.WriteWorkbook;
 /**
  * Build ExcelBuilder
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class ExcelWriterBuilder {
     /**

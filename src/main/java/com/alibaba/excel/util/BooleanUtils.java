@@ -2,8 +2,8 @@ package com.alibaba.excel.util;
 
 /**
  * boolean util
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public class BooleanUtils {
 

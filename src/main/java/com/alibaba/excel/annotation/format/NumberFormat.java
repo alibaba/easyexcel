@@ -12,8 +12,8 @@ import java.math.RoundingMode;
  *
  * <li>write: It can be used on classes that inherit {@link Number}
  * <li>read: It can be used on classes {@link String}
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -30,7 +30,7 @@ public @interface NumberFormat {
 
     /**
      * Rounded by default
-     * 
+     *
      * @return
      */
     RoundingMode roundingMode() default RoundingMode.HALF_UP;

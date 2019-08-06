@@ -3,6 +3,6 @@ package com.alibaba.excel.event;
 /**
  * Intercepts handle some business logic
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  **/
 public interface Handler {}

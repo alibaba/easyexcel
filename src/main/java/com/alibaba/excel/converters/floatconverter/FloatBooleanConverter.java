@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * Float and boolean converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class FloatBooleanConverter implements Converter<Float> {
     private static final Float ONE = (float)1.0;

@@ -29,7 +29,7 @@ import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
 /**
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StyleDataTest {

@@ -11,7 +11,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 /**
  * Cell style when writing
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class WriteCellStyle {
     /**

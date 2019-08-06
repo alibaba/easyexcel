@@ -13,7 +13,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * Date and number converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class DateNumberConverter implements Converter<Date> {
 

@@ -8,7 +8,7 @@ import com.alibaba.excel.metadata.Head;
 /**
  * Returns the column width according to each column header
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrategy {
     @Override

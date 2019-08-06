@@ -8,7 +8,7 @@ import com.alibaba.excel.converters.Converter;
 /**
  * Write/read holder
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public abstract class AbstractHolder implements ConfigurationHolder {
     /**

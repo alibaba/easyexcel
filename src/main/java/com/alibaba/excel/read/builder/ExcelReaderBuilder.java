@@ -17,7 +17,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 /**
  * Build ExcelWriter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class ExcelReaderBuilder {
     /**

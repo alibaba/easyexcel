@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * Boolean and number converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class BooleanNumberConverter implements Converter<Boolean> {
 

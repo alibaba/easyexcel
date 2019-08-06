@@ -20,7 +20,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 /**
  * Workbook holder
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class ReadWorkbookHolder extends AbstractReadHolder {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadWorkbookHolder.class);

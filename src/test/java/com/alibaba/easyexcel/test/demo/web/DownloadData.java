@@ -9,7 +9,7 @@ import lombok.Data;
 /**
  * 基础数据类
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  **/
 @Data
 public class DownloadData {

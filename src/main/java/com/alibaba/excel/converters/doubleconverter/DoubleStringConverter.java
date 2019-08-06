@@ -12,7 +12,7 @@ import com.alibaba.excel.util.NumberUtils;
 /**
  * Double and string converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class DoubleStringConverter implements Converter<Double> {
 

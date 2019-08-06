@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * Double and number converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class DoubleNumberConverter implements Converter<Double> {
 

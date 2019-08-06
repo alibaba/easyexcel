@@ -8,7 +8,7 @@ import com.alibaba.excel.converters.Converter;
 /**
  * Basic parameter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  **/
 public class BasicParameter {
     /**
@@ -31,7 +31,7 @@ public class BasicParameter {
      * true if date uses 1904 windowing, or false if using 1900 date windowing.
      *
      * default is false
-     * 
+     *
      * @return
      */
     private Boolean use1904windowing;

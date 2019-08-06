@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 
 /**
  * Set the height of each table
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -20,7 +20,7 @@ public @interface ContentRowHeight {
      * Set the content height
      * <p>
      * -1 mean the auto set height
-     * 
+     *
      * @return
      */
     short value() default -1;

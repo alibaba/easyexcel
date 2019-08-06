@@ -9,7 +9,7 @@ import com.alibaba.excel.exception.ExcelDataConvertException;
 /**
  * Date utils
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  **/
 public class DateUtils {
     public static final String DATE_FORMAT_14 = "yyyyMMddHHmmss";

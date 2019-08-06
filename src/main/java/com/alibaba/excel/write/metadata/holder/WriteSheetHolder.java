@@ -12,7 +12,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 /**
  * sheet holder
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class WriteSheetHolder extends AbstractWriteHolder {
     /**

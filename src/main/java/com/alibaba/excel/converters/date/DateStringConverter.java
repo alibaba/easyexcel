@@ -13,7 +13,7 @@ import com.alibaba.excel.util.DateUtils;
 /**
  * Date and string converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class DateStringConverter implements Converter<Date> {
     @Override

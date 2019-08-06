@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * Float and number converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class FloatNumberConverter implements Converter<Float> {
 

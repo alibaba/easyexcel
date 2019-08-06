@@ -3,7 +3,7 @@ package com.alibaba.easyexcel.test.core.large;
 import lombok.Data;
 
 /**
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 @Data
 public class LargeData {

@@ -15,7 +15,7 @@ import com.alibaba.excel.util.DateUtils;
 import com.alibaba.fastjson.JSON;
 
 /**
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class AnnotationDataListener extends AnalysisEventListener<AnnotationData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationDataListener.class);

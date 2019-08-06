@@ -13,7 +13,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
 
 /**
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class StyleDataListener extends AnalysisEventListener<StyleData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleDataListener.class);

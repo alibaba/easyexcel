@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 
 /**
  * Set the height of each table
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

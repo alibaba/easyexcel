@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.Head;
 /**
  * The regions of the loop merge
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class LoopMergeStrategy extends AbstractMergeStrategy {
     private int eachRow;

@@ -13,7 +13,7 @@ import com.alibaba.excel.write.metadata.WriteTable;
 /**
  * Build sheet
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class ExcelWriterTableBuilder {
 

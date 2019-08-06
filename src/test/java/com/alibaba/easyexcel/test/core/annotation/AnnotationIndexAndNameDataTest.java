@@ -13,7 +13,7 @@ import com.alibaba.excel.EasyExcelFactory;
 /**
  * Annotation data test
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class AnnotationIndexAndNameDataTest {
 

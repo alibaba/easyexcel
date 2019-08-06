@@ -3,7 +3,7 @@ package com.alibaba.excel.exception;
 /**
  * Throw the exception when you need to stop
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class ExcelAnalysisStopException extends ExcelAnalysisException {
 

@@ -3,7 +3,7 @@ package com.alibaba.excel.enums;
 /**
  * The types of write last row
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  **/
 public enum WriteLastRowType {
     /**

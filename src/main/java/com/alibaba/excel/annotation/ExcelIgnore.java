@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 
 /**
  * Ignore convert excel
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

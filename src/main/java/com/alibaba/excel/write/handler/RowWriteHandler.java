@@ -8,7 +8,7 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 /**
  * intercepts handle row creation
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public interface RowWriteHandler extends WriteHandler {
 

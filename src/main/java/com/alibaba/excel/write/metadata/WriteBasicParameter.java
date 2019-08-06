@@ -9,7 +9,7 @@ import com.alibaba.excel.write.handler.WriteHandler;
 /**
  * Write basic parameter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  **/
 public class WriteBasicParameter extends BasicParameter {
     /**

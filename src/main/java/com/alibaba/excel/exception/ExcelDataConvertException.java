@@ -2,8 +2,8 @@ package com.alibaba.excel.exception;
 
 /**
  * Data convert exception
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public class ExcelDataConvertException extends RuntimeException {
 

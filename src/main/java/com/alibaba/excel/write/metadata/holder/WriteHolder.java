@@ -11,7 +11,7 @@ import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
  *
  * Get the corresponding Holder
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  **/
 public interface WriteHolder extends ConfigurationHolder {
     /**

@@ -11,8 +11,8 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
 /**
  * Merge strategy
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public abstract class AbstractMergeStrategy implements CellWriteHandler {
     @Override
@@ -32,7 +32,7 @@ public abstract class AbstractMergeStrategy implements CellWriteHandler {
 
     /**
      * merge
-     * 
+     *
      * @param sheet
      * @param cell
      * @param head

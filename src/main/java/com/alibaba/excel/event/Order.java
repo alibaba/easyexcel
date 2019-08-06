@@ -2,8 +2,8 @@ package com.alibaba.excel.event;
 
 /**
  * Implement this interface when sorting
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public interface Order {
     /**

@@ -8,7 +8,7 @@ import com.alibaba.excel.metadata.property.ColumnWidthProperty;
 /**
  * excel head
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  **/
 public class Head {
     /**

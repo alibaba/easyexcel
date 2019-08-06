@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
  *
  * <li>write: It can be used on classes {@link java.util.Date}
  * <li>read: It can be used on classes {@link String}
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

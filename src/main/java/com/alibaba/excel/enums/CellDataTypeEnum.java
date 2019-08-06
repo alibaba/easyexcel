@@ -8,7 +8,7 @@ import com.alibaba.excel.util.StringUtils;
 /**
  * excel internal data type
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public enum CellDataTypeEnum {
     /**

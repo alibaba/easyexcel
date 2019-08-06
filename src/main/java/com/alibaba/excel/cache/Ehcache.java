@@ -25,7 +25,7 @@ import com.alibaba.excel.util.StringUtils;
 /**
  * Default cache
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class Ehcache implements ReadCache {
 

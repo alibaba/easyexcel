@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * String and error converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class StringErrorConverter implements Converter<String> {
     @Override

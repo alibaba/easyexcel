@@ -2,8 +2,8 @@ package com.alibaba.excel.metadata;
 
 /**
  * Global configuration
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public class GlobalConfiguration {
     /**
@@ -14,7 +14,7 @@ public class GlobalConfiguration {
      * true if date uses 1904 windowing, or false if using 1900 date windowing.
      *
      * default is false
-     * 
+     *
      * @return
      */
     private Boolean use1904windowing;

@@ -4,8 +4,8 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 
 /**
  * Converter unique key
- * 
- * @author zhuangjiaju
+ *
+ * @author Jiaju Zhuang
  */
 public class ConverterKeyBuild {
     public static String buildKey(Class clazz) {

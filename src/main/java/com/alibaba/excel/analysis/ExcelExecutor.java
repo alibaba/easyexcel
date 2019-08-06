@@ -7,13 +7,13 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 /**
  * Excel file Executor
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public interface ExcelExecutor {
 
     /**
      * Returns the actual sheet in excel
-     * 
+     *
      * @return
      */
     List<ReadSheet> sheetList();

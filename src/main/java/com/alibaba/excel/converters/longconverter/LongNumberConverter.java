@@ -9,7 +9,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 /**
  * Long and number converter
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class LongNumberConverter implements Converter<Long> {
 

@@ -37,7 +37,7 @@ import com.alibaba.excel.converters.string.StringStringConverter;
 /**
  * Load default handler
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class DefaultConverterLoader {
     /**

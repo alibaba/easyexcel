@@ -12,7 +12,7 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 /**
  * Load default handler
  *
- * @author zhuangjiaju
+ * @author Jiaju Zhuang
  */
 public class DefaultWriteHandlerLoader {
 
