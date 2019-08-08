@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -243,6 +244,8 @@ public class WriteTest {
      * <p>
      * 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照
      * {@link LongestMatchColumnWidthStyleStrategy}重新实现.
+     * <p>
+     * poi 自带{@link SXSSFSheet#autoSizeColumn(int)} 对中文支持也不太好。目前没找到很好的算法。 有的话可以推荐下。
      *
      * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
      * <li>3. 注册策略{@link LongestMatchColumnWidthStyleStrategy}

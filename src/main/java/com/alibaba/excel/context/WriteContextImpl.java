@@ -117,7 +117,9 @@ public class WriteContextImpl implements WriteContext {
             throw new IllegalArgumentException("Sheet argument cannot be null");
         }
         if (writeSheet.getSheetNo() == null || writeSheet.getSheetNo() <= 0) {
-            LOGGER.info("Sheet number is null");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Sheet number is null");
+            }
             writeSheet.setSheetNo(0);
         }
         if (writeWorkbookHolder.getHasBeenInitializedSheet().containsKey(writeSheet.getSheetNo())) {
