@@ -36,12 +36,12 @@ public abstract class AbstractHolder implements ConfigurationHolder {
 
     public AbstractHolder(BasicParameter basicParameter, AbstractHolder prentAbstractHolder) {
         this.newInitialization = Boolean.TRUE;
-        if (basicParameter.getHead() == null && prentAbstractHolder != null) {
+        if (basicParameter.getHead() == null && basicParameter.getClazz() == null && prentAbstractHolder != null) {
             this.head = prentAbstractHolder.getHead();
         } else {
             this.head = basicParameter.getHead();
         }
-        if (basicParameter.getClazz() == null && prentAbstractHolder != null) {
+        if (basicParameter.getHead() == null && basicParameter.getClazz() == null && prentAbstractHolder != null) {
             this.clazz = prentAbstractHolder.getClazz();
         } else {
             this.clazz = basicParameter.getClazz();

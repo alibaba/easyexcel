@@ -1,9 +1,10 @@
 package com.alibaba.excel.write.style.column;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Sheet;
 
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 /**
  * Returns the column width according to each column header
@@ -12,14 +13,15 @@ import com.alibaba.excel.metadata.Head;
  */
 public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrategy {
     @Override
-    protected void setColumnWidth(Sheet sheet, Cell cell, Head head, int relativeRowIndex, boolean isHead) {
+    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, CellData cellData, Cell cell, Head head,
+        int relativeRowIndex, boolean isHead) {
         if (!isHead && relativeRowIndex != 0) {
             return;
         }
         Integer width = columnWidth(head);
         if (width != null) {
             width = width * 256;
-            sheet.setColumnWidth(cell.getColumnIndex(), width);
+            writeSheetHolder.getSheet().setColumnWidth(cell.getColumnIndex(), width);
         }
     }
 

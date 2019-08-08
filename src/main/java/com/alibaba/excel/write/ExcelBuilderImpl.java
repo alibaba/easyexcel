@@ -179,8 +179,8 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         beforeCellCreate(row, head, relativeRowIndex);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
         Object value = oneRowData.get(dataIndex);
-        converterAndSet(context.currentWriteHolder(), value.getClass(), cell, value, null);
-        afterCellCreate(head, cell, relativeRowIndex);
+        CellData cellData = converterAndSet(context.currentWriteHolder(), value.getClass(), cell, value, null);
+        afterCellCreate(head, cellData, cell, relativeRowIndex);
     }
 
     private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex, List<Field> fieldList) {
@@ -202,9 +202,9 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             beforeCellCreate(row, head, relativeRowIndex);
             Cell cell = WorkBookUtil.createCell(row, cellIndex);
             Object value = beanMap.get(name);
-            converterAndSet(currentWriteHolder, excelContentProperty.getField().getType(), cell, value,
-                excelContentProperty);
-            afterCellCreate(head, cell, relativeRowIndex);
+            CellData cellData = converterAndSet(currentWriteHolder, excelContentProperty.getField().getType(), cell,
+                value, excelContentProperty);
+            afterCellCreate(head, cellData, cell, relativeRowIndex);
             beanMapHandledSet.add(name);
         }
         // Finish
@@ -229,8 +229,8 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             beforeCellCreate(row, null, relativeRowIndex);
             Cell cell = WorkBookUtil.createCell(row, cellIndex++);
-            converterAndSet(currentWriteHolder, value.getClass(), cell, value, null);
-            afterCellCreate(null, cell, relativeRowIndex);
+            CellData cellData = converterAndSet(currentWriteHolder, value.getClass(), cell, value, null);
+            afterCellCreate(null, cellData, cell, relativeRowIndex);
         }
     }
 
@@ -261,7 +261,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     }
 
-    private void afterCellCreate(Head head, Cell cell, int relativeRowIndex) {
+    private void afterCellCreate(Head head, CellData cellData, Cell cell, int relativeRowIndex) {
         List<WriteHandler> handlerList = context.currentWriteHolder().writeHandlerMap().get(CellWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
@@ -269,7 +269,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
                 ((CellWriteHandler)writeHandler).afterCellCreate(context.writeSheetHolder(), context.writeTableHolder(),
-                    cell, head, relativeRowIndex, false);
+                    cellData, cell, head, relativeRowIndex, false);
             }
         }
         if (null != context.writeWorkbookHolder().getWriteWorkbook().getWriteHandler()) {
@@ -277,10 +277,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         }
     }
 
-    private void converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
+    private CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty) {
         if (value == null) {
-            return;
+            return null;
         }
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
             value = ((String)value).trim();
@@ -296,13 +296,13 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         switch (cellData.getType()) {
             case STRING:
                 cell.setCellValue(cellData.getStringValue());
-                return;
+                return cellData;
             case BOOLEAN:
                 cell.setCellValue(cellData.getBooleanValue());
-                return;
+                return cellData;
             case NUMBER:
                 cell.setCellValue(cellData.getDoubleValue());
-                return;
+                return cellData;
             default:
                 throw new ExcelDataConvertException("Not supported data:" + value + " return type:" + cell.getCellType()
                     + "at row:" + cell.getRow().getRowNum());

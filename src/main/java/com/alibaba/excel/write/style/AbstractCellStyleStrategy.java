@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.alibaba.excel.event.NotRepeatExecutor;
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
@@ -46,8 +47,8 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
     }
 
     @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
-        Head head, int relativeRowIndex, boolean isHead) {
+    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData,
+        Cell cell, Head head, int relativeRowIndex, boolean isHead) {
         if (isHead) {
             setHeadCellStyle(cell, head, relativeRowIndex);
         } else {

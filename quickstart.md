@@ -21,6 +21,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 * [自定义样式](#styleWrite)
 * [合并单元格](#mergeWrite)
 * [使用table去写入](#tableWrite)
+* [动态头，实时生成头写入](#dynamicHeadWrite)
 * [web中的写](#webWrite)
 
 ## 读excel样例
@@ -694,6 +695,47 @@ public class WidthAndHeightData {
         excelWriter.write(data(), writeSheet, writeTable1);
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
+    }
+```
+
+### <span id="tableWrite" />动态头，实时生成头写入
+##### excel示例
+![img](img/readme/quickstart/write/dynamicHeadWrite.png)
+##### 对象
+参照：[对象](#simpleWriteObject)
+##### 代码
+```java
+    /**
+     * 动态头，实时生成头写入
+     * <p>
+     * 思路是这样子的，先创建List<String>头格式的sheet仅仅写入头,然后通过table 不写入头的方式 去写入数据
+     *
+     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <li>2. 然后写入table即可
+     */
+    @Test
+    public void dynamicHeadWrite() {
+        String fileName = TestFileUtil.getPath() + "dynamicHeadWrite" + System.currentTimeMillis() + ".xlsx";
+        // write的时候 不传入 class 在table的时候传入
+        EasyExcelFactory.write(fileName)
+            // 这里放入动态头
+            .head(head()).sheet("模板")
+            // table的时候 传入class 并且设置needHead =false
+            .table().head(DemoData.class).needHead(Boolean.FALSE).doWrite(data());
+    }
+
+    private List<List<String>> head() {
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> head0 = new ArrayList<String>();
+        head0.add("字符串" + System.currentTimeMillis());
+        List<String> head1 = new ArrayList<String>();
+        head1.add("数字" + System.currentTimeMillis());
+        List<String> head2 = new ArrayList<String>();
+        head2.add("日期" + System.currentTimeMillis());
+        list.add(head0);
+        list.add(head1);
+        list.add(head2);
+        return list;
     }
 ```
 

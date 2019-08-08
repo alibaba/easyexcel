@@ -15,10 +15,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface ColumnWidth {
+
     /**
      * Column width
      * <p>
-     * -1 mean the auto set width
+     * -1 means the default column width is used
      */
     int value() default -1;
 }

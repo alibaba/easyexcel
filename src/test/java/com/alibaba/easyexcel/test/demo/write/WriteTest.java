@@ -25,6 +25,7 @@ import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 
 /**
  * 写的常见写法
@@ -216,6 +217,70 @@ public class WriteTest {
         excelWriter.write(data(), writeSheet, writeTable1);
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
+    }
+
+    /**
+     * 动态头，实时生成头写入
+     * <p>
+     * 思路是这样子的，先创建List<String>头格式的sheet仅仅写入头,然后通过table 不写入头的方式 去写入数据
+     *
+     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <li>2. 然后写入table即可
+     */
+    @Test
+    public void dynamicHeadWrite() {
+        String fileName = TestFileUtil.getPath() + "dynamicHeadWrite" + System.currentTimeMillis() + ".xlsx";
+        // write的时候 不传入 class 在table的时候传入
+        EasyExcelFactory.write(fileName)
+            // 这里放入动态头
+            .head(head()).sheet("模板")
+            // table的时候 传入class 并且设置needHead =false
+            .table().head(DemoData.class).needHead(Boolean.FALSE).doWrite(data());
+    }
+
+    /**
+     * 自动列宽(不太精确)
+     * <p>
+     * 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照
+     * {@link LongestMatchColumnWidthStyleStrategy}重新实现.
+     *
+     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <li>3. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
+     * <li>2. 直接写即可
+     */
+    @Test
+    public void longestMatchColumnWidthWrite() {
+        String fileName =
+            TestFileUtil.getPath() + "longestMatchColumnWidthWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcelFactory.write(fileName, LongestMatchColumnWidthData.class)
+            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet("模板").doWrite(dataLong());
+    }
+
+    private List<LongestMatchColumnWidthData> dataLong() {
+        List<LongestMatchColumnWidthData> list = new ArrayList<LongestMatchColumnWidthData>();
+        for (int i = 0; i < 10; i++) {
+            LongestMatchColumnWidthData data = new LongestMatchColumnWidthData();
+            data.setString("测试很长的字符串测试很长的字符串测试很长的字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(1000000000000.0);
+            list.add(data);
+        }
+        return list;
+    }
+
+    private List<List<String>> head() {
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> head0 = new ArrayList<String>();
+        head0.add("字符串" + System.currentTimeMillis());
+        List<String> head1 = new ArrayList<String>();
+        head1.add("数字" + System.currentTimeMillis());
+        List<String> head2 = new ArrayList<String>();
+        head2.add("日期" + System.currentTimeMillis());
+        list.add(head0);
+        list.add(head1);
+        list.add(head2);
+        return list;
     }
 
     private List<DemoData> data() {

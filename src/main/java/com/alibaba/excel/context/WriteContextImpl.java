@@ -275,7 +275,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler)writeHandler).afterCellCreate(writeSheetHolder, writeTableHolder, cell, head,
+                ((CellWriteHandler)writeHandler).afterCellCreate(writeSheetHolder, writeTableHolder, null, cell, head,
                     relativeRowIndex, true);
             }
         }

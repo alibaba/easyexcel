@@ -3,6 +3,7 @@ package com.alibaba.excel.write.handler;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
@@ -36,9 +37,11 @@ public interface CellWriteHandler extends WriteHandler {
      *            Nullable
      * @param cell
      * @param head
+     * @param cellData
+     *            Nullable.
      * @param relativeRowIndex
      * @param isHead
      */
-    void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell, Head head,
-        int relativeRowIndex, boolean isHead);
+    void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData,
+        Cell cell, Head head, int relativeRowIndex, boolean isHead);
 }
