@@ -21,7 +21,7 @@ public class Xls03Test {
 
     @Test
     public void test() {
-        List<Object> list = EasyExcelFactory.read("D:\\test\\1.xls").sheet().doReadSync();
+        List<Object> list = EasyExcelFactory.read("D:\\test\\8.xls").sheet().doReadSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }

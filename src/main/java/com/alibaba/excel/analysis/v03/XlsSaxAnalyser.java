@@ -111,6 +111,10 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         } catch (IOException e) {
             throw new ExcelAnalysisException(e);
         }
+        // Sometimes tables lack the end record of the last column
+        if (!records.isEmpty()) {
+            endRow();
+        }
     }
 
     private void init() {
@@ -168,19 +172,21 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private void processLastCellOfRow(Record record) {
         // Handle end of row
         if (record instanceof LastCellOfRowDummyRecord) {
-            int row = ((LastCellOfRowDummyRecord)record).getRow();
-            if (lastColumnNumber == -1) {
-                lastColumnNumber = 0;
-            }
-            if (notAllEmpty) {
-                analysisContext.readRowHolder(
-                    new ReadRowHolder(lastRowNumber, analysisContext.readSheetHolder().getGlobalConfiguration()));
-                analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records),
-                    analysisContext);
-            }
-            records.clear();
-            lastColumnNumber = -1;
+            endRow();
         }
+    }
+
+    private void endRow() {
+        if (lastColumnNumber == -1) {
+            lastColumnNumber = 0;
+        }
+        if (notAllEmpty) {
+            analysisContext.readRowHolder(
+                new ReadRowHolder(lastRowNumber, analysisContext.readSheetHolder().getGlobalConfiguration()));
+            analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records), analysisContext);
+        }
+        records.clear();
+        lastColumnNumber = -1;
     }
 
     private void buildXlsRecordHandlers() {
