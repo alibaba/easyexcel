@@ -7,7 +7,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -21,7 +22,7 @@ public class Xls03Test {
 
     @Test
     public void test() {
-        List<Object> list = EasyExcelFactory.read("D:\\test\\8.xls").sheet().doReadSync();
+        List<Object> list = EasyExcel.read("D:\\test\\8.xls").sheet().doReadSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }

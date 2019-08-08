@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 
 /**
  * web读写案例
@@ -33,7 +33,7 @@ public class WebTest {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("Content-disposition", "attachment;filename=demo.xlsx");
-        EasyExcelFactory.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data());
+        EasyExcel.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data());
     }
 
     /**
@@ -45,7 +45,7 @@ public class WebTest {
     @PostMapping("upload")
     @ResponseBody
     public String upload(MultipartFile file) throws IOException {
-        EasyExcelFactory.read(file.getInputStream(), UploadData.class, new UploadDataListener()).sheet().doRead();
+        EasyExcel.read(file.getInputStream(), UploadData.class, new UploadDataListener()).sheet().doRead();
         return "success";
     }
 

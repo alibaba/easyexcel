@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
@@ -39,12 +39,12 @@ public class ReadTest {
         // 写法1：
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
-        EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead();
 
         // 写法2：
         fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        ExcelReader excelReader = EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).build();
-        ReadSheet readSheet = EasyExcelFactory.readSheet(0).build();
+        ExcelReader excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
+        ReadSheet readSheet = EasyExcel.readSheet(0).build();
         excelReader.read(readSheet);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
         excelReader.finish();
@@ -61,7 +61,7 @@ public class ReadTest {
     public void indexOrNameRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里默认读取第一个sheet
-        EasyExcelFactory.read(fileName, IndexOrNameData.class, new IndexOrNameDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, IndexOrNameData.class, new IndexOrNameDataListener()).sheet().doRead();
     }
 
     /**
@@ -73,9 +73,9 @@ public class ReadTest {
     @Test
     public void repeatedRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        ExcelReader excelReader = EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).build();
-        ReadSheet readSheet1 = EasyExcelFactory.readSheet(0).build();
-        ReadSheet readSheet2 = EasyExcelFactory.readSheet(1).build();
+        ExcelReader excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
+        ReadSheet readSheet1 = EasyExcel.readSheet(0).build();
+        ReadSheet readSheet2 = EasyExcel.readSheet(1).build();
         excelReader.read(readSheet1);
         excelReader.read(readSheet2);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
@@ -94,7 +94,7 @@ public class ReadTest {
     public void converterRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
-        EasyExcelFactory.read(fileName, ConverterData.class, new ConverterDataListener())
+        EasyExcel.read(fileName, ConverterData.class, new ConverterDataListener())
             // 这里注意 我们也可以registerConverter来指定自定义转换器， 但是这个转换变成全局了， 所有java为string,excel为string的都会用这个转换器。
             // 如果就想单个字段使用请使用@ExcelProperty 指定converter
             // .registerConverter(new CustomStringStringConverter())
@@ -114,7 +114,7 @@ public class ReadTest {
     public void complexHeaderRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
-        EasyExcelFactory.read(fileName, DemoData.class, new DemoDataListener()).sheet()
+        EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet()
             // 这里可以设置1，因为头就是一行。如果多行头，可以设置其他值。不传入也可以，因为默认会根据DemoData 来解析，他没有指定头，也就是默认1行
             .headRowNumber(1).doRead();
     }
@@ -126,14 +126,14 @@ public class ReadTest {
     public void synchronousRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 同步读取会自动finish
-        List<Object> list = EasyExcelFactory.read(fileName).head(DemoData.class).sheet().doReadSync();
+        List<Object> list = EasyExcel.read(fileName).head(DemoData.class).sheet().doReadSync();
         for (Object obj : list) {
             DemoData data = (DemoData)obj;
             LOGGER.info("读取到数据:{}", JSON.toJSONString(data));
         }
 
         // 这里 也可以不指定class，返回一个list，然后读取第一个sheet 同步读取会自动finish
-        list = EasyExcelFactory.read(fileName).sheet().doReadSync();
+        list = EasyExcel.read(fileName).sheet().doReadSync();
         for (Object obj : list) {
             // 返回每条数据的键值对 表示所在的列 和所在列的值
             Map<Integer, String> data = (Map<Integer, String>)obj;
