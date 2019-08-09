@@ -148,7 +148,7 @@ public class IndexOrNameData {
 ##### 代码
 ```java
     /**
-     * 读多个sheet,这里注意一个sheet不能读取多次，一定要多次需要重新读取文件
+     * 读多个sheet,这里注意一个sheet不能读取多次，多次读取需要重新读取文件
      * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
      * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <li>3. 直接读即可
