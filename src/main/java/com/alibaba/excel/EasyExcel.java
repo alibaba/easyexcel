@@ -1,7 +1,7 @@
 package com.alibaba.excel;
 
 /**
- * This is actually {@link EasyExcelFactory}, and it's nice to have a short name
+ * This is actually {@link EasyExcelFactory}, and short names look better.
  *
  * @author jipengfei
  */
