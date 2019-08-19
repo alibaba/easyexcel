@@ -1,5 +1,6 @@
 package com.alibaba.easyexcel.test.temp;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -10,6 +11,8 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.crypt.Decryptor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -19,7 +22,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -91,12 +93,50 @@ public class StyleTest {
     @Test
     public void poi0701() throws Exception {
         InputStream is = new FileInputStream("D:\\test\\f1.xlsx");
-        Workbook workbook = WorkbookFactory.create(is); // 这种方式 Excel 2003/2007/2010 都是可以处理的
+        Workbook workbook = WorkbookFactory.create(is);
         Sheet sheet = workbook.getSheetAt(0);
         print(sheet.getRow(0).getCell(0));
         print(sheet.getRow(1).getCell(0));
         print(sheet.getRow(2).getCell(0));
         print(sheet.getRow(3).getCell(0));
+    }
+
+    @Test
+    public void poi0702() throws Exception {
+        Workbook workbook = WorkbookFactory.create(new FileInputStream("D:\\test\\t2.xlsx"));
+        workbook = WorkbookFactory.create(new File("D:\\test\\t2.xlsx"));
+        Sheet sheet = workbook.getSheetAt(0);
+        Row row = sheet.getRow(0);
+        System.out.println(row.getCell(0).getNumericCellValue());
+    }
+
+    @Test
+    public void poi0703() throws Exception {
+        try {
+            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream("D:\\test\\t2.xlsx"));
+            System.out.println(poifsFileSystem.getRoot().hasEntry(Decryptor.DEFAULT_POIFS_ENTRY));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new File("D:\\test\\t2.xlsx"));
+            System.out.println(poifsFileSystem.getRoot().hasEntry(Decryptor.DEFAULT_POIFS_ENTRY));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream("D:\\test\\t222.xlsx"));
+            System.out.println(poifsFileSystem.getRoot().hasEntry(Decryptor.DEFAULT_POIFS_ENTRY));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new File("D:\\test\\t222.xlsx"));
+            System.out.println(poifsFileSystem.getRoot().hasEntry(Decryptor.DEFAULT_POIFS_ENTRY));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void print(Cell cell) {

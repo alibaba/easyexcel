@@ -1,5 +1,11 @@
 package com.alibaba.excel.analysis;
 
+import java.io.InputStream;
+
+import org.apache.poi.poifs.crypt.Decryptor;
+import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,17 +45,38 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     }
 
     private void choiceExcelExecutor() throws Exception {
-        ExcelTypeEnum excelType = analysisContext.readWorkbookHolder().getExcelType();
+        ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
+        ExcelTypeEnum excelType = readWorkbookHolder.getExcelType();
         if (excelType == null) {
-            excelExecutor = new XlsxSaxAnalyser(analysisContext);
+            excelExecutor = new XlsxSaxAnalyser(analysisContext, null);
             return;
         }
         switch (excelType) {
             case XLS:
-                excelExecutor = new XlsSaxAnalyser(analysisContext);
+                POIFSFileSystem poifsFileSystem = null;
+                if (readWorkbookHolder.getFile() != null) {
+                    poifsFileSystem = new POIFSFileSystem(readWorkbookHolder.getFile());
+                } else {
+                    poifsFileSystem = new POIFSFileSystem(readWorkbookHolder.getInputStream());
+                }
+                // So in encrypted excel, it looks like XLS but it's actually XLSX
+                if (poifsFileSystem.getRoot().hasEntry(Decryptor.DEFAULT_POIFS_ENTRY)) {
+                    InputStream decryptedStream = null;
+                    try {
+                        decryptedStream = DocumentFactoryHelper.getDecryptedStream(poifsFileSystem.getRoot(), null);
+                        excelExecutor = new XlsxSaxAnalyser(analysisContext, decryptedStream);
+                        return;
+                    } finally {
+                        IOUtils.closeQuietly(decryptedStream);
+                        // as we processed the full stream already, we can close the filesystem here
+                        // otherwise file handles are leaked
+                        poifsFileSystem.close();
+                    }
+                }
+                excelExecutor = new XlsSaxAnalyser(analysisContext, poifsFileSystem);
                 break;
             case XLSX:
-                excelExecutor = new XlsxSaxAnalyser(analysisContext);
+                excelExecutor = new XlsxSaxAnalyser(analysisContext, null);
                 break;
             default:
         }

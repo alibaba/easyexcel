@@ -53,12 +53,12 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
      */
     private StylesTable stylesTable;
 
-    public XlsxSaxAnalyser(AnalysisContext analysisContext) throws Exception {
+    public XlsxSaxAnalyser(AnalysisContext analysisContext, InputStream decryptedStream) throws Exception {
         this.analysisContext = analysisContext;
         // Initialize cache
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
 
-        OPCPackage pkg = readOpcPackage(readWorkbookHolder);
+        OPCPackage pkg = readOpcPackage(readWorkbookHolder, decryptedStream);
         PackagePart sharedStringsTablePackagePart =
             pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType()).get(0);
 
@@ -134,17 +134,26 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         readWorkbookHolder.getReadCache().putFinished();
     }
 
-    private OPCPackage readOpcPackage(ReadWorkbookHolder readWorkbookHolder) throws Exception {
-        if (readWorkbookHolder.getFile() != null) {
+    private OPCPackage readOpcPackage(ReadWorkbookHolder readWorkbookHolder, InputStream decryptedStream)
+        throws Exception {
+        if (decryptedStream == null && readWorkbookHolder.getFile() != null) {
             return OPCPackage.open(readWorkbookHolder.getFile());
         }
         if (readWorkbookHolder.getMandatoryUseInputStream()) {
-            return OPCPackage.open(readWorkbookHolder.getInputStream());
+            if (decryptedStream != null) {
+                return OPCPackage.open(decryptedStream);
+            } else {
+                return OPCPackage.open(readWorkbookHolder.getInputStream());
+            }
         }
         File readTempFile = FileUtils.createCacheTmpFile();
         readWorkbookHolder.setTempFile(readTempFile);
         File tempFile = new File(readTempFile.getPath(), UUID.randomUUID().toString() + ".xlsx");
-        FileUtils.writeToFile(tempFile, readWorkbookHolder.getInputStream());
+        if (decryptedStream != null) {
+            FileUtils.writeToFile(tempFile, decryptedStream);
+        } else {
+            FileUtils.writeToFile(tempFile, readWorkbookHolder.getInputStream());
+        }
         return OPCPackage.open(tempFile);
     }
 

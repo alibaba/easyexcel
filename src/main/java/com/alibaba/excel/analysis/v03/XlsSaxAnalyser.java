@@ -14,10 +14,7 @@ import org.apache.poi.hssf.eventusermodel.HSSFListener;
 import org.apache.poi.hssf.eventusermodel.HSSFRequest;
 import org.apache.poi.hssf.eventusermodel.MissingRecordAwareHSSFListener;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
-import org.apache.poi.hssf.record.ExtendedFormatRecord;
 import org.apache.poi.hssf.record.Record;
-import org.apache.poi.hssf.record.StyleRecord;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
@@ -38,7 +35,6 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
-import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.util.CollectionUtils;
 
 /**
@@ -58,7 +54,7 @@ import com.alibaba.excel.util.CollectionUtils;
  */
 public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private boolean outputFormulaValues = true;
-    private POIFSFileSystem fs;
+    private POIFSFileSystem poifsFileSystem;
     private int lastRowNumber;
     private int lastColumnNumber;
     private boolean notAllEmpty = false;
@@ -73,16 +69,10 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private List<XlsRecordHandler> recordHandlers = new ArrayList<XlsRecordHandler>();
     private AnalysisContext analysisContext;
 
-    public XlsSaxAnalyser(AnalysisContext context) throws IOException {
+    public XlsSaxAnalyser(AnalysisContext context, POIFSFileSystem poifsFileSystem) throws IOException {
         this.analysisContext = context;
         this.records = new TreeMap<Integer, CellData>();
-        ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
-        if (readWorkbookHolder.getFile() != null) {
-            this.fs = new POIFSFileSystem(readWorkbookHolder.getFile());
-        } else {
-            this.fs = new POIFSFileSystem(readWorkbookHolder.getInputStream());
-        }
-
+        this.poifsFileSystem = poifsFileSystem;
     }
 
     @Override
@@ -110,7 +100,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         }
 
         try {
-            factory.processWorkbookEvents(request, fs);
+            factory.processWorkbookEvents(request, poifsFileSystem);
         } catch (IOException e) {
             throw new ExcelAnalysisException(e);
         }
