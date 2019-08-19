@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.demo.write;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
+import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
@@ -118,6 +120,35 @@ public class WriteTest {
     }
 
     /**
+     * 图片导出
+     * <li>1. 创建excel对应的实体对象 参照{@link ImageData}
+     * <li>2. 直接写即可
+     */
+    @Test
+    public void imageWrite() throws Exception {
+        String fileName = TestFileUtil.getPath() + "imageWrite" + System.currentTimeMillis() + ".xlsx";
+        // 如果使用流 记得关闭
+        InputStream inputStream = null;
+        try {
+            List<ImageData> list = new ArrayList<ImageData>();
+            ImageData imageData = new ImageData();
+            list.add(imageData);
+            String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
+            // 放入四种类型的图片 实际使用只要选一种即可
+            imageData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
+            imageData.setFile(new File(imagePath));
+            imageData.setString(imagePath);
+            inputStream = FileUtils.openInputStream(new File(imagePath));
+            imageData.setInputStream(inputStream);
+            EasyExcel.write(fileName, ImageData.class).sheet().doWrite(list);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    /**
      * 根据模板写入
      * <li>1. 创建excel对应的实体对象 参照{@link IndexData}
      * <li>2. 使用{@link ExcelProperty}注解指定写入的列
@@ -192,8 +223,7 @@ public class WriteTest {
         // 每隔2行会合并 把eachColumn 设置成 3 也就是我们数据的长度，所以就第一列会合并。当然其他合并策略也可以自己写
         LoopMergeStrategy loopMergeStrategy = new LoopMergeStrategy(2, 0);
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(loopMergeStrategy).sheet("模板")
-            .doWrite(data());
+        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(loopMergeStrategy).sheet("模板").doWrite(data());
     }
 
     /**
@@ -297,4 +327,5 @@ public class WriteTest {
         }
         return list;
     }
+
 }

@@ -16,6 +16,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 * [复杂头写入](#complexHeadWrite)
 * [重复多次写入](#repeatedWrite)
 * [日期、数字或者自定义格式转换](#converterWrite)
+* [图片导出](#imageWrite)
 * [根据模板写入](#templateWrite)
 * [列宽、行高](#widthAndHeightWrite)
 * [自定义样式](#styleWrite)
@@ -536,6 +537,58 @@ public class ConverterData {
         EasyExcel.write(fileName, ConverterData.class).sheet("模板").doWrite(data());
     }
 ```
+
+### <span id="imageWrite" />图片导出
+##### excel示例
+![img](img/readme/quickstart/write/imageWrite.png)
+##### 对象
+```java
+@Data
+@ContentRowHeight(100)
+@ColumnWidth(100 / 8)
+public class ImageData {
+    private File file;
+    private InputStream inputStream;
+    /**
+     * 如果string类型 必须指定转换器，string默认转换成string
+     */
+    @ExcelProperty(converter = StringImageConverter.class)
+    private String string;
+    private byte[] byteArray;
+}
+```
+##### 代码
+```java
+    /**
+     * 图片导出
+     * <li>1. 创建excel对应的实体对象 参照{@link ImageData}
+     * <li>2. 直接写即可
+     */
+    @Test
+    public void imageWrite() throws Exception {
+        String fileName = TestFileUtil.getPath() + "imageWrite" + System.currentTimeMillis() + ".xlsx";
+        // 如果使用流 记得关闭
+        InputStream inputStream = null;
+        try {
+            List<ImageData> list = new ArrayList<ImageData>();
+            ImageData imageData = new ImageData();
+            list.add(imageData);
+            String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
+            // 放入四种类型的图片 实际使用只要选一种即可
+            imageData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
+            imageData.setFile(new File(imagePath));
+            imageData.setString(imagePath);
+            inputStream = FileUtils.openInputStream(new File(imagePath));
+            imageData.setInputStream(inputStream);
+            EasyExcel.write(fileName, ImageData.class).sheet().doWrite(list);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+```
+
 
 ### <span id="templateWrite" />根据模板写入
 ##### 模板excel示例
