@@ -30,6 +30,8 @@ public class NumberRecordHandler extends AbstractXlsRecordHandler {
         this.row = numrec.getRow();
         this.column = numrec.getColumn();
         this.cellData = new CellData(numrec.getValue());
+        this.cellData.setDataFormat(formatListener.getFormatIndex(numrec));
+        this.cellData.setDataFormatString(formatListener.getFormatString(numrec));
     }
 
     @Override

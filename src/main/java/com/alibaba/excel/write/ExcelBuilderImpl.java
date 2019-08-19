@@ -51,7 +51,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         } catch (RuntimeException e) {
             finish();
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             finish();
             throw new ExcelGenerateException(e);
         }
@@ -88,7 +88,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         } catch (RuntimeException e) {
             finish();
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             finish();
             throw new ExcelGenerateException(e);
         }

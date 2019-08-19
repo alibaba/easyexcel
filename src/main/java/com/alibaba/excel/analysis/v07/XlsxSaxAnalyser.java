@@ -15,6 +15,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
@@ -47,6 +48,10 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
     private AnalysisContext analysisContext;
     private List<ReadSheet> sheetList;
     private Map<Integer, InputStream> sheetMap;
+    /**
+     * Current style information
+     */
+    private StylesTable stylesTable;
 
     public XlsxSaxAnalyser(AnalysisContext analysisContext) throws Exception {
         this.analysisContext = analysisContext;
@@ -64,9 +69,9 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         analysisSharedStringsTable(sharedStringsTablePackagePart.getInputStream(), readWorkbookHolder);
 
         XSSFReader xssfReader = new XSSFReader(pkg);
-
         analysisUse1904WindowDate(xssfReader, readWorkbookHolder);
 
+        stylesTable = xssfReader.getStylesTable();
         sheetList = new ArrayList<ReadSheet>();
         sheetMap = new HashMap<Integer, InputStream>();
         XSSFReader.SheetIterator ite = (XSSFReader.SheetIterator)xssfReader.getSheetsData();
@@ -94,12 +99,12 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         }
         if (size < USE_MAP_CACHE_SIZE) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.info("Use map cache.size:{}", size);
+                LOGGER.debug("Use map cache.size:{}", size);
             }
             readWorkbookHolder.setReadCache(new MapCache());
         } else {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.info("Use ehcache.size:{}", size);
+                LOGGER.debug("Use ehcache.size:{}", size);
             }
             readWorkbookHolder.setReadCache(new Ehcache());
         }
@@ -178,7 +183,7 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
     @Override
     public void execute() {
         parseXmlSource(sheetMap.get(analysisContext.readSheetHolder().getSheetNo()),
-            new XlsxRowHandler(analysisContext));
+            new XlsxRowHandler(analysisContext, stylesTable));
     }
 
 }

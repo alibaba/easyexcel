@@ -64,6 +64,7 @@ public class ReadAllConverterDataListener extends AnalysisEventListener<ReadAllC
         Assert.assertEquals(data.getStringBoolean(), "true");
         Assert.assertEquals(data.getStringString(), "测试");
         Assert.assertEquals(data.getStringError(), "#VALUE!");
+        Assert.assertEquals(data.getStringNumberDate(), "2020-01-01 01:01:01");
         Assert.assertEquals(data.getStringFormulaNumber(), "2.0");
         Assert.assertEquals(data.getStringFormulaString(), "1测试");
         LOGGER.debug("First row:{}", JSON.toJSONString(list.get(0)));

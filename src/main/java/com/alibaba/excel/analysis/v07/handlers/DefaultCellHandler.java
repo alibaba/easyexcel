@@ -1,5 +1,6 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
+import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_DATA_FORMAT_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_FORMULA_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_INLINE_STRING_VALUE_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_TAG;
@@ -9,6 +10,9 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.poi.ss.usermodel.BuiltinFormats;
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.Attributes;
 
@@ -36,9 +40,14 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private int curCol;
     private Map<Integer, CellData> curRowContent = new TreeMap<Integer, CellData>();
     private CellData currentCellData;
+    /**
+     * Current style information
+     */
+    private StylesTable stylesTable;
 
-    public DefaultCellHandler(AnalysisContext analysisContext) {
+    public DefaultCellHandler(AnalysisContext analysisContext, StylesTable stylesTable) {
         this.analysisContext = analysisContext;
+        this.stylesTable = stylesTable;
     }
 
     @Override
@@ -75,6 +84,21 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             // t is null ,it's means Empty or Number
             CellDataTypeEnum type = CellDataTypeEnum.buildFromCellType(attributes.getValue(CELL_VALUE_TYPE_TAG));
             currentCellData = new CellData(type);
+
+            // Put in data transformation information
+            String dateFormatIndex = attributes.getValue(CELL_DATA_FORMAT_TAG);
+            if (dateFormatIndex != null) {
+                int dateFormatIndexInteger = Integer.parseInt(dateFormatIndex);
+                XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+                int dataFormat = xssfCellStyle.getDataFormat();
+                String dataFormatString = xssfCellStyle.getDataFormatString();
+                currentCellData.setDataFormat(dataFormat);
+                if (dataFormatString == null) {
+                    currentCellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat));
+                } else {
+                    currentCellData.setDataFormatString(dataFormatString);
+                }
+            }
         }
         // cell is formula
         if (CELL_FORMULA_TAG.equals(name)) {

@@ -14,7 +14,10 @@ import org.apache.poi.hssf.eventusermodel.HSSFListener;
 import org.apache.poi.hssf.eventusermodel.HSSFRequest;
 import org.apache.poi.hssf.eventusermodel.MissingRecordAwareHSSFListener;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
+import org.apache.poi.hssf.record.ExtendedFormatRecord;
 import org.apache.poi.hssf.record.Record;
+import org.apache.poi.hssf.record.StyleRecord;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 

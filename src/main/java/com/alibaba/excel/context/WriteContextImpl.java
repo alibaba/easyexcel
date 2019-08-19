@@ -1,6 +1,5 @@
 package com.alibaba.excel.context;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
@@ -347,19 +346,29 @@ public class WriteContextImpl implements WriteContext {
         try {
             writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
             writeWorkbookHolder.getWorkbook().close();
-            if (writeWorkbookHolder.getAutoCloseStream()) {
-                if (writeWorkbookHolder.getOutputStream() != null) {
-                    writeWorkbookHolder.getOutputStream().close();
-                }
-                if (writeWorkbookHolder.getTemplateInputStream() != null) {
-                    writeWorkbookHolder.getTemplateInputStream().close();
-                }
-            } else {
-                if (writeWorkbookHolder.getFile() != null && writeWorkbookHolder.getOutputStream() != null) {
-                    writeWorkbookHolder.getOutputStream().close();
-                }
+        } catch (Throwable e) {
+            throw new ExcelGenerateException("Can not close IO", e);
+        }
+        try {
+            if (writeWorkbookHolder.getAutoCloseStream() && writeWorkbookHolder.getOutputStream() != null) {
+                writeWorkbookHolder.getOutputStream().close();
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
+            throw new ExcelGenerateException("Can not close IO", e);
+        }
+        try {
+            if (writeWorkbookHolder.getAutoCloseStream() && writeWorkbookHolder.getTemplateInputStream() != null) {
+                writeWorkbookHolder.getTemplateInputStream().close();
+            }
+        } catch (Throwable e) {
+            throw new ExcelGenerateException("Can not close IO", e);
+        }
+        try {
+            if (!writeWorkbookHolder.getAutoCloseStream() && writeWorkbookHolder.getFile() != null
+                && writeWorkbookHolder.getOutputStream() != null) {
+                writeWorkbookHolder.getOutputStream().close();
+            }
+        } catch (Throwable e) {
             throw new ExcelGenerateException("Can not close IO", e);
         }
         if (LOGGER.isDebugEnabled()) {

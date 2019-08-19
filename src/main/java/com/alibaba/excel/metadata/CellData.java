@@ -23,6 +23,14 @@ public class CellData {
     private Boolean booleanValue;
     private Boolean formula;
     private String formulaValue;
+    /**
+     * The number formatting
+     */
+    private Integer dataFormat;
+    /**
+     * The string of number formatting
+     */
+    private String dataFormatString;
 
     public CellData(CellData other) {
         this.type = other.type;
@@ -31,6 +39,8 @@ public class CellData {
         this.booleanValue = other.booleanValue;
         this.formula = other.formula;
         this.formulaValue = other.formulaValue;
+        this.dataFormat = other.dataFormat;
+        this.dataFormatString = other.dataFormatString;
     }
 
     public CellData(String stringValue) {
@@ -121,6 +131,22 @@ public class CellData {
 
     public void setFormulaValue(String formulaValue) {
         this.formulaValue = formulaValue;
+    }
+
+    public Integer getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(Integer dataFormat) {
+        this.dataFormat = dataFormat;
+    }
+
+    public String getDataFormatString() {
+        return dataFormatString;
+    }
+
+    public void setDataFormatString(String dataFormatString) {
+        this.dataFormatString = dataFormatString;
     }
 
     @Override

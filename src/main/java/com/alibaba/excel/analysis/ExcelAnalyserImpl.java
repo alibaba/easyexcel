@@ -1,7 +1,5 @@
 package com.alibaba.excel.analysis;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +32,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         } catch (RuntimeException e) {
             finish();
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             finish();
             throw new ExcelAnalysisException(e);
         }
@@ -72,7 +70,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         } catch (RuntimeException e) {
             finish();
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             finish();
             throw new ExcelAnalysisException(e);
         }
@@ -88,14 +86,22 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             if (readWorkbookHolder.getReadCache() != null) {
                 readWorkbookHolder.getReadCache().destroy();
             }
+        } catch (Throwable e) {
+            throw new ExcelAnalysisException("Can not close IO", e);
+        }
+        try {
             if (analysisContext.readWorkbookHolder().getAutoCloseStream()
                 && readWorkbookHolder.getInputStream() != null) {
                 readWorkbookHolder.getInputStream().close();
             }
+        } catch (Throwable e) {
+            throw new ExcelAnalysisException("Can not close IO", e);
+        }
+        try {
             if (readWorkbookHolder.getTempFile() != null) {
                 FileUtils.delete(readWorkbookHolder.getTempFile());
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new ExcelAnalysisException("Can not close IO", e);
         }
     }

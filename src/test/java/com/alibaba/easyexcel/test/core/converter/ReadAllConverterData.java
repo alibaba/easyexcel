@@ -42,4 +42,5 @@ public class ReadAllConverterData {
     private String stringError;
     private String stringFormulaNumber;
     private String stringFormulaString;
+    private String stringNumberDate;
 }

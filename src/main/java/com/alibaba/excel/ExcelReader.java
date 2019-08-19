@@ -285,7 +285,7 @@ public class ExcelReader {
         }
         try {
             excelAnalyser.finish();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOGGER.warn("Destroy object failed", e);
         }
     }

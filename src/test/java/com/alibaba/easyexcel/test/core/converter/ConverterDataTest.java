@@ -53,7 +53,7 @@ public class ConverterDataTest {
     }
 
     @Test
-    public void T03ReadAllConverter03() {
+    public void T04ReadAllConverter03() {
         readAllConverter("converter" + File.separator + "converter03.xls");
     }
 

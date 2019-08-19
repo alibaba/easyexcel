@@ -2,6 +2,7 @@ package com.alibaba.excel.analysis.v07;
 
 import java.util.List;
 
+import org.apache.poi.xssf.model.StylesTable;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -17,8 +18,8 @@ public class XlsxRowHandler extends DefaultHandler {
     private List<XlsxCellHandler> cellHandlers;
     private XlsxRowResultHolder rowResultHolder;
 
-    public XlsxRowHandler(AnalysisContext analysisContext) {
-        this.cellHandlers = XlsxHandlerFactory.buildCellHandlers(analysisContext);
+    public XlsxRowHandler(AnalysisContext analysisContext, StylesTable stylesTable) {
+        this.cellHandlers = XlsxHandlerFactory.buildCellHandlers(analysisContext, stylesTable);
         for (XlsxCellHandler cellHandler : cellHandlers) {
             if (cellHandler instanceof XlsxRowResultHolder) {
                 this.rowResultHolder = (XlsxRowResultHolder)cellHandler;
