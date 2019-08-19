@@ -35,7 +35,11 @@ public enum CellDataTypeEnum {
     /**
      * error
      */
-    ERROR;
+    ERROR,
+    /**
+     * Images are currently supported only when writing
+     */
+    IMAGE;
 
     private static final Map<String, CellDataTypeEnum> TYPE_ROUTING_MAP = new HashMap<String, CellDataTypeEnum>(16);
     static {

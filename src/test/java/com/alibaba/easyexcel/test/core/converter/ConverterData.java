@@ -20,7 +20,7 @@ public class ConverterData {
     @ExcelProperty("大数")
     private BigDecimal bigDecimal;
     @ExcelProperty("长整型")
-    private Long longData;
+    private long longData;
     @ExcelProperty("整型")
     private Integer integerData;
     @ExcelProperty("短整型")
@@ -28,7 +28,7 @@ public class ConverterData {
     @ExcelProperty("字节型")
     private Byte byteData;
     @ExcelProperty("双精度浮点型")
-    private Double doubleData;
+    private double doubleData;
     @ExcelProperty("浮点型")
     private Float floatData;
     @ExcelProperty("字符串")

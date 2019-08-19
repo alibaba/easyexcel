@@ -8,8 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import com.alibaba.excel.context.WriteContext;
@@ -303,10 +308,34 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             case NUMBER:
                 cell.setCellValue(cellData.getDoubleValue());
                 return cellData;
+            case IMAGE:
+                setImageValue(cellData, cell);
+                return cellData;
             default:
                 throw new ExcelDataConvertException("Not supported data:" + value + " return type:" + cell.getCellType()
                     + "at row:" + cell.getRow().getRowNum());
         }
+    }
+
+    private void setImageValue(CellData cellData, Cell cell) {
+        Sheet sheet = cell.getSheet();
+        int index = sheet.getWorkbook().addPicture(cellData.getImageValue(), HSSFWorkbook.PICTURE_TYPE_PNG);
+        Drawing drawing = sheet.getDrawingPatriarch();
+        if (drawing == null) {
+            drawing = sheet.createDrawingPatriarch();
+        }
+        CreationHelper helper = sheet.getWorkbook().getCreationHelper();
+        ClientAnchor anchor = helper.createClientAnchor();
+        anchor.setDx1(0);
+        anchor.setDx2(0);
+        anchor.setDy1(0);
+        anchor.setDy2(0);
+        anchor.setCol1(cell.getColumnIndex());
+        anchor.setCol2(cell.getColumnIndex() + 1);
+        anchor.setRow1(cell.getRowIndex());
+        anchor.setRow2(cell.getRowIndex() + 1);
+        anchor.setAnchorType(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
+        drawing.createPicture(anchor, index);
     }
 
     private CellData convert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,

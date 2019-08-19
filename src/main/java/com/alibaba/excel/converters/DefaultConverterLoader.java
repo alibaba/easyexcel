@@ -9,6 +9,8 @@ import com.alibaba.excel.converters.bigdecimal.BigDecimalStringConverter;
 import com.alibaba.excel.converters.booleanconverter.BooleanBooleanConverter;
 import com.alibaba.excel.converters.booleanconverter.BooleanNumberConverter;
 import com.alibaba.excel.converters.booleanconverter.BooleanStringConverter;
+import com.alibaba.excel.converters.bytearray.BoxingByteArrayImageConverter;
+import com.alibaba.excel.converters.bytearray.ByteArrayImageConverter;
 import com.alibaba.excel.converters.byteconverter.ByteBooleanConverter;
 import com.alibaba.excel.converters.byteconverter.ByteNumberConverter;
 import com.alibaba.excel.converters.byteconverter.ByteStringConverter;
@@ -17,9 +19,11 @@ import com.alibaba.excel.converters.date.DateStringConverter;
 import com.alibaba.excel.converters.doubleconverter.DoubleBooleanConverter;
 import com.alibaba.excel.converters.doubleconverter.DoubleNumberConverter;
 import com.alibaba.excel.converters.doubleconverter.DoubleStringConverter;
+import com.alibaba.excel.converters.file.FileImageConverter;
 import com.alibaba.excel.converters.floatconverter.FloatBooleanConverter;
 import com.alibaba.excel.converters.floatconverter.FloatNumberConverter;
 import com.alibaba.excel.converters.floatconverter.FloatStringConverter;
+import com.alibaba.excel.converters.inputstream.InputStreamImageConverter;
 import com.alibaba.excel.converters.integer.IntegerBooleanConverter;
 import com.alibaba.excel.converters.integer.IntegerNumberConverter;
 import com.alibaba.excel.converters.integer.IntegerStringConverter;
@@ -52,7 +56,7 @@ public class DefaultConverterLoader {
         if (defaultWriteConverter != null) {
             return defaultWriteConverter;
         }
-        defaultWriteConverter = new HashMap<String, Converter>(16);
+        defaultWriteConverter = new HashMap<String, Converter>(32);
         putWriteConverter(new BigDecimalNumberConverter());
         putWriteConverter(new BooleanBooleanConverter());
         putWriteConverter(new ByteNumberConverter());
@@ -63,6 +67,10 @@ public class DefaultConverterLoader {
         putWriteConverter(new LongNumberConverter());
         putWriteConverter(new ShortNumberConverter());
         putWriteConverter(new StringStringConverter());
+        putWriteConverter(new FileImageConverter());
+        putWriteConverter(new InputStreamImageConverter());
+        putWriteConverter(new ByteArrayImageConverter());
+        putWriteConverter(new BoxingByteArrayImageConverter());
         return defaultWriteConverter;
     }
 

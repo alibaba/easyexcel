@@ -13,7 +13,6 @@ public class SimpleColumnWidthStyleStrategy extends AbstractHeadColumnWidthStyle
     /**
      *
      * @param columnWidth
-     *
      */
     public SimpleColumnWidthStyleStrategy(Integer columnWidth) {
         this.columnWidth = columnWidth;

@@ -23,12 +23,13 @@ public class CellData {
     private Boolean booleanValue;
     private Boolean formula;
     private String formulaValue;
+    private byte[] imageValue;
     /**
-     * The number formatting
+     * The number formatting.Currently only supported when reading
      */
     private Integer dataFormat;
     /**
-     * The string of number formatting
+     * The string of number formatting.Currently only supported when reading
      */
     private String dataFormatString;
 
@@ -39,6 +40,7 @@ public class CellData {
         this.booleanValue = other.booleanValue;
         this.formula = other.formula;
         this.formulaValue = other.formulaValue;
+        this.imageValue = other.imageValue;
         this.dataFormat = other.dataFormat;
         this.dataFormatString = other.dataFormatString;
     }
@@ -65,6 +67,15 @@ public class CellData {
         }
         this.type = CellDataTypeEnum.NUMBER;
         this.doubleValue = doubleValue;
+        this.formula = Boolean.FALSE;
+    }
+
+    public CellData(byte[] imageValue) {
+        if (imageValue == null) {
+            throw new IllegalArgumentException("ImageValue can not be null");
+        }
+        this.type = CellDataTypeEnum.IMAGE;
+        this.imageValue = imageValue;
         this.formula = Boolean.FALSE;
     }
 
@@ -131,6 +142,14 @@ public class CellData {
 
     public void setFormulaValue(String formulaValue) {
         this.formulaValue = formulaValue;
+    }
+
+    public byte[] getImageValue() {
+        return imageValue;
+    }
+
+    public void setImageValue(byte[] imageValue) {
+        this.imageValue = imageValue;
     }
 
     public Integer getDataFormat() {

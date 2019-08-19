@@ -1,6 +1,8 @@
 package com.alibaba.excel.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +24,50 @@ public class FileUtils {
 
     private static final String CACHE = "excache";
     private static final int WRITE_BUFF_SIZE = 8192;
+
+    /**
+     * Reads the contents of a file into a byte array. * The file is always closed.
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static byte[] readFileToByteArray(final File file) throws IOException {
+        InputStream in = openInputStream(file);
+        try {
+            final long fileLength = file.length();
+            return fileLength > 0 ? IOUtils.toByteArray(in, (int)fileLength) : IOUtils.toByteArray(in);
+        } finally {
+            in.close();
+        }
+    }
+
+    /**
+     * Opens a {@link FileInputStream} for the specified file, providing better error messages than simply calling
+     * <code>new FileInputStream(file)</code>.
+     * <p>
+     * At the end of the method either the stream will be successfully opened, or an exception will have been thrown.
+     * <p>
+     * An exception is thrown if the file does not exist. An exception is thrown if the file object exists but is a
+     * directory. An exception is thrown if the file exists but cannot be read.
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static FileInputStream openInputStream(final File file) throws IOException {
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                throw new IOException("File '" + file + "' exists but is a directory");
+            }
+            if (file.canRead() == false) {
+                throw new IOException("File '" + file + "' cannot be read");
+            }
+        } else {
+            throw new FileNotFoundException("File '" + file + "' does not exist");
+        }
+        return new FileInputStream(file);
+    }
 
     /**
      * Write inputStream to file

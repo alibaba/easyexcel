@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.core.converter;
 
 import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +13,9 @@ import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.util.DateUtils;
+import com.alibaba.excel.util.FileUtils;
 
 /**
  *
@@ -25,11 +26,15 @@ public class ConverterDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileImage07;
+    private static File fileImage03;
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("converter07.xlsx");
         file03 = TestFileUtil.createNewFile("converter03.xls");
+        fileImage07 = TestFileUtil.createNewFile("converterImage07.xlsx");
+        fileImage03 = TestFileUtil.createNewFile("converterImage03.xls");
     }
 
     @Test
@@ -57,9 +62,38 @@ public class ConverterDataTest {
         readAllConverter("converter" + File.separator + "converter03.xls");
     }
 
+    @Test
+    public void T05WriteImage07() throws Exception {
+        writeImage(fileImage07);
+    }
+
+    @Test
+    public void T06WriteImage03() throws Exception {
+        writeImage(fileImage03);
+    }
+
+    private void writeImage(File file) throws Exception {
+        InputStream inputStream = null;
+        try {
+            List<ImageData> list = new ArrayList<ImageData>();
+            ImageData imageData = new ImageData();
+            list.add(imageData);
+            String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
+            imageData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
+            imageData.setFile(new File(imagePath));
+            imageData.setString(imagePath);
+            inputStream = FileUtils.openInputStream(new File(imagePath));
+            imageData.setInputStream(inputStream);
+            EasyExcel.write(file, ImageData.class).sheet().doWrite(list);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
     private void readAllConverter(String fileName) {
-        EasyExcel
-            .read(TestFileUtil.readFile(fileName), ReadAllConverterData.class, new ReadAllConverterDataListener())
+        EasyExcel.read(TestFileUtil.readFile(fileName), ReadAllConverterData.class, new ReadAllConverterDataListener())
             .sheet().doRead();
     }
 

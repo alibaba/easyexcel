@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.temp;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -116,6 +118,24 @@ public class StyleTest {
         ExcelStyleDateFormatter ff = new ExcelStyleDateFormatter("yyyy年m月d日");
 
         System.out.println(ff.format(new Date()));
+    }
+
+    @Test
+    public void testFormatter2() throws Exception {
+        StyleData styleData = new StyleData();
+        Field field = styleData.getClass().getDeclaredField("byteValue");
+        LOGGER.info("filed:{}", field.getType().getName());
+        field = styleData.getClass().getDeclaredField("byteValue2");
+        LOGGER.info("filed:{}", field.getType().getName());
+        field = styleData.getClass().getDeclaredField("byteValue4");
+        LOGGER.info("filed:{}", field.getType());
+        field = styleData.getClass().getDeclaredField("byteValue3");
+        LOGGER.info("filed:{}", field.getType());
+    }
+
+    @Test
+    public void testFormatter3() throws Exception {
+        LOGGER.info("filed:{}", Byte.class == Byte.class);
     }
 
     private void isDate(Cell cell) {
