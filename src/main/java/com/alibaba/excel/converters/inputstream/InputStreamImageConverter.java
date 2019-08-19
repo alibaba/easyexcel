@@ -8,7 +8,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.util.IOUtils;
+import com.alibaba.excel.util.IoUtils;
 
 /**
  * File and image converter
@@ -35,7 +35,7 @@ public class InputStreamImageConverter implements Converter<InputStream> {
     @Override
     public CellData convertToExcelData(InputStream value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws IOException {
-        return new CellData(IOUtils.toByteArray(value));
+        return new CellData(IoUtils.toByteArray(value));
     }
 
 }

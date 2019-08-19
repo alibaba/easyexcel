@@ -10,7 +10,7 @@ import java.io.OutputStream;
  *
  * @author Jiaju Zhuang
  */
-public class IOUtils {
+public class IoUtils {
     public static final int EOF = -1;
     /**
      * The default buffer size ({@value}) to use for

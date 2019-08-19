@@ -36,7 +36,7 @@ public class FileUtils {
         InputStream in = openInputStream(file);
         try {
             final long fileLength = file.length();
-            return fileLength > 0 ? IOUtils.toByteArray(in, (int)fileLength) : IOUtils.toByteArray(in);
+            return fileLength > 0 ? IoUtils.toByteArray(in, (int)fileLength) : IoUtils.toByteArray(in);
         } finally {
             in.close();
         }
