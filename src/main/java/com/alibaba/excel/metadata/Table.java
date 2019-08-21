@@ -1,60 +1,63 @@
 package com.alibaba.excel.metadata;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author jipengfei
  */
-public class Table {
-    /**
-     */
-    private Class<? extends BaseRowModel> clazz;
+public class Table implements Serializable {
+	private static final long serialVersionUID = -2139828468215892739L;
 
-    /**
-     */
-    private List<List<String>> head;
+	/**
+	 */
+	private Class<? extends BaseRowModel> clazz;
 
-    /**
-     */
-    private int tableNo;
+	/**
+	 */
+	private List<List<String>> head;
 
-    /**
-     */
-    private TableStyle tableStyle;
+	/**
+	 */
+	private int tableNo;
 
-    public TableStyle getTableStyle() {
-        return tableStyle;
-    }
+	/**
+	 */
+	private TableStyle tableStyle;
 
-    public void setTableStyle(TableStyle tableStyle) {
-        this.tableStyle = tableStyle;
-    }
+	public TableStyle getTableStyle() {
+		return tableStyle;
+	}
 
-    public Table(Integer tableNo) {
-        this.tableNo = tableNo;
-    }
+	public void setTableStyle(TableStyle tableStyle) {
+		this.tableStyle = tableStyle;
+	}
 
-    public Class<? extends BaseRowModel> getClazz() {
-        return clazz;
-    }
+	public Table(Integer tableNo) {
+		this.tableNo = tableNo;
+	}
 
-    public void setClazz(Class<? extends BaseRowModel> clazz) {
-        this.clazz = clazz;
-    }
+	public Class<? extends BaseRowModel> getClazz() {
+		return clazz;
+	}
 
-    public List<List<String>> getHead() {
-        return head;
-    }
+	public void setClazz(Class<? extends BaseRowModel> clazz) {
+		this.clazz = clazz;
+	}
 
-    public void setHead(List<List<String>> head) {
-        this.head = head;
-    }
+	public List<List<String>> getHead() {
+		return head;
+	}
 
-    public int getTableNo() {
-        return tableNo;
-    }
+	public void setHead(List<List<String>> head) {
+		this.head = head;
+	}
 
-    public void setTableNo(int tableNo) {
-        this.tableNo = tableNo;
-    }
+	public int getTableNo() {
+		return tableNo;
+	}
+
+	public void setTableNo(int tableNo) {
+		this.tableNo = tableNo;
+	}
 }
