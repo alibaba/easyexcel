@@ -32,7 +32,8 @@ public class ReadWorkbook extends ReadBasicParameter {
     private File file;
     /**
      * Mandatory use 'inputStream' .Default is false.
-     * <li>if false,Will transfer 'inputStream' to temporary files to improve efficiency
+     * <p>
+     * if false,Will transfer 'inputStream' to temporary files to improve efficiency
      */
     private Boolean mandatoryUseInputStream;
     /**
@@ -51,8 +52,10 @@ public class ReadWorkbook extends ReadBasicParameter {
     private ReadCache readCache;
     /**
      * The default is all excel objects.Default is true.
-     * <li>if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
-     * <li>if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
+     * <p>
+     * if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
+     * <p>
+     * if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
      *
      * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
      */

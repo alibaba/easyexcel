@@ -5,7 +5,6 @@ package com.alibaba.excel.exception;
  */
 public class ExcelGenerateException extends RuntimeException {
 
-
     public ExcelGenerateException(String message) {
         super(message);
     }

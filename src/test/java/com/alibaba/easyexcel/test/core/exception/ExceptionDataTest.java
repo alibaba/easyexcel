@@ -42,8 +42,7 @@ public class ExceptionDataTest {
 
     private void readAndWrite(File file) throws Exception {
         EasyExcel.write(new FileOutputStream(file), ExceptionData.class).sheet().doWrite(data());
-        EasyExcel.read(new FileInputStream(file), ExceptionData.class, new ExceptionDataListener()).sheet()
-            .doRead();
+        EasyExcel.read(new FileInputStream(file), ExceptionData.class, new ExceptionDataListener()).sheet().doRead();
     }
 
     private List<ExceptionData> data() {

@@ -14,7 +14,8 @@ public interface XlsRecordHandler extends Comparable<XlsRecordHandler> {
      * Which tags are supported
      *
      * @param record
-     * @return
+     *            Excel analysis record
+     * @return Which tags are supported
      */
     boolean support(Record record);
 
@@ -33,28 +34,28 @@ public interface XlsRecordHandler extends Comparable<XlsRecordHandler> {
     /**
      * Get row
      *
-     * @return
+     * @return Row index
      */
     int getRow();
 
     /**
      * Get column
      *
-     * @return
+     * @return Column index
      */
     int getColumn();
 
     /**
      * Get value
      *
-     * @return
+     * @return Excel internal cell data
      */
     CellData getCellData();
 
     /**
      * Get order
      *
-     * @return
+     * @return Order
      */
     int getOrder();
 }

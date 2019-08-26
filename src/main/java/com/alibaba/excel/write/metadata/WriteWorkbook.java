@@ -52,8 +52,10 @@ public class WriteWorkbook extends WriteBasicParameter {
     private Boolean mandatoryUseInputStream;
     /**
      * The default is all excel objects.Default is true.
-     * <li>if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
-     * <li>if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
+     * <p>
+     * if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
+     * <p>
+     * if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
      *
      * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
      */

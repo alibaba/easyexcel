@@ -43,7 +43,8 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     private File file;
     /**
      * Mandatory use 'inputStream' .Default is false.
-     * <li>if false,Will transfer 'inputStream' to temporary files to improve efficiency
+     * <p>
+     * if false,Will transfer 'inputStream' to temporary files to improve efficiency
      */
     private Boolean mandatoryUseInputStream;
     /**

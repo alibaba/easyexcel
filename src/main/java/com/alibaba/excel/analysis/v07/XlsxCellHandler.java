@@ -10,24 +10,28 @@ import org.xml.sax.Attributes;
 public interface XlsxCellHandler {
     /**
      * Which tags are supported
-     * 
+     *
      * @param name
-     * @return
+     *            Tag name
+     * @return Support parsing or not
      */
     boolean support(String name);
 
     /**
      * Start handle
-     * 
+     *
      * @param name
+     *            Tag name
      * @param attributes
+     *            Tag attributes
      */
     void startHandle(String name, Attributes attributes);
 
     /**
      * End handle
-     * 
+     *
      * @param name
+     *            Tag name
      */
     void endHandle(String name);
 }

@@ -20,10 +20,12 @@ public @interface ExcelProperty {
     /**
      * The name of the sheet header.
      *
-     * <li>write: It automatically merges when you have more than one head
-     * <li>read: When you have multiple heads, take the first one
+     * <p>
+     * write: It automatically merges when you have more than one head
+     * <p>
+     * read: When you have multiple heads, take the first one
      *
-     * @return
+     * @return The name of the sheet header
      */
     String[] value() default {""};
 
@@ -32,14 +34,14 @@ public @interface ExcelProperty {
      *
      * Read or write it on the index of column,If it's equal to -1, it's sorted by Java class
      *
-     * @return
+     * @return Index of column
      */
     int index() default -1;
 
     /**
      * Force the current field to use this converter.
      *
-     * @return
+     * @return Converter
      */
     Class<? extends Converter> converter() default AutoConverter.class;
 
@@ -47,7 +49,7 @@ public @interface ExcelProperty {
      *
      * default @see com.alibaba.excel.util.TypeUtil if default is not meet you can set format
      *
-     * @return
+     * @return Format string
      * @deprecated please use {@link com.alibaba.excel.annotation.format.DateTimeFormat}
      */
     @Deprecated

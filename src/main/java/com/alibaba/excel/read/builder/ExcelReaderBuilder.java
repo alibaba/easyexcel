@@ -63,10 +63,10 @@ public class ExcelReaderBuilder {
         return file(new File(pathName));
     }
 
-
     /**
      * Mandatory use 'inputStream' .Default is false.
-     * <li>if false,Will transfer 'inputStream' to temporary files to improve efficiency
+     * <p>
+     * if false,Will transfer 'inputStream' to temporary files to improve efficiency
      */
     public ExcelReaderBuilder mandatoryUseInputStream(Boolean mandatoryUseInputStream) {
         readWorkbook.setMandatoryUseInputStream(mandatoryUseInputStream);
@@ -110,9 +110,12 @@ public class ExcelReaderBuilder {
     /**
      * Count the number of added heads when read sheet.
      *
-     * <li>0 - This Sheet has no head ,since the first row are the data
-     * <li>1 - This Sheet has one row head , this is the default
-     * <li>2 - This Sheet has two row head ,since the third row is the data
+     * <p>
+     * 0 - This Sheet has no head ,since the first row are the data
+     * <p>
+     * 1 - This Sheet has one row head , this is the default
+     * <p>
+     * 2 - This Sheet has two row head ,since the third row is the data
      *
      * @param headRowNumber
      * @return

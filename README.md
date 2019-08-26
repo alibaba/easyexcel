@@ -25,10 +25,10 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.0-beta1</version>
 </dependency>
 ```
-## 最新版本：2.0.0
+## 最新版本：2.0.0-beta1
 ## 维护者
 姬朋飞（玉霄）
 ## 快速开始
@@ -38,9 +38,9 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 ```java
     /**
      * 最简单的读
-     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
-     * <li>3. 直接读即可
+     * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * <p>3. 直接读即可
      */
     @Test
     public void simpleRead() {
@@ -55,8 +55,8 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 ```java
     /**
      * 最简单的写
-     * <li>1. 创建excel对应的实体对象 参照{@link com.alibaba.easyexcel.test.demo.write.DemoData}
-     * <li>2. 直接写即可
+     * <p>1. 创建excel对应的实体对象 参照{@link com.alibaba.easyexcel.test.demo.write.DemoData}
+     * <p>2. 直接写即可
      */
     @Test
     public void simpleWrite() {
@@ -72,9 +72,9 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 ```java
  /**
      * 文件下载
-     * <li>1. 创建excel对应的实体对象 参照{@link DownloadData}
-     * <li>2. 设置返回的 参数
-     * <li>3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
+     * <p>1. 创建excel对应的实体对象 参照{@link DownloadData}
+     * <p>2. 设置返回的 参数
+     * <p>3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
      */
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {
@@ -86,9 +86,9 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 
     /**
      * 文件上传
-     * <li>1. 创建excel对应的实体对象 参照{@link UploadData}
-     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
-     * <li>3. 直接读即可
+     * <p>1. 创建excel对应的实体对象 参照{@link UploadData}
+     * <p>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
+     * <p>3. 直接读即可
      */
     @PostMapping("upload")
     @ResponseBody

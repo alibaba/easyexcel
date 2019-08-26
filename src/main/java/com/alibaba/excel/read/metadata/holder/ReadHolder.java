@@ -16,14 +16,14 @@ public interface ReadHolder extends ConfigurationHolder {
     /**
      * What handler does the currently operated cell need to execute
      *
-     * @return
+     * @return Current {@link ReadListener}
      */
     List<ReadListener> readListenerList();
 
     /**
-     * What 'ExcelReadHeadProperty' does the currently operated cell need to execute
+     * What {@link ExcelReadHeadProperty} does the currently operated cell need to execute
      *
-     * @return
+     * @return Current {@link ExcelReadHeadProperty}
      */
     ExcelReadHeadProperty excelReadHeadProperty();
 

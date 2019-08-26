@@ -29,8 +29,10 @@ public abstract class AbstractHolder implements ConfigurationHolder {
     private GlobalConfiguration globalConfiguration;
 
     /**
-     * <li>Read key:
-     * <li>Write key:
+     * <p>
+     * Read key:
+     * <p>
+     * Write key:
      */
     private Map<String, Converter> converterMap;
 

@@ -13,6 +13,7 @@ public interface ExcelAnalyser {
      * parse one sheet
      *
      * @param readSheet
+     *            sheet to read
      */
     void analysis(ReadSheet readSheet);
 
@@ -23,14 +24,14 @@ public interface ExcelAnalyser {
 
     /**
      * Acquisition excel executor
-     * 
-     * @return
+     *
+     * @return Excel file Executor
      */
     ExcelExecutor excelExecutor();
 
     /**
      * get the analysis context.
-     * 
+     *
      * @return analysis context
      */
     AnalysisContext analysisContext();

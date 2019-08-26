@@ -37,9 +37,12 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     /**
      * Count the number of added heads when read sheet.
      *
-     * <li>0 - This Sheet has no head ,since the first row are the data
-     * <li>1 - This Sheet has one row head , this is the default
-     * <li>2 - This Sheet has two row head ,since the third row is the data
+     * <p>
+     * 0 - This Sheet has no head ,since the first row are the data
+     * <p>
+     * 1 - This Sheet has one row head , this is the default
+     * <p>
+     * 2 - This Sheet has two row head ,since the third row is the data
      */
     private Integer headRowNumber;
     /**

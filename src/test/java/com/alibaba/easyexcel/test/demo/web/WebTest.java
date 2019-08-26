@@ -24,9 +24,12 @@ import com.alibaba.excel.EasyExcel;
 public class WebTest {
     /**
      * 文件下载
-     * <li>1. 创建excel对应的实体对象 参照{@link DownloadData}
-     * <li>2. 设置返回的 参数
-     * <li>3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DownloadData}
+     * <p>
+     * 2. 设置返回的 参数
+     * <p>
+     * 3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
      */
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {
@@ -38,9 +41,12 @@ public class WebTest {
 
     /**
      * 文件上传
-     * <li>1. 创建excel对应的实体对象 参照{@link UploadData}
-     * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
-     * <li>3. 直接读即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link UploadData}
+     * <p>
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
+     * <p>
+     * 3. 直接读即可
      */
     @PostMapping("upload")
     @ResponseBody

@@ -16,14 +16,14 @@ public interface Converter<T> {
     /**
      * Back to object types in Java
      *
-     * @return
+     * @return Support for Java class
      */
     Class supportJavaTypeKey();
 
     /**
      * Back to object enum in excel
      *
-     * @return
+     * @return Support for {@link CellDataTypeEnum}
      */
     CellDataTypeEnum supportExcelTypeKey();
 
@@ -31,13 +31,14 @@ public interface Converter<T> {
      * Convert excel objects to Java objects
      *
      * @param cellData
-     *            NotNull
+     *            Excel cell data.NotNull.
      * @param contentProperty
-     *            Nullable
+     *            Content property.Nullable.
      * @param globalConfiguration
-     *            NotNull
-     * @return
+     *            Global configuration.NotNull.
+     * @return Data to put into a Java object
      * @throws Exception
+     *             Exception.
      */
     T convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws Exception;
@@ -46,13 +47,14 @@ public interface Converter<T> {
      * Convert Java objects to excel objects
      *
      * @param value
-     *            NotNull
+     *            Java Data.NotNull.
      * @param contentProperty
-     *            Nullable
+     *            Content property.Nullable.
      * @param globalConfiguration
-     *            NotNull
-     * @return
+     *            Global configuration.NotNull.
+     * @return Data to put into a Excel
      * @throws Exception
+     *             Exception.
      */
     CellData convertToExcelData(T value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration)
         throws Exception;

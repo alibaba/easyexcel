@@ -23,8 +23,8 @@ public abstract class AbstractMergeStrategy implements CellWriteHandler {
     }
 
     @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData, Cell cell,
-                                Head head, int relativeRowIndex, boolean isHead) {
+    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData,
+        Cell cell, Head head, int relativeRowIndex, boolean isHead) {
         if (isHead) {
             return;
         }

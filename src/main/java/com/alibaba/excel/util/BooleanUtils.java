@@ -13,8 +13,6 @@ public class BooleanUtils {
     /**
      * String to boolean
      *
-     * <li>
-     *
      * @param str
      * @return
      */

@@ -13,7 +13,7 @@ public interface Holder {
     /**
      * What holder is the return
      *
-     * @return
+     * @return Holder enum.
      */
     HolderEnum holderType();
 

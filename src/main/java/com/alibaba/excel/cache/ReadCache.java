@@ -13,6 +13,7 @@ public interface ReadCache {
      * Initialize cache
      *
      * @param analysisContext
+     *            A context is the main anchorage point of a excel reader.
      */
     void init(AnalysisContext analysisContext);
 
@@ -20,6 +21,7 @@ public interface ReadCache {
      * Automatically generate the key and put it in the cache.Key start from 0
      *
      * @param value
+     *            Cache value
      */
     void put(String value);
 
@@ -27,7 +29,8 @@ public interface ReadCache {
      * Get value
      *
      * @param key
-     * @return
+     *            Index
+     * @return Value
      */
     String get(Integer key);
 

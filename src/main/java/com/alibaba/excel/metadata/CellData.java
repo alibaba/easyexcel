@@ -3,7 +3,7 @@ package com.alibaba.excel.metadata;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 
 /**
- * excel internal cell data
+ * Excel internal cell data
  *
  * @author Jiaju Zhuang
  */

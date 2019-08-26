@@ -25,7 +25,8 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
     private CellStyle headCellStyle;
     private List<CellStyle> contentCellStyleList;
 
-    public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle, List<WriteCellStyle> contentWriteCellStyleList) {
+    public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle,
+        List<WriteCellStyle> contentWriteCellStyleList) {
         this.headWriteCellStyle = headWriteCellStyle;
         this.contentWriteCellStyleList = contentWriteCellStyleList;
     }

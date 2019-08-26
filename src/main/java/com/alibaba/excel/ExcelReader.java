@@ -276,7 +276,6 @@ public class ExcelReader {
     /**
      * Prevents calls to {@link #finish} from freeing the cache
      *
-     * @throws Throwable
      */
     @Override
     protected void finalize() {

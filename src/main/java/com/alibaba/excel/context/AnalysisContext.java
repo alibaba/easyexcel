@@ -15,56 +15,59 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 /**
  *
  * A context is the main anchorage point of a excel reader.
- * 
+ *
  * @author jipengfei
  */
 public interface AnalysisContext {
     /**
      * Select the current table
-     * 
+     *
      * @param excelExecutor
+     *            Excel file Executor
      * @param readSheet
+     *            sheet to read
      */
     void currentSheet(ExcelExecutor excelExecutor, ReadSheet readSheet);
 
     /**
      * All information about the workbook you are currently working on
      *
-     * @return
+     * @return Current workbook holder
      */
     ReadWorkbookHolder readWorkbookHolder();
 
     /**
      * All information about the sheet you are currently working on
      *
-     * @return
+     * @return Current sheet holder
      */
     ReadSheetHolder readSheetHolder();
 
     /**
      * Set row of currently operated cell
-     * 
+     *
      * @param readRowHolder
+     *            Current row holder
      */
     void readRowHolder(ReadRowHolder readRowHolder);
 
     /**
      * Row of currently operated cell
      *
-     * @return
+     * @return Current row holder
      */
     ReadRowHolder readRowHolder();
 
     /**
-     * The current read operation corresponds to the 'readSheetHolder' or 'readWorkbookHolder'
-     * 
-     * @return
+     * The current read operation corresponds to the <code>readSheetHolder</code> or <code>readWorkbookHolder</code>
+     *
+     * @return Current holder
      */
     ReadHolder currentReadHolder();
 
     /**
      * Custom attribute
-     * 
+     *
      * @return
      */
     Object getCustom();
@@ -81,7 +84,7 @@ public interface AnalysisContext {
     /**
      *
      * get excel type
-     * 
+     *
      * @return excel type
      * @deprecated please use {@link #readWorkbookHolder()}
      */
@@ -90,7 +93,7 @@ public interface AnalysisContext {
 
     /**
      * get in io
-     * 
+     *
      * @return file io
      * @deprecated please use {@link #readWorkbookHolder()}
      */
@@ -99,7 +102,7 @@ public interface AnalysisContext {
 
     /**
      * get current row
-     * 
+     *
      * @return
      * @deprecated please use {@link #readRowHolder()}
      */
@@ -108,7 +111,7 @@ public interface AnalysisContext {
 
     /**
      * get total row ,Data may be inaccurate
-     * 
+     *
      * @return
      * @deprecated please use {@link #readRowHolder()}
      */
@@ -126,7 +129,7 @@ public interface AnalysisContext {
 
     /**
      * Interrupt execution
-     * 
+     *
      * @deprecated please use {@link AnalysisEventListener#hasNext(AnalysisContext)}
      */
     @Deprecated

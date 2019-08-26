@@ -39,8 +39,10 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 public class WriteTest {
     /**
      * 最简单的写
-     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <li>2. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 直接写即可
      */
     @Test
     public void simpleWrite() {
@@ -62,9 +64,12 @@ public class WriteTest {
 
     /**
      * 指定写入的列
-     * <li>1. 创建excel对应的实体对象 参照{@link IndexData}
-     * <li>2. 使用{@link ExcelProperty}注解指定写入的列
-     * <li>3. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link IndexData}
+     * <p>
+     * 2. 使用{@link ExcelProperty}注解指定写入的列
+     * <p>
+     * 3. 直接写即可
      */
     @Test
     public void indexWrite() {
@@ -75,9 +80,12 @@ public class WriteTest {
 
     /**
      * 复杂头写入
-     * <li>1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
-     * <li>2. 使用{@link ExcelProperty}注解指定复杂的头
-     * <li>3. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
+     * <p>
+     * 2. 使用{@link ExcelProperty}注解指定复杂的头
+     * <p>
+     * 3. 直接写即可
      */
     @Test
     public void complexHeadWrite() {
@@ -88,9 +96,12 @@ public class WriteTest {
 
     /**
      * 重复多次写入
-     * <li>1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
-     * <li>2. 使用{@link ExcelProperty}注解指定复杂的头
-     * <li>3. 直接调用二次写入即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
+     * <p>
+     * 2. 使用{@link ExcelProperty}注解指定复杂的头
+     * <p>
+     * 3. 直接调用二次写入即可
      */
     @Test
     public void repeatedWrite() {
@@ -108,9 +119,12 @@ public class WriteTest {
 
     /**
      * 日期、数字或者自定义格式转换
-     * <li>1. 创建excel对应的实体对象 参照{@link ConverterData}
-     * <li>2. 使用{@link ExcelProperty}配合使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
-     * <li>3. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link ConverterData}
+     * <p>
+     * 2. 使用{@link ExcelProperty}配合使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
+     * <p>
+     * 3. 直接写即可
      */
     @Test
     public void converterWrite() {
@@ -121,8 +135,10 @@ public class WriteTest {
 
     /**
      * 图片导出
-     * <li>1. 创建excel对应的实体对象 参照{@link ImageData}
-     * <li>2. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link ImageData}
+     * <p>
+     * 2. 直接写即可
      */
     @Test
     public void imageWrite() throws Exception {
@@ -150,10 +166,14 @@ public class WriteTest {
 
     /**
      * 根据模板写入
-     * <li>1. 创建excel对应的实体对象 参照{@link IndexData}
-     * <li>2. 使用{@link ExcelProperty}注解指定写入的列
-     * <li>3. 使用withTemplate 读取模板
-     * <li>4. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link IndexData}
+     * <p>
+     * 2. 使用{@link ExcelProperty}注解指定写入的列
+     * <p>
+     * 3. 使用withTemplate 读取模板
+     * <p>
+     * 4. 直接写即可
      */
     @Test
     public void templateWrite() {
@@ -165,9 +185,12 @@ public class WriteTest {
 
     /**
      * 列宽、行高
-     * <li>1. 创建excel对应的实体对象 参照{@link WidthAndHeightData}
-     * <li>2. 使用注解{@link ColumnWidth}、{@link HeadRowHeight}、{@link ContentRowHeight}指定宽度或高度
-     * <li>3. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData}
+     * <p>
+     * 2. 使用注解{@link ColumnWidth}、{@link HeadRowHeight}、{@link ContentRowHeight}指定宽度或高度
+     * <p>
+     * 3. 直接写即可
      */
     @Test
     public void widthAndHeightWrite() {
@@ -178,9 +201,12 @@ public class WriteTest {
 
     /**
      * 自定义样式
-     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <li>2. 创建一个style策略 并注册
-     * <li>3. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 创建一个style策略 并注册
+     * <p>
+     * 3. 直接写即可
      */
     @Test
     public void styleWrite() {
@@ -213,9 +239,12 @@ public class WriteTest {
 
     /**
      * 合并单元格
-     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <li>2. 创建一个merge策略 并注册
-     * <li>3. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 创建一个merge策略 并注册
+     * <p>
+     * 3. 直接写即可
      */
     @Test
     public void mergeWrite() {
@@ -228,8 +257,10 @@ public class WriteTest {
 
     /**
      * 使用table去写入
-     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <li>2. 然后写入table即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 然后写入table即可
      */
     @Test
     public void tableWrite() {
@@ -255,8 +286,10 @@ public class WriteTest {
      * <p>
      * 思路是这样子的，先创建List<String>头格式的sheet仅仅写入头,然后通过table 不写入头的方式 去写入数据
      *
-     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <li>2. 然后写入table即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 然后写入table即可
      */
     @Test
     public void dynamicHeadWrite() {
@@ -277,9 +310,12 @@ public class WriteTest {
      * <p>
      * poi 自带{@link SXSSFSheet#autoSizeColumn(int)} 对中文支持也不太好。目前没找到很好的算法。 有的话可以推荐下。
      *
-     * <li>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <li>3. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
-     * <li>2. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 3. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
+     * <p>
+     * 2. 直接写即可
      */
     @Test
     public void longestMatchColumnWidthWrite() {

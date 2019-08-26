@@ -10,8 +10,10 @@ import java.math.RoundingMode;
 /**
  * Convert number format.
  *
- * <li>write: It can be used on classes that inherit {@link Number}
- * <li>read: It can be used on classes {@link String}
+ * <p>
+ * write: It can be used on classes that inherit {@link Number}
+ * <p>
+ * read: It can be used on classes {@link String}
  *
  * @author Jiaju Zhuang
  */
@@ -24,14 +26,14 @@ public @interface NumberFormat {
      *
      * Specific format reference {@link org.apache.commons.math3.fraction.BigFractionFormat}
      *
-     * @return
+     * @return Format pattern
      */
     String value() default "";
 
     /**
      * Rounded by default
      *
-     * @return
+     * @return RoundingMode
      */
     RoundingMode roundingMode() default RoundingMode.HALF_UP;
 }

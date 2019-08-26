@@ -51,8 +51,7 @@ public class RepetitionDataTest {
         ExcelWriter excelWriter = EasyExcel.write(file, RepetitionData.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet(0).build();
         excelWriter.write(data(), writeSheet).write(data(), writeSheet).finish();
-        ExcelReader excelReader =
-            EasyExcel.read(file, RepetitionData.class, new RepetitionDataListener()).build();
+        ExcelReader excelReader = EasyExcel.read(file, RepetitionData.class, new RepetitionDataListener()).build();
         ReadSheet readSheet = EasyExcel.readSheet(0).build();
         excelReader.read(readSheet).finish();
     }
@@ -72,8 +71,7 @@ public class RepetitionDataTest {
         WriteSheet writeSheet = EasyExcel.writerSheet(0).build();
         WriteTable writeTable = EasyExcel.writerTable(0).relativeHeadRowIndex(0).build();
         excelWriter.write(data(), writeSheet, writeTable).write(data(), writeSheet, writeTable).finish();
-        ExcelReader excelReader =
-            EasyExcel.read(file, RepetitionData.class, new RepetitionDataListener()).build();
+        ExcelReader excelReader = EasyExcel.read(file, RepetitionData.class, new RepetitionDataListener()).build();
         ReadSheet readSheet = EasyExcel.readSheet(0).headRowNumber(2).build();
         excelReader.read(readSheet).finish();
     }

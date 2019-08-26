@@ -9,8 +9,10 @@ import java.lang.annotation.Target;
 /**
  * Convert date format.
  *
- * <li>write: It can be used on classes {@link java.util.Date}
- * <li>read: It can be used on classes {@link String}
+ * <p>
+ * write: It can be used on classes {@link java.util.Date}
+ * <p>
+ * read: It can be used on classes {@link String}
  *
  * @author Jiaju Zhuang
  */
@@ -23,14 +25,14 @@ public @interface DateTimeFormat {
      *
      * Specific format reference {@link java.text.SimpleDateFormat}
      *
-     * @return
+     * @return Format pattern
      */
     String value() default "";
 
     /**
-     * true if date uses 1904 windowing, or false if using 1900 date windowing.
+     * True if date uses 1904 windowing, or false if using 1900 date windowing.
      *
-     * @return
+     * @return True if date uses 1904 windowing, or false if using 1900 date windowing.
      */
     boolean use1904windowing() default false;
 }

@@ -20,7 +20,7 @@ public @interface HeadRowHeight {
      * <p>
      * -1 mean the auto set height
      *
-     * @return
+     * @return Header height
      */
     short value() default -1;
 }
