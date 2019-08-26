@@ -14,41 +14,41 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 /**
  * Write context
- * 
+ *
  * @author jipengfei
  */
 public interface WriteContext {
     /**
      * If the current sheet already exists, select it; if not, create it
-     * 
-     * @param writeSheet
+     *
+     * @param writeSheet Current sheet
      */
     void currentSheet(WriteSheet writeSheet);
 
     /**
      * If the current table already exists, select it; if not, create it
-     * 
+     *
      * @param writeTable
      */
     void currentTable(WriteTable writeTable);
 
     /**
      * All information about the workbook you are currently working on
-     * 
+     *
      * @return
      */
     WriteWorkbookHolder writeWorkbookHolder();
 
     /**
      * All information about the sheet you are currently working on
-     * 
+     *
      * @return
      */
     WriteSheetHolder writeSheetHolder();
 
     /**
      * All information about the table you are currently working on
-     * 
+     *
      * @return
      */
     WriteTableHolder writeTableHolder();
@@ -86,7 +86,7 @@ public interface WriteContext {
 
     /**
      * Get outputStream
-     * 
+     *
      * @return
      * @deprecated please us e{@link #writeWorkbookHolder()} ()}
      */
@@ -95,7 +95,7 @@ public interface WriteContext {
 
     /**
      * Get workbook
-     * 
+     *
      * @return
      * @deprecated please us e{@link #writeWorkbookHolder()} ()}
      */
