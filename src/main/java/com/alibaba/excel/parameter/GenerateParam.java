@@ -6,7 +6,11 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * Created by jipengfei on 17/2/19.
+ *
+ * @author jipengfei
+ * @deprecated please use {@link com.alibaba.excel.write.builder.ExcelWriterBuilder} build ExcelWriter
  */
+@Deprecated
 public class GenerateParam {
 
     private OutputStream outputStream;
@@ -16,6 +20,8 @@ public class GenerateParam {
     private Class clazz;
 
     private ExcelTypeEnum type;
+
+    private boolean needHead = true;
 
     public GenerateParam(String sheetName, Class clazz, OutputStream outputStream) {
         this.outputStream = outputStream;
@@ -30,7 +36,6 @@ public class GenerateParam {
     public void setOutputStream(OutputStream outputStream) {
         this.outputStream = outputStream;
     }
-
 
     public String getSheetName() {
         return sheetName;
@@ -54,5 +59,13 @@ public class GenerateParam {
 
     public void setType(ExcelTypeEnum type) {
         this.type = type;
+    }
+
+    public boolean isNeedHead() {
+        return needHead;
+    }
+
+    public void setNeedHead(boolean needHead) {
+        this.needHead = needHead;
     }
 }

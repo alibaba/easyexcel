@@ -4,7 +4,9 @@ import java.util.List;
 
 /**
  * @author jipengfei
+ * @deprecated please use {@link com.alibaba.excel.write.metadata.WriteTable}
  */
+@Deprecated
 public class Table {
     /**
      */
@@ -22,16 +24,16 @@ public class Table {
      */
     private TableStyle tableStyle;
 
+    public Table(Integer tableNo) {
+        this.tableNo = tableNo;
+    }
+
     public TableStyle getTableStyle() {
         return tableStyle;
     }
 
     public void setTableStyle(TableStyle tableStyle) {
         this.tableStyle = tableStyle;
-    }
-
-    public Table(Integer tableNo) {
-        this.tableNo = tableNo;
     }
 
     public Class<? extends BaseRowModel> getClazz() {

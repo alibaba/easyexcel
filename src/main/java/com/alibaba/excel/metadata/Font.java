@@ -3,7 +3,9 @@ package com.alibaba.excel.metadata;
 /**
  *
  * @author jipengfei
+ * @deprecated please use {@link com.alibaba.excel.write.metadata.style.WriteFont}
  */
+@Deprecated
 public class Font {
 
     /**

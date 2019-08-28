@@ -1,293 +1,105 @@
 package com.alibaba.excel.context;
 
-import com.alibaba.excel.event.WriteHandler;
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
-import com.alibaba.excel.metadata.Table;
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.util.CollectionUtils;
-import com.alibaba.excel.util.StyleUtil;
-import com.alibaba.excel.util.WorkBookUtil;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static com.alibaba.excel.util.StyleUtil.buildSheetStyle;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.WriteTable;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 /**
- * A context is the main anchorage point of a excel writer.
+ * Write context
  *
  * @author jipengfei
  */
-public class WriteContext {
-
-    /***
-     * The sheet currently written
-     */
-    private Sheet currentSheet;
-
+public interface WriteContext {
     /**
-     * current param
-     */
-    private com.alibaba.excel.metadata.Sheet currentSheetParam;
-
-    /**
-     * The sheet currently written's name
-     */
-    private String currentSheetName;
-
-    /**
+     * If the current sheet already exists, select it; if not, create it
      *
+     * @param writeSheet Current sheet
      */
-    private Table currentTable;
+    void currentSheet(WriteSheet writeSheet);
 
     /**
-     * Excel type
-     */
-    private ExcelTypeEnum excelType;
-
-    /**
-     * POI Workbook
-     */
-    private Workbook workbook;
-
-    /**
-     * Final output stream
-     */
-    private OutputStream outputStream;
-
-    /**
-     * Written form collection
-     */
-    private Map<Integer, Table> tableMap = new ConcurrentHashMap<Integer, Table>();
-
-    /**
-     * Cell default style
-     */
-    private CellStyle defaultCellStyle;
-
-    /**
-     * Current table head  style
-     */
-    private CellStyle currentHeadCellStyle;
-
-    /**
-     * Current table content  style
-     */
-    private CellStyle currentContentCellStyle;
-
-    /**
-     * the header attribute of excel
-     */
-    private ExcelHeadProperty excelHeadProperty;
-
-    private boolean needHead = Boolean.TRUE;
-
-    private WriteHandler afterWriteHandler;
-
-    public WriteHandler getAfterWriteHandler() {
-        return afterWriteHandler;
-    }
-
-    public WriteContext(InputStream templateInputStream, OutputStream out, ExcelTypeEnum excelType,
-                        boolean needHead, WriteHandler afterWriteHandler) throws IOException {
-        this.needHead = needHead;
-        this.outputStream = out;
-        this.afterWriteHandler = afterWriteHandler;
-        this.workbook = WorkBookUtil.createWorkBook(templateInputStream, excelType);
-        this.defaultCellStyle = StyleUtil.buildDefaultCellStyle(this.workbook);
-
-    }
-
-    /**
-     * @param sheet
-     */
-    public void currentSheet(com.alibaba.excel.metadata.Sheet sheet) {
-        if (null == currentSheetParam || currentSheetParam.getSheetNo() != sheet.getSheetNo()) {
-            cleanCurrentSheet();
-            currentSheetParam = sheet;
-            try {
-                this.currentSheet = workbook.getSheetAt(sheet.getSheetNo() - 1);
-            } catch (Exception e) {
-                this.currentSheet = WorkBookUtil.createSheet(workbook, sheet);
-                if (null != afterWriteHandler) {
-                    this.afterWriteHandler.sheet(sheet.getSheetNo(), currentSheet);
-                }
-            }
-            buildSheetStyle(currentSheet, sheet.getColumnWidthMap());
-            /** **/
-            this.initCurrentSheet(sheet);
-        }
-
-    }
-
-    private void initCurrentSheet(com.alibaba.excel.metadata.Sheet sheet) {
-
-        /** **/
-        initExcelHeadProperty(sheet.getHead(), sheet.getClazz());
-
-        initTableStyle(sheet.getTableStyle());
-
-        initTableHead();
-
-    }
-
-    private void cleanCurrentSheet() {
-        this.currentSheet = null;
-        this.currentSheetParam = null;
-        this.excelHeadProperty = null;
-        this.currentHeadCellStyle = null;
-        this.currentContentCellStyle = null;
-        this.currentTable = null;
-
-    }
-
-    /**
-     * init excel header
+     * If the current table already exists, select it; if not, create it
      *
-     * @param head
-     * @param clazz
+     * @param writeTable
      */
-    private void initExcelHeadProperty(List<List<String>> head, Class<? extends BaseRowModel> clazz) {
-        if (head != null || clazz != null) { this.excelHeadProperty = new ExcelHeadProperty(clazz, head); }
-    }
+    void currentTable(WriteTable writeTable);
 
-    public void initTableHead() {
-        if (needHead && null != excelHeadProperty && !CollectionUtils.isEmpty(excelHeadProperty.getHead())) {
-            int startRow = currentSheet.getLastRowNum();
-            if (startRow > 0) {
-                startRow += 4;
-            } else {
-                startRow = currentSheetParam.getStartRow();
-            }
-            addMergedRegionToCurrentSheet(startRow);
-            int i = startRow;
-            for (; i < this.excelHeadProperty.getRowNum() + startRow; i++) {
-                Row row = WorkBookUtil.createRow(currentSheet, i);
-                if (null != afterWriteHandler) {
-                    this.afterWriteHandler.row(i, row);
-                }
-                addOneRowOfHeadDataToExcel(row, this.excelHeadProperty.getHeadByRowNum(i - startRow));
-            }
-        }
-    }
+    /**
+     * All information about the workbook you are currently working on
+     *
+     * @return
+     */
+    WriteWorkbookHolder writeWorkbookHolder();
 
-    private void addMergedRegionToCurrentSheet(int startRow) {
-        for (com.alibaba.excel.metadata.CellRange cellRangeModel : excelHeadProperty.getCellRangeModels()) {
-            currentSheet.addMergedRegion(new CellRangeAddress(cellRangeModel.getFirstRow() + startRow,
-                cellRangeModel.getLastRow() + startRow,
-                cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
-        }
-    }
+    /**
+     * All information about the sheet you are currently working on
+     *
+     * @return
+     */
+    WriteSheetHolder writeSheetHolder();
 
-    private void addOneRowOfHeadDataToExcel(Row row, List<String> headByRowNum) {
-        if (headByRowNum != null && headByRowNum.size() > 0) {
-            for (int i = 0; i < headByRowNum.size(); i++) {
-                Cell cell = WorkBookUtil.createCell(row, i, getCurrentHeadCellStyle(), headByRowNum.get(i));
-                if (null != afterWriteHandler) {
-                    this.afterWriteHandler.cell(i, cell);
-                }
-            }
-        }
-    }
+    /**
+     * All information about the table you are currently working on
+     *
+     * @return
+     */
+    WriteTableHolder writeTableHolder();
 
-    private void initTableStyle(com.alibaba.excel.metadata.TableStyle tableStyle) {
-        if (tableStyle != null) {
-            this.currentHeadCellStyle = StyleUtil.buildCellStyle(this.workbook, tableStyle.getTableHeadFont(),
-                tableStyle.getTableHeadBackGroundColor());
-            this.currentContentCellStyle = StyleUtil.buildCellStyle(this.workbook, tableStyle.getTableContentFont(),
-                tableStyle.getTableContentBackGroundColor());
-        }
-    }
+    /**
+     * Configuration of currently operated cell. May be 'writeSheetHolder' or 'writeTableHolder' or
+     * 'writeWorkbookHolder'
+     *
+     * @return
+     */
+    WriteHolder currentWriteHolder();
 
-    private void cleanCurrentTable() {
-        this.excelHeadProperty = null;
-        this.currentHeadCellStyle = null;
-        this.currentContentCellStyle = null;
-        this.currentTable = null;
+    /**
+     * close
+     */
+    void finish();
 
-    }
+    /**
+     * Current sheet
+     *
+     * @return
+     * @deprecated please us e{@link #writeSheetHolder()}
+     */
+    @Deprecated
+    Sheet getCurrentSheet();
 
-    public void currentTable(Table table) {
-        if (null == currentTable || currentTable.getTableNo() != table.getTableNo()) {
-            cleanCurrentTable();
-            this.currentTable = table;
-            this.initExcelHeadProperty(table.getHead(), table.getClazz());
-            this.initTableStyle(table.getTableStyle());
-            this.initTableHead();
-        }
+    /**
+     * Need head
+     *
+     * @return
+     * @deprecated please us e{@link #writeSheetHolder()}
+     */
+    @Deprecated
+    boolean needHead();
 
-    }
+    /**
+     * Get outputStream
+     *
+     * @return
+     * @deprecated please us e{@link #writeWorkbookHolder()} ()}
+     */
+    @Deprecated
+    OutputStream getOutputStream();
 
-    public ExcelHeadProperty getExcelHeadProperty() {
-        return this.excelHeadProperty;
-    }
+    /**
+     * Get workbook
+     *
+     * @return
+     * @deprecated please us e{@link #writeWorkbookHolder()} ()}
+     */
+    @Deprecated
+    Workbook getWorkbook();
 
-    public boolean needHead() {
-        return this.needHead;
-    }
-
-    public Sheet getCurrentSheet() {
-        return currentSheet;
-    }
-
-    public void setCurrentSheet(Sheet currentSheet) {
-        this.currentSheet = currentSheet;
-    }
-
-    public String getCurrentSheetName() {
-        return currentSheetName;
-    }
-
-    public void setCurrentSheetName(String currentSheetName) {
-        this.currentSheetName = currentSheetName;
-    }
-
-    public ExcelTypeEnum getExcelType() {
-        return excelType;
-    }
-
-    public void setExcelType(ExcelTypeEnum excelType) {
-        this.excelType = excelType;
-    }
-
-    public OutputStream getOutputStream() {
-        return outputStream;
-    }
-
-    public CellStyle getCurrentHeadCellStyle() {
-        return this.currentHeadCellStyle == null ? defaultCellStyle : this.currentHeadCellStyle;
-    }
-
-    public CellStyle getCurrentContentStyle() {
-        return this.currentContentCellStyle;
-    }
-
-    public Workbook getWorkbook() {
-        return workbook;
-    }
-
-    public com.alibaba.excel.metadata.Sheet getCurrentSheetParam() {
-        return currentSheetParam;
-    }
-
-    public void setCurrentSheetParam(com.alibaba.excel.metadata.Sheet currentSheetParam) {
-        this.currentSheetParam = currentSheetParam;
-    }
-
-    public Table getCurrentTable() {
-        return currentTable;
-    }
-
-    public void setCurrentTable(Table currentTable) {
-        this.currentTable = currentTable;
-    }
 }
-
-

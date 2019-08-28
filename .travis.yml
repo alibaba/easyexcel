@@ -1,0 +1,10 @@
+language: java
+jdk: openjdk8
+cache:
+  directories:
+    - $HOME/.m2
+before_install:
+  - chmod +x mvnw
+install:
+  - ./mvnw install -Dgpg.skip -B -V -Dmaven.test.skip=true
+  - ./mvnw javadoc:javadoc
