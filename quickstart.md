@@ -1,5 +1,7 @@
 # easyexcel核心功能
 ## 目录
+### 前言
+读写的对象都用到了[Lombok](https://www.projectlombok.org/),他会自动生成`get`,`set` ，如果不需要自己创建对象并生成`get`,`set` 。
 ### 读
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
 * [最简单的读](#simpleRead)

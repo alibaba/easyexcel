@@ -17,6 +17,8 @@ public class IoUtils {
      */
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
+    private IoUtils() {}
+
     /**
      * Gets the contents of an InputStream as a byte[].
      *

@@ -25,6 +25,8 @@ public class FileUtils {
     private static final String CACHE = "excache";
     private static final int WRITE_BUFF_SIZE = 8192;
 
+    private FileUtils() {}
+
     /**
      * Reads the contents of a file into a byte array. * The file is always closed.
      *

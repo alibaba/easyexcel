@@ -17,6 +17,8 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
  */
 public class StyleUtil {
 
+    private StyleUtil() {}
+
     /**
      * @param workbook
      * @return
