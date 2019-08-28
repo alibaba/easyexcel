@@ -307,7 +307,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         // classify
         Map<Class<? extends WriteHandler>, List<WriteHandler>> result =
             new HashMap<Class<? extends WriteHandler>, List<WriteHandler>>(16);
-        result.put(WriteHandler.class, new ArrayList<WriteHandler>());
         result.put(WorkbookWriteHandler.class, new ArrayList<WriteHandler>());
         result.put(SheetWriteHandler.class, new ArrayList<WriteHandler>());
         result.put(RowWriteHandler.class, new ArrayList<WriteHandler>());
@@ -315,20 +314,13 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         for (WriteHandler writeHandler : cleanUpHandlerList) {
             if (writeHandler instanceof CellWriteHandler) {
                 result.get(CellWriteHandler.class).add(writeHandler);
-            }
-            if (writeHandler instanceof RowWriteHandler) {
+            } else if (writeHandler instanceof RowWriteHandler) {
                 result.get(RowWriteHandler.class).add(writeHandler);
-            }
-            if (writeHandler instanceof SheetWriteHandler) {
+            } else if (writeHandler instanceof SheetWriteHandler) {
                 result.get(SheetWriteHandler.class).add(writeHandler);
-            }
-            if (writeHandler instanceof SheetWriteHandler) {
-                result.get(SheetWriteHandler.class).add(writeHandler);
-            }
-            if (writeHandler instanceof WorkbookWriteHandler) {
+            } else if (writeHandler instanceof WorkbookWriteHandler) {
                 result.get(WorkbookWriteHandler.class).add(writeHandler);
             }
-            result.get(WriteHandler.class).add(writeHandler);
         }
         return result;
     }
