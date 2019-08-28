@@ -266,13 +266,9 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         List<WriteHandler> handlerList, Map<Class<? extends WriteHandler>, List<WriteHandler>> parentHandlerMap) {
 
         // add
-        Set<WriteHandler> noRepeatSet = new HashSet<WriteHandler>();
         if (parentHandlerMap != null) {
-            for (List<WriteHandler> parentHandlerList : parentHandlerMap.values()) {
-                noRepeatSet.addAll(parentHandlerList);
-            }
+            handlerList.addAll(parentHandlerMap.get(WriteHandler.class));
         }
-        handlerList.addAll(noRepeatSet);
 
         // sort
         Map<Integer, List<WriteHandler>> orderExcelWriteHandlerMap = new TreeMap<Integer, List<WriteHandler>>();
@@ -307,6 +303,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         // classify
         Map<Class<? extends WriteHandler>, List<WriteHandler>> result =
             new HashMap<Class<? extends WriteHandler>, List<WriteHandler>>(16);
+        result.put(WriteHandler.class, new ArrayList<WriteHandler>());
         result.put(WorkbookWriteHandler.class, new ArrayList<WriteHandler>());
         result.put(SheetWriteHandler.class, new ArrayList<WriteHandler>());
         result.put(RowWriteHandler.class, new ArrayList<WriteHandler>());
@@ -321,6 +318,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             } else if (writeHandler instanceof WorkbookWriteHandler) {
                 result.get(WorkbookWriteHandler.class).add(writeHandler);
             }
+            result.get(WriteHandler.class).add(writeHandler);
         }
         return result;
     }
