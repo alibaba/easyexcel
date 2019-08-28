@@ -24,6 +24,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 * [使用table去写入](#tableWrite)
 * [动态头，实时生成头写入](#dynamicHeadWrite)
 * [自动列宽(不太精确)](#longestMatchColumnWidthWrite)
+* [自定义拦截器（下拉，超链接等上面几点都不符合但是要对单元格进行操作的参照这个）](#customHandlerWrite)
 * [web中的写](#webWrite)
 
 ## 读excel样例
@@ -810,7 +811,7 @@ public class LongestMatchColumnWidthData {
 ```
 ##### 代码
 ```java
-    /**
+   /**
      * 自动列宽(不太精确)
      * <p>
      * 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照
@@ -818,16 +819,20 @@ public class LongestMatchColumnWidthData {
      * <p>
      * poi 自带{@link SXSSFSheet#autoSizeColumn(int)} 对中文支持也不太好。目前没找到很好的算法。 有的话可以推荐下。
      *
-     * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>3. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
-     * <p>2. 直接写即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link LongestMatchColumnWidthData}
+     * <p>
+     * 2. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
+     * <p>
+     * 3. 直接写即可
      */
     @Test
     public void longestMatchColumnWidthWrite() {
         String fileName =
             TestFileUtil.getPath() + "longestMatchColumnWidthWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName, LongestMatchColumnWidthData.class).sheet("模板").doWrite(dataLong());
+        EasyExcel.write(fileName, LongestMatchColumnWidthData.class)
+            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet("模板").doWrite(dataLong());
     }
 
     private List<LongestMatchColumnWidthData> dataLong() {
@@ -840,6 +845,33 @@ public class LongestMatchColumnWidthData {
             list.add(data);
         }
         return list;
+    }
+```
+
+### <span id="customHandlerWrite" />自定义拦截器（上面几点都不符合但是要对单元格进行操作的参照这个）
+##### excel示例
+![img](img/readme/quickstart/write/customHandlerWrite.png)
+##### 对象
+参照：[对象](#simpleWriteObject)
+##### 代码
+```java
+    /**
+     * 下拉，超链接等自定义拦截器（上面几点都不符合但是要对单元格进行操作的参照这个）
+     * <p>
+     * demo这里实现2点。1. 对第一行第一列的头超链接到:https://github.com/alibaba/easyexcel 2. 对第一列第一行和第二行的数据新增下拉框，显示 测试1 测试2
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 注册拦截器 {@link CustomCellWriteHandler} {@link CustomSheetWriteHandler}
+     * <p>
+     * 2. 直接写即可
+     */
+    @Test
+    public void customHandlerWrite() {
+        String fileName = TestFileUtil.getPath() + "customHandlerWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new CustomSheetWriteHandler())
+            .registerWriteHandler(new CustomCellWriteHandler()).sheet("模板").doWrite(data());
     }
 ```
 

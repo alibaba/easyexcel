@@ -311,11 +311,11 @@ public class WriteTest {
      * poi 自带{@link SXSSFSheet#autoSizeColumn(int)} 对中文支持也不太好。目前没找到很好的算法。 有的话可以推荐下。
      *
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * 1. 创建excel对应的实体对象 参照{@link LongestMatchColumnWidthData}
      * <p>
-     * 3. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
+     * 2. 注册策略{@link LongestMatchColumnWidthStyleStrategy}
      * <p>
-     * 2. 直接写即可
+     * 3. 直接写即可
      */
     @Test
     public void longestMatchColumnWidthWrite() {
@@ -324,6 +324,25 @@ public class WriteTest {
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, LongestMatchColumnWidthData.class)
             .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet("模板").doWrite(dataLong());
+    }
+
+    /**
+     * 下拉，超链接等自定义拦截器（上面几点都不符合但是要对单元格进行操作的参照这个）
+     * <p>
+     * demo这里实现2点。1. 对第一行第一列的头超链接到:https://github.com/alibaba/easyexcel 2. 对第一列第一行和第二行的数据新增下拉框，显示 测试1 测试2
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 注册拦截器 {@link CustomCellWriteHandler} {@link CustomSheetWriteHandler}
+     * <p>
+     * 2. 直接写即可
+     */
+    @Test
+    public void customHandlerWrite() {
+        String fileName = TestFileUtil.getPath() + "customHandlerWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new CustomSheetWriteHandler())
+            .registerWriteHandler(new CustomCellWriteHandler()).sheet("模板").doWrite(data());
     }
 
     private List<LongestMatchColumnWidthData> dataLong() {
