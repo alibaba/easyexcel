@@ -23,6 +23,7 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
+import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.DefaultWriteHandlerLoader;
 import com.alibaba.excel.write.handler.RowWriteHandler;
@@ -267,7 +268,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
         // add
         if (parentHandlerMap != null) {
-            handlerList.addAll(parentHandlerMap.get(WriteHandler.class));
+            List<WriteHandler> parentWriteHandler = parentHandlerMap.get(WriteHandler.class);
+            if (!CollectionUtils.isEmpty(parentWriteHandler)) {
+                handlerList.addAll(parentWriteHandler);
+            }
         }
 
         // sort
