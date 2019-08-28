@@ -853,6 +853,67 @@ public class LongestMatchColumnWidthData {
 ![img](img/readme/quickstart/write/customHandlerWrite.png)
 ##### 对象
 参照：[对象](#simpleWriteObject)
+##### 定义拦截器
+````java
+/**
+ * 自定义拦截器。对第一行第一列的头超链接到:https://github.com/alibaba/easyexcel
+ *
+ * @author Jiaju Zhuang
+ */
+public class CustomCellWriteHandler implements CellWriteHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomCellWriteHandler.class);
+
+    @Override
+    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
+        Head head, int relativeRowIndex, boolean isHead) {
+
+    }
+
+    @Override
+    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData,
+        Cell cell, Head head, int relativeRowIndex, boolean isHead) {
+        // 这里可以对cell进行任何操作
+        LOGGER.info("第{}行，第{}列写入完成。", cell.getRowIndex(), cell.getColumnIndex());
+        if (isHead && cell.getColumnIndex() == 0) {
+            CreationHelper createHelper = writeSheetHolder.getSheet().getWorkbook().getCreationHelper();
+            Hyperlink hyperlink = createHelper.createHyperlink(HyperlinkType.URL);
+            hyperlink.setAddress("https://github.com/alibaba/easyexcel");
+            cell.setHyperlink(hyperlink);
+        }
+    }
+
+}
+````
+````java
+/**
+ * 自定义拦截器.对第一列第一行和第二行的数据新增下拉框，显示 测试1 测试2
+ *
+ * @author Jiaju Zhuang
+ */
+public class CustomSheetWriteHandler implements SheetWriteHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomSheetWriteHandler.class);
+
+    @Override
+    public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+
+    }
+
+    @Override
+    public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+        LOGGER.info("第{}个Sheet写入成功。", writeSheetHolder.getSheetNo());
+
+        // 区间设置 第一列第一行和第二行的数据。由于第一行是头，所以第一、二行的数据实际上是第二三行
+        CellRangeAddressList cellRangeAddressList = new CellRangeAddressList(1, 2, 0, 0);
+        DataValidationHelper helper = writeSheetHolder.getSheet().getDataValidationHelper();
+        DataValidationConstraint constraint = helper.createExplicitListConstraint(new String[] {"测试1", "测试2"});
+        DataValidation dataValidation = helper.createValidation(constraint, cellRangeAddressList);
+        writeSheetHolder.getSheet().addValidationData(dataValidation);
+    }
+}
+
+````
 ##### 代码
 ```java
     /**
