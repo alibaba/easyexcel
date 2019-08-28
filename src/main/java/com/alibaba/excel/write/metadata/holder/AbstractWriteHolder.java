@@ -311,11 +311,14 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         for (WriteHandler writeHandler : cleanUpHandlerList) {
             if (writeHandler instanceof CellWriteHandler) {
                 result.get(CellWriteHandler.class).add(writeHandler);
-            } else if (writeHandler instanceof RowWriteHandler) {
+            }
+            if (writeHandler instanceof RowWriteHandler) {
                 result.get(RowWriteHandler.class).add(writeHandler);
-            } else if (writeHandler instanceof SheetWriteHandler) {
+            }
+            if (writeHandler instanceof SheetWriteHandler) {
                 result.get(SheetWriteHandler.class).add(writeHandler);
-            } else if (writeHandler instanceof WorkbookWriteHandler) {
+            }
+            if (writeHandler instanceof WorkbookWriteHandler) {
                 result.get(WorkbookWriteHandler.class).add(writeHandler);
             }
             result.get(WriteHandler.class).add(writeHandler);
