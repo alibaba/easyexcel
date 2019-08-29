@@ -1,7 +1,13 @@
 # easyexcel核心功能
 ## 目录
 ### 前言
+#### 关于@Data
 读写的对象都用到了[Lombok](https://www.projectlombok.org/),他会自动生成`get`,`set` ，如果不需要自己创建对象并生成`get`,`set` 。
+#### 以下功能目前不支持
+* 单个文件的并发写入、读取
+* 读取图片
+* 宏
+#### 开源项目不容易，如果觉得本项目对您的工作还是有帮助的话，请在右上角帮忙点个★Star。
 ### 读
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
 * [最简单的读](#simpleRead)
