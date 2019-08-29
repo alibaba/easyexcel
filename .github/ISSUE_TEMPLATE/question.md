@@ -1,6 +1,6 @@
 ---
 name: question
-about: 有使用疑问，请先阅读“快速使用”,上面无法解决再提交问题
+about: 有使用疑问，请先阅读“快速使用”,上面无法解决再提交问题。处理完请关闭问题。
 title: ''
 labels: help wanted
 assignees: zhuangjiaju
