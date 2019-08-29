@@ -1,13 +1,12 @@
 ---
 name: Bug反馈
-about: 反馈Bug
+about: 请确认这个是一个Bug
 title: ''
 labels: bug
 assignees: zhuangjiaju
 
 ---
 
-**请确保这是一个Bug**
 **触发场景描述**
 
 **触发Bug的代码**
