@@ -1,5 +1,5 @@
 # 2.0.0-beta2
-* 加速gc回收 #511
+* 加速gc回收 [Issue #511](https://github.com/alibaba/easyexcel/issues/511)
 
 # 2.0.0-beta1
 * 优化读写逻辑
