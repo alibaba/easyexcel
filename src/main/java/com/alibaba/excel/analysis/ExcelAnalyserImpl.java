@@ -117,6 +117,20 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             throw new ExcelAnalysisException("Can not close IO", e);
         }
         try {
+            if (readWorkbookHolder.getOpcPackage() != null) {
+                readWorkbookHolder.getOpcPackage().close();
+            }
+        } catch (Throwable e) {
+            throw new ExcelAnalysisException("Can not close IO", e);
+        }
+        try {
+            if (readWorkbookHolder.getPoifsFileSystem() != null) {
+                readWorkbookHolder.getPoifsFileSystem().close();
+            }
+        } catch (Throwable e) {
+            throw new ExcelAnalysisException("Can not close IO", e);
+        }
+        try {
             if (analysisContext.readWorkbookHolder().getAutoCloseStream()
                 && readWorkbookHolder.getInputStream() != null) {
                 readWorkbookHolder.getInputStream().close();
@@ -127,20 +141,6 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         try {
             if (readWorkbookHolder.getTempFile() != null) {
                 FileUtils.delete(readWorkbookHolder.getTempFile());
-            }
-        } catch (Throwable e) {
-            throw new ExcelAnalysisException("Can not close IO", e);
-        }
-        try {
-            if (readWorkbookHolder.getOpcPackage() != null) {
-                readWorkbookHolder.getOpcPackage().close();
-            }
-        } catch (Throwable e) {
-            throw new ExcelAnalysisException("Can not close IO", e);
-        }
-        try {
-            if (readWorkbookHolder.getPoifsFileSystem() != null) {
-                readWorkbookHolder.getPoifsFileSystem().close();
             }
         } catch (Throwable e) {
             throw new ExcelAnalysisException("Can not close IO", e);
