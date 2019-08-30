@@ -131,6 +131,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
                 thisColumn = handler.getColumn();
                 cellData = handler.getCellData();
                 if (cellData != null) {
+                    cellData.checkEmpty();
                     records.put(thisColumn, cellData);
                 }
                 break;

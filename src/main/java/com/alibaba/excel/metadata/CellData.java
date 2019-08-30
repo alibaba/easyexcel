@@ -168,6 +168,31 @@ public class CellData {
         this.dataFormatString = dataFormatString;
     }
 
+    /**
+     * Ensure that the object does not appear null
+     */
+    public void checkEmpty() {
+        switch (type) {
+            case STRING:
+            case ERROR:
+                if (stringValue == null) {
+                    type = CellDataTypeEnum.EMPTY;
+                }
+                return;
+            case NUMBER:
+                if (doubleValue == null) {
+                    type = CellDataTypeEnum.EMPTY;
+                }
+                return;
+            case BOOLEAN:
+                if (booleanValue == null) {
+                    type = CellDataTypeEnum.EMPTY;
+                }
+                return;
+            default:
+        }
+    }
+
     @Override
     public String toString() {
         switch (type) {
