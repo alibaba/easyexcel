@@ -9,7 +9,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.easyexcel.test.demo.read.DemoData;
+import com.alibaba.easyexcel.test.demo.read.DemoDataListener;
+import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 
@@ -24,16 +29,21 @@ public class Lock2Test {
 
     @Test
     public void test() throws Exception {
-        File file = new File("D:\\test\\珠海2.xlsx");
+        File file = new File("D:\\test\\test001.xlsx");
 
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }
-        LOGGER.info("文件状态：{}", file.exists());
-        file.delete();
-        Thread.sleep(500 * 1000);
+    }
+
+    @Test
+    public void simpleRead() {
+        // 写法1：
+        String fileName = "D:\\test\\珠海 (1).xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
+        EasyExcel.read(fileName, LockData.class, new LockDataListener()).sheet().doRead();
     }
 
     @Test
@@ -49,6 +59,5 @@ public class Lock2Test {
         file.delete();
         Thread.sleep(500 * 1000);
     }
-
 
 }

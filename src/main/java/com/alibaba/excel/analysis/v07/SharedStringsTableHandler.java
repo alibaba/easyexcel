@@ -30,15 +30,23 @@ public class SharedStringsTableHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String name, Attributes attributes) {
-        if (SI_TAG.equals(name)) {
-            currentData = "";
+        if (T_TAG.equals(name)) {
+            currentElementData = null;
+        } else if (SI_TAG.equals(name)) {
+            currentData = null;
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String name) {
         if (T_TAG.equals(name)) {
-            currentData += currentElementData;
+            if (currentData == null) {
+                currentData = currentElementData;
+            } else {
+                if (currentElementData != null) {
+                    currentData += currentElementData;
+                }
+            }
         } else if (SI_TAG.equals(name)) {
             readCache.put(currentData);
         }
