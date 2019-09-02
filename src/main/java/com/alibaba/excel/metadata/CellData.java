@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * Excel internal cell data
@@ -175,7 +176,7 @@ public class CellData {
         switch (type) {
             case STRING:
             case ERROR:
-                if (stringValue == null) {
+                if (StringUtils.isEmpty(stringValue)) {
                     type = CellDataTypeEnum.EMPTY;
                 }
                 return;
