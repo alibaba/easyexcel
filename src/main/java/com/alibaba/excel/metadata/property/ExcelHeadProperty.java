@@ -137,8 +137,8 @@ public class ExcelHeadProperty {
                 continue;
             }
             if (customFiledMap.containsKey(excelProperty.index())) {
-                throw new ExcelGenerateException("The index of " + customFiledMap.get(excelProperty.index()).getName()
-                    + " and " + field.getName() + " must be inconsistent");
+                throw new ExcelGenerateException("The index of '" + customFiledMap.get(excelProperty.index()).getName()
+                    + "' and '" + field.getName() + "' must be inconsistent");
             }
             customFiledMap.put(excelProperty.index(), field);
         }
