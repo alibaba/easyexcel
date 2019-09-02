@@ -38,12 +38,12 @@ public class RepetitionDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite07() {
+    public void t01ReadAndWrite07() {
         readAndWrite(file07);
     }
 
     @Test
-    public void T02ReadAndWrite03() {
+    public void t02ReadAndWrite03() {
         readAndWrite(file03);
     }
 
@@ -57,12 +57,12 @@ public class RepetitionDataTest {
     }
 
     @Test
-    public void T03ReadAndWriteTable07() {
+    public void t03ReadAndWriteTable07() {
         readAndWriteTable(fileTable07);
     }
 
     @Test
-    public void T04ReadAndWriteTable03() {
+    public void t04ReadAndWriteTable03() {
         readAndWriteTable(fileTable03);
     }
 

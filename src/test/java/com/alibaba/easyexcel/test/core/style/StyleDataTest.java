@@ -44,17 +44,17 @@ public class StyleDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite07() {
+    public void t01ReadAndWrite07() {
         readAndWrite(file07);
     }
 
     @Test
-    public void T02ReadAndWrite03() {
+    public void t02ReadAndWrite03() {
         readAndWrite(file03);
     }
 
     @Test
-    public void T03AbstractVerticalCellStyleStrategy() {
+    public void t03AbstractVerticalCellStyleStrategy() {
         AbstractVerticalCellStyleStrategy verticalCellStyleStrategy = new AbstractVerticalCellStyleStrategy() {
             @Override
             protected WriteCellStyle headCellStyle(Head head) {
@@ -112,7 +112,7 @@ public class StyleDataTest {
     }
 
     @Test
-    public void T04LoopMergeStrategy() {
+    public void t04LoopMergeStrategy() {
         EasyExcel.write(file07, StyleData.class).sheet().registerWriteHandler(new LoopMergeStrategy(2, 1))
             .doWrite(data10());
     }

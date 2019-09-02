@@ -29,12 +29,12 @@ public class TemplateDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite07() {
+    public void t01ReadAndWrite07() {
         readAndWrite07(file07);
     }
 
     @Test
-    public void T02ReadAndWrite03() {
+    public void t02ReadAndWrite03() {
         readAndWrite03(file03);
     }
 
