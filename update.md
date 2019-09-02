@@ -1,5 +1,6 @@
 # 2.0.0-beta3
 * 导出完成移除临时目录 [Issue #386](https://github.com/alibaba/easyexcel/issues/386)
+* 新增读取返回头数据
 
 # 2.0.0-beta2
 * 加速gc回收 [Issue #511](https://github.com/alibaba/easyexcel/issues/511)

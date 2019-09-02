@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.core.simple;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -17,6 +18,12 @@ import com.alibaba.fastjson.JSON;
 public class SimpleDataListener extends AnalysisEventListener<SimpleData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleDataListener.class);
     List<SimpleData> list = new ArrayList<SimpleData>();
+
+    @Override
+    public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
+        LOGGER.debug("Head is:{}", JSON.toJSONString(headMap));
+        Assert.assertEquals(headMap.get(0), "姓名");
+    }
 
     @Override
     public void invoke(SimpleData data, AnalysisContext context) {

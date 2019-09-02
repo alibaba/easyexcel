@@ -1,7 +1,10 @@
 package com.alibaba.excel.read.listener;
 
+import java.util.Map;
+
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.Listener;
+import com.alibaba.excel.metadata.CellData;
 
 /**
  * Interface to listen for read results
@@ -20,7 +23,15 @@ public interface ReadListener<T> extends Listener {
     void onException(Exception exception, AnalysisContext context) throws Exception;
 
     /**
-     * when analysis one row trigger invoke function.
+     * When analysis one head row trigger invoke function.
+     *
+     * @param headMap
+     * @param context
+     */
+    void invokeHead(Map<Integer, CellData> headMap, AnalysisContext context);
+
+    /**
+     * When analysis one row trigger invoke function.
      *
      * @param data
      *            one row value. Is is same as {@link AnalysisContext#readRowHolder()}

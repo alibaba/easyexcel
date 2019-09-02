@@ -18,6 +18,7 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
+import com.alibaba.excel.util.ConverterUtils;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -27,6 +28,9 @@ import net.sf.cglib.beans.BeanMap;
  * @author jipengfei
  */
 public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener<Map<Integer, CellData>> {
+
+    @Override
+    public void invokeHead(Map<Integer, CellData> cellDataMap, AnalysisContext context) {}
 
     @Override
     public void invoke(Map<Integer, CellData> cellDataMap, AnalysisContext context) {
@@ -48,7 +52,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                     map.put(entry.getKey(), null);
                     continue;
                 }
-                map.put(entry.getKey(), (String)convertValue(cellData, String.class, null,
+                map.put(entry.getKey(), (String)ConverterUtils.convertToJavaObject(cellData, String.class, null,
                     currentReadHolder.converterMap(), currentReadHolder.globalConfiguration()));
             }
             return map;
@@ -61,8 +65,8 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                     list.add(null);
                     continue;
                 }
-                list.add((String)convertValue(cellData, String.class, null, currentReadHolder.converterMap(),
-                    currentReadHolder.globalConfiguration()));
+                list.add((String)ConverterUtils.convertToJavaObject(cellData, String.class, null,
+                    currentReadHolder.converterMap(), currentReadHolder.globalConfiguration()));
             }
             return list;
         }
@@ -90,37 +94,14 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                 continue;
             }
             ExcelContentProperty excelContentProperty = contentPropertyMap.get(index);
-            Object value = convertValue(cellData, excelContentProperty.getField().getType(), excelContentProperty,
-                currentReadHolder.converterMap(), currentReadHolder.globalConfiguration());
+            Object value = ConverterUtils.convertToJavaObject(cellData, excelContentProperty.getField().getType(),
+                excelContentProperty, currentReadHolder.converterMap(), currentReadHolder.globalConfiguration());
             if (value != null) {
                 map.put(excelContentProperty.getField().getName(), value);
             }
         }
         BeanMap.create(resultModel).putAll(map);
         return resultModel;
-    }
-
-    private Object convertValue(CellData cellData, Class clazz, ExcelContentProperty contentProperty,
-        Map<String, Converter> converterMap, GlobalConfiguration globalConfiguration) {
-        if (clazz == CellData.class) {
-            return new CellData(cellData);
-        }
-        Converter converter = null;
-        if (contentProperty != null) {
-            converter = contentProperty.getConverter();
-        }
-        if (converter == null) {
-            converter = converterMap.get(ConverterKeyBuild.buildKey(clazz, cellData.getType()));
-        }
-        if (converter == null) {
-            throw new ExcelDataConvertException(
-                "Converter not found, convert " + cellData.getType() + " to " + clazz.getName());
-        }
-        try {
-            return converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
-        } catch (Exception e) {
-            throw new ExcelDataConvertException("Convert data " + cellData + " to " + clazz + " error ", e);
-        }
     }
 
     @Override

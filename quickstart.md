@@ -7,6 +7,12 @@
 * 单个文件的并发写入、读取
 * 读取图片
 * 宏
+#### 关于常见类解析
+* EasyExcel 入口类，用于构建开始各种操作
+* ExcelReaderBuilder ExcelWriterBuilder 构建出一个 ReadWorkbook WriteWorkbook，可以理解成一个excel对象，一个excel只要构建一个
+* ExcelReaderSheetBuilder ExcelWriterSheetBuilder 构建出一个 ReadSheet WriteSheet对象，可以理解成excel里面的一页,每一页都要构建一个
+* ReadListener 在每一行读取完毕后都会调用ReadListener来处理数据
+* WriteHandler 在每一个操作包括创建单元格、创建表格等都会调用WriteHandler来处理数据
 #### 开源项目不容易，如果觉得本项目对您的工作还是有帮助的话，请在右上角帮忙点个★Star。
 ### 读
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
@@ -16,7 +22,10 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 * [日期、数字或者自定义格式转换](#converterRead)
 * [多行头](#complexHeaderRead)
 * [同步的返回](#synchronousRead)
+* [读取表头数据](#synchronousRead)
+* [数据转换等异常处理](#exceptionRead)
 * [web中的读](#webRead)
+
 ### 写
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/test/demo/write/WriteTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/write/WriteTest.java)
 * [最简单的写](#simpleWrite)
@@ -330,6 +339,88 @@ public class CustomStringStringConverter implements Converter<String> {
         }
     }
 ```
+
+### <span id="headerRead" />同步的返回
+##### excel示例
+参照：[excel示例](#simpleReadExcel)
+##### 对象
+参照：[对象](#simpleReadObject)
+##### 监听器
+参照：[监听器](#simpleReadListener)
+里面多了一个方法,只要重写invokeHeadMap方法即可
+```java
+    /**
+     * 这里会一行行的返回头
+     *
+     * @param headMap
+     * @param context
+     */
+    @Override
+    public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
+        LOGGER.info("解析到一条头数据:{}", JSON.toJSONString(headMap));
+    }
+```
+##### 代码
+```java
+    /**
+     * 读取表头数据
+     *
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * <p>
+     * 3. 直接读即可
+     */
+    @Test
+    public void headerRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
+    }
+```
+
+### <span id="exceptionRead" />同步的返回
+##### excel示例
+参照：[excel示例](#simpleReadExcel)
+##### 对象
+参照：[对象](#simpleReadObject)
+##### 监听器
+参照：[监听器](#simpleReadListener)
+里面多了一个方法,只要重写onException方法即可
+```java
+  /**
+     * 在转换异常 获取其他异常下会调用本接口。抛出异常则停止读取。如果这里不抛出异常则 继续读取下一行。
+     *
+     * @param exception
+     * @param context
+     * @throws Exception
+     */
+    @Override
+    public void onException(Exception exception, AnalysisContext context) {
+        LOGGER.error("解析失败，但是继续解析下一行", exception);
+    }
+```
+##### 代码
+```java
+    /**
+     * 数据转换等异常处理
+     *
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * <p>
+     * 3. 直接读即可
+     */
+    @Test
+    public void exceptionRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
+    }
+```
+
 
 ### <span id="webRead" />web中的读
 ##### 示例代码
