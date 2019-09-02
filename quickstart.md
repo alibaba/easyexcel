@@ -22,7 +22,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 * [日期、数字或者自定义格式转换](#converterRead)
 * [多行头](#complexHeaderRead)
 * [同步的返回](#synchronousRead)
-* [读取表头数据](#synchronousRead)
+* [读取表头数据](#headerRead)
 * [数据转换等异常处理](#exceptionRead)
 * [web中的读](#webRead)
 
@@ -340,7 +340,7 @@ public class CustomStringStringConverter implements Converter<String> {
     }
 ```
 
-### <span id="headerRead" />同步的返回
+### <span id="headerRead" />读取表头数据
 ##### excel示例
 参照：[excel示例](#simpleReadExcel)
 ##### 对象
@@ -380,7 +380,7 @@ public class CustomStringStringConverter implements Converter<String> {
     }
 ```
 
-### <span id="exceptionRead" />同步的返回
+### <span id="exceptionRead" />数据转换等异常处理
 ##### excel示例
 参照：[excel示例](#simpleReadExcel)
 ##### 对象
