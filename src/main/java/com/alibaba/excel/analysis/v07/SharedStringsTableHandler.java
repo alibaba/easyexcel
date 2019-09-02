@@ -16,11 +16,11 @@ public class SharedStringsTableHandler extends DefaultHandler {
     /**
      * The final piece of data
      */
-    private String currentData;
+    private StringBuilder currentData;
     /**
      * Current element data
      */
-    private String currentElementData;
+    private StringBuilder currentElementData;
 
     private ReadCache readCache;
 
@@ -30,22 +30,36 @@ public class SharedStringsTableHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String name, Attributes attributes) {
-        if (SI_TAG.equals(name)) {
-            currentData = "";
+        if (T_TAG.equals(name)) {
+            currentElementData = null;
+        } else if (SI_TAG.equals(name)) {
+            currentData = null;
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String name) {
         if (T_TAG.equals(name)) {
-            currentData += currentElementData;
+            if (currentElementData != null) {
+                if (currentData == null) {
+                    currentData = new StringBuilder();
+                }
+                currentData.append(currentElementData);
+            }
         } else if (SI_TAG.equals(name)) {
-            readCache.put(currentData);
+            if (currentData == null) {
+                readCache.put(null);
+            } else {
+                readCache.put(currentData.toString());
+            }
         }
     }
 
     @Override
     public void characters(char[] ch, int start, int length) {
-        currentElementData = new String(ch, start, length);
+        if (currentElementData == null) {
+            currentElementData = new StringBuilder();
+        }
+        currentElementData.append(new String(ch, start, length));
     }
 }

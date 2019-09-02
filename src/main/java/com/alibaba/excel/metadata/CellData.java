@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * Excel internal cell data
@@ -166,6 +167,31 @@ public class CellData {
 
     public void setDataFormatString(String dataFormatString) {
         this.dataFormatString = dataFormatString;
+    }
+
+    /**
+     * Ensure that the object does not appear null
+     */
+    public void checkEmpty() {
+        switch (type) {
+            case STRING:
+            case ERROR:
+                if (StringUtils.isEmpty(stringValue)) {
+                    type = CellDataTypeEnum.EMPTY;
+                }
+                return;
+            case NUMBER:
+                if (doubleValue == null) {
+                    type = CellDataTypeEnum.EMPTY;
+                }
+                return;
+            case BOOLEAN:
+                if (booleanValue == null) {
+                    type = CellDataTypeEnum.EMPTY;
+                }
+                return;
+            default:
+        }
     }
 
     @Override

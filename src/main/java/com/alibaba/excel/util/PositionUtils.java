@@ -5,6 +5,8 @@ package com.alibaba.excel.util;
  */
 public class PositionUtils {
 
+    private PositionUtils() {}
+
     public static int getRow(String currentCellIndex) {
         int row = 0;
         if (currentCellIndex != null) {

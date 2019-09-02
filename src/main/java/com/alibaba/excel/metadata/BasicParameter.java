@@ -1,6 +1,5 @@
 package com.alibaba.excel.metadata;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.excel.converters.Converter;
@@ -22,7 +21,7 @@ public class BasicParameter {
     /**
      * Custom type conversions override the default
      */
-    private List<Converter> customConverterList = new ArrayList<Converter>();
+    private List<Converter> customConverterList;
     /**
      * Automatic trim includes sheet name and content
      */

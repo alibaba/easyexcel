@@ -120,6 +120,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             } else if (currentCellData.getType() == CellDataTypeEnum.DIRECT_STRING) {
                 currentCellData.setType(CellDataTypeEnum.STRING);
             }
+            currentCellData.checkEmpty();
             curRowContent.put(curCol, currentCellData);
         }
         // This is a special form of string
@@ -130,6 +131,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
                 stringValue = stringValue.trim();
             }
             currentCellData.setStringValue(stringValue);
+            currentCellData.checkEmpty();
             curRowContent.put(curCol, currentCellData);
         }
     }

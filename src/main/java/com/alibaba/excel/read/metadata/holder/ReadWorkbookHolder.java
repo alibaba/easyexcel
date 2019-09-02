@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,6 +92,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      * Prevent repeating sheet
      */
     private Set<Integer> hasReadSheet;
+    /**
+     * Package
+     */
+    private OPCPackage opcPackage;
+    /**
+     * File System
+     */
+    private POIFSFileSystem poifsFileSystem;
 
     public ReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook, null, readWorkbook.getConvertAllFiled());
@@ -230,6 +240,22 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
 
     public void setDefaultReturnMap(Boolean defaultReturnMap) {
         this.defaultReturnMap = defaultReturnMap;
+    }
+
+    public OPCPackage getOpcPackage() {
+        return opcPackage;
+    }
+
+    public void setOpcPackage(OPCPackage opcPackage) {
+        this.opcPackage = opcPackage;
+    }
+
+    public POIFSFileSystem getPoifsFileSystem() {
+        return poifsFileSystem;
+    }
+
+    public void setPoifsFileSystem(POIFSFileSystem poifsFileSystem) {
+        this.poifsFileSystem = poifsFileSystem;
     }
 
     @Override

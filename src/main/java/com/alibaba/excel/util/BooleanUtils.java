@@ -10,6 +10,8 @@ public class BooleanUtils {
     private static final String TRUE_NUMBER = "1";
     private static final String FALSE_NUMBER = "0";
 
+    private BooleanUtils() {}
+
     /**
      * String to boolean
      *

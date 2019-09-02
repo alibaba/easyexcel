@@ -73,6 +73,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         this.analysisContext = context;
         this.records = new TreeMap<Integer, CellData>();
         this.poifsFileSystem = poifsFileSystem;
+        analysisContext.readWorkbookHolder().setPoifsFileSystem(poifsFileSystem);
     }
 
     @Override
@@ -130,6 +131,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
                 thisColumn = handler.getColumn();
                 cellData = handler.getCellData();
                 if (cellData != null) {
+                    cellData.checkEmpty();
                     records.put(thisColumn, cellData);
                 }
                 break;

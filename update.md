@@ -1,4 +1,10 @@
-# 2.0.0
+# 2.0.0-beta2
+* 加速gc回收 [Issue #511](https://github.com/alibaba/easyexcel/issues/511)
+* 修改空字符串读取可能读取上个字段的数据的bug
+* 修改换行数据无法读取的bug [Issue #521](https://github.com/alibaba/easyexcel/issues/521)
+* 修复在空字符串的时候 格式转换异常 [Issue #520](https://github.com/alibaba/easyexcel/issues/520)
+
+# 2.0.0-beta1
 * 优化读写逻辑
 * 优化读写对外接口
 * 加入转换器，方便格式转换

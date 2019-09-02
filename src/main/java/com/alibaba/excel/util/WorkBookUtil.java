@@ -22,6 +22,8 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
  */
 public class WorkBookUtil {
 
+    private WorkBookUtil() {}
+
     public static Workbook createWorkBook(WriteWorkbookHolder writeWorkbookHolder)
         throws IOException, InvalidFormatException {
         if (ExcelTypeEnum.XLSX.equals(writeWorkbookHolder.getExcelType())) {

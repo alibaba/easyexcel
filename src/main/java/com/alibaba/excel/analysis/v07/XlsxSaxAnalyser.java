@@ -59,6 +59,7 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
 
         OPCPackage pkg = readOpcPackage(readWorkbookHolder, decryptedStream);
+        readWorkbookHolder.setOpcPackage(pkg);
         PackagePart sharedStringsTablePackagePart =
             pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType()).get(0);
 
