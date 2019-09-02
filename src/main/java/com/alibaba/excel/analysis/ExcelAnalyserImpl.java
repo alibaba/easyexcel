@@ -15,6 +15,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
@@ -113,38 +114,42 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             if (readWorkbookHolder.getReadCache() != null) {
                 readWorkbookHolder.getReadCache().destroy();
             }
-        } catch (Throwable e) {
-            throw new ExcelAnalysisException("Can not close IO", e);
+        } catch (Throwable t) {
+            throwCanNotCloseIo(t);
         }
         try {
             if (readWorkbookHolder.getOpcPackage() != null) {
                 readWorkbookHolder.getOpcPackage().close();
             }
-        } catch (Throwable e) {
-            throw new ExcelAnalysisException("Can not close IO", e);
+        } catch (Throwable t) {
+            throwCanNotCloseIo(t);
         }
         try {
             if (readWorkbookHolder.getPoifsFileSystem() != null) {
                 readWorkbookHolder.getPoifsFileSystem().close();
             }
-        } catch (Throwable e) {
-            throw new ExcelAnalysisException("Can not close IO", e);
+        } catch (Throwable t) {
+            throwCanNotCloseIo(t);
         }
         try {
             if (analysisContext.readWorkbookHolder().getAutoCloseStream()
                 && readWorkbookHolder.getInputStream() != null) {
                 readWorkbookHolder.getInputStream().close();
             }
-        } catch (Throwable e) {
-            throw new ExcelAnalysisException("Can not close IO", e);
+        } catch (Throwable t) {
+            throwCanNotCloseIo(t);
         }
         try {
             if (readWorkbookHolder.getTempFile() != null) {
                 FileUtils.delete(readWorkbookHolder.getTempFile());
             }
-        } catch (Throwable e) {
-            throw new ExcelAnalysisException("Can not close IO", e);
+        } catch (Throwable t) {
+            throwCanNotCloseIo(t);
         }
+    }
+
+    private void throwCanNotCloseIo(Throwable t) {
+        throw new ExcelAnalysisException("Can not close IO", t);
     }
 
     @Override
