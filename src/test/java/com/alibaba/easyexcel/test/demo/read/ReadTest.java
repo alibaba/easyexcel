@@ -135,6 +135,40 @@ public class ReadTest {
     }
 
     /**
+     * 读取表头数据
+     *
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * <p>
+     * 3. 直接读即可
+     */
+    @Test
+    public void headerRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
+    }
+
+    /**
+     * 数据转换等异常处理
+     *
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * <p>
+     * 3. 直接读即可
+     */
+    @Test
+    public void exceptionRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
+    }
+
+    /**
      * 同步的返回，不推荐使用，如果数据量大会把数据放到内存里面
      */
     @Test

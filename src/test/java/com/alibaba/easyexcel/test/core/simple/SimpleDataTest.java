@@ -30,12 +30,12 @@ public class SimpleDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite07() {
+    public void t01ReadAndWrite07() {
         readAndWrite(file07);
     }
 
     @Test
-    public void T02ReadAndWrite03() {
+    public void t02ReadAndWrite03() {
         readAndWrite(file03);
     }
 
@@ -45,17 +45,17 @@ public class SimpleDataTest {
     }
 
     @Test
-    public void T03SynchronousRead07() {
+    public void t03SynchronousRead07() {
         synchronousRead(file07);
     }
 
     @Test
-    public void T04SynchronousRead03() {
+    public void t04SynchronousRead03() {
         synchronousRead(file03);
     }
 
     @Test
-    public void T05SheetNameRead07() {
+    public void t05SheetNameRead07() {
         EasyExcel.read(TestFileUtil.readFile("simple" + File.separator + "simple07.xlsx"), SimpleData.class,
             new SimpleDataSheetNameListener()).sheet("simple").doRead();
     }

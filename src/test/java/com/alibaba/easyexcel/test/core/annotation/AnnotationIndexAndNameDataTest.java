@@ -27,12 +27,12 @@ public class AnnotationIndexAndNameDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite07() {
+    public void t01ReadAndWrite07() {
         readAndWrite(file07);
     }
 
     @Test
-    public void T02ReadAndWrite03() {
+    public void t02ReadAndWrite03() {
         readAndWrite(file03);
     }
 

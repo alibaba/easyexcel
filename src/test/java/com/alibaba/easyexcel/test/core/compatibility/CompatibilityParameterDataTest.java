@@ -31,7 +31,7 @@ public class CompatibilityParameterDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite() throws Exception {
+    public void t01ReadAndWrite() throws Exception {
         readAndWrite1(file);
         readAndWrite2(file);
         readAndWrite3(file);

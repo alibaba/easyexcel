@@ -38,12 +38,12 @@ public class ConverterDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite07() throws Exception {
+    public void t01ReadAndWrite07() throws Exception {
         readAndWrite(file07);
     }
 
     @Test
-    public void T02ReadAndWrite03() throws Exception {
+    public void t02ReadAndWrite03() throws Exception {
         readAndWrite(file03);
     }
 
@@ -53,22 +53,22 @@ public class ConverterDataTest {
     }
 
     @Test
-    public void T03ReadAllConverter07() {
+    public void t03ReadAllConverter07() {
         readAllConverter("converter" + File.separator + "converter07.xlsx");
     }
 
     @Test
-    public void T04ReadAllConverter03() {
+    public void t04ReadAllConverter03() {
         readAllConverter("converter" + File.separator + "converter03.xls");
     }
 
     @Test
-    public void T05WriteImage07() throws Exception {
+    public void t05WriteImage07() throws Exception {
         writeImage(fileImage07);
     }
 
     @Test
-    public void T06WriteImage03() throws Exception {
+    public void t06WriteImage03() throws Exception {
         writeImage(fileImage03);
     }
 

@@ -35,7 +35,7 @@ public class ParameterDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite() throws Exception {
+    public void t01ReadAndWrite() throws Exception {
         readAndWrite1();
         readAndWrite2();
         readAndWrite3();

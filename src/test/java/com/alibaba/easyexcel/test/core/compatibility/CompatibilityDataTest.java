@@ -42,12 +42,12 @@ public class CompatibilityDataTest {
     }
 
     @Test
-    public void T01ReadAndWrite07() throws Exception {
+    public void t01ReadAndWrite07() throws Exception {
         readAndWrite(file07);
     }
 
     @Test
-    public void T02ReadAndWrite03() throws Exception {
+    public void t02ReadAndWrite03() throws Exception {
         readAndWrite(file03);
     }
 
