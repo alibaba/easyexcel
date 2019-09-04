@@ -185,7 +185,8 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         beforeCellCreate(row, head, relativeRowIndex);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
         Object value = oneRowData.get(dataIndex);
-        CellData cellData = converterAndSet(context.currentWriteHolder(), value.getClass(), cell, value, null);
+        CellData cellData =
+            converterAndSet(context.currentWriteHolder(), value == null ? null : value.getClass(), cell, value, null);
         afterCellCreate(head, cellData, cell, relativeRowIndex);
     }
 
