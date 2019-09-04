@@ -1,3 +1,6 @@
+# 2.0.0-beta4
+* 修改在传入List<List<Object>>判断行数错误 [Issue #526](https://github.com/alibaba/easyexcel/issues/526)
+
 # 2.0.0-beta3
 * 导出完成移除临时目录 [Issue #386](https://github.com/alibaba/easyexcel/issues/386)
 * 新增读取返回头数据

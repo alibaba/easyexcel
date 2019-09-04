@@ -174,7 +174,8 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (cellIndex != 0) {
             cellIndex++;
         }
-        for (int i = 0; i < oneRowData.size() - dataIndex; i++) {
+        int size = oneRowData.size() - dataIndex;
+        for (int i = 0; i < size; i++) {
             doAddBasicTypeToExcel(oneRowData, null, row, relativeRowIndex, dataIndex++, cellIndex++);
         }
     }

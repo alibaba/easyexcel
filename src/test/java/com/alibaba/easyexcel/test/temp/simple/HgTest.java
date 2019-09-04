@@ -23,7 +23,7 @@ public class HgTest {
 
     @Test
     public void hh() throws IOException {
-        List<Object> list = EasyExcel.read(new FileInputStream("D:\\test\\hg2.xlsx")).autoTrim(Boolean.FALSE).sheet()
+        List<Object> list = EasyExcel.read(new FileInputStream("D:\\test\\hg2.xls")).autoTrim(Boolean.FALSE).sheet(2)
             .headRowNumber(0).doReadSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
