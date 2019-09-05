@@ -23,7 +23,6 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
     private int sheetIndex;
     private List<ReadSheet> sheets;
     private AnalysisContext context;
-    private boolean analyAllSheet;
     private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
 
     public BofRecordHandler(EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener,
@@ -48,21 +47,20 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
                 if (orderedBsrs == null) {
                     orderedBsrs = BoundSheetRecord.orderByBofPosition(boundSheetRecords);
                 }
-                sheetIndex++;
-                ReadSheet readSheet = new ReadSheet(sheetIndex, orderedBsrs[sheetIndex - 1].getSheetname());
+                ReadSheet readSheet = new ReadSheet(sheetIndex, orderedBsrs[sheetIndex].getSheetname());
                 sheets.add(readSheet);
-                if (this.analyAllSheet) {
-                    context.currentSheet(null, readSheet);
+                if (sheetIndex == context.readSheetHolder().getSheetNo()) {
+                    context.readWorkbookHolder().setIgnoreRecord03(Boolean.FALSE);
+                } else {
+                    context.readWorkbookHolder().setIgnoreRecord03(Boolean.TRUE);
                 }
+                sheetIndex++;
             }
         }
     }
 
     @Override
     public void init() {
-        if (context.readSheetHolder() == null) {
-            this.analyAllSheet = true;
-        }
         sheetIndex = 0;
         orderedBsrs = null;
         boundSheetRecords.clear();

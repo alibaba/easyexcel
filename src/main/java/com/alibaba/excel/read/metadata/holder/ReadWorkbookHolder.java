@@ -101,6 +101,12 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      */
     private POIFSFileSystem poifsFileSystem;
 
+    /**
+     * Excel 2003 cannot read specific sheet. It can only read sheet by sheet.So when you specify one sheet, you ignore
+     * the others.
+     */
+    private Boolean ignoreRecord03;
+
     public ReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook, null, readWorkbook.getConvertAllFiled());
         this.readWorkbook = readWorkbook;
@@ -144,6 +150,7 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             this.defaultReturnMap = readWorkbook.getDefaultReturnMap();
         }
         this.hasReadSheet = new HashSet<Integer>();
+        this.ignoreRecord03 = Boolean.FALSE;
     }
 
     public ReadWorkbook getReadWorkbook() {
@@ -256,6 +263,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
 
     public void setPoifsFileSystem(POIFSFileSystem poifsFileSystem) {
         this.poifsFileSystem = poifsFileSystem;
+    }
+
+    public Boolean getIgnoreRecord03() {
+        return ignoreRecord03;
+    }
+
+    public void setIgnoreRecord03(Boolean ignoreRecord03) {
+        this.ignoreRecord03 = ignoreRecord03;
     }
 
     @Override

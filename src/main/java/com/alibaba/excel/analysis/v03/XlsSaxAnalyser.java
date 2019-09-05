@@ -14,6 +14,8 @@ import org.apache.poi.hssf.eventusermodel.HSSFListener;
 import org.apache.poi.hssf.eventusermodel.HSSFRequest;
 import org.apache.poi.hssf.eventusermodel.MissingRecordAwareHSSFListener;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
+import org.apache.poi.hssf.record.BOFRecord;
+import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -83,6 +85,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
 
     @Override
     public void execute() {
+        analysisContext.readSheetHolder().getSheetNo();
         MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
         formatListener = new FormatTrackingHSSFListener(listener);
         workbookBuildingListener = new EventWorkbookBuilder.SheetRecordCollectingListener(formatListener);
@@ -121,6 +124,10 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
 
     @Override
     public void processRecord(Record record) {
+        // Not data from the current sheet
+        if (ignoreRecord(record)) {
+            return;
+        }
         int thisRow = -1;
         int thisColumn = -1;
         CellData cellData = null;
@@ -162,6 +169,11 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         }
 
         processLastCellOfRow(record);
+    }
+
+    private boolean ignoreRecord(Record record) {
+        return analysisContext.readWorkbookHolder().getIgnoreRecord03() && record.getSid() != BoundSheetRecord.sid
+            && record.getSid() != BOFRecord.sid;
     }
 
     private void processLastCellOfRow(Record record) {

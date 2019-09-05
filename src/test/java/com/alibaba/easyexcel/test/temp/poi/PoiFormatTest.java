@@ -28,7 +28,7 @@ public class PoiFormatTest {
 
     @Test
     public void lastRowNum() throws IOException {
-        String file = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String file = "D:\\test\\原文件.xlsx";
         SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
         SXSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
         LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());

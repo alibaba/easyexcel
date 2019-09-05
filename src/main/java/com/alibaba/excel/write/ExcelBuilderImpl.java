@@ -174,7 +174,8 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (cellIndex != 0) {
             cellIndex++;
         }
-        for (int i = 0; i < oneRowData.size() - dataIndex; i++) {
+        int size = oneRowData.size() - dataIndex;
+        for (int i = 0; i < size; i++) {
             doAddBasicTypeToExcel(oneRowData, null, row, relativeRowIndex, dataIndex++, cellIndex++);
         }
     }
@@ -184,7 +185,8 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         beforeCellCreate(row, head, relativeRowIndex);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
         Object value = oneRowData.get(dataIndex);
-        CellData cellData = converterAndSet(context.currentWriteHolder(), value.getClass(), cell, value, null);
+        CellData cellData =
+            converterAndSet(context.currentWriteHolder(), value == null ? null : value.getClass(), cell, value, null);
         afterCellCreate(head, cellData, cell, relativeRowIndex);
     }
 
