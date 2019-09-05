@@ -1,6 +1,7 @@
 # 2.0.0-beta4
 * 修改在传入List<List<Object>>判断行数错误 [Issue #526](https://github.com/alibaba/easyexcel/issues/526)
 * 修复在mac 2016 2017导出的excel 可能存在多余字段的问题
+* 修复03版 读取无法指定sheet的问题 [Issue #533](https://github.com/alibaba/easyexcel/issues/533)
 
 # 2.0.0-beta3
 * 导出完成移除临时目录 [Issue #386](https://github.com/alibaba/easyexcel/issues/386)
