@@ -1,3 +1,6 @@
+# 2.0.0-beta5
+* 修复在读取值的时候读取了额外值导致数据转换异常
+
 # 2.0.0-beta4
 * 修改在传入List<List<Object>>判断行数错误 [Issue #526](https://github.com/alibaba/easyexcel/issues/526)
 * 修复在mac 2016 2017导出的excel 可能存在多余字段的问题

@@ -148,6 +148,9 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             currentCellData.setFormulaValue(currentCellValue);
             return;
         }
+        if (!CELL_VALUE_TAG.equals(currentTag) && !CELL_INLINE_STRING_VALUE_TAG.equals(currentTag)) {
+            return;
+        }
         CellDataTypeEnum oldType = currentCellData.getType();
         switch (oldType) {
             case DIRECT_STRING:
