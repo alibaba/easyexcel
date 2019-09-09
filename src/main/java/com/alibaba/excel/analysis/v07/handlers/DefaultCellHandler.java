@@ -22,7 +22,6 @@ import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
@@ -36,7 +35,6 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private final AnalysisContext analysisContext;
     private String currentTag;
     private String currentCellIndex;
-    private int curRow;
     private int curCol;
     private Map<Integer, CellData> curRowContent = new TreeMap<Integer, CellData>();
     private CellData currentCellData;
@@ -67,12 +65,6 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
         // start a cell
         if (CELL_TAG.equals(name)) {
             currentCellIndex = attributes.getValue(ExcelXmlConstants.POSITION);
-            int nextRow = PositionUtils.getRow(currentCellIndex);
-            if (nextRow > curRow) {
-                curRow = nextRow;
-            }
-            analysisContext
-                .readRowHolder(new ReadRowHolder(curRow, analysisContext.readSheetHolder().getGlobalConfiguration()));
             curCol = PositionUtils.getCol(currentCellIndex);
 
             // t="s" ,it's means String

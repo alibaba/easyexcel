@@ -214,7 +214,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             return;
         }
         Map<Integer, Head> headMap = getExcelWriteHeadProperty().getHeadMap();
-        Map<Integer, ExcelContentProperty> contentPropertyMap = getExcelWriteHeadProperty().getContentPropertyMap();
 
         boolean hasColumnWidth = false;
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
@@ -227,10 +226,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         if (hasColumnWidth) {
             dealColumnWidth(handlerList);
         }
-        dealRowHigh(handlerList, contentPropertyMap);
+        dealRowHigh(handlerList);
     }
 
-    private void dealRowHigh(List<WriteHandler> handlerList, Map<Integer, ExcelContentProperty> contentPropertyMap) {
+    private void dealRowHigh(List<WriteHandler> handlerList) {
         RowHeightProperty headRowHeightProperty = getExcelWriteHeadProperty().getHeadRowHeightProperty();
         RowHeightProperty contentRowHeightProperty = getExcelWriteHeadProperty().getContentRowHeightProperty();
         if (headRowHeightProperty == null && contentRowHeightProperty == null) {
