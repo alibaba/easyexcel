@@ -7,13 +7,8 @@
 * 单个文件的并发写入、读取
 * 读取图片
 * 宏
-#### 关于常见类解析
-* EasyExcel 入口类，用于构建开始各种操作
-* ExcelReaderBuilder ExcelWriterBuilder 构建出一个 ReadWorkbook WriteWorkbook，可以理解成一个excel对象，一个excel只要构建一个
-* ExcelReaderSheetBuilder ExcelWriterSheetBuilder 构建出一个 ReadSheet WriteSheet对象，可以理解成excel里面的一页,每一页都要构建一个
-* ReadListener 在每一行读取完毕后都会调用ReadListener来处理数据
-* WriteHandler 在每一个操作包括创建单元格、创建表格等都会调用WriteHandler来处理数据
-* 所有配置都是继承的，Workbook的配置会被Sheet继承，所以在用EasyExcel设置参数的时候，在EasyExcel...sheet()方法之前作用域是整个sheet,之后针对单个sheet
+#### 详细参数介绍
+有些参数不知道怎么用，或者有些功能不知道用什么参数，参照：[详细参数介绍](/docs/API.md)
 #### 开源项目不容易，如果觉得本项目对您的工作还是有帮助的话，请在右上角帮忙点个★Star。
 ### 读
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)

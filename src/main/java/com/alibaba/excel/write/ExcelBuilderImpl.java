@@ -21,6 +21,7 @@ import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.BaseRowModel;
@@ -194,25 +195,28 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         WriteHolder currentWriteHolder = context.currentWriteHolder();
         BeanMap beanMap = BeanMap.create(oneRowData);
         Set<String> beanMapHandledSet = new HashSet<String>();
-        Map<Integer, Head> headMap = context.currentWriteHolder().excelWriteHeadProperty().getHeadMap();
-        Map<Integer, ExcelContentProperty> contentPropertyMap =
-            context.currentWriteHolder().excelWriteHeadProperty().getContentPropertyMap();
         int cellIndex = 0;
-        for (Map.Entry<Integer, ExcelContentProperty> entry : contentPropertyMap.entrySet()) {
-            cellIndex = entry.getKey();
-            ExcelContentProperty excelContentProperty = entry.getValue();
-            String name = excelContentProperty.getField().getName();
-            if (!beanMap.containsKey(name)) {
-                continue;
+        // If it's a class it needs to be cast by type
+        if (HeadKindEnum.CLASS.equals(context.currentWriteHolder().excelWriteHeadProperty().getHeadKind())) {
+            Map<Integer, Head> headMap = context.currentWriteHolder().excelWriteHeadProperty().getHeadMap();
+            Map<Integer, ExcelContentProperty> contentPropertyMap =
+                context.currentWriteHolder().excelWriteHeadProperty().getContentPropertyMap();
+            for (Map.Entry<Integer, ExcelContentProperty> entry : contentPropertyMap.entrySet()) {
+                cellIndex = entry.getKey();
+                ExcelContentProperty excelContentProperty = entry.getValue();
+                String name = excelContentProperty.getField().getName();
+                if (!beanMap.containsKey(name)) {
+                    continue;
+                }
+                Head head = headMap.get(cellIndex);
+                beforeCellCreate(row, head, relativeRowIndex);
+                Cell cell = WorkBookUtil.createCell(row, cellIndex);
+                Object value = beanMap.get(name);
+                CellData cellData = converterAndSet(currentWriteHolder, excelContentProperty.getField().getType(), cell,
+                    value, excelContentProperty);
+                afterCellCreate(head, cellData, cell, relativeRowIndex);
+                beanMapHandledSet.add(name);
             }
-            Head head = headMap.get(cellIndex);
-            beforeCellCreate(row, head, relativeRowIndex);
-            Cell cell = WorkBookUtil.createCell(row, cellIndex);
-            Object value = beanMap.get(name);
-            CellData cellData = converterAndSet(currentWriteHolder, excelContentProperty.getField().getType(), cell,
-                value, excelContentProperty);
-            afterCellCreate(head, cellData, cell, relativeRowIndex);
-            beanMapHandledSet.add(name);
         }
         // Finish
         if (beanMapHandledSet.size() == beanMap.size()) {

@@ -30,22 +30,36 @@ public class Wirte {
     @Test
     public void simpleWrite() {
         // 写法1
-        String fileName = TestFileUtil.getPath() + "ttttttttt11" + System.currentTimeMillis() + ".xlsx";
+        String fileName = TestFileUtil.getPath() + "t22" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
-        EasyExcel.write(fileName).sheet("模板").doWrite(data());
+        EasyExcel.write(fileName).sheet("模板").head(head()).doWrite(data());
     }
 
-    private List<List<Object>> data() {
-        List<List<Object>> list = new ArrayList<List<Object>>();
-        for (int i = 0; i < 10; i++) {
-            List<Object> list1 = new ArrayList<Object>();
+    private List<List<String>> head() {
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> head0 = new ArrayList<String>();
+        head0.add("字符串" + System.currentTimeMillis());
+        List<String> head1 = new ArrayList<String>();
+        head1.add("数字" + System.currentTimeMillis());
+        List<String> head2 = new ArrayList<String>();
+        head2.add("日期" + System.currentTimeMillis());
+        list.add(head0);
+        list.add(head1);
+        list.add(head2);
+        return list;
+    }
 
-            list1.add("字符串" + i);
-            list1.add(new Date());
-            list1.add(0.56);
-            list.add(list1);
+    private List<DemoData> data() {
+        List<DemoData> list = new ArrayList<DemoData>();
+        for (int i = 0; i < 10; i++) {
+            DemoData data = new DemoData();
+            data.setString("字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(0.56);
+            list.add(data);
         }
         return list;
     }
+
 }

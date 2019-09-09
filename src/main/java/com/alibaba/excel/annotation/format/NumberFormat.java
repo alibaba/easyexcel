@@ -24,7 +24,7 @@ public @interface NumberFormat {
 
     /**
      *
-     * Specific format reference {@link org.apache.commons.math3.fraction.BigFractionFormat}
+     * Specific format reference {@link java.text.DecimalFormat}
      *
      * @return Format pattern
      */

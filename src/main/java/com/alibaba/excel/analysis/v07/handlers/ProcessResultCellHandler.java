@@ -6,8 +6,11 @@ import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
+import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.event.EachRowAnalysisFinishEvent;
+import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
+import com.alibaba.excel.util.PositionUtils;
 
 /**
  * Cell Handler
@@ -29,7 +32,11 @@ public class ProcessResultCellHandler implements XlsxCellHandler {
     }
 
     @Override
-    public void startHandle(String name, Attributes attributes) {}
+    public void startHandle(String name, Attributes attributes) {
+        analysisContext.readRowHolder(
+            new ReadRowHolder(PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.POSITION)),
+                analysisContext.readSheetHolder().getGlobalConfiguration()));
+    }
 
     @Override
     public void endHandle(String name) {

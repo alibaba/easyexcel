@@ -7,6 +7,14 @@ public class PositionUtils {
 
     private PositionUtils() {}
 
+    public static int getRowByRowTagt(String rowTagt) {
+        int row = 0;
+        if (rowTagt != null) {
+            row = Integer.parseInt(rowTagt) - 1;
+        }
+        return row;
+    }
+
     public static int getRow(String currentCellIndex) {
         int row = 0;
         if (currentCellIndex != null) {
