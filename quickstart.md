@@ -7,6 +7,8 @@
 * 单个文件的并发写入、读取
 * 读取图片
 * 宏
+#### 关于版本兼容
+目前poi用的 4.0.1 建议检查是否该版本。如果出现找不到class之类的，八成就是这个原因。
 #### 详细参数介绍
 有些参数不知道怎么用，或者有些功能不知道用什么参数，参照：[详细参数介绍](/docs/API.md)
 #### 开源项目不容易，如果觉得本项目对您的工作还是有帮助的话，请在右上角帮忙点个★Star。
@@ -582,6 +584,7 @@ public class ComplexHeadData {
         String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+        // 这里注意 如果同一个sheet只要创建一次
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
         // 第一次写入会创建头
         excelWriter.write(data(), writeSheet);

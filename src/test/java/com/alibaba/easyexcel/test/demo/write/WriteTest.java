@@ -108,6 +108,7 @@ public class WriteTest {
         String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+        // 这里注意 如果同一个sheet只要创建一次
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
         // 第一次写入会创建头
         excelWriter.write(data(), writeSheet);
