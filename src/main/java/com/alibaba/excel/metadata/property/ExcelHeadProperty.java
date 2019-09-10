@@ -1,16 +1,5 @@
 package com.alibaba.excel.metadata.property;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
@@ -22,6 +11,12 @@ import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 /**
  * Define the header attribute of excel
@@ -113,7 +108,13 @@ public class ExcelHeadProperty {
         // When the parent class is null, it indicates that the parent class (Object class) has reached the top
         // level.
         while (tempClass != null) {
-            Collections.addAll(fieldList, tempClass.getDeclaredFields());
+            // use stream instead if language level >= 8
+            for (Field field : tempClass.getDeclaredFields()) {
+                if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers())) {
+                    continue;
+                }
+                fieldList.add(field);
+            }
             // Get the parent class and give it to yourself
             tempClass = tempClass.getSuperclass();
         }
