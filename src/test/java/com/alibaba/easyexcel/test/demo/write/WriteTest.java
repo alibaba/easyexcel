@@ -110,10 +110,12 @@ public class WriteTest {
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
         // 这里注意 如果同一个sheet只要创建一次
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
-        // 第一次写入会创建头
-        excelWriter.write(data(), writeSheet);
-        // 第二次写入会在上一次写入的最后一行后面写入
-        excelWriter.write(data(), writeSheet);
+        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
+        for (int i = 0; i < 5; i++) {
+            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+            List<DemoData> data = data();
+            excelWriter.write(data, writeSheet);
+        }
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
     }

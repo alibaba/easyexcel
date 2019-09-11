@@ -575,9 +575,12 @@ public class ComplexHeadData {
 ```java
     /**
      * 重复多次写入
-     * <p>1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
-     * <p>2. 使用{@link ExcelProperty}注解指定复杂的头
-     * <p>3. 直接调用二次写入即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
+     * <p>
+     * 2. 使用{@link ExcelProperty}注解指定复杂的头
+     * <p>
+     * 3. 直接调用二次写入即可
      */
     @Test
     public void repeatedWrite() {
@@ -586,10 +589,12 @@ public class ComplexHeadData {
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
         // 这里注意 如果同一个sheet只要创建一次
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
-        // 第一次写入会创建头
-        excelWriter.write(data(), writeSheet);
-        // 第二次写入会在上一次写入的最后一行后面写入
-        excelWriter.write(data(), writeSheet);
+        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
+        for (int i = 0; i < 5; i++) {
+            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+            List<DemoData> data = data();
+            excelWriter.write(data, writeSheet);
+        }
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
     }
@@ -1041,14 +1046,18 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 参照：[对象](#simpleWriteObject) 就是名称变了下
 ##### 代码
 ```java
-   /**
+    /**
      * 文件下载
-     * <p>1. 创建excel对应的实体对象 参照{@link DownloadData}
-     * <p>2. 设置返回的 参数
-     * <p>3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DownloadData}
+     * <p>
+     * 2. 设置返回的 参数
+     * <p>
+     * 3. 直接写，这里注意，finish的时候会自动关闭OutputStream,当然你外面再关闭流问题不大
      */
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {
+        // 这里注意 有同学反应下载的文件名不对。这个时候 请别使用swagger 他会影像
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("Content-disposition", "attachment;filename=demo.xlsx");
