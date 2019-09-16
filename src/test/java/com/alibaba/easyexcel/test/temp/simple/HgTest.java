@@ -24,7 +24,7 @@ public class HgTest {
     @Test
     public void hh() throws IOException {
         List<Object> list =
-            EasyExcel.read(new FileInputStream("D:\\test\\商户不匹配工单信息收集表格.xlsx")).headRowNumber(0).sheet().doReadSync();
+            EasyExcel.read(new FileInputStream("D:\\test\\test.xlsx")).headRowNumber(0).sheet().doReadSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }

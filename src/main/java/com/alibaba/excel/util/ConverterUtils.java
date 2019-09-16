@@ -1,5 +1,8 @@
 package com.alibaba.excel.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,17 +59,48 @@ public class ConverterUtils {
      * Convert it into a Java object
      *
      * @param cellData
+     * @param field
+     * @param contentProperty
+     * @param converterMap
+     * @param globalConfiguration
+     * @return
+     */
+    public static Object convertToJavaObject(CellData cellData, Field field, ExcelContentProperty contentProperty,
+        Map<String, Converter> converterMap, GlobalConfiguration globalConfiguration) {
+        Class clazz;
+        if (field == null) {
+            clazz = String.class;
+        } else {
+            clazz = field.getType();
+        }
+        if (clazz == CellData.class) {
+            Type type = field.getGenericType();
+            Class classGeneric;
+            if (type instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType)type;
+                classGeneric = (Class)((ParameterizedType)parameterizedType.getActualTypeArguments()[0]).getRawType();
+            } else {
+                classGeneric = String.class;
+            }
+            CellData cellDataReturn = new CellData(cellData);
+            cellDataReturn.setData(
+                doConvertToJavaObject(cellData, classGeneric, contentProperty, converterMap, globalConfiguration));
+            return cellDataReturn;
+        }
+        return doConvertToJavaObject(cellData, clazz, contentProperty, converterMap, globalConfiguration);
+    }
+
+    /**
+     *
+     * @param cellData
      * @param clazz
      * @param contentProperty
      * @param converterMap
      * @param globalConfiguration
      * @return
      */
-    public static Object convertToJavaObject(CellData cellData, Class clazz, ExcelContentProperty contentProperty,
+    private static Object doConvertToJavaObject(CellData cellData, Class clazz, ExcelContentProperty contentProperty,
         Map<String, Converter> converterMap, GlobalConfiguration globalConfiguration) {
-        if (clazz == CellData.class) {
-            return new CellData(cellData);
-        }
         Converter converter = null;
         if (contentProperty != null) {
             converter = contentProperty.getConverter();

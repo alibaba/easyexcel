@@ -1,5 +1,7 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
+import java.math.BigDecimal;
+
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.record.NumberRecord;
 import org.apache.poi.hssf.record.Record;
@@ -29,7 +31,7 @@ public class NumberRecordHandler extends AbstractXlsRecordHandler {
         NumberRecord numrec = (NumberRecord)record;
         this.row = numrec.getRow();
         this.column = numrec.getColumn();
-        this.cellData = new CellData(numrec.getValue());
+        this.cellData = new CellData(BigDecimal.valueOf(numrec.getValue()));
         this.cellData.setDataFormat(formatListener.getFormatIndex(numrec));
         this.cellData.setDataFormatString(formatListener.getFormatString(numrec));
     }

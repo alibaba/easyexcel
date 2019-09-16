@@ -1,19 +1,23 @@
 package com.alibaba.excel.metadata;
 
+import java.math.BigDecimal;
+
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.util.StringUtils;
 
 /**
- * Excel internal cell data
+ * Excel internal cell data.
+ *
+ * <p>
  *
  * @author Jiaju Zhuang
  */
-public class CellData {
+public class CellData<T> {
     private CellDataTypeEnum type;
     /**
      * {@link CellDataTypeEnum#NUMBER}
      */
-    private Double doubleValue;
+    private BigDecimal numberValue;
     /**
      * {@link CellDataTypeEnum#STRING} and{@link CellDataTypeEnum#ERROR}
      */
@@ -33,10 +37,14 @@ public class CellData {
      * The string of number formatting.Currently only supported when reading
      */
     private String dataFormatString;
+    /**
+     * The resulting converted data.
+     */
+    private T data;
 
-    public CellData(CellData other) {
+    public CellData(CellData<T> other) {
         this.type = other.type;
-        this.doubleValue = other.doubleValue;
+        this.numberValue = other.numberValue;
         this.stringValue = other.stringValue;
         this.booleanValue = other.booleanValue;
         this.formula = other.formula;
@@ -44,6 +52,19 @@ public class CellData {
         this.imageValue = other.imageValue;
         this.dataFormat = other.dataFormat;
         this.dataFormatString = other.dataFormatString;
+        this.data = other.data;
+    }
+
+    public CellData() {}
+
+    public CellData(T data) {
+        this.data = data;
+    }
+
+    public CellData(T data, String formulaValue) {
+        this.data = data;
+        this.formula = Boolean.TRUE;
+        this.formulaValue = formulaValue;
     }
 
     public CellData(String stringValue) {
@@ -62,12 +83,12 @@ public class CellData {
         this.formula = Boolean.FALSE;
     }
 
-    public CellData(Double doubleValue) {
-        if (doubleValue == null) {
+    public CellData(BigDecimal numberValue) {
+        if (numberValue == null) {
             throw new IllegalArgumentException("DoubleValue can not be null");
         }
         this.type = CellDataTypeEnum.NUMBER;
-        this.doubleValue = doubleValue;
+        this.numberValue = numberValue;
         this.formula = Boolean.FALSE;
     }
 
@@ -105,12 +126,12 @@ public class CellData {
         this.type = type;
     }
 
-    public Double getDoubleValue() {
-        return doubleValue;
+    public BigDecimal getNumberValue() {
+        return numberValue;
     }
 
-    public void setDoubleValue(Double doubleValue) {
-        this.doubleValue = doubleValue;
+    public void setNumberValue(BigDecimal numberValue) {
+        this.numberValue = numberValue;
     }
 
     public String getStringValue() {
@@ -169,6 +190,14 @@ public class CellData {
         this.dataFormatString = dataFormatString;
     }
 
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
     /**
      * Ensure that the object does not appear null
      */
@@ -181,7 +210,7 @@ public class CellData {
                 }
                 return;
             case NUMBER:
-                if (doubleValue == null) {
+                if (numberValue == null) {
                     type = CellDataTypeEnum.EMPTY;
                 }
                 return;
@@ -198,7 +227,7 @@ public class CellData {
     public String toString() {
         switch (type) {
             case NUMBER:
-                return doubleValue.toString();
+                return numberValue.toString();
             case BOOLEAN:
                 return booleanValue.toString();
             case STRING:

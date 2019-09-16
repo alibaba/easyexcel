@@ -49,7 +49,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                     map.put(entry.getKey(), null);
                     continue;
                 }
-                map.put(entry.getKey(), (String)ConverterUtils.convertToJavaObject(cellData, String.class, null,
+                map.put(entry.getKey(), (String)ConverterUtils.convertToJavaObject(cellData, null, null,
                     currentReadHolder.converterMap(), currentReadHolder.globalConfiguration()));
             }
             return map;
@@ -62,7 +62,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                     list.add(null);
                     continue;
                 }
-                list.add((String)ConverterUtils.convertToJavaObject(cellData, String.class, null,
+                list.add((String)ConverterUtils.convertToJavaObject(cellData, null, null,
                     currentReadHolder.converterMap(), currentReadHolder.globalConfiguration()));
             }
             return list;
@@ -91,7 +91,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                 continue;
             }
             ExcelContentProperty excelContentProperty = contentPropertyMap.get(index);
-            Object value = ConverterUtils.convertToJavaObject(cellData, excelContentProperty.getField().getType(),
+            Object value = ConverterUtils.convertToJavaObject(cellData, excelContentProperty.getField(),
                 excelContentProperty, currentReadHolder.converterMap(), currentReadHolder.globalConfiguration());
             if (value != null) {
                 map.put(excelContentProperty.getField().getName(), value);

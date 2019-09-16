@@ -21,6 +21,7 @@ import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.exception.ExcelGenerateException;
@@ -291,16 +292,12 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     private CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty) {
         if (value == null) {
-            return null;
+            return new CellData();
         }
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
             value = ((String)value).trim();
         }
         CellData cellData = convert(currentWriteHolder, clazz, cell, value, excelContentProperty);
-        if (cellData == null || cellData.getType() == null) {
-            throw new ExcelDataConvertException(
-                "Convert data:" + value + " return null,at row:" + cell.getRow().getRowNum());
-        }
         if (cellData.getFormula() != null && cellData.getFormula()) {
             cell.setCellFormula(cellData.getFormulaValue());
         }
@@ -312,10 +309,12 @@ public class ExcelBuilderImpl implements ExcelBuilder {
                 cell.setCellValue(cellData.getBooleanValue());
                 return cellData;
             case NUMBER:
-                cell.setCellValue(cellData.getDoubleValue());
+                cell.setCellValue(cellData.getNumberValue().doubleValue());
                 return cellData;
             case IMAGE:
                 setImageValue(cellData, cell);
+                return cellData;
+            case EMPTY:
                 return cellData;
             default:
                 throw new ExcelDataConvertException("Not supported data:" + value + " return type:" + cell.getCellType()
@@ -346,9 +345,31 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     private CellData convert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty) {
+        // This means that the user has defined the data.
         if (value instanceof CellData) {
-            return (CellData)value;
+            CellData cellDataValue = (CellData)value;
+            if (cellDataValue.getType() != null) {
+                return cellDataValue;
+            } else {
+                if (cellDataValue.getData() == null) {
+                    cellDataValue.setType(CellDataTypeEnum.EMPTY);
+                    return cellDataValue;
+                }
+            }
+            CellData cellDataReturn = doConvert(currentWriteHolder, cellDataValue.getData().getClass(), cell,
+                cellDataValue.getData(), excelContentProperty);
+            // The formula information is subject to user input
+            if (cellDataValue.getFormula() != null) {
+                cellDataReturn.setFormula(cellDataValue.getFormula());
+                cellDataReturn.setFormulaValue(cellDataValue.getFormulaValue());
+            }
+            return cellDataReturn;
         }
+        return doConvert(currentWriteHolder, clazz, cell, value, excelContentProperty);
+    }
+
+    private CellData doConvert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
+        ExcelContentProperty excelContentProperty) {
         Converter converter = null;
         if (excelContentProperty != null) {
             converter = excelContentProperty.getConverter();
@@ -367,6 +388,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         } catch (Exception e) {
             throw new ExcelDataConvertException("Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(),
                 e);
+        }
+        if (cellData == null || cellData.getType() == null) {
+            throw new ExcelDataConvertException(
+                "Convert data:" + value + " return null,at row:" + cell.getRow().getRowNum());
         }
         return cellData;
     }
