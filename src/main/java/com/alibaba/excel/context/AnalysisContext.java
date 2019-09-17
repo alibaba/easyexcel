@@ -1,23 +1,74 @@
 package com.alibaba.excel.context;
 
-import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.metadata.ExcelHeadProperty;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.support.ExcelTypeEnum;
-
 import java.io.InputStream;
-import java.util.List;
+
+import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.ReadHolder;
+import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
+import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
+import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  *
  * A context is the main anchorage point of a excel reader.
+ *
  * @author jipengfei
  */
 public interface AnalysisContext {
+    /**
+     * Select the current table
+     *
+     * @param excelExecutor
+     *            Excel file Executor
+     * @param readSheet
+     *            sheet to read
+     */
+    void currentSheet(ExcelExecutor excelExecutor, ReadSheet readSheet);
+
+    /**
+     * All information about the workbook you are currently working on
+     *
+     * @return Current workbook holder
+     */
+    ReadWorkbookHolder readWorkbookHolder();
+
+    /**
+     * All information about the sheet you are currently working on
+     *
+     * @return Current sheet holder
+     */
+    ReadSheetHolder readSheetHolder();
+
+    /**
+     * Set row of currently operated cell
+     *
+     * @param readRowHolder
+     *            Current row holder
+     */
+    void readRowHolder(ReadRowHolder readRowHolder);
+
+    /**
+     * Row of currently operated cell
+     *
+     * @return Current row holder
+     */
+    ReadRowHolder readRowHolder();
+
+    /**
+     * The current read operation corresponds to the <code>readSheetHolder</code> or <code>readWorkbookHolder</code>
+     *
+     * @return Current holder
+     */
+    ReadHolder currentReadHolder();
 
     /**
      * Custom attribute
+     *
+     * @return
      */
     Object getCustom();
 
@@ -25,108 +76,62 @@ public interface AnalysisContext {
      * get current sheet
      *
      * @return current analysis sheet
+     * @deprecated please use {@link #readSheetHolder()}
      */
+    @Deprecated
     Sheet getCurrentSheet();
-
-    /**
-     * set current sheet
-     * @param sheet
-     */
-    void setCurrentSheet(Sheet sheet);
 
     /**
      *
      * get excel type
+     *
      * @return excel type
+     * @deprecated please use {@link #readWorkbookHolder()}
      */
+    @Deprecated
     ExcelTypeEnum getExcelType();
 
     /**
      * get in io
+     *
      * @return file io
+     * @deprecated please use {@link #readWorkbookHolder()}
      */
+    @Deprecated
     InputStream getInputStream();
 
     /**
-     *
-     * custom listener
-     * @return listener
-     */
-    AnalysisEventListener getEventListener();
-
-    /**
      * get current row
+     *
      * @return
+     * @deprecated please use {@link #readRowHolder()}
      */
+    @Deprecated
     Integer getCurrentRowNum();
 
     /**
-     * set  current row num
-     * @param row
-     */
-    void setCurrentRowNum(Integer row);
-
-    /**
      * get total row ,Data may be inaccurate
+     *
      * @return
+     * @deprecated please use {@link #readRowHolder()}
      */
     @Deprecated
     Integer getTotalCount();
 
     /**
-     * get total row ,Data may be inaccurate
-     *
-     * @param totalCount
-     */
-    void setTotalCount(Integer totalCount);
-
-    /**
-     * get excel head
-     * @return
-     */
-    ExcelHeadProperty getExcelHeadProperty();
-
-    /**
-     *
-     * @param clazz
-     * @param headOneRow
-     */
-    void buildExcelHeadProperty(Class<? extends BaseRowModel> clazz, List<String> headOneRow);
-
-    /**
-     *
-     *if need to short match the content
-     * @return
-     */
-    boolean trim();
-
-    /**
-     * set current result
-     * @param result
-     */
-    void setCurrentRowAnalysisResult(Object result);
-
-
-    /**
      * get current result
-     * @return  get current result
+     *
+     * @return get current result
+     * @deprecated please use {@link #readRowHolder()}
      */
+    @Deprecated
     Object getCurrentRowAnalysisResult();
 
     /**
      * Interrupt execution
+     *
+     * @deprecated please use {@link AnalysisEventListener#hasNext(AnalysisContext)}
      */
+    @Deprecated
     void interrupt();
-
-    /**
-     *  date use1904WindowDate
-     * @return
-     */
-    boolean  use1904WindowDate();
-
-    /**
-     * date use1904WindowDate
-     * @param use1904WindowDate
-     */
-    void setUse1904WindowDate(boolean use1904WindowDate);
 }

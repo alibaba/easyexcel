@@ -7,7 +7,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 /**
  *
  * @author jipengfei
+ * @deprecated please use {@link com.alibaba.excel.write.handler.WriteHandler}
  */
+@Deprecated
 public interface WriteHandler {
 
     /**
@@ -28,6 +30,7 @@ public interface WriteHandler {
 
     /**
      * Custom operation after creating each cell
+     *
      * @param cellNum
      * @param cell
      */

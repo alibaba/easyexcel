@@ -1,8 +1,7 @@
 package com.alibaba.excel.analysis;
 
-import com.alibaba.excel.metadata.Sheet;
-
-import java.util.List;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.metadata.ReadSheet;
 
 /**
  * Excel file analyser
@@ -10,24 +9,31 @@ import java.util.List;
  * @author jipengfei
  */
 public interface ExcelAnalyser {
-
     /**
      * parse one sheet
      *
-     * @param sheetParam
+     * @param readSheet
+     *            sheet to read
      */
-    void analysis(Sheet sheetParam);
+    void analysis(ReadSheet readSheet);
 
     /**
-     * parse all sheets
+     * Complete the entire read file.Release the cache and close stream
      */
-    void analysis();
+    void finish();
 
     /**
-     * get all sheet of workbook
+     * Acquisition excel executor
      *
-     * @return all sheets
+     * @return Excel file Executor
      */
-    List<Sheet> getSheets();
+    ExcelExecutor excelExecutor();
+
+    /**
+     * get the analysis context.
+     *
+     * @return analysis context
+     */
+    AnalysisContext analysisContext();
 
 }

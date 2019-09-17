@@ -1,9 +1,10 @@
 package com.alibaba.excel.write;
 
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.metadata.Table;
-
 import java.util.List;
+
+import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.WriteTable;
 
 /**
  * @author jipengfei
@@ -11,38 +12,43 @@ import java.util.List;
 public interface ExcelBuilder {
 
     /**
-     * workBook increase data
+     * WorkBook increase value
      *
-     * @param data     java basic type or java model extend BaseModel
-     * @param startRow Start row number
+     * @param data
+     *            java basic type or java model extend BaseModel
+     * @param writeSheet
+     *            Write the sheet
+     * @deprecated please use{@link ExcelBuilder#addContent(List, WriteSheet, WriteTable)}
      */
-    void addContent(List data, int startRow);
+    @Deprecated
+    void addContent(List data, WriteSheet writeSheet);
 
     /**
-     * WorkBook increase data
+     * WorkBook increase value
      *
-     * @param data       java basic type or java model extend BaseModel
-     * @param sheetParam Write the sheet
+     * @param data
+     *            java basic type or java model extend BaseModel
+     * @param writeSheet
+     *            Write the sheet
+     * @param writeTable
+     *            Write the table
      */
-    void addContent(List data, Sheet sheetParam);
-
-    /**
-     * WorkBook increase data
-     *
-     * @param data       java basic type or java model extend BaseModel
-     * @param sheetParam Write the sheet
-     * @param table      Write the table
-     */
-    void addContent(List data, Sheet sheetParam, Table table);
+    void addContent(List data, WriteSheet writeSheet, WriteTable writeTable);
 
     /**
      * Creates new cell range. Indexes are zero-based.
      *
-     * @param firstRow Index of first row
-     * @param lastRow  Index of last row (inclusive), must be equal to or larger than {@code firstRow}
-     * @param firstCol Index of first column
-     * @param lastCol  Index of last column (inclusive), must be equal to or larger than {@code firstCol}
+     * @param firstRow
+     *            Index of first row
+     * @param lastRow
+     *            Index of last row (inclusive), must be equal to or larger than {@code firstRow}
+     * @param firstCol
+     *            Index of first column
+     * @param lastCol
+     *            Index of last column (inclusive), must be equal to or larger than {@code firstCol}
+     * @deprecated please use{@link OnceAbsoluteMergeStrategy}
      */
+    @Deprecated
     void merge(int firstRow, int lastRow, int firstCol, int lastCol);
 
     /**

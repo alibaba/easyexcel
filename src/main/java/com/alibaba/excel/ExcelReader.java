@@ -1,16 +1,25 @@
 package com.alibaba.excel;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.excel.analysis.ExcelAnalyser;
 import com.alibaba.excel.analysis.ExcelAnalyserImpl;
+import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.cache.MapCache;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.parameter.AnalysisParam;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * Excel readers are all read in event mode.
@@ -18,43 +27,58 @@ import java.util.List;
  * @author jipengfei
  */
 public class ExcelReader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelReader.class);
 
     /**
      * Analyser
      */
-    private ExcelAnalyser analyser ;
+    private ExcelAnalyser excelAnalyser;
+
+    private boolean finished = false;
 
     /**
      * Create new reader
      *
-     * @param in            the POI filesystem that contains the Workbook stream
-     * @param excelTypeEnum 03 or 07
-     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
-     * @param eventListener Callback method after each row is parsed.
+     * @param in
+     *            the POI filesystem that contains the Workbook stream
+     * @param excelTypeEnum
+     *            03 or 07
+     * @param customContent
+     *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
+     * @param eventListener
+     *            Callback method after each row is parsed.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
     @Deprecated
     public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
-                       AnalysisEventListener eventListener) {
+        AnalysisEventListener eventListener) {
         this(in, excelTypeEnum, customContent, eventListener, true);
     }
 
     /**
      * Create new reader
      *
-     * @param in            the POI filesystem that contains the Workbook stream
-     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
-     * @param eventListener Callback method after each row is parsed
+     * @param in
+     *            the POI filesystem that contains the Workbook stream
+     * @param customContent
+     *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
+     * @param eventListener
+     *            Callback method after each row is parsed
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
-    public ExcelReader(InputStream in, Object customContent,
-                       AnalysisEventListener eventListener) {
+    @Deprecated
+    public ExcelReader(InputStream in, Object customContent, AnalysisEventListener eventListener) {
         this(in, customContent, eventListener, true);
     }
 
     /**
      * Create new reader
      *
-     * @param param         old param Deprecated
-     * @param eventListener Callback method after each row is parsed.
+     * @param param
+     *            old param Deprecated
+     * @param eventListener
+     *            Callback method after each row is parsed.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
     @Deprecated
     public ExcelReader(AnalysisParam param, AnalysisEventListener eventListener) {
@@ -64,86 +88,210 @@ public class ExcelReader {
     /**
      * Create new reader
      *
-     * @param in            the POI filesystem that contains the Workbook stream
-     * @param excelTypeEnum 03 or 07
-     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
-     * @param eventListener Callback method after each row is parsed.
-     * @param trim          The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant,
-     *                      because there are often table contents with spaces that can not be converted into custom
-     *                      types. For example: '1234 ' contain a space cannot be converted to int.
+     * @param in
+     * @param customContent
+     *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
+     * @param eventListener
+     * @param trim
+     *            The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant, because
+     *            there are often table contents with spaces that can not be converted into custom types. For example:
+     *            '1234 ' contain a space cannot be converted to int.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
     @Deprecated
-    public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
-                       AnalysisEventListener eventListener, boolean trim) {
-        validateParam(in, eventListener);
-        analyser = new ExcelAnalyserImpl(in, excelTypeEnum, customContent, eventListener, trim);
+    public ExcelReader(InputStream in, Object customContent, AnalysisEventListener eventListener, boolean trim) {
+        this(in, null, customContent, eventListener, trim);
     }
 
     /**
      * Create new reader
      *
      * @param in
-     * @param customContent {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
+     *            the POI filesystem that contains the Workbook stream
+     * @param excelTypeEnum
+     *            03 or 07
+     * @param customContent
+     *            {@link AnalysisEventListener#invoke(Object, AnalysisContext) }AnalysisContext
      * @param eventListener
-     * @param trim          The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant,
-     *                      because there are often table contents with spaces that can not be converted into custom
-     *                      types. For example: '1234 ' contain a space cannot be converted to int.
+     *            Callback method after each row is parsed.
+     * @param trim
+     *            The content of the form is empty and needs to be empty. The purpose is to be fault-tolerant, because
+     *            there are often table contents with spaces that can not be converted into custom types. For example:
+     *            '1234 ' contain a space cannot be converted to int.
+     * @deprecated please use {@link EasyExcelFactory#read()} build 'ExcelReader'
      */
-    public ExcelReader(InputStream in, Object customContent,
-                       AnalysisEventListener eventListener, boolean trim) {
-        ExcelTypeEnum excelTypeEnum = ExcelTypeEnum.valueOf(in);
-        validateParam(in, eventListener);
-        analyser =new ExcelAnalyserImpl(in, excelTypeEnum, customContent, eventListener, trim);
+    @Deprecated
+    public ExcelReader(InputStream in, ExcelTypeEnum excelTypeEnum, Object customContent,
+        AnalysisEventListener eventListener, boolean trim) {
+        ReadWorkbook readWorkbook = new ReadWorkbook();
+        readWorkbook.setInputStream(in);
+        readWorkbook.setExcelType(excelTypeEnum);
+        readWorkbook.setCustomObject(customContent);
+        if (eventListener != null) {
+            List<ReadListener> customReadListenerList = new ArrayList<ReadListener>();
+            customReadListenerList.add(eventListener);
+            readWorkbook.setCustomReadListenerList(customReadListenerList);
+        }
+        readWorkbook.setAutoTrim(trim);
+        readWorkbook.setAutoCloseStream(Boolean.FALSE);
+        readWorkbook.setMandatoryUseInputStream(Boolean.TRUE);
+        readWorkbook.setReadCache(new MapCache());
+        readWorkbook.setConvertAllFiled(Boolean.FALSE);
+        readWorkbook.setDefaultReturnMap(Boolean.FALSE);
+        excelAnalyser = new ExcelAnalyserImpl(readWorkbook);
+    }
+
+    public ExcelReader(ReadWorkbook readWorkbook) {
+        excelAnalyser = new ExcelAnalyserImpl(readWorkbook);
     }
 
     /**
      * Parse all sheet content by default
      */
     public void read() {
-        analyser.analysis();
+        ExcelExecutor excelExecutor = excelAnalyser.excelExecutor();
+        if (excelExecutor.sheetList().isEmpty()) {
+            LOGGER.warn("Excel doesn't have any sheets.");
+            return;
+        }
+        for (ReadSheet readSheet : excelExecutor.sheetList()) {
+            read(readSheet);
+        }
     }
 
     /**
      * Parse the specified sheet，SheetNo start from 1
      *
-     * @param sheet Read sheet
+     * @param readSheet
+     *            Read sheet
      */
+    public ExcelReader read(ReadSheet readSheet) {
+        checkFinished();
+        excelAnalyser.analysis(readSheet);
+        return this;
+    }
+
+    /**
+     * Parse the specified sheet，SheetNo start from 1
+     *
+     * @param sheet
+     *            Read sheet
+     * @deprecated please us {@link #read(ReadSheet)}
+     */
+    @Deprecated
     public void read(Sheet sheet) {
-        analyser.analysis(sheet);
+        ReadSheet readSheet = null;
+        if (sheet != null) {
+            readSheet = new ReadSheet();
+            readSheet.setSheetNo(sheet.getSheetNo() - 1);
+            readSheet.setSheetName(sheet.getSheetName());
+            readSheet.setClazz(sheet.getClazz());
+            readSheet.setHead(sheet.getHead());
+            readSheet.setHeadRowNumber(sheet.getHeadLineMun());
+        }
+        read(readSheet);
     }
 
     /**
      * Parse the specified sheet
      *
-     * @param sheet  Read sheet
-     * @param clazz object parsed into each row of data
+     * @param sheet
+     *            Read sheet
+     * @param clazz
+     *            object parsed into each row of value
+     *
+     * @deprecated Set the class in the sheet before read
      */
     @Deprecated
-    public void read(Sheet sheet, Class<? extends BaseRowModel> clazz) {
-        sheet.setClazz(clazz);
-        analyser.analysis(sheet);
+    public void read(Sheet sheet, Class clazz) {
+        if (sheet != null) {
+            sheet.setClazz(clazz);
+        }
+        read(sheet);
+    }
+
+    /**
+     * Context for the entire execution process
+     *
+     * @return
+     */
+    public AnalysisContext analysisContext() {
+        checkFinished();
+        return excelAnalyser.analysisContext();
+    }
+
+    /**
+     * Current executor
+     *
+     * @return
+     */
+    public ExcelExecutor excelExecutor() {
+        checkFinished();
+        return excelAnalyser.excelExecutor();
     }
 
     /**
      * Parse the workBook get all sheets
      *
      * @return workBook all sheets
+     *
+     * @deprecated please use {@link #excelExecutor()}
      */
+    @Deprecated
     public List<Sheet> getSheets() {
-        return analyser.getSheets();
+        List<ReadSheet> sheetList = excelExecutor().sheetList();
+        List<Sheet> sheets = new ArrayList<Sheet>();
+        if (sheetList == null || sheetList.isEmpty()) {
+            return sheets;
+        }
+        for (ReadSheet readSheet : sheetList) {
+            Sheet sheet = new Sheet(readSheet.getSheetNo() + 1);
+            sheet.setSheetName(readSheet.getSheetName());
+            sheets.add(sheet);
+        }
+        return sheets;
     }
 
     /**
-     * validate param
      *
-     * @param in
-     * @param eventListener
+     * @return
+     * @deprecated please use {@link #analysisContext()}
      */
-    private void validateParam(InputStream in,  AnalysisEventListener eventListener) {
-        if (eventListener == null) {
-            throw new IllegalArgumentException("AnalysisEventListener can not null");
-        } else if (in == null) {
-            throw new IllegalArgumentException("InputStream can not null");
+    @Deprecated
+    public AnalysisContext getAnalysisContext() {
+        return analysisContext();
+    }
+
+    /**
+     * Complete the entire read file.Release the cache and close stream.
+     */
+    public void finish() {
+        if (finished) {
+            return;
+        }
+        finished = true;
+        excelAnalyser.finish();
+    }
+
+    /**
+     * Prevents calls to {@link #finish} from freeing the cache
+     *
+     */
+    @Override
+    protected void finalize() {
+        if (finished) {
+            return;
+        }
+        try {
+            excelAnalyser.finish();
+        } catch (Throwable e) {
+            LOGGER.warn("Destroy object failed", e);
+        }
+    }
+
+    private void checkFinished() {
+        if (finished) {
+            throw new ExcelAnalysisException("Can not use a finished reader.");
         }
     }
 }
