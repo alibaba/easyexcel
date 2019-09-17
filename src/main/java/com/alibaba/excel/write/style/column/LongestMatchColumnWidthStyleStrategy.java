@@ -58,7 +58,7 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
             case BOOLEAN:
                 return cellData.getBooleanValue().toString().getBytes().length;
             case NUMBER:
-                return cellData.getDoubleValue().toString().getBytes().length;
+                return cellData.getNumberValue().toString().getBytes().length;
             default:
                 return -1;
         }

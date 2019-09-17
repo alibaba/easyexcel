@@ -1,5 +1,7 @@
 package com.alibaba.excel.converters.doubleconverter;
 
+import java.math.BigDecimal;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -26,13 +28,13 @@ public class DoubleNumberConverter implements Converter<Double> {
     @Override
     public Double convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return cellData.getDoubleValue();
+        return cellData.getNumberValue().doubleValue();
     }
 
     @Override
     public CellData convertToExcelData(Double value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(value);
+        return new CellData(BigDecimal.valueOf(value));
     }
 
 }

@@ -1,3 +1,8 @@
+# 2.0.0
+* 修复当cell为空可能会抛出空指针的bug
+* 修复电话等长数字可能出现科学计数法的问题 [Issue #583](https://github.com/alibaba/easyexcel/issues/583)
+* 升级为正式版
+
 # 2.0.0-beta6
 * 修复空行读取空指针异常
 * 修复写入指定头为List<List<String>>,但是数据用List<Class>导致的空指针

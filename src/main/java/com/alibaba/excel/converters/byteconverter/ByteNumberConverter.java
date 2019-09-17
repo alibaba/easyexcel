@@ -1,5 +1,7 @@
 package com.alibaba.excel.converters.byteconverter;
 
+import java.math.BigDecimal;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -26,13 +28,13 @@ public class ByteNumberConverter implements Converter<Byte> {
     @Override
     public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return cellData.getDoubleValue().byteValue();
+        return cellData.getNumberValue().byteValue();
     }
 
     @Override
     public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(value.doubleValue());
+        return new CellData(BigDecimal.valueOf(value));
     }
 
 }

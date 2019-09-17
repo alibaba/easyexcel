@@ -1,5 +1,7 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
+import java.math.BigDecimal;
+
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.model.HSSFFormulaParser;
 import org.apache.poi.hssf.record.FormulaRecord;
@@ -66,7 +68,7 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler {
                     tempCellData.setFormulaValue(formulaValue);
                     break;
                 case NUMERIC:
-                    this.cellData = new CellData(frec.getValue());
+                    this.cellData = new CellData(BigDecimal.valueOf(frec.getValue()));
                     this.cellData.setFormula(Boolean.TRUE);
                     this.cellData.setFormulaValue(formulaValue);
                     break;

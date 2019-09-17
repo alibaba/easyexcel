@@ -7,6 +7,7 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 
+import java.math.BigDecimal;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
@@ -164,8 +165,8 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             case NUMBER:
             case EMPTY:
                 currentCellData.setType(CellDataTypeEnum.NUMBER);
-                if (currentCellData.getDoubleValue() == null) {
-                    currentCellData.setDoubleValue(Double.valueOf(currentCellValue));
+                if (currentCellData.getNumberValue() == null) {
+                    currentCellData.setNumberValue(new BigDecimal(currentCellValue));
                 }
                 break;
             default:
