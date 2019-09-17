@@ -312,7 +312,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
                 cell.setCellValue(cellData.getBooleanValue());
                 return cellData;
             case NUMBER:
-                cell.setCellValue(cellData.getDoubleValue());
+                cell.setCellValue(cellData.getNumberValue().doubleValue());
                 return cellData;
             case IMAGE:
                 setImageValue(cellData, cell);

@@ -33,6 +33,7 @@ public class WebTest {
      */
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {
+        // 这里注意 有同学反应下载的文件名不对。这个时候 请别使用swagger 他会影像
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("Content-disposition", "attachment;filename=demo.xlsx");

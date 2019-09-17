@@ -28,12 +28,12 @@ public class BigDecimalNumberConverter implements Converter<BigDecimal> {
     @Override
     public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return BigDecimal.valueOf(cellData.getDoubleValue());
+        return cellData.getNumberValue();
     }
 
     @Override
     public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(value.doubleValue());
+        return new CellData(value);
     }
 }

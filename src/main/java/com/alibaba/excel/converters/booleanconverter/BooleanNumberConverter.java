@@ -1,5 +1,7 @@
 package com.alibaba.excel.converters.booleanconverter;
 
+import java.math.BigDecimal;
+
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -12,10 +14,6 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
  * @author Jiaju Zhuang
  */
 public class BooleanNumberConverter implements Converter<Boolean> {
-
-    private static final Double ONE = 1.0;
-    private static final Double ZERO = 0.0;
-
     @Override
     public Class supportJavaTypeKey() {
         return Boolean.class;
@@ -29,7 +27,7 @@ public class BooleanNumberConverter implements Converter<Boolean> {
     @Override
     public Boolean convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        if (ONE.equals(cellData.getDoubleValue())) {
+        if (BigDecimal.ONE.compareTo(cellData.getNumberValue()) == 0) {
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
@@ -39,9 +37,9 @@ public class BooleanNumberConverter implements Converter<Boolean> {
     public CellData convertToExcelData(Boolean value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (value) {
-            return new CellData(ONE);
+            return new CellData(BigDecimal.ONE);
         }
-        return new CellData(ZERO);
+        return new CellData(BigDecimal.ZERO);
     }
 
 }

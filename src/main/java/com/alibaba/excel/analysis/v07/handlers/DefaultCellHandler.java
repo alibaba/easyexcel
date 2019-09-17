@@ -7,6 +7,9 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TAG;
 import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 
+import java.math.BigDecimal;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -33,8 +36,7 @@ import com.alibaba.excel.util.StringUtils;
  */
 public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder {
     private final AnalysisContext analysisContext;
-    private String currentTag;
-    private String currentCellIndex;
+    private Deque<String> currentTagDeque = new LinkedList<String>();
     private int curCol;
     private Map<Integer, CellData> curRowContent = new TreeMap<Integer, CellData>();
     private CellData currentCellData;
@@ -61,11 +63,10 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
 
     @Override
     public void startHandle(String name, Attributes attributes) {
-        currentTag = name;
+        currentTagDeque.push(name);
         // start a cell
         if (CELL_TAG.equals(name)) {
-            currentCellIndex = attributes.getValue(ExcelXmlConstants.POSITION);
-            curCol = PositionUtils.getCol(currentCellIndex);
+            curCol = PositionUtils.getCol(attributes.getValue(ExcelXmlConstants.POSITION));
 
             // t="s" ,it's means String
             // t="str" ,it's means String,but does not need to be read in the 'sharedStrings.xml'
@@ -100,6 +101,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
 
     @Override
     public void endHandle(String name) {
+        currentTagDeque.pop();
         if (CELL_VALUE_TAG.equals(name)) {
             // Have to go "sharedStrings.xml" and get it
             if (currentCellData.getType() == CellDataTypeEnum.STRING) {
@@ -133,6 +135,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
         if (StringUtils.isEmpty(currentCellValue)) {
             return;
         }
+        String currentTag = currentTagDeque.peek();
         if (currentTag == null) {
             return;
         }
@@ -162,8 +165,8 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             case NUMBER:
             case EMPTY:
                 currentCellData.setType(CellDataTypeEnum.NUMBER);
-                if (currentCellData.getDoubleValue() == null) {
-                    currentCellData.setDoubleValue(Double.valueOf(currentCellValue));
+                if (currentCellData.getNumberValue() == null) {
+                    currentCellData.setNumberValue(new BigDecimal(currentCellValue));
                 }
                 break;
             default:

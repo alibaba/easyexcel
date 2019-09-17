@@ -1,5 +1,7 @@
 package com.alibaba.excel.metadata;
 
+import java.math.BigDecimal;
+
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.util.StringUtils;
 
@@ -13,7 +15,7 @@ public class CellData {
     /**
      * {@link CellDataTypeEnum#NUMBER}
      */
-    private Double doubleValue;
+    private BigDecimal numberValue;
     /**
      * {@link CellDataTypeEnum#STRING} and{@link CellDataTypeEnum#ERROR}
      */
@@ -36,7 +38,7 @@ public class CellData {
 
     public CellData(CellData other) {
         this.type = other.type;
-        this.doubleValue = other.doubleValue;
+        this.numberValue = other.numberValue;
         this.stringValue = other.stringValue;
         this.booleanValue = other.booleanValue;
         this.formula = other.formula;
@@ -62,12 +64,12 @@ public class CellData {
         this.formula = Boolean.FALSE;
     }
 
-    public CellData(Double doubleValue) {
-        if (doubleValue == null) {
+    public CellData(BigDecimal numberValue) {
+        if (numberValue == null) {
             throw new IllegalArgumentException("DoubleValue can not be null");
         }
         this.type = CellDataTypeEnum.NUMBER;
-        this.doubleValue = doubleValue;
+        this.numberValue = numberValue;
         this.formula = Boolean.FALSE;
     }
 
@@ -105,12 +107,12 @@ public class CellData {
         this.type = type;
     }
 
-    public Double getDoubleValue() {
-        return doubleValue;
+    public BigDecimal getNumberValue() {
+        return numberValue;
     }
 
-    public void setDoubleValue(Double doubleValue) {
-        this.doubleValue = doubleValue;
+    public void setNumberValue(BigDecimal numberValue) {
+        this.numberValue = numberValue;
     }
 
     public String getStringValue() {
@@ -181,7 +183,7 @@ public class CellData {
                 }
                 return;
             case NUMBER:
-                if (doubleValue == null) {
+                if (numberValue == null) {
                     type = CellDataTypeEnum.EMPTY;
                 }
                 return;
@@ -198,7 +200,7 @@ public class CellData {
     public String toString() {
         switch (type) {
             case NUMBER:
-                return doubleValue.toString();
+                return numberValue.toString();
             case BOOLEAN:
                 return booleanValue.toString();
             case STRING:
