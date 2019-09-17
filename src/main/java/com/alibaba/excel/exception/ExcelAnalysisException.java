@@ -6,8 +6,7 @@ package com.alibaba.excel.exception;
  */
 public class ExcelAnalysisException extends RuntimeException {
 
-    public ExcelAnalysisException() {
-    }
+    public ExcelAnalysisException() {}
 
     public ExcelAnalysisException(String message) {
         super(message);

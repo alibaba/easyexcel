@@ -5,22 +5,28 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+
 /**
  * Excel基础模型
+ *
  * @author jipengfei
+ * @deprecated Now you don't need to extend any classes
  */
+@Deprecated
 public class BaseRowModel {
 
     /**
      * 每列样式
      */
-    private Map<Integer,CellStyle> cellStyleMap = new HashMap<Integer,CellStyle>();
+    @ExcelIgnore
+    private Map<Integer, CellStyle> cellStyleMap = new HashMap<Integer, CellStyle>();
 
-    public void addStyle(Integer row, CellStyle cellStyle){
-        cellStyleMap.put(row,cellStyle);
+    public void addStyle(Integer row, CellStyle cellStyle) {
+        cellStyleMap.put(row, cellStyle);
     }
 
-    public CellStyle getStyle(Integer row){
+    public CellStyle getStyle(Integer row) {
         return cellStyleMap.get(row);
     }
 

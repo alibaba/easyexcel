@@ -1,75 +1,85 @@
 package com.alibaba.excel.util;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
+import java.io.IOException;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import static com.alibaba.excel.util.StyleUtil.buildSheetStyle;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 /**
- * 
+ *
  * @author jipengfei
  */
 public class WorkBookUtil {
 
-    public static Workbook createWorkBook(InputStream templateInputStream, ExcelTypeEnum excelType) throws IOException {
-        Workbook workbook;
-        if (ExcelTypeEnum.XLS.equals(excelType)) {
-            workbook = (templateInputStream == null) ? new HSSFWorkbook() : new HSSFWorkbook(
-                new POIFSFileSystem(templateInputStream));
-        } else {
-            workbook = (templateInputStream == null) ? new SXSSFWorkbook(500) : new SXSSFWorkbook(
-                new XSSFWorkbook(templateInputStream));
+    private WorkBookUtil() {}
+
+    public static Workbook createWorkBook(WriteWorkbookHolder writeWorkbookHolder)
+        throws IOException, InvalidFormatException {
+        if (ExcelTypeEnum.XLSX.equals(writeWorkbookHolder.getExcelType())) {
+            XSSFWorkbook xssfWorkbook = null;
+            if (writeWorkbookHolder.getTemplateFile() != null) {
+                xssfWorkbook = new XSSFWorkbook(writeWorkbookHolder.getTemplateFile());
+            }
+            if (writeWorkbookHolder.getTemplateInputStream() != null) {
+                xssfWorkbook = new XSSFWorkbook(writeWorkbookHolder.getTemplateInputStream());
+            }
+            // When using SXSSFWorkbook, you can't get the actual last line.But we need to read the last line when we
+            // are using the template, so we cache it
+            if (xssfWorkbook != null) {
+                for (int i = 0; i < xssfWorkbook.getNumberOfSheets(); i++) {
+                    writeWorkbookHolder.getTemplateLastRowMap().put(i, xssfWorkbook.getSheetAt(i).getLastRowNum());
+                }
+                return new SXSSFWorkbook(xssfWorkbook);
+            }
+            return new SXSSFWorkbook(500);
         }
-        return workbook;
+        if (writeWorkbookHolder.getTemplateFile() != null) {
+            return new HSSFWorkbook(new POIFSFileSystem(writeWorkbookHolder.getTemplateFile()));
+        }
+        if (writeWorkbookHolder.getTemplateInputStream() != null) {
+            return new HSSFWorkbook(new POIFSFileSystem(writeWorkbookHolder.getTemplateInputStream()));
+        }
+        return new HSSFWorkbook();
     }
 
-    public static Sheet createOrGetSheet(Workbook workbook, com.alibaba.excel.metadata.Sheet sheet) {
-        Sheet sheet1 = null;
-        try {
-            try {
-                sheet1 = workbook.getSheetAt(sheet.getSheetNo()-1);
-            } catch (Exception e) {
-            }
-            if (null == sheet1) {
-                sheet1 = createSheet(workbook, sheet);
-                buildSheetStyle(sheet1,sheet.getColumnWidthMap());
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("constructCurrentSheet error", e);
-        }
-        return sheet1;
-    }
-
-    public static Sheet createSheet(Workbook workbook, com.alibaba.excel.metadata.Sheet sheet) {
-        return workbook.createSheet(sheet.getSheetName() != null ? sheet.getSheetName() : sheet.getSheetNo() + "");
+    public static Sheet createSheet(Workbook workbook, String sheetName) {
+        return workbook.createSheet(sheetName);
     }
 
     public static Row createRow(Sheet sheet, int rowNum) {
         return sheet.createRow(rowNum);
     }
 
-    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, String cellValue) {
-        return createCell(row, colNum, cellStyle, cellValue, false);
+    public static Cell createCell(Row row, int colNum) {
+        return row.createCell(colNum);
     }
 
-    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, Object cellValue, Boolean isNum) {
+    public static Cell createCell(Row row, int colNum, CellStyle cellStyle) {
         Cell cell = row.createCell(colNum);
         cell.setCellStyle(cellStyle);
-        if (null != cellValue) {
-            if (isNum) {
-                cell.setCellValue(Double.parseDouble(cellValue.toString()));
-            } else {
-                cell.setCellValue(cellValue.toString());
-            }
-        }
         return cell;
     }
 
+    public static Cell createCell(Row row, int colNum, CellStyle cellStyle, String cellValue) {
+        Cell cell = createCell(row, colNum, cellStyle);
+        cell.setCellValue(cellValue);
+        return cell;
+    }
+
+    public static Cell createCell(Row row, int colNum, String cellValue) {
+        Cell cell = row.createCell(colNum);
+        cell.setCellValue(cellValue);
+        return cell;
+    }
 }
