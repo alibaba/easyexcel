@@ -78,7 +78,7 @@ public class ConverterUtils {
             Class classGeneric;
             if (type instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType)type;
-                classGeneric = (Class)((ParameterizedType)parameterizedType.getActualTypeArguments()[0]).getRawType();
+                classGeneric = (Class)parameterizedType.getActualTypeArguments()[0];
             } else {
                 classGeneric = String.class;
             }
