@@ -1,6 +1,8 @@
 package com.alibaba.excel.support;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -31,7 +33,12 @@ public enum ExcelTypeEnum {
         try {
             FileMagic fileMagic;
             if (file != null) {
-                fileMagic = FileMagic.valueOf(file);
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
+                try {
+                    fileMagic = FileMagic.valueOf(bufferedInputStream);
+                } finally {
+                    bufferedInputStream.close();
+                }
                 if (!FileMagic.OLE2.equals(fileMagic) && !FileMagic.OOXML.equals(fileMagic)) {
                     String fileName = file.getName();
                     if (fileName.endsWith(XLSX.getValue())) {
