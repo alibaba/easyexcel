@@ -15,7 +15,6 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
-import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
@@ -64,7 +63,8 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                 if (poifsFileSystem.getRoot().hasEntry(Decryptor.DEFAULT_POIFS_ENTRY)) {
                     InputStream decryptedStream = null;
                     try {
-                        decryptedStream = DocumentFactoryHelper.getDecryptedStream(poifsFileSystem.getRoot(), null);
+                        decryptedStream =
+                            DocumentFactoryHelper.getDecryptedStream(poifsFileSystem.getRoot().getFileSystem(), null);
                         excelExecutor = new XlsxSaxAnalyser(analysisContext, decryptedStream);
                         return;
                     } finally {
