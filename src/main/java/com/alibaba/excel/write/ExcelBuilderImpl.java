@@ -3,16 +3,19 @@ package com.alibaba.excel.write;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -29,10 +32,8 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.FileUtils;
-import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
@@ -40,6 +41,7 @@ import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
+import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
@@ -49,6 +51,10 @@ import net.sf.cglib.beans.BeanMap;
  * @author jipengfei
  */
 public class ExcelBuilderImpl implements ExcelBuilder {
+
+    private static final String FILL_PREFIX = "${";
+    private static final String FILL_SUFFIX = "}";
+    private static final Pattern FILL_PATTERN = Pattern.compile("\\$\\{[^}]+}");
 
     private WriteContext context;
 
@@ -100,6 +106,73 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         } catch (Throwable e) {
             finish();
             throw new ExcelGenerateException(e);
+        }
+    }
+
+    public void fill(Object data, WriteSheet writeSheet) {
+        try {
+            if (context.writeWorkbookHolder().getTemplateFile() == null
+                && context.writeWorkbookHolder().getTemplateInputStream() == null) {
+                throw new ExcelGenerateException("Calling the 'fill' method must use a template.");
+            }
+            context.currentSheet(writeSheet);
+            doFill(data);
+        } catch (RuntimeException e) {
+            finish();
+            throw e;
+        } catch (Throwable e) {
+            finish();
+            throw new ExcelGenerateException(e);
+        }
+    }
+
+    private void doFill(Object data) {
+        BeanMap beanMap = BeanMap.create(data);
+        WriteSheetHolder writeSheetHolder = context.writeSheetHolder();
+
+        Sheet sheet = writeSheetHolder.getSheet();
+        Map<Integer, Integer> templateLastRowMap = context.writeWorkbookHolder().getTemplateLastRowMap();
+        if (!templateLastRowMap.containsKey(writeSheetHolder.getSheetNo())) {
+            throw new ExcelGenerateException(
+                "The corresponding table cannot be found,sheetNo:" + writeSheetHolder.getSheetNo());
+        }
+        Map<String, AnalysisCell> analysisCellMap = new HashMap<String, AnalysisCell>(16);
+
+        for (int i = 0; i < templateLastRowMap.get(writeSheetHolder.getSheetNo()); i++) {
+            Row row = sheet.getRow(i);
+            for (int j = 0; j < row.getLastCellNum(); j++) {
+                Cell cell = row.getCell(j);
+                String value = cell.getStringCellValue();
+                if (FILL_PATTERN.matcher(value).matches()) {
+                    AnalysisCell analysisCell = new AnalysisCell();
+                    analysisCell.setRowIndex(i);
+                    analysisCell.setColumnIndex(j);
+                    List<String> variableList = new ArrayList<String>();
+                    analysisCell.setVariableList(variableList);
+                    boolean matches = true;
+                    while (matches) {
+
+                        matches = FILL_PATTERN.matcher(value).matches();
+                    }
+
+                }
+            }
+
+        }
+
+        if (CollectionUtils.isEmpty(data)) {
+            return;
+        }
+        WriteSheetHolder writeSheetHolder = context.writeSheetHolder();
+        int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
+        if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
+            newRowIndex += context.currentWriteHolder().relativeHeadRowIndex();
+        }
+        // BeanMap is out of order,so use fieldList
+        List<Field> fieldList = new ArrayList<Field>();
+        for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {
+            int n = relativeRowIndex + newRowIndex;
+            addOneRowOfDataToExcel(data.get(relativeRowIndex), n, relativeRowIndex, fieldList);
         }
     }
 
