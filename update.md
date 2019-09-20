@@ -1,3 +1,6 @@
+# 2.0.1
+* 降级poi为3.1.7 兼容jdk6
+
 # 2.0.0
 * 修复当cell为空可能会抛出空指针的bug
 * 修复电话等长数字可能出现科学计数法的问题 [Issue #583](https://github.com/alibaba/easyexcel/issues/583)
