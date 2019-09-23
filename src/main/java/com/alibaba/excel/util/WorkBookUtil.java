@@ -37,6 +37,7 @@ public class WorkBookUtil {
             // When using SXSSFWorkbook, you can't get the actual last line.But we need to read the last line when we
             // are using the template, so we cache it
             if (xssfWorkbook != null) {
+                writeWorkbookHolder.setXssfWorkbook(xssfWorkbook);
                 for (int i = 0; i < xssfWorkbook.getNumberOfSheets(); i++) {
                     writeWorkbookHolder.getTemplateLastRowMap().put(i, xssfWorkbook.getSheetAt(i).getLastRowNum());
                 }

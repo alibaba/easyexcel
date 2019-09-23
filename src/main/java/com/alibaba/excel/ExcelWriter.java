@@ -156,6 +156,18 @@ public class ExcelWriter {
     }
 
     /**
+     * Fill value to a sheet
+     *
+     * @param data
+     * @param writeSheet
+     * @return
+     */
+    public ExcelWriter fill(Object data, WriteSheet writeSheet) {
+        excelBuilder.fill(data, writeSheet);
+        return this;
+    }
+
+    /**
      * Write data to a sheet
      *
      * @param data

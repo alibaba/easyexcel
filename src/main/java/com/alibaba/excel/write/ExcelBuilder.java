@@ -36,6 +36,14 @@ public interface ExcelBuilder {
     void addContent(List data, WriteSheet writeSheet, WriteTable writeTable);
 
     /**
+     * WorkBook fill value
+     *
+     * @param data
+     * @param writeSheet
+     */
+    void fill(Object data, WriteSheet writeSheet);
+
+    /**
      * Creates new cell range. Indexes are zero-based.
      *
      * @param firstRow

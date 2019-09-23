@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +25,15 @@ import com.alibaba.excel.write.metadata.WriteWorkbook;
  * @author Jiaju Zhuang
  */
 public class WriteWorkbookHolder extends AbstractWriteHolder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WriteWorkbookHolder.class);
     /***
      * poi Workbook
      */
     private Workbook workbook;
-
+    /**
+     * When reading version 07 with the template, the <code>workbook</code> cannot get the specific line number, so it
+     * needs to get the specific line number.
+     */
+    private XSSFWorkbook xssfWorkbook;
     /**
      * current param
      */
@@ -128,6 +132,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
     public void setWorkbook(Workbook workbook) {
         this.workbook = workbook;
+    }
+
+    public XSSFWorkbook getXssfWorkbook() {
+        return xssfWorkbook;
+    }
+
+    public void setXssfWorkbook(XSSFWorkbook xssfWorkbook) {
+        this.xssfWorkbook = xssfWorkbook;
     }
 
     public Map<Integer, WriteSheetHolder> getHasBeenInitializedSheet() {

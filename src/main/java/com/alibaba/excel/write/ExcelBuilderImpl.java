@@ -2,12 +2,13 @@ package com.alibaba.excel.write;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -15,7 +16,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -109,6 +109,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         }
     }
 
+    @Override
     public void fill(Object data, WriteSheet writeSheet) {
         try {
             if (context.writeWorkbookHolder().getTemplateFile() == null
@@ -127,17 +128,14 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     }
 
     private void doFill(Object data) {
-        BeanMap beanMap = BeanMap.create(data);
         WriteSheetHolder writeSheetHolder = context.writeSheetHolder();
-
         Sheet sheet = writeSheetHolder.getSheet();
         Map<Integer, Integer> templateLastRowMap = context.writeWorkbookHolder().getTemplateLastRowMap();
-        if (!templateLastRowMap.containsKey(writeSheetHolder.getSheetNo())) {
+        if (sheet == null) {
             throw new ExcelGenerateException(
                 "The corresponding table cannot be found,sheetNo:" + writeSheetHolder.getSheetNo());
         }
-        Map<String, AnalysisCell> analysisCellMap = new HashMap<String, AnalysisCell>(16);
-
+        List<AnalysisCell> analysisCellList = new ArrayList<AnalysisCell>();
         for (int i = 0; i < templateLastRowMap.get(writeSheetHolder.getSheetNo()); i++) {
             Row row = sheet.getRow(i);
             for (int j = 0; j < row.getLastCellNum(); j++) {
@@ -150,29 +148,49 @@ public class ExcelBuilderImpl implements ExcelBuilder {
                     List<String> variableList = new ArrayList<String>();
                     analysisCell.setVariableList(variableList);
                     boolean matches = true;
+                    int index = 0;
                     while (matches) {
-
+                        Matcher matcher = FILL_PATTERN.matcher(value);
+                        String variable = value.substring(matcher.start(), matcher.end());
+                        variableList.add(variable);
+                        value = matcher.replaceFirst("{" + index++ + "}");
                         matches = FILL_PATTERN.matcher(value).matches();
+                        analysisCellList.add(analysisCell);
                     }
-
                 }
             }
-
         }
 
-        if (CollectionUtils.isEmpty(data)) {
-            return;
+        if (data instanceof Collection) {
+
+        } else if (data instanceof Map) {
+
+        } else {
+
         }
-        WriteSheetHolder writeSheetHolder = context.writeSheetHolder();
-        int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
-        if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
-            newRowIndex += context.currentWriteHolder().relativeHeadRowIndex();
-        }
-        // BeanMap is out of order,so use fieldList
-        List<Field> fieldList = new ArrayList<Field>();
-        for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {
-            int n = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(data.get(relativeRowIndex), n, relativeRowIndex, fieldList);
+        BeanMap beanMap = BeanMap.create(data);
+
+        for (AnalysisCell analysisCell : analysisCellList) {
+            Cell cell = sheet.getRow(analysisCell.getRowIndex()).getCell(analysisCell.getColumnIndex());
+            if (analysisCell.getVariableList().size() == 1) {
+                Object value = beanMap.get(analysisCell.getVariableList().get(0));
+                if (value == null) {
+                    continue;
+                }
+                converterAndSet(writeSheetHolder, value.getClass(), cell, value, null);
+            } else {
+                List<String> fileDataStringList = new ArrayList<String>();
+                for (String variable : analysisCell.getVariableList()) {
+                    Object value = beanMap.get(variable);
+                    CellData cellData = convert(writeSheetHolder, String.class, cell, value, null);
+                    String fillDataString = cellData.getStringValue();
+                    if (fillDataString == null) {
+                        fillDataString = "";
+                    }
+                    fileDataStringList.add(fillDataString);
+                }
+                cell.setCellValue(String.format(analysisCell.getPrepareData(), fileDataStringList));
+            }
         }
     }
 
