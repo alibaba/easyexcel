@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.temp.poi;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -19,6 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.IoUtils;
+
+import ch.qos.logback.core.util.FileUtil;
 
 /**
  * 测试poi
@@ -57,7 +62,8 @@ public class PoiTest {
     @Test
     public void lastRowNum233() throws IOException {
         String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
-        Workbook xx=new XSSFWorkbook(file);
+        Workbook xx = new XSSFWorkbook(file);
+        System.out.println(new File(file).exists());
 
         SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook();
         Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
@@ -70,12 +76,39 @@ public class PoiTest {
         xssfWorkbook.close();
     }
 
+    @Test
+    public void testread() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+
+        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
+        Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
+//
+//        Cell cell = xssfSheet.getRow(0).createCell(9);
+
+
+        String file1 = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+
+        SXSSFWorkbook xssfWorkbook1 = new SXSSFWorkbook(new XSSFWorkbook(file1));
+        Sheet xssfSheet1 = xssfWorkbook1.getXSSFWorkbook().getSheetAt(0);
+
+//        Cell cell1 = xssfSheet1.getRow(0).createCell(9);
+
+
+        xssfWorkbook.close();
+        xssfWorkbook1.close();
+    }
+
+
+    @Test
+    public void testreadRead() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+        FileUtils.readFileToByteArray(new File(file));
+    }
 
     @Test
     public void lastRowNum2332222() throws IOException {
         String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
-        Workbook xx=new XSSFWorkbook(file);
-        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook();
+        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
         Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
 
         Cell cell = xssfSheet.getRow(0).createCell(9);

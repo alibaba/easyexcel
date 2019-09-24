@@ -21,7 +21,6 @@ import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.TableStyle;
-import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;

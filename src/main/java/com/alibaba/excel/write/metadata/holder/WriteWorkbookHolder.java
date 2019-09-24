@@ -11,8 +11,6 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
@@ -60,6 +58,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * If 'inputStream' and 'file' all not empty,file first
      */
     private File templateFile;
+    /**
+     * Temporary template file stream.
+     * <p>
+     * A temporary file stream needs to be created in order not to modify the original template file.
+     */
+    private InputStream tempTemplateInputStream;
     /**
      * Default true
      */
@@ -180,6 +184,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
     public void setTemplateInputStream(InputStream templateInputStream) {
         this.templateInputStream = templateInputStream;
+    }
+
+    public InputStream getTempTemplateInputStream() {
+        return tempTemplateInputStream;
+    }
+
+    public void setTempTemplateInputStream(InputStream tempTemplateInputStream) {
+        this.tempTemplateInputStream = tempTemplateInputStream;
     }
 
     public File getTemplateFile() {
