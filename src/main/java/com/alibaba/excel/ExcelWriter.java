@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
 import com.alibaba.excel.parameter.GenerateParam;
@@ -309,4 +310,12 @@ public class ExcelWriter {
         excelBuilder.finish();
     }
 
+    /**
+     * The context of the entire writing process
+     *
+     * @return
+     */
+    public WriteContext writeContext() {
+        return excelBuilder.writeContext();
+    }
 }

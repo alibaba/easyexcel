@@ -2,6 +2,7 @@ package com.alibaba.excel.analysis.v03;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.ExcelExecutor;
 import com.alibaba.excel.analysis.v03.handlers.BlankOrErrorRecordHandler;
@@ -55,6 +58,8 @@ import com.alibaba.excel.util.CollectionUtils;
  * @author jipengfei
  */
 public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(XlsSaxAnalyser.class);
+
     private boolean outputFormulaValues = true;
     private POIFSFileSystem poifsFileSystem;
     private int lastRowNumber;
@@ -66,12 +71,12 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
     private FormatTrackingHSSFListener formatListener;
     private Map<Integer, CellData> records;
-    private List<ReadSheet> sheets = new ArrayList<ReadSheet>();
+    private List<ReadSheet> sheets;
     private HSSFWorkbook stubWorkbook;
     private List<XlsRecordHandler> recordHandlers = new ArrayList<XlsRecordHandler>();
     private AnalysisContext analysisContext;
 
-    public XlsSaxAnalyser(AnalysisContext context, POIFSFileSystem poifsFileSystem) throws IOException {
+    public XlsSaxAnalyser(AnalysisContext context, POIFSFileSystem poifsFileSystem) {
         this.analysisContext = context;
         this.records = new TreeMap<Integer, CellData>();
         this.poifsFileSystem = poifsFileSystem;
@@ -80,6 +85,11 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
 
     @Override
     public List<ReadSheet> sheetList() {
+        if (sheets == null) {
+            LOGGER.warn("Getting the 'sheetList' before reading will cause the file to be read twice.");
+            XlsListSheetListener xlsListSheetListener = new XlsListSheetListener(analysisContext, poifsFileSystem);
+            sheets = xlsListSheetListener.getSheetList();
+        }
         return sheets;
     }
 
@@ -92,9 +102,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         if (workbookBuildingListener != null && stubWorkbook == null) {
             stubWorkbook = workbookBuildingListener.getStubHSSFWorkbook();
         }
-
         init();
-
         HSSFEventFactory factory = new HSSFEventFactory();
         HSSFRequest request = new HSSFRequest();
         if (outputFormulaValues) {
@@ -102,7 +110,6 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         } else {
             request.addListenerForAllRecords(workbookBuildingListener);
         }
-
         try {
             factory.processWorkbookEvents(request, poifsFileSystem);
         } catch (IOException e) {
@@ -118,7 +125,6 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         lastRowNumber = 0;
         lastColumnNumber = 0;
         records = new TreeMap<Integer, CellData>();
-        sheets = new ArrayList<ReadSheet>();
         buildXlsRecordHandlers();
     }
 
@@ -199,7 +205,13 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private void buildXlsRecordHandlers() {
         if (CollectionUtils.isEmpty(recordHandlers)) {
             recordHandlers.add(new BlankOrErrorRecordHandler());
-            recordHandlers.add(new BofRecordHandler(workbookBuildingListener, analysisContext, sheets));
+            // The table has been counted and there are no duplicate statistics
+            if (sheets == null) {
+                sheets = new ArrayList<ReadSheet>();
+                recordHandlers.add(new BofRecordHandler(analysisContext, sheets, false));
+            } else {
+                recordHandlers.add(new BofRecordHandler(analysisContext, sheets, true));
+            }
             recordHandlers.add(new FormulaRecordHandler(stubWorkbook, formatListener));
             recordHandlers.add(new LabelRecordHandler());
             recordHandlers.add(new NoteRecordHandler());

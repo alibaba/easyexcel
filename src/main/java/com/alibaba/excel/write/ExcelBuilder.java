@@ -2,6 +2,7 @@ package com.alibaba.excel.write;
 
 import java.util.List;
 
+import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
@@ -58,6 +59,13 @@ public interface ExcelBuilder {
      */
     @Deprecated
     void merge(int firstRow, int lastRow, int firstCol, int lastCol);
+
+    /**
+     * Gets the written data
+     *
+     * @return
+     */
+    WriteContext writeContext();
 
     /**
      * Close io

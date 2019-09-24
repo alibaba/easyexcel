@@ -1,13 +1,15 @@
 # easyexcel核心功能
 ## 目录
 ### 前言
-#### 关于@Data
-读写的对象都用到了[Lombok](https://www.projectlombok.org/),他会自动生成`get`,`set` ，如果不需要自己创建对象并生成`get`,`set` 。
 #### 以下功能目前不支持
 * 单个文件的并发写入、读取
 * 读取图片
 * 宏
 * csv读取（这个后续可能会考虑）
+#### 常见问题
+* 关于@Data，读写的对象都用到了[Lombok](https://www.projectlombok.org/),他会自动生成`get`,`set` ，如果不需要的话，自己创建对象并生成`get`,`set` 。
+* 如果在读的时候`Listener`里面需要使用spring的`@Autowired`，给`Listener`创建成员变量，然后在构造方法里面传进去。而别必须不让spring管理`Listener`，每次读取都要`new`一个。
+* 如果用`String`去接收数字，出现小数点等情况，这个是BUG，但是很难修复，后续版本会修复这个问题。目前请使用`@NumberFormat`直接，里面的参数就是调用了java自带的`NumberFormat.format`方法，不知道怎么入参的可以自己网上查询。
 #### 详细参数介绍
 有些参数不知道怎么用，或者有些功能不知道用什么参数，参照：[详细参数介绍](/docs/API.md)
 #### 开源项目不容易，如果觉得本项目对您的工作还是有帮助的话，请在右上角帮忙点个★Star。
@@ -28,7 +30,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 * [最简单的写](#simpleWrite)
 * [指定写入的列](#indexWrite)
 * [复杂头写入](#complexHeadWrite)
-* [重复多次写入](#repeatedWrite)
+* [重复多次写入（包括不同sheet）](#repeatedWrite)
 * [日期、数字或者自定义格式转换](#converterWrite)
 * [图片导出](#imageWrite)
 * [根据模板写入](#templateWrite)
@@ -165,16 +167,31 @@ public class IndexOrNameData {
 ```java
     /**
      * 读多个sheet,这里注意一个sheet不能读取多次，多次读取需要重新读取文件
-     * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
-     * <p>3. 直接读即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * <p>
+     * 3. 直接读即可
      */
     @Test
     public void repeatedRead() {
+        // 方法1 如果 sheet1 sheet2 都是同一数据 监听器和头 都写到最外层
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         ExcelReader excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
         ReadSheet readSheet1 = EasyExcel.readSheet(0).build();
         ReadSheet readSheet2 = EasyExcel.readSheet(1).build();
+        excelReader.read(readSheet1);
+        excelReader.read(readSheet2);
+        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
+        excelReader.finish();
+
+        // 方法2 如果 sheet1 sheet2 数据不一致的话
+        fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        excelReader = EasyExcel.read(fileName).build();
+        // 这里为了简单 所以注册了 同样的head 和Listener 自己使用功能必须不同的Listener
+        readSheet1 = EasyExcel.readSheet(0).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
+        readSheet2 = EasyExcel.readSheet(1).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
         excelReader.read(readSheet1);
         excelReader.read(readSheet2);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
@@ -572,7 +589,7 @@ public class ComplexHeadData {
 参照：[对象](#simpleWriteObject)
 ##### 代码
 ```java
-    /**
+  /**
      * 重复多次写入
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
@@ -583,6 +600,7 @@ public class ComplexHeadData {
      */
     @Test
     public void repeatedWrite() {
+        // 方法1 如果写到同一个sheet
         String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
@@ -590,6 +608,36 @@ public class ComplexHeadData {
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
         // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
         for (int i = 0; i < 5; i++) {
+            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+            List<DemoData> data = data();
+            excelWriter.write(data, writeSheet);
+        }
+        /// 千万别忘记finish 会帮忙关闭流
+        excelWriter.finish();
+
+        // 方法2 如果写到不同的sheet 同一个对象
+        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 指定文件
+        excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+        for (int i = 0; i < 5; i++) {
+            // 每次都要创建writeSheet 这里注意必须指定sheetNo
+            writeSheet = EasyExcel.writerSheet(i, "模板").build();
+            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+            List<DemoData> data = data();
+            excelWriter.write(data, writeSheet);
+        }
+        /// 千万别忘记finish 会帮忙关闭流
+        excelWriter.finish();
+
+        // 方法3 如果写到不同的sheet 不同的对象
+        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 指定文件
+        excelWriter = EasyExcel.write(fileName).build();
+        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+        for (int i = 0; i < 5; i++) {
+            // 每次都要创建writeSheet 这里注意必须指定sheetNo。这里注意DemoData.class 可以每次都变，我这里为了方便 所以用的同一个class 实际上可以一直变
+            writeSheet = EasyExcel.writerSheet(i, "模板").head(DemoData.class).build();
             // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
             List<DemoData> data = data();
             excelWriter.write(data, writeSheet);
@@ -867,18 +915,19 @@ public class WidthAndHeightData {
      * <p>
      * 思路是这样子的，先创建List<String>头格式的sheet仅仅写入头,然后通过table 不写入头的方式 去写入数据
      *
-     * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>2. 然后写入table即可
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 然后写入table即可
      */
     @Test
     public void dynamicHeadWrite() {
         String fileName = TestFileUtil.getPath() + "dynamicHeadWrite" + System.currentTimeMillis() + ".xlsx";
-        // write的时候 不传入 class 在table的时候传入
         EasyExcel.write(fileName)
             // 这里放入动态头
             .head(head()).sheet("模板")
-            // table的时候 传入class 并且设置needHead =false
-            .table().head(DemoData.class).needHead(Boolean.FALSE).doWrite(data());
+            // 当然这里数据也可以用 List<List<String>> 去传入
+            .doWrite(data());
     }
 
     private List<List<String>> head() {
@@ -1056,10 +1105,12 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
      */
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {
-        // 这里注意 有同学反应下载的文件名不对。这个时候 请别使用swagger 他会影像
+        // 这里注意 有同学反应下载的文件名不对。这个时候 请别使用swagger 他会有影响
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
-        response.setHeader("Content-disposition", "attachment;filename=demo.xlsx");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode("测试", "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
         EasyExcel.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data());
     }
 ```

@@ -4,6 +4,10 @@
 * 新增支持读取单元格类型、写入指定单元格类型
 * 支持通过模板填充数据
 
+# 2.0.2
+* 修复xls无法获取sheetList的bug [Issue #621](https://github.com/alibaba/easyexcel/issues/621)
+* 修复监听器转换异常会重复提示的bug
+
 # 2.0.1
 * 降级poi为3.1.7 兼容jdk6
 

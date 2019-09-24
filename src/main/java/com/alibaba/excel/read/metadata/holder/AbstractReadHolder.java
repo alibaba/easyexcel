@@ -120,9 +120,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
-        int headRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
+        int currentheadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
 
-        if (rowIndex >= headRowNumber) {
+        if (rowIndex >= currentheadRowNumber) {
             // Now is data
             for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
                 try {
@@ -135,6 +135,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                             throw new ExcelAnalysisException("Listen error!", exception);
                         }
                     }
+                    break;
                 }
                 if (!readListener.hasNext(analysisContext)) {
                     throw new ExcelAnalysisStopException();
@@ -142,7 +143,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             }
         } else {
             // Last head column
-            if (headRowNumber == rowIndex + 1) {
+            if (currentheadRowNumber == rowIndex + 1) {
                 buildHead(analysisContext, cellDataMap);
             }
 
@@ -158,6 +159,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                             throw new ExcelAnalysisException("Listen error!", exception);
                         }
                     }
+                    break;
                 }
                 if (!readListener.hasNext(analysisContext)) {
                     throw new ExcelAnalysisStopException();

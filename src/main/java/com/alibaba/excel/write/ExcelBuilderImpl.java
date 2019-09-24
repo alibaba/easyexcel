@@ -207,6 +207,11 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         context.writeSheetHolder().getSheet().addMergedRegion(cra);
     }
 
+    @Override
+    public WriteContext writeContext() {
+        return context;
+    }
+
     private void addOneRowOfDataToExcel(Object oneRowData, int n, int relativeRowIndex, List<Field> fieldList) {
         beforeRowCreate(n, relativeRowIndex);
         Row row = WorkBookUtil.createRow(context.writeSheetHolder().getSheet(), n);
