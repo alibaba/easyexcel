@@ -49,7 +49,6 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
                     ReadSheet readSheet = new ReadSheet(sheetIndex, orderedBsrs[sheetIndex].getSheetname());
                     sheets.add(readSheet);
                 }
-                sheetIndex++;
                 if (context.readSheetHolder() != null) {
                     if (sheetIndex == context.readSheetHolder().getSheetNo()) {
                         context.readWorkbookHolder().setIgnoreRecord03(Boolean.FALSE);
@@ -57,6 +56,7 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
                         context.readWorkbookHolder().setIgnoreRecord03(Boolean.TRUE);
                     }
                 }
+                sheetIndex++;
             }
         }
     }
