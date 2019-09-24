@@ -18,9 +18,11 @@ public interface XlsxRowResultHolder {
     /**
      * Append current 'cellValue'
      *
-     * @param currentCellValue
+     * @param ch
+     * @param start
+     * @param length
      */
-    void appendCurrentCellValue(String currentCellValue);
+    void appendCurrentCellValue(char[] ch, int start, int length);
 
     /**
      * Get row content

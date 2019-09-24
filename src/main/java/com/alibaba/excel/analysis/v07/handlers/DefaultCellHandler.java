@@ -40,6 +40,9 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private int curCol;
     private Map<Integer, CellData> curRowContent = new TreeMap<Integer, CellData>();
     private CellData currentCellData;
+    private StringBuilder dataStringBuilder;
+    private StringBuilder formulaStringBuilder;
+
     /**
      * Current style information
      */
@@ -77,6 +80,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             // t is null ,it's means Empty or Number
             CellDataTypeEnum type = CellDataTypeEnum.buildFromCellType(attributes.getValue(CELL_VALUE_TYPE_TAG));
             currentCellData = new CellData(type);
+            dataStringBuilder = new StringBuilder();
 
             // Put in data transformation information
             String dateFormatIndex = attributes.getValue(CELL_DATA_FORMAT_TAG);
@@ -96,82 +100,81 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
         // cell is formula
         if (CELL_FORMULA_TAG.equals(name)) {
             currentCellData.setFormula(Boolean.TRUE);
+            formulaStringBuilder = new StringBuilder();
         }
     }
 
     @Override
     public void endHandle(String name) {
-        currentTagDeque.pop();
-        if (CELL_VALUE_TAG.equals(name)) {
-            // Have to go "sharedStrings.xml" and get it
-            if (currentCellData.getType() == CellDataTypeEnum.STRING) {
-                String stringValue = analysisContext.readWorkbookHolder().getReadCache()
-                    .get(Integer.valueOf(currentCellData.getStringValue()));
+        // cell is formula
+        if (CELL_FORMULA_TAG.equals(name)) {
+            currentCellData.setFormulaValue(formulaStringBuilder.toString());
+            return;
+        }
+        if (CELL_VALUE_TAG.equals(name) || CELL_INLINE_STRING_VALUE_TAG.equals(name)) {
+            CellDataTypeEnum oldType = currentCellData.getType();
+            switch (oldType) {
+                case DIRECT_STRING:
+                case STRING:
+                case ERROR:
+                    currentCellData.setStringValue(dataStringBuilder.toString());
+                    break;
+                case BOOLEAN:
+                    currentCellData.setBooleanValue(BooleanUtils.valueOf(dataStringBuilder.toString()));
+                    break;
+                case NUMBER:
+                case EMPTY:
+                    currentCellData.setType(CellDataTypeEnum.NUMBER);
+                    currentCellData.setNumberValue(new BigDecimal(dataStringBuilder.toString()));
+                    break;
+                default:
+                    throw new IllegalStateException("Cannot set values now");
+            }
+
+            if (CELL_VALUE_TAG.equals(name)) {
+                // Have to go "sharedStrings.xml" and get it
+                if (currentCellData.getType() == CellDataTypeEnum.STRING) {
+                    String stringValue = analysisContext.readWorkbookHolder().getReadCache()
+                        .get(Integer.valueOf(currentCellData.getStringValue()));
+                    if (stringValue != null
+                        && analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
+                        stringValue = stringValue.trim();
+                    }
+                    currentCellData.setStringValue(stringValue);
+                } else if (currentCellData.getType() == CellDataTypeEnum.DIRECT_STRING) {
+                    currentCellData.setType(CellDataTypeEnum.STRING);
+                }
+            }
+            // This is a special form of string
+            if (CELL_INLINE_STRING_VALUE_TAG.equals(name)) {
+                XSSFRichTextString richTextString = new XSSFRichTextString(currentCellData.getStringValue());
+                String stringValue = richTextString.toString();
                 if (stringValue != null && analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
                     stringValue = stringValue.trim();
                 }
                 currentCellData.setStringValue(stringValue);
-            } else if (currentCellData.getType() == CellDataTypeEnum.DIRECT_STRING) {
-                currentCellData.setType(CellDataTypeEnum.STRING);
             }
+
             currentCellData.checkEmpty();
             curRowContent.put(curCol, currentCellData);
         }
-        // This is a special form of string
-        if (CELL_INLINE_STRING_VALUE_TAG.equals(name)) {
-            XSSFRichTextString richTextString = new XSSFRichTextString(currentCellData.getStringValue());
-            String stringValue = richTextString.toString();
-            if (stringValue != null && analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
-                stringValue = stringValue.trim();
-            }
-            currentCellData.setStringValue(stringValue);
-            currentCellData.checkEmpty();
-            curRowContent.put(curCol, currentCellData);
-        }
+        currentTagDeque.pop();
     }
 
     @Override
-    public void appendCurrentCellValue(String currentCellValue) {
-        if (StringUtils.isEmpty(currentCellValue)) {
-            return;
-        }
+    public void appendCurrentCellValue(char[] ch, int start, int length) {
         String currentTag = currentTagDeque.peek();
         if (currentTag == null) {
             return;
         }
         if (CELL_FORMULA_TAG.equals(currentTag)) {
-            currentCellData.setFormulaValue(currentCellValue);
+            formulaStringBuilder.append(ch, start, length);
             return;
         }
         if (!CELL_VALUE_TAG.equals(currentTag) && !CELL_INLINE_STRING_VALUE_TAG.equals(currentTag)) {
             return;
         }
-        CellDataTypeEnum oldType = currentCellData.getType();
-        switch (oldType) {
-            case DIRECT_STRING:
-            case STRING:
-            case ERROR:
-                if (currentCellData.getStringValue() == null) {
-                    currentCellData.setStringValue(currentCellValue);
-                } else {
-                    currentCellData.setStringValue(currentCellData.getStringValue() + currentCellValue);
-                }
-                break;
-            case BOOLEAN:
-                if (currentCellData.getBooleanValue() == null) {
-                    currentCellData.setBooleanValue(BooleanUtils.valueOf(currentCellValue));
-                }
-                break;
-            case NUMBER:
-            case EMPTY:
-                currentCellData.setType(CellDataTypeEnum.NUMBER);
-                if (currentCellData.getNumberValue() == null) {
-                    currentCellData.setNumberValue(new BigDecimal(currentCellValue));
-                }
-                break;
-            default:
-                throw new IllegalStateException("Cannot set values now");
-        }
+        dataStringBuilder.append(ch, start, length);
     }
 
     @Override
