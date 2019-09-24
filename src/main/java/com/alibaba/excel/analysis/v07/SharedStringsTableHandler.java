@@ -82,6 +82,6 @@ public class SharedStringsTableHandler extends DefaultHandler {
         if (currentElementData == null) {
             currentElementData = new StringBuilder();
         }
-        currentElementData.append(new String(ch, start, length));
+        currentElementData.append(ch, start, length);
     }
 }
