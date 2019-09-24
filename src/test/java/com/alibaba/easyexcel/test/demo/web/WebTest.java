@@ -1,10 +1,13 @@
 package com.alibaba.easyexcel.test.demo.web;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
@@ -33,10 +36,12 @@ public class WebTest {
      */
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {
-        // 这里注意 有同学反应下载的文件名不对。这个时候 请别使用swagger 他会影像
+        // 这里注意 有同学反应下载的文件名不对。这个时候 请别使用swagger 他会有影响
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
-        response.setHeader("Content-disposition", "attachment;filename=demo.xlsx");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode("测试", "UTF-8");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
         EasyExcel.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data());
     }
 

@@ -24,7 +24,6 @@ import com.alibaba.excel.write.metadata.WriteWorkbook;
  * @author Jiaju Zhuang
  */
 public class WriteWorkbookHolder extends AbstractWriteHolder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WriteWorkbookHolder.class);
     /***
      * poi Workbook
      */

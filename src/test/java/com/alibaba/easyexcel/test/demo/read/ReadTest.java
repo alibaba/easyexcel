@@ -81,10 +81,22 @@ public class ReadTest {
      */
     @Test
     public void repeatedRead() {
+        // 方法1 如果 sheet1 sheet2 都是同一数据 监听器和头 都写到最外层
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         ExcelReader excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
         ReadSheet readSheet1 = EasyExcel.readSheet(0).build();
         ReadSheet readSheet2 = EasyExcel.readSheet(1).build();
+        excelReader.read(readSheet1);
+        excelReader.read(readSheet2);
+        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
+        excelReader.finish();
+
+        // 方法2 如果 sheet1 sheet2 数据不一致的话
+        fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        excelReader = EasyExcel.read(fileName).build();
+        // 这里为了简单 所以注册了 同样的head 和Listener 自己使用功能必须不同的Listener
+        readSheet1 = EasyExcel.readSheet(0).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
+        readSheet2 = EasyExcel.readSheet(1).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
         excelReader.read(readSheet1);
         excelReader.read(readSheet2);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的

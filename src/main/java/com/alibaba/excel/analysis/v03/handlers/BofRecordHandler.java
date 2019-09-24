@@ -3,7 +3,6 @@ package com.alibaba.excel.analysis.v03.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import org.apache.poi.hssf.record.BOFRecord;
 import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
@@ -23,13 +22,12 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
     private int sheetIndex;
     private List<ReadSheet> sheets;
     private AnalysisContext context;
-    private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
+    private boolean alreadyInit;
 
-    public BofRecordHandler(EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener,
-        AnalysisContext context, List<ReadSheet> sheets) {
+    public BofRecordHandler(AnalysisContext context, List<ReadSheet> sheets, boolean alreadyInit) {
         this.context = context;
-        this.workbookBuildingListener = workbookBuildingListener;
         this.sheets = sheets;
+        this.alreadyInit = alreadyInit;
     }
 
     @Override
@@ -47,14 +45,18 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
                 if (orderedBsrs == null) {
                     orderedBsrs = BoundSheetRecord.orderByBofPosition(boundSheetRecords);
                 }
-                ReadSheet readSheet = new ReadSheet(sheetIndex, orderedBsrs[sheetIndex].getSheetname());
-                sheets.add(readSheet);
-                if (sheetIndex == context.readSheetHolder().getSheetNo()) {
-                    context.readWorkbookHolder().setIgnoreRecord03(Boolean.FALSE);
-                } else {
-                    context.readWorkbookHolder().setIgnoreRecord03(Boolean.TRUE);
+                if (!alreadyInit) {
+                    ReadSheet readSheet = new ReadSheet(sheetIndex, orderedBsrs[sheetIndex].getSheetname());
+                    sheets.add(readSheet);
                 }
                 sheetIndex++;
+                if (context.readSheetHolder() != null) {
+                    if (sheetIndex == context.readSheetHolder().getSheetNo()) {
+                        context.readWorkbookHolder().setIgnoreRecord03(Boolean.FALSE);
+                    } else {
+                        context.readWorkbookHolder().setIgnoreRecord03(Boolean.TRUE);
+                    }
+                }
             }
         }
     }
@@ -64,7 +66,9 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
         sheetIndex = 0;
         orderedBsrs = null;
         boundSheetRecords.clear();
-        sheets.clear();
+        if (!alreadyInit) {
+            sheets.clear();
+        }
     }
 
     @Override
