@@ -1,3 +1,6 @@
+# 2.0.3
+* 修复重大bug 在07版读取文件的时候 小概率导致数字部分丢失
+
 # 2.0.2
 * 修复xls无法获取sheetList的bug [Issue #621](https://github.com/alibaba/easyexcel/issues/621)
 * 修复监听器转换异常会重复提示的bug
