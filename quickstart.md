@@ -7,9 +7,11 @@
 * 单个文件的并发写入、读取
 * 读取图片
 * 宏
+ClassNotFoundException与java.lang.NoClassDefFoundError的区别 
 * csv读取（这个后续可能会考虑）
 #### 常见问题
 * 关于@Data，读写的对象都用到了[Lombok](https://www.projectlombok.org/),他会自动生成`get`,`set` ，如果不需要的话，自己创建对象并生成`get`,`set` 。
+* 出现`NoSuchMethodException`，`ClassNotFoundException`,`NoClassDefFoundError`极大概率是jar冲突，建议`clean`项目，或者统一`poi` 的版本，理论上来说`easyexcel`兼容poi的`3.17`,`4.0.1`,`4.1.0`所有较新版本
 * 如果在读的时候`Listener`里面需要使用spring的`@Autowired`，给`Listener`创建成员变量，然后在构造方法里面传进去。而别必须不让spring管理`Listener`，每次读取都要`new`一个。
 * 如果用`String`去接收数字，出现小数点等情况，这个是BUG，但是很难修复，后续版本会修复这个问题。目前请使用`@NumberFormat`直接，里面的参数就是调用了java自带的`NumberFormat.format`方法，不知道怎么入参的可以自己网上查询。
 #### 详细参数介绍

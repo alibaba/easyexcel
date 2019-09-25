@@ -33,6 +33,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.FileUtils;
 
 /**
@@ -60,14 +61,18 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
 
         OPCPackage pkg = readOpcPackage(readWorkbookHolder, decryptedStream);
         readWorkbookHolder.setOpcPackage(pkg);
-        PackagePart sharedStringsTablePackagePart =
-            pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType()).get(0);
 
-        // Specify default cache
-        defaultReadCache(readWorkbookHolder, sharedStringsTablePackagePart);
+        ArrayList<PackagePart> packageParts = pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType());
 
-        // Analysis sharedStringsTable.xml
-        analysisSharedStringsTable(sharedStringsTablePackagePart.getInputStream(), readWorkbookHolder);
+        if (!CollectionUtils.isEmpty(packageParts)) {
+            PackagePart sharedStringsTablePackagePart = packageParts.get(0);
+
+            // Specify default cache
+            defaultReadCache(readWorkbookHolder, sharedStringsTablePackagePart);
+
+            // Analysis sharedStringsTable.xml
+            analysisSharedStringsTable(sharedStringsTablePackagePart.getInputStream(), readWorkbookHolder);
+        }
 
         XSSFReader xssfReader = new XSSFReader(pkg);
         analysisUse1904WindowDate(xssfReader, readWorkbookHolder);

@@ -27,7 +27,6 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
-import com.alibaba.excel.util.StringUtils;
 
 /**
  * Cell Handler
@@ -106,6 +105,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
 
     @Override
     public void endHandle(String name) {
+        currentTagDeque.pop();
         // cell is formula
         if (CELL_FORMULA_TAG.equals(name)) {
             currentCellData.setFormulaValue(formulaStringBuilder.toString());
@@ -158,7 +158,6 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             currentCellData.checkEmpty();
             curRowContent.put(curCol, currentCellData);
         }
-        currentTagDeque.pop();
     }
 
     @Override
