@@ -97,6 +97,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private Map<Integer, WriteSheetHolder> hasBeenInitializedSheet;
 
+    /**
+     * password
+     */
+    private String password;
+
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
         this.writeWorkbook = writeWorkbook;
