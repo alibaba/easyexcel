@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.enums.WriteLastRowType;
@@ -24,6 +26,11 @@ public class WriteSheetHolder extends AbstractWriteHolder {
      * poi sheet
      */
     private Sheet sheet;
+    /**
+     * When reading version 07 with the template, the <code>sheet</code> cannot read template data, so need to use
+     * <code>xssfSheet</code> to get it.
+     */
+    private XSSFSheet xssfSheet;
     /***
      * sheetNo
      */
@@ -85,6 +92,14 @@ public class WriteSheetHolder extends AbstractWriteHolder {
 
     public Integer getSheetNo() {
         return sheetNo;
+    }
+
+    public XSSFSheet getXssfSheet() {
+        return xssfSheet;
+    }
+
+    public void setXssfSheet(XSSFSheet xssfSheet) {
+        this.xssfSheet = xssfSheet;
     }
 
     public void setSheetNo(Integer sheetNo) {

@@ -1,11 +1,12 @@
 package com.alibaba.easyexcel.test.temp.poi;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -18,9 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-
-import ch.qos.logback.core.util.FileUtil;
+import com.alibaba.excel.util.FileUtils;
 
 /**
  * 测试poi

@@ -117,7 +117,7 @@ public class ReadTest {
     @Test
     public void converterRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, ConverterData.class, new ConverterDataListener())
             // 这里注意 我们也可以registerConverter来指定自定义转换器， 但是这个转换变成全局了， 所有java为string,excel为string的都会用这个转换器。
             // 如果就想单个字段使用请使用@ExcelProperty 指定converter
@@ -140,7 +140,7 @@ public class ReadTest {
     @Test
     public void complexHeaderRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet()
             // 这里可以设置1，因为头就是一行。如果多行头，可以设置其他值。不传入也可以，因为默认会根据DemoData 来解析，他没有指定头，也就是默认1行
             .headRowNumber(1).doRead();
@@ -159,7 +159,7 @@ public class ReadTest {
     @Test
     public void headerRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
     }
 
@@ -176,7 +176,7 @@ public class ReadTest {
     @Test
     public void exceptionRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 然后千万别忘记 finish
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
     }
 
