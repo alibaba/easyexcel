@@ -103,7 +103,7 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         if (size < 0) {
             size = sharedStringsTablePackagePart.getInputStream().available();
         }
-        if (size < USE_MAP_CACHE_SIZE) {
+        if (size < readWorkbookHolder.getSharedStringsUseEhcacheSize()) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Use map cache.size:{}", size);
             }

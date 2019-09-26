@@ -32,9 +32,7 @@ public class Ehcache implements ReadCache {
     private static final Logger LOGGER = LoggerFactory.getLogger(Ehcache.class);
 
     private static final int BATCH_COUNT = 1000;
-    private static final int CHECK_INTERVAL = 500;
-    private static final int MAX_CACHE_ACTIVATE = 10;
-
+    private static final int CHECK_INTERVAL = 1000;
     private static final String CACHE = "cache";
     private static final String DATA_SEPARATOR = "@";
     private static final String KEY_VALUE_SEPARATOR = "!";
@@ -50,6 +48,10 @@ public class Ehcache implements ReadCache {
      * Key index
      */
     private int index = 0;
+    /**
+     * Maximum number of cache activation
+     */
+    private int maxCacheActivate = 100;
     private StringBuilder data = new StringBuilder();
     private CacheManager cacheManager;
     /**
@@ -79,6 +81,12 @@ public class Ehcache implements ReadCache {
      * Count the number of cache misses
      */
     private int cacheMiss = 0;
+
+    public Ehcache() {}
+
+    public Ehcache(int maxCacheActivate) {
+        this.maxCacheActivate = maxCacheActivate;
+    }
 
     @Override
     public void init(AnalysisContext analysisContext) {
@@ -166,7 +174,7 @@ public class Ehcache implements ReadCache {
     }
 
     private void checkClear() {
-        if (countList.size() > MAX_CACHE_ACTIVATE) {
+        if (countList.size() > maxCacheActivate) {
             Integer route = countList.getFirst();
             countList.removeFirst();
             cacheMap.remove(route);
