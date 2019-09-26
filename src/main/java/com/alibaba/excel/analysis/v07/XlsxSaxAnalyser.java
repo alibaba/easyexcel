@@ -43,9 +43,9 @@ import com.alibaba.excel.util.FileUtils;
 public class XlsxSaxAnalyser implements ExcelExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(XlsxSaxAnalyser.class);
     /**
-     * If it's less than 5M, use map cache, or use ehcache.
+     * If it's less than 10M, use map cache, or use ehcache.
      */
-    private static final long USE_MAP_CACHE_SIZE = 5 * 1000 * 1000L;
+    private static final long USE_MAP_CACHE_SIZE = 10 * 1000 * 1000L;
     private AnalysisContext analysisContext;
     private List<ReadSheet> sheetList;
     private Map<Integer, InputStream> sheetMap;
