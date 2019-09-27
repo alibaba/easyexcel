@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.cache.selector.EternalReadCacheSelector;
+import com.alibaba.excel.cache.selector.ReadCacheSelector;
+import com.alibaba.excel.cache.selector.SimpleReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -64,10 +67,17 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      */
     private Object customObject;
     /**
-     * A cache that stores temp data to save memory.Default use {@link com.alibaba.excel.cache.Ehcache}
+     * Ignore empty rows.Default is true.
+     */
+    private Boolean ignoreEmptyRow;
+    /**
+     * A cache that stores temp data to save memory.
      */
     private ReadCache readCache;
-
+    /**
+     * Select the cache.Default use {@link com.alibaba.excel.cache.selector.SimpleReadCacheSelector}
+     */
+    private ReadCacheSelector readCacheSelector;
     /**
      * Temporary files when reading excel
      */
@@ -140,9 +150,22 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
         }
         this.customObject = readWorkbook.getCustomObject();
-        this.readCache = readWorkbook.getReadCache();
-        if (readCache != null && ExcelTypeEnum.XLS == excelType) {
-            LOGGER.warn("Xls not support 'readCache'!");
+        if (readWorkbook.getIgnoreEmptyRow() == null) {
+            this.ignoreEmptyRow = Boolean.TRUE;
+        } else {
+            this.ignoreEmptyRow = readWorkbook.getIgnoreEmptyRow();
+        }
+        if (readWorkbook.getReadCache() != null) {
+            if (readWorkbook.getReadCacheSelector() != null) {
+                throw new ExcelAnalysisException("'readCache' and 'readCacheSelector' only one choice.");
+            }
+            this.readCacheSelector = new EternalReadCacheSelector(readWorkbook.getReadCache());
+        } else {
+            if (readWorkbook.getReadCacheSelector() == null) {
+                this.readCacheSelector = new SimpleReadCacheSelector();
+            } else {
+                this.readCacheSelector = readWorkbook.getReadCacheSelector();
+            }
         }
         if (readWorkbook.getDefaultReturnMap() == null) {
             this.defaultReturnMap = Boolean.TRUE;
@@ -201,12 +224,28 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.customObject = customObject;
     }
 
+    public Boolean getIgnoreEmptyRow() {
+        return ignoreEmptyRow;
+    }
+
+    public void setIgnoreEmptyRow(Boolean ignoreEmptyRow) {
+        this.ignoreEmptyRow = ignoreEmptyRow;
+    }
+
     public ReadCache getReadCache() {
         return readCache;
     }
 
     public void setReadCache(ReadCache readCache) {
         this.readCache = readCache;
+    }
+
+    public ReadCacheSelector getReadCacheSelector() {
+        return readCacheSelector;
+    }
+
+    public void setReadCacheSelector(ReadCacheSelector readCacheSelector) {
+        this.readCacheSelector = readCacheSelector;
     }
 
     public Boolean getMandatoryUseInputStream() {

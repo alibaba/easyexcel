@@ -2,15 +2,10 @@ package com.alibaba.excel.cache;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.ehcache.CacheManager;
-import org.ehcache.PersistentCacheManager;
+import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
@@ -19,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.FileUtils;
-import com.alibaba.excel.util.StringUtils;
 
 /**
  * Default cache
@@ -30,87 +25,64 @@ import com.alibaba.excel.util.StringUtils;
 public class Ehcache implements ReadCache {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Ehcache.class);
-
     private static final int BATCH_COUNT = 1000;
-    private static final int CHECK_INTERVAL = 1000;
-    private static final String CACHE = "cache";
-    private static final String DATA_SEPARATOR = "@";
-    private static final String KEY_VALUE_SEPARATOR = "!";
-    private static final String SPECIAL_SEPARATOR = "&";
-    private static final String ESCAPED_DATA_SEPARATOR = "&d;";
-    private static final String ESCAPED_KEY_VALUE_SEPARATOR = "&kv;";
-    private static final String ESCAPED_SPECIAL_SEPARATOR = "&s;";
-
     private static final int DEBUG_WRITE_SIZE = 100 * 10000;
     private static final int DEBUG_CACHE_MISS_SIZE = 1000;
-
     /**
      * Key index
      */
     private int index = 0;
-    /**
-     * Maximum number of cache activation
-     */
-    private int maxCacheActivate = 100;
-    private StringBuilder data = new StringBuilder();
-    private CacheManager cacheManager;
+    private HashMap<Integer, String> dataMap = new HashMap<Integer, String>(BATCH_COUNT * 4 / 3 + 1);
+    private static CacheManager fileCacheManager;
+    private static CacheConfiguration<Integer, HashMap> fileCacheConfiguration;
+    private static CacheManager activeCacheManager;
+    private CacheConfiguration<Integer, HashMap> activeCacheConfiguration;
     /**
      * Bulk storage data
      */
-    private org.ehcache.Cache<Integer, String> cache;
+    private org.ehcache.Cache<Integer, HashMap> fileCache;
     /**
      * Currently active cache
      */
-    private Map<Integer, Map<Integer, String>> cacheMap = new HashMap<Integer, Map<Integer, String>>();
-    /**
-     * Count how many times get
-     */
-    private int getCount = 0;
-    /**
-     * Count active cache
-     *
-     */
-    private LinkedList<Integer> countList = new LinkedList<Integer>();
-
-    /**
-     * Count the last {@link #CHECK_INTERVAL} used
-     */
-    private Set<Integer> lastCheckIntervalUsedSet = new HashSet<Integer>();
-
+    private org.ehcache.Cache<Integer, HashMap> activeCache;
+    private String cacheAlias;
     /**
      * Count the number of cache misses
      */
     private int cacheMiss = 0;
 
-    public Ehcache() {}
+    public Ehcache(int maxCacheActivateSize) {
+        activeCacheConfiguration = CacheConfigurationBuilder
+            .newCacheConfigurationBuilder(Integer.class, HashMap.class,
+                ResourcePoolsBuilder.newResourcePoolsBuilder().heap(maxCacheActivateSize, MemoryUnit.MB))
+            .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(maxCacheActivateSize, MemoryUnit.MB)
+            .build();
+    }
 
-    public Ehcache(int maxCacheActivate) {
-        this.maxCacheActivate = maxCacheActivate;
+    static {
+        File cacheFile = FileUtils.createCacheTmpFile();
+        fileCacheManager =
+            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile)).build(true);
+        activeCacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
+        fileCacheConfiguration = CacheConfigurationBuilder
+            .newCacheConfigurationBuilder(Integer.class, HashMap.class,
+                ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.GB))
+            .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(10, MemoryUnit.GB).build();
     }
 
     @Override
     public void init(AnalysisContext analysisContext) {
-        File readTempFile = analysisContext.readWorkbookHolder().getTempFile();
-        if (readTempFile == null) {
-            readTempFile = FileUtils.createCacheTmpFile();
-            analysisContext.readWorkbookHolder().setTempFile(readTempFile);
-        }
-        File cacheFile = new File(readTempFile.getPath(), UUID.randomUUID().toString());
-        PersistentCacheManager persistentCacheManager =
-            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile))
-                .withCache(CACHE, CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class, String.class,
-                    ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.GB)))
-                .build(true);
-        cacheManager = persistentCacheManager;
-        cache = persistentCacheManager.getCache(CACHE, Integer.class, String.class);
+        cacheAlias = UUID.randomUUID().toString();
+        fileCache = fileCacheManager.createCache(cacheAlias, fileCacheConfiguration);
+        activeCache = activeCacheManager.createCache(cacheAlias, activeCacheConfiguration);
     }
 
     @Override
     public void put(String value) {
-        data.append(index).append(KEY_VALUE_SEPARATOR).append(escape(value)).append(DATA_SEPARATOR);
+        dataMap.put(index, value);
         if ((index + 1) % BATCH_COUNT == 0) {
-            cache.put(index / BATCH_COUNT, data.toString());
-            data = new StringBuilder();
+            fileCache.put(index / BATCH_COUNT, dataMap);
+            dataMap = new HashMap<Integer, String>(BATCH_COUNT * 4 / 3 + 1);
         }
         index++;
         if (LOGGER.isDebugEnabled()) {
@@ -120,102 +92,37 @@ public class Ehcache implements ReadCache {
         }
     }
 
-    private String escape(String str) {
-        if (StringUtils.isEmpty(str)) {
-            return str;
-        }
-        str = str.replaceAll(SPECIAL_SEPARATOR, ESCAPED_SPECIAL_SEPARATOR);
-        str = str.replaceAll(DATA_SEPARATOR, ESCAPED_DATA_SEPARATOR);
-        str = str.replaceAll(KEY_VALUE_SEPARATOR, ESCAPED_KEY_VALUE_SEPARATOR);
-        return str;
-    }
-
-    private String unescape(String str) {
-        if (StringUtils.isEmpty(str)) {
-            return str;
-        }
-        str = str.replaceAll(ESCAPED_KEY_VALUE_SEPARATOR, KEY_VALUE_SEPARATOR);
-        str = str.replaceAll(ESCAPED_DATA_SEPARATOR, DATA_SEPARATOR);
-        str = str.replaceAll(ESCAPED_SPECIAL_SEPARATOR, SPECIAL_SEPARATOR);
-        return str;
-    }
-
     @Override
     public String get(Integer key) {
         if (key == null || key < 0) {
             return null;
         }
-        getCount++;
         int route = key / BATCH_COUNT;
-        if (cacheMap.containsKey(route)) {
-            lastCheckIntervalUsedSet.add(route);
-            String value = cacheMap.get(route).get(key);
-            checkClear();
-            return value;
-        }
-        Map<Integer, String> tempCacheMap = new HashMap<Integer, String>(BATCH_COUNT / 3 * 4 + 1);
-        String batchData = cache.get(route);
-        String[] dataStrings = batchData.split(DATA_SEPARATOR);
-        for (String dataString : dataStrings) {
-            String[] keyValue = dataString.split(KEY_VALUE_SEPARATOR);
-            tempCacheMap.put(Integer.valueOf(keyValue[0]), unescape(keyValue[1]));
-        }
-        countList.add(route);
-        cacheMap.put(route, tempCacheMap);
-        if (LOGGER.isDebugEnabled()) {
-            if (cacheMiss++ % DEBUG_CACHE_MISS_SIZE == 0) {
-                LOGGER.debug("Cache misses count:{}", cacheMiss);
-            }
-        }
-        lastCheckIntervalUsedSet.add(route);
-        String value = tempCacheMap.get(key);
-        checkClear();
-        return value;
-    }
-
-    private void checkClear() {
-        if (countList.size() > maxCacheActivate) {
-            Integer route = countList.getFirst();
-            countList.removeFirst();
-            cacheMap.remove(route);
-        }
-        if (getCount++ % CHECK_INTERVAL != 0) {
-            return;
-        }
-        Iterator<Map.Entry<Integer, Map<Integer, String>>> iterator = cacheMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, Map<Integer, String>> entry = iterator.next();
-            if (lastCheckIntervalUsedSet.contains(entry.getKey())) {
-                continue;
-            }
-            // Last 'CHECK_INTERVAL' not use
-            iterator.remove();
+        HashMap<Integer, String> dataMap = activeCache.get(route);
+        if (dataMap == null) {
+            dataMap = fileCache.get(route);
+            activeCache.put(route, dataMap);
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Cache remove because {} times unused.", CHECK_INTERVAL);
-            }
-            Iterator<Integer> countIterator = countList.iterator();
-            while (countIterator.hasNext()) {
-                Integer route = countIterator.next();
-                if (route.equals(entry.getKey())) {
-                    countIterator.remove();
-                    break;
+                if (cacheMiss++ % DEBUG_CACHE_MISS_SIZE == 0) {
+                    LOGGER.debug("Cache misses count:{}", cacheMiss);
                 }
             }
         }
-        lastCheckIntervalUsedSet.clear();
+        return dataMap.get(key);
     }
 
     @Override
     public void putFinished() {
-        if (StringUtils.isEmpty(data.toString())) {
+        if (CollectionUtils.isEmpty(dataMap)) {
             return;
         }
-        cache.put(index / BATCH_COUNT, data.toString());
+        fileCache.put(index / BATCH_COUNT, dataMap);
     }
 
     @Override
     public void destroy() {
-        cacheManager.close();
+        fileCacheManager.removeCache(cacheAlias);
+        activeCacheManager.removeCache(cacheAlias);
     }
 
 }

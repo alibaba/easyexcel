@@ -1,6 +1,8 @@
 # 2.0.5
-* 优化07版超大文件读取参数配置
+* 优化07版超大文件读取方案
 * 支持自己设置超大文件读取参数
+* 读取xlsx会改变修改时间的bug [Issue #574](https://github.com/alibaba/easyexcel/issues/574)
+* 默认读取忽略空行 根据参数ignoreEmptyRow参数设置
 
 # 2.0.4
 * 修复07版整个excel仅存在数字时会出现的NPE

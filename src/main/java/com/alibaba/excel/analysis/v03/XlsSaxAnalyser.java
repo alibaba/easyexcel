@@ -2,7 +2,6 @@ package com.alibaba.excel.analysis.v03;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -60,11 +59,9 @@ import com.alibaba.excel.util.CollectionUtils;
 public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(XlsSaxAnalyser.class);
 
-    private boolean outputFormulaValues = true;
     private POIFSFileSystem poifsFileSystem;
     private int lastRowNumber;
     private int lastColumnNumber;
-    private boolean notAllEmpty = false;
     /**
      * For parsing Formulas
      */
@@ -105,11 +102,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         init();
         HSSFEventFactory factory = new HSSFEventFactory();
         HSSFRequest request = new HSSFRequest();
-        if (outputFormulaValues) {
-            request.addListenerForAllRecords(formatListener);
-        } else {
-            request.addListenerForAllRecords(workbookBuildingListener);
-        }
+        request.addListenerForAllRecords(formatListener);
         try {
             factory.processWorkbookEvents(request, poifsFileSystem);
         } catch (IOException e) {
@@ -145,20 +138,17 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
                 cellData = handler.getCellData();
                 if (cellData != null) {
                     cellData.checkEmpty();
-                    records.put(thisColumn, cellData);
+                    if (CellDataTypeEnum.EMPTY != cellData.getType()) {
+                        records.put(thisColumn, cellData);
+                    }
                 }
                 break;
             }
         }
         // If we got something to print out, do so
-        if (cellData != null) {
-            if (analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()
-                && CellDataTypeEnum.STRING == cellData.getType()) {
-                cellData.setStringValue(cellData.getStringValue().trim());
-            }
-            if (CellDataTypeEnum.EMPTY != cellData.getType()) {
-                notAllEmpty = true;
-            }
+        if (cellData != null && analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()
+            && CellDataTypeEnum.STRING == cellData.getType()) {
+            cellData.setStringValue(cellData.getStringValue().trim());
         }
 
         // Handle new row
@@ -193,11 +183,9 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
         if (lastColumnNumber == -1) {
             lastColumnNumber = 0;
         }
-        if (notAllEmpty) {
-            analysisContext.readRowHolder(
-                new ReadRowHolder(lastRowNumber, analysisContext.readSheetHolder().getGlobalConfiguration()));
-            analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records), analysisContext);
-        }
+        analysisContext.readRowHolder(
+            new ReadRowHolder(lastRowNumber, analysisContext.readSheetHolder().getGlobalConfiguration()));
+        analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records), analysisContext);
         records.clear();
         lastColumnNumber = -1;
     }
