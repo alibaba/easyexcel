@@ -50,4 +50,4 @@ Caused by: java.io.IOException: Could not create temporary directory '/home/admi
 
 ### 3、抛弃不重要的数据
 
-Excel解析时候会包含样式，字体，宽度等数据，但这些数据是我们不关系的，如果将这部分数据抛弃可以大大降低内存使用。Excel中数据如下Style占了相当大的空间。
+Excel解析时候会包含样式，字体，宽度等数据，但这些数据是我们不关心的，如果将这部分数据抛弃可以大大降低内存使用。Excel中数据如下Style占了相当大的空间。
