@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -85,6 +86,17 @@ public class ExcelReaderBuilder {
     }
 
     /**
+     * Ignore empty rows.Default is true.
+     *
+     * @param ignoreEmptyRow
+     * @return
+     */
+    public ExcelReaderBuilder ignoreEmptyRow(Boolean ignoreEmptyRow) {
+        readWorkbook.setIgnoreEmptyRow(ignoreEmptyRow);
+        return this;
+    }
+
+    /**
      * This object can be read in the Listener {@link AnalysisEventListener#invoke(Object, AnalysisContext)}
      * {@link AnalysisContext#getCustom()}
      *
@@ -97,13 +109,24 @@ public class ExcelReaderBuilder {
     }
 
     /**
-     * A cache that stores temp data to save memory.Default use {@link com.alibaba.excel.cache.Ehcache}
+     * A cache that stores temp data to save memory.
      *
      * @param readCache
      * @return
      */
     public ExcelReaderBuilder readCache(ReadCache readCache) {
         readWorkbook.setReadCache(readCache);
+        return this;
+    }
+
+    /**
+     * Select the cache.Default use {@link com.alibaba.excel.cache.selector.SimpleReadCacheSelector}
+     *
+     * @param readCacheSelector
+     * @return
+     */
+    public ExcelReaderBuilder readCacheSelector(ReadCacheSelector readCacheSelector) {
+        readWorkbook.setReadCacheSelector(readCacheSelector);
         return this;
     }
 

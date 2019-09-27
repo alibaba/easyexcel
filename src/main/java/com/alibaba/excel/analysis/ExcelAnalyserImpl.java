@@ -119,7 +119,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
         try {
             if (readWorkbookHolder.getOpcPackage() != null) {
-                readWorkbookHolder.getOpcPackage().close();
+                readWorkbookHolder.getOpcPackage().revert();
             }
         } catch (Throwable t) {
             throwCanNotCloseIo(t);

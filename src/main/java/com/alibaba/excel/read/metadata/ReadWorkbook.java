@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 
 import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -47,9 +48,17 @@ public class ReadWorkbook extends ReadBasicParameter {
      */
     private Object customObject;
     /**
-     * A cache that stores temp data to save memory.Default use {@link com.alibaba.excel.cache.Ehcache}
+     * A cache that stores temp data to save memory.
      */
     private ReadCache readCache;
+    /**
+     * Ignore empty rows.Default is true.
+     */
+    private Boolean ignoreEmptyRow;
+    /**
+     * Select the cache.Default use {@link com.alibaba.excel.cache.selector.SimpleReadCacheSelector}
+     */
+    private ReadCacheSelector readCacheSelector;
     /**
      * The default is all excel objects.Default is true.
      * <p>
@@ -138,5 +147,21 @@ public class ReadWorkbook extends ReadBasicParameter {
 
     public void setDefaultReturnMap(Boolean defaultReturnMap) {
         this.defaultReturnMap = defaultReturnMap;
+    }
+
+    public Boolean getIgnoreEmptyRow() {
+        return ignoreEmptyRow;
+    }
+
+    public void setIgnoreEmptyRow(Boolean ignoreEmptyRow) {
+        this.ignoreEmptyRow = ignoreEmptyRow;
+    }
+
+    public ReadCacheSelector getReadCacheSelector() {
+        return readCacheSelector;
+    }
+
+    public void setReadCacheSelector(ReadCacheSelector readCacheSelector) {
+        this.readCacheSelector = readCacheSelector;
     }
 }

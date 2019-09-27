@@ -5,17 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
-import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
-import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
@@ -26,6 +27,7 @@ import com.alibaba.excel.read.listener.ReadListenerRegistryCenter;
 import com.alibaba.excel.read.listener.event.AnalysisFinishEvent;
 import com.alibaba.excel.read.metadata.ReadBasicParameter;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
+import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.StringUtils;
 
@@ -35,6 +37,8 @@ import com.alibaba.excel.util.StringUtils;
  * @author Jiaju Zhuang
  */
 public abstract class AbstractReadHolder extends AbstractHolder implements ReadHolder, ReadListenerRegistryCenter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReadHolder.class);
+
     /**
      * Count the number of added heads when read sheet.
      *
@@ -117,6 +121,14 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     @Override
     public void notifyEndOneRow(AnalysisFinishEvent event, AnalysisContext analysisContext) {
         Map<Integer, CellData> cellDataMap = event.getAnalysisResult();
+        if (CollectionUtils.isEmpty(cellDataMap)) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.warn("Empty row!");
+            }
+            if (analysisContext.readWorkbookHolder().getIgnoreEmptyRow()) {
+                return;
+            }
+        }
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
