@@ -46,8 +46,8 @@ public class HgTest {
 
     @Test
     public void hh2() throws IOException {
-        EasyExcel.read(new FileInputStream("D:\\test\\商户不匹配工单信息收集表格.xlsx"))
-            .registerReadListener(new HgListener()).headRowNumber(0).sheet().doRead();
+        EasyExcel.read(new FileInputStream("D:\\test\\商户不匹配工单信息收集表格.xlsx")).registerReadListener(new HgListener())
+            .headRowNumber(0).sheet().doRead();
     }
 
 }
