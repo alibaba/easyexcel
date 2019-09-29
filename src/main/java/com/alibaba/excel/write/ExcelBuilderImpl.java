@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
@@ -129,14 +130,14 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     private void doFill(Object data) {
         WriteSheetHolder writeSheetHolder = context.writeSheetHolder();
-        Sheet sheet = writeSheetHolder.getSheet();
+        XSSFSheet sheet = writeSheetHolder.getXssfSheet();
         Map<Integer, Integer> templateLastRowMap = context.writeWorkbookHolder().getTemplateLastRowMap();
         if (sheet == null) {
             throw new ExcelGenerateException(
                 "The corresponding table cannot be found,sheetNo:" + writeSheetHolder.getSheetNo());
         }
         List<AnalysisCell> analysisCellList = new ArrayList<AnalysisCell>();
-        for (int i = 0; i < templateLastRowMap.get(writeSheetHolder.getSheetNo()); i++) {
+        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
             for (int j = 0; j < row.getLastCellNum(); j++) {
                 Cell cell = row.getCell(j);
@@ -151,7 +152,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
                     int index = 0;
                     while (matches) {
                         Matcher matcher = FILL_PATTERN.matcher(value);
-                        String variable = value.substring(matcher.start(), matcher.end());
+                        String variable = value.substring(matcher.regionStart() + 2, matcher.regionEnd() - 1);
                         variableList.add(variable);
                         value = matcher.replaceFirst("{" + index++ + "}");
                         matches = FILL_PATTERN.matcher(value).matches();

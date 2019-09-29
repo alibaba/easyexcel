@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof WorkbookWriteHandler) {
-                ((WorkbookWriteHandler) writeHandler).beforeWorkbookCreate();
+                ((WorkbookWriteHandler)writeHandler).beforeWorkbookCreate();
             }
         }
     }
@@ -95,7 +96,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof WorkbookWriteHandler) {
-                ((WorkbookWriteHandler) writeHandler).afterWorkbookCreate(writeWorkbookHolder);
+                ((WorkbookWriteHandler)writeHandler).afterWorkbookCreate(writeWorkbookHolder);
             }
         }
     }
@@ -149,7 +150,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof SheetWriteHandler) {
-                ((SheetWriteHandler) writeHandler).beforeSheetCreate(writeWorkbookHolder, writeSheetHolder);
+                ((SheetWriteHandler)writeHandler).beforeSheetCreate(writeWorkbookHolder, writeSheetHolder);
             }
         }
     }
@@ -161,7 +162,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof SheetWriteHandler) {
-                ((SheetWriteHandler) writeHandler).afterSheetCreate(writeWorkbookHolder, writeSheetHolder);
+                ((SheetWriteHandler)writeHandler).afterSheetCreate(writeWorkbookHolder, writeSheetHolder);
             }
         }
         if (null != writeWorkbookHolder.getWriteWorkbook().getWriteHandler()) {
@@ -181,6 +182,16 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void initSheet() {
+        try {
+            if (writeWorkbookHolder.getXssfWorkbook() != null) {
+                writeSheetHolder
+                    .setXssfSheet(writeWorkbookHolder.getXssfWorkbook().getSheetAt(writeSheetHolder.getSheetNo()));
+            }
+        } catch (Exception e) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Can not find XSSFSheet:{}.", writeSheetHolder.getSheetNo());
+            }
+        }
         Sheet currentSheet;
         try {
             currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(writeSheetHolder.getSheetNo());
@@ -204,7 +215,7 @@ public class WriteContextImpl implements WriteContext {
         // Combined head
         addMergedRegionToCurrentSheet(excelWriteHeadProperty, newRowIndex);
         for (int relativeRowIndex = 0, i = newRowIndex; i < excelWriteHeadProperty.getHeadRowNumber() + newRowIndex;
-             i++, relativeRowIndex++) {
+            i++, relativeRowIndex++) {
             beforeRowCreate(newRowIndex, relativeRowIndex);
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             afterRowCreate(row, relativeRowIndex);
@@ -219,7 +230,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
-                ((RowWriteHandler) writeHandler).beforeRowCreate(writeSheetHolder, writeTableHolder, rowIndex,
+                ((RowWriteHandler)writeHandler).beforeRowCreate(writeSheetHolder, writeTableHolder, rowIndex,
                     relativeRowIndex, true);
             }
         }
@@ -232,7 +243,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
-                ((RowWriteHandler) writeHandler).afterRowCreate(writeSheetHolder, writeTableHolder, row,
+                ((RowWriteHandler)writeHandler).afterRowCreate(writeSheetHolder, writeTableHolder, row,
                     relativeRowIndex, true);
             }
         }
@@ -264,7 +275,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler) writeHandler).beforeCellCreate(writeSheetHolder, writeTableHolder, row, head,
+                ((CellWriteHandler)writeHandler).beforeCellCreate(writeSheetHolder, writeTableHolder, row, head,
                     relativeRowIndex, true);
             }
         }
@@ -277,7 +288,7 @@ public class WriteContextImpl implements WriteContext {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler) writeHandler).afterCellCreate(writeSheetHolder, writeTableHolder, null, cell, head,
+                ((CellWriteHandler)writeHandler).afterCellCreate(writeSheetHolder, writeTableHolder, null, cell, head,
                     relativeRowIndex, true);
             }
         }
@@ -354,7 +365,7 @@ public class WriteContextImpl implements WriteContext {
         try {
             Workbook workbook = writeWorkbookHolder.getWorkbook();
             if (workbook instanceof SXSSFWorkbook) {
-                ((SXSSFWorkbook) workbook).dispose();
+                ((SXSSFWorkbook)workbook).dispose();
             }
         } catch (Throwable t) {
             throwCanNotCloseIo(t);
