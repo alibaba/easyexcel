@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.regex.Pattern;
 
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -42,6 +43,31 @@ public class PoiWriteTest {
         SXSSFCell cell3 = row.createCell(2);
         cell3.setCellFormula("=A1+B1");
         sxxsFWorkbook.write(fileOutputStream);
+    }
+
+    private static final Pattern FILL_PATTERN = Pattern.compile("^.*?\\$\\{[^}]+}.*?$");
+
+    @Test
+    public void part() throws IOException {
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("${name今年${number}岁了").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("${name}今年${number}岁了").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("${name}").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("${number}").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("${name}今年").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("今年${number}岁了").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("今年${number岁了").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("${}").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("胜多负少").matches());
+    }
+
+    private static final Pattern FILL_PATTERN2 = Pattern.compile("测试");
+
+    @Test
+    public void part2() throws IOException {
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("我是测试呀").find());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("测试u").matches());
+        LOGGER.info("test:{}", FILL_PATTERN.matcher("我是测试").matches());
+
     }
 
     @Test

@@ -27,7 +27,7 @@ public interface ExcelAnalyser {
      *
      * @return Excel file Executor
      */
-    ExcelExecutor excelExecutor();
+    ExcelReadExecutor excelExecutor();
 
     /**
      * get the analysis context.

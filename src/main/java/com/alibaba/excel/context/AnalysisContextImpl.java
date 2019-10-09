@@ -5,7 +5,7 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
@@ -53,13 +53,13 @@ public class AnalysisContextImpl implements AnalysisContext {
     }
 
     @Override
-    public void currentSheet(ExcelExecutor excelExecutor, ReadSheet readSheet) {
+    public void currentSheet(ExcelReadExecutor excelReadExecutor, ReadSheet readSheet) {
         if (readSheet == null) {
             throw new IllegalArgumentException("Sheet argument cannot be null.");
         }
         readSheetHolder = new ReadSheetHolder(readSheet, readWorkbookHolder);
         currentReadHolder = readSheetHolder;
-        selectSheet(excelExecutor);
+        selectSheet(excelReadExecutor);
         if (readWorkbookHolder.getHasReadSheet().contains(readSheetHolder.getSheetNo())) {
             throw new ExcelAnalysisException("Cannot read sheet repeatedly.");
         }
@@ -69,9 +69,9 @@ public class AnalysisContextImpl implements AnalysisContext {
         }
     }
 
-    private void selectSheet(ExcelExecutor excelExecutor) {
-        if (excelExecutor instanceof XlsxSaxAnalyser) {
-            selectSheet07(excelExecutor);
+    private void selectSheet(ExcelReadExecutor excelReadExecutor) {
+        if (excelReadExecutor instanceof XlsxSaxAnalyser) {
+            selectSheet07(excelReadExecutor);
         } else {
             selectSheet03();
         }
@@ -87,9 +87,9 @@ public class AnalysisContextImpl implements AnalysisContext {
         readSheetHolder.setSheetNo(0);
     }
 
-    private void selectSheet07(ExcelExecutor excelExecutor) {
+    private void selectSheet07(ExcelReadExecutor excelReadExecutor) {
         if (readSheetHolder.getSheetNo() != null && readSheetHolder.getSheetNo() >= 0) {
-            for (ReadSheet readSheetExcel : excelExecutor.sheetList()) {
+            for (ReadSheet readSheetExcel : excelReadExecutor.sheetList()) {
                 if (readSheetExcel.getSheetNo().equals(readSheetHolder.getSheetNo())) {
                     readSheetHolder.setSheetName(readSheetExcel.getSheetName());
                     return;
@@ -98,7 +98,7 @@ public class AnalysisContextImpl implements AnalysisContext {
             throw new ExcelAnalysisException("Can not find sheet:" + readSheetHolder.getSheetNo());
         }
         if (!StringUtils.isEmpty(readSheetHolder.getSheetName())) {
-            for (ReadSheet readSheetExcel : excelExecutor.sheetList()) {
+            for (ReadSheet readSheetExcel : excelReadExecutor.sheetList()) {
                 String sheetName = readSheetExcel.getSheetName();
                 if (sheetName == null) {
                     continue;
@@ -112,7 +112,7 @@ public class AnalysisContextImpl implements AnalysisContext {
                 }
             }
         }
-        ReadSheet readSheetExcel = excelExecutor.sheetList().get(0);
+        ReadSheet readSheetExcel = excelReadExecutor.sheetList().get(0);
         readSheetHolder.setSheetNo(readSheetExcel.getSheetNo());
         readSheetHolder.setSheetName(readSheetExcel.getSheetName());
     }

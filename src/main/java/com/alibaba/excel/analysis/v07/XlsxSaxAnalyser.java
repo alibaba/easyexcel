@@ -13,6 +13,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.StylesTable;
@@ -24,7 +25,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
@@ -37,7 +38,7 @@ import com.alibaba.excel.util.FileUtils;
  *
  * @author jipengfei
  */
-public class XlsxSaxAnalyser implements ExcelExecutor {
+public class XlsxSaxAnalyser implements ExcelReadExecutor {
 
     private AnalysisContext analysisContext;
     private List<ReadSheet> sheetList;
@@ -135,7 +136,7 @@ public class XlsxSaxAnalyser implements ExcelExecutor {
         } else {
             FileUtils.writeToFile(tempFile, readWorkbookHolder.getInputStream());
         }
-        return OPCPackage.open(tempFile);
+        return OPCPackage.open(tempFile, PackageAccess.READ);
     }
 
     @Override

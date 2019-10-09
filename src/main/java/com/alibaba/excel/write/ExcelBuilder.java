@@ -6,6 +6,7 @@ import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
+import com.alibaba.excel.write.metadata.fill.FillConfig;
 
 /**
  * @author jipengfei
@@ -40,9 +41,10 @@ public interface ExcelBuilder {
      * WorkBook fill value
      *
      * @param data
+     * @param fillConfig
      * @param writeSheet
      */
-    void fill(Object data, WriteSheet writeSheet);
+    void fill(Object data, FillConfig fillConfig, WriteSheet writeSheet);
 
     /**
      * Creates new cell range. Indexes are zero-based.

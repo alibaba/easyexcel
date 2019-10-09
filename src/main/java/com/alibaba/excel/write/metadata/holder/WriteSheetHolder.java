@@ -3,12 +3,13 @@ package com.alibaba.excel.write.metadata.holder;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.alibaba.excel.enums.HolderEnum;
-import com.alibaba.excel.enums.WriteLastRowType;
-import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.enums.WriteLastRowTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
 /**
@@ -22,14 +23,22 @@ public class WriteSheetHolder extends AbstractWriteHolder {
      */
     private WriteSheet writeSheet;
     /***
-     * poi sheet
+     * Current poi Sheet.This is only for writing, and there may be no data in version 07 when template data needs to be
+     * read.
+     * <ul>
+     * <li>03:{@link HSSFSheet}</li>
+     * <li>07:{@link SXSSFSheet}</li>
+     * </ul>
      */
     private Sheet sheet;
-    /**
-     * When reading version 07 with the template, the <code>sheet</code> cannot read template data, so need to use
-     * <code>xssfSheet</code> to get it.
+    /***
+     * Current poi Sheet.Be sure to use and this method when reading template data.
+     * <ul>
+     * <li>03:{@link HSSFSheet}</li>
+     * <li>07:{@link XSSFSheet}</li>
+     * </ul>
      */
-    private XSSFSheet xssfSheet;
+    private Sheet cachedSheet;
     /***
      * sheetNo
      */
@@ -53,7 +62,7 @@ public class WriteSheetHolder extends AbstractWriteHolder {
      * @param writeSheet
      * @param writeWorkbookHolder
      */
-    private WriteLastRowType writeLastRowType;
+    private WriteLastRowTypeEnum writeLastRowTypeEnum;
 
     public WriteSheetHolder(WriteSheet writeSheet, WriteWorkbookHolder writeWorkbookHolder) {
         super(writeSheet, writeWorkbookHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
@@ -66,10 +75,10 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         }
         this.parentWriteWorkbookHolder = writeWorkbookHolder;
         this.hasBeenInitializedTable = new HashMap<Integer, WriteTableHolder>();
-        if (writeWorkbookHolder.getTemplateInputStream() == null && writeWorkbookHolder.getTemplateFile() == null) {
-            writeLastRowType = WriteLastRowType.COMMON_EMPTY;
+        if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
+            writeLastRowTypeEnum = WriteLastRowTypeEnum.TEMPLATE_EMPTY;
         } else {
-            writeLastRowType = WriteLastRowType.TEMPLATE_EMPTY;
+            writeLastRowTypeEnum = WriteLastRowTypeEnum.COMMON_EMPTY;
         }
     }
 
@@ -93,12 +102,12 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         return sheetNo;
     }
 
-    public XSSFSheet getXssfSheet() {
-        return xssfSheet;
+    public Sheet getCachedSheet() {
+        return cachedSheet;
     }
 
-    public void setXssfSheet(XSSFSheet xssfSheet) {
-        this.xssfSheet = xssfSheet;
+    public void setCachedSheet(Sheet cachedSheet) {
+        this.cachedSheet = cachedSheet;
     }
 
     public void setSheetNo(Integer sheetNo) {
@@ -129,12 +138,12 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         this.hasBeenInitializedTable = hasBeenInitializedTable;
     }
 
-    public WriteLastRowType getWriteLastRowType() {
-        return writeLastRowType;
+    public WriteLastRowTypeEnum getWriteLastRowTypeEnum() {
+        return writeLastRowTypeEnum;
     }
 
-    public void setWriteLastRowType(WriteLastRowType writeLastRowType) {
-        this.writeLastRowType = writeLastRowType;
+    public void setWriteLastRowTypeEnum(WriteLastRowTypeEnum writeLastRowTypeEnum) {
+        this.writeLastRowTypeEnum = writeLastRowTypeEnum;
     }
 
     /**
@@ -145,25 +154,16 @@ public class WriteSheetHolder extends AbstractWriteHolder {
     public int getNewRowIndexAndStartDoWrite() {
         // 'getLastRowNum' doesn't matter if it has one or zero,is's zero
         int newRowIndex = 0;
-        switch (writeLastRowType) {
+        switch (writeLastRowTypeEnum) {
             case TEMPLATE_EMPTY:
-                if (parentWriteWorkbookHolder.getExcelType() == ExcelTypeEnum.XLSX) {
-                    if (parentWriteWorkbookHolder.getTemplateLastRowMap().containsKey(sheetNo)) {
-                        newRowIndex = parentWriteWorkbookHolder.getTemplateLastRowMap().get(sheetNo);
-                    }
-                } else {
-                    newRowIndex = sheet.getLastRowNum();
-                }
-                newRowIndex++;
-                break;
             case HAS_DATA:
-                newRowIndex = sheet.getLastRowNum();
+                newRowIndex = Math.max(sheet.getLastRowNum(), cachedSheet.getLastRowNum());
                 newRowIndex++;
                 break;
             default:
                 break;
         }
-        writeLastRowType = WriteLastRowType.HAS_DATA;
+        writeLastRowTypeEnum = WriteLastRowTypeEnum.HAS_DATA;
         return newRowIndex;
     }
 

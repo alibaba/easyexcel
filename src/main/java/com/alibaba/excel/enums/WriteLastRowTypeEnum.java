@@ -5,7 +5,7 @@ package com.alibaba.excel.enums;
  *
  * @author Jiaju Zhuang
  **/
-public enum WriteLastRowType {
+public enum WriteLastRowTypeEnum {
     /**
      * Excel are created without templates ,And any data has been written;
      */

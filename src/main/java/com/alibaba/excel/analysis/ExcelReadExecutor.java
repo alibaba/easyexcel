@@ -9,7 +9,7 @@ import com.alibaba.excel.read.metadata.ReadSheet;
  *
  * @author Jiaju Zhuang
  */
-public interface ExcelExecutor {
+public interface ExcelReadExecutor {
 
     /**
      * Returns the actual sheet in excel

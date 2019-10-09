@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.ExcelAnalyser;
 import com.alibaba.excel.analysis.ExcelAnalyserImpl;
-import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.cache.MapCache;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -149,12 +149,12 @@ public class ExcelReader {
      * Parse all sheet content by default
      */
     public void read() {
-        ExcelExecutor excelExecutor = excelAnalyser.excelExecutor();
-        if (excelExecutor.sheetList().isEmpty()) {
+        ExcelReadExecutor excelReadExecutor = excelAnalyser.excelExecutor();
+        if (excelReadExecutor.sheetList().isEmpty()) {
             LOGGER.warn("Excel doesn't have any sheets.");
             return;
         }
-        for (ReadSheet readSheet : excelExecutor.sheetList()) {
+        for (ReadSheet readSheet : excelReadExecutor.sheetList()) {
             read(readSheet);
         }
     }
@@ -225,7 +225,7 @@ public class ExcelReader {
      *
      * @return
      */
-    public ExcelExecutor excelExecutor() {
+    public ExcelReadExecutor excelExecutor() {
         checkFinished();
         return excelAnalyser.excelExecutor();
     }

@@ -22,7 +22,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.analysis.v03.handlers.BlankOrErrorRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.BofRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler;
@@ -56,7 +56,7 @@ import com.alibaba.excel.util.CollectionUtils;
  *
  * @author jipengfei
  */
-public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
+public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(XlsSaxAnalyser.class);
 
     private POIFSFileSystem poifsFileSystem;

@@ -27,7 +27,7 @@ public class HgTest {
     @Test
     public void hh() throws IOException {
         List<Object> list =
-            EasyExcel.read(new FileInputStream("D:\\test\\MRP生产视图(1).xlsx")).headRowNumber(0).sheet().doReadSync();
+            EasyExcel.read(new FileInputStream("D:\\test\\201909301017rule.xlsx")).headRowNumber(2).sheet().doReadSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }

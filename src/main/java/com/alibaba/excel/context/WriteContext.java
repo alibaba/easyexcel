@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
@@ -21,9 +22,11 @@ public interface WriteContext {
     /**
      * If the current sheet already exists, select it; if not, create it
      *
-     * @param writeSheet Current sheet
+     * @param writeSheet
+     *            Current sheet
+     * @param writeType
      */
-    void currentSheet(WriteSheet writeSheet);
+    void currentSheet(WriteSheet writeSheet, WriteTypeEnum writeType);
 
     /**
      * If the current table already exists, select it; if not, create it

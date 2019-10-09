@@ -1,5 +1,7 @@
 package com.alibaba.excel.write.style.column;
 
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Cell;
 
 import com.alibaba.excel.metadata.CellData;
@@ -12,10 +14,12 @@ import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
  * @author Jiaju Zhuang
  */
 public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrategy {
+
     @Override
-    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, CellData cellData, Cell cell, Head head,
-        int relativeRowIndex, boolean isHead) {
-        if (!isHead && relativeRowIndex != 0) {
+    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell, Head head,
+        Integer relativeRowIndex, Boolean isHead) {
+        boolean needSetWidth = relativeRowIndex != null && (isHead || relativeRowIndex == 0);
+        if (!needSetWidth) {
             return;
         }
         Integer width = columnWidth(head);
@@ -36,4 +40,5 @@ public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColum
      * @return
      */
     protected abstract Integer columnWidth(Head head);
+
 }

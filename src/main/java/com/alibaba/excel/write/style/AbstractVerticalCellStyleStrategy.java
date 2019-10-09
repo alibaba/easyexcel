@@ -29,7 +29,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
     }
 
     @Override
-    protected void setHeadCellStyle(Cell cell, Head head, int relativeRowIndex) {
+    protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
         int columnIndex = head.getColumnIndex();
         if (headCellStyleCache.containsKey(columnIndex)) {
             CellStyle cellStyle = headCellStyleCache.get(columnIndex);
@@ -49,7 +49,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
     }
 
     @Override
-    protected void setContentCellStyle(Cell cell, Head head, int relativeRowIndex) {
+    protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
         int columnIndex = head.getColumnIndex();
         if (contentCellStyleCache.containsKey(columnIndex)) {
             CellStyle cellStyle = contentCellStyleCache.get(columnIndex);

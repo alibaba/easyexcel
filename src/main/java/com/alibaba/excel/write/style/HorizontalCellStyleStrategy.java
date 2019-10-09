@@ -51,7 +51,7 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
     }
 
     @Override
-    protected void setHeadCellStyle(Cell cell, Head head, int relativeRowIndex) {
+    protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
         if (headCellStyle == null) {
             return;
         }
@@ -59,7 +59,7 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
     }
 
     @Override
-    protected void setContentCellStyle(Cell cell, Head head, int relativeRowIndex) {
+    protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
         if (contentCellStyleList == null || contentCellStyleList.isEmpty()) {
             return;
         }

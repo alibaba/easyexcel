@@ -8,6 +8,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.fill.FillConfig;
 
 /**
  * Build sheet
@@ -136,10 +137,14 @@ public class ExcelWriterSheetBuilder {
     }
 
     public void doFill(Object data) {
+        doFill(data, null);
+    }
+
+    public void doFill(Object data, FillConfig fillConfig) {
         if (excelWriter == null) {
             throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
         }
-        excelWriter.fill(data, build());
+        excelWriter.fill(data, fillConfig, build());
         excelWriter.finish();
     }
 

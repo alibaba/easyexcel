@@ -29,7 +29,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
     private AnalysisContext analysisContext;
 
-    private ExcelExecutor excelExecutor;
+    private ExcelReadExecutor excelReadExecutor;
 
     public ExcelAnalyserImpl(ReadWorkbook readWorkbook) {
         try {
@@ -48,7 +48,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
         ExcelTypeEnum excelType = readWorkbookHolder.getExcelType();
         if (excelType == null) {
-            excelExecutor = new XlsxSaxAnalyser(analysisContext, null);
+            excelReadExecutor = new XlsxSaxAnalyser(analysisContext, null);
             return;
         }
         switch (excelType) {
@@ -65,7 +65,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                     try {
                         decryptedStream =
                             DocumentFactoryHelper.getDecryptedStream(poifsFileSystem.getRoot().getFileSystem(), null);
-                        excelExecutor = new XlsxSaxAnalyser(analysisContext, decryptedStream);
+                        excelReadExecutor = new XlsxSaxAnalyser(analysisContext, decryptedStream);
                         return;
                     } finally {
                         IOUtils.closeQuietly(decryptedStream);
@@ -74,10 +74,10 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                         poifsFileSystem.close();
                     }
                 }
-                excelExecutor = new XlsSaxAnalyser(analysisContext, poifsFileSystem);
+                excelReadExecutor = new XlsSaxAnalyser(analysisContext, poifsFileSystem);
                 break;
             case XLSX:
-                excelExecutor = new XlsxSaxAnalyser(analysisContext, null);
+                excelReadExecutor = new XlsxSaxAnalyser(analysisContext, null);
                 break;
             default:
         }
@@ -86,9 +86,9 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     @Override
     public void analysis(ReadSheet readSheet) {
         try {
-            analysisContext.currentSheet(excelExecutor, readSheet);
+            analysisContext.currentSheet(excelReadExecutor, readSheet);
             try {
-                excelExecutor.execute();
+                excelReadExecutor.execute();
             } catch (ExcelAnalysisStopException e) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Custom stop!");
@@ -153,8 +153,8 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     }
 
     @Override
-    public com.alibaba.excel.analysis.ExcelExecutor excelExecutor() {
-        return excelExecutor;
+    public ExcelReadExecutor excelExecutor() {
+        return excelReadExecutor;
     }
 
     @Override

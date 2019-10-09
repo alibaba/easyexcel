@@ -1,20 +1,28 @@
 package com.alibaba.excel.write.metadata.holder;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.IoUtils;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
 /**
@@ -24,14 +32,22 @@ import com.alibaba.excel.write.metadata.WriteWorkbook;
  */
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
-     * poi Workbook
+     * Current poi Workbook.This is only for writing, and there may be no data in version 07 when template data needs to
+     * be read.
+     * <ul>
+     * <li>03:{@link HSSFWorkbook}</li>
+     * <li>07:{@link SXSSFWorkbook}</li>
+     * </ul>
      */
     private Workbook workbook;
-    /**
-     * When reading version 07 with the template, the <code>workbook</code> cannot get the specific line number, so it
-     * needs to get the specific line number.
+    /***
+     * Current poi Workbook.Be sure to use and this method when reading template data.
+     * <ul>
+     * <li>03:{@link HSSFWorkbook}</li>
+     * <li>07:{@link XSSFWorkbook}</li>
+     * </ul>
      */
-    private XSSFWorkbook xssfWorkbook;
+    private Workbook cachedWorkbook;
     /**
      * current param
      */
@@ -80,11 +96,6 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * prevent duplicate creation of sheet objects
      */
     private Map<Integer, WriteSheetHolder> hasBeenInitializedSheet;
-    /**
-     * When using SXSSFWorkbook, you can't get the actual last line.But we need to read the last line when we are using
-     * the template, so we cache it
-     */
-    private Map<Integer, Integer> templateLastRowMap;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
@@ -99,18 +110,15 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.outputStream = writeWorkbook.getOutputStream();
         }
-        if (writeWorkbook.getTemplateInputStream() != null) {
-            if (writeWorkbook.getTemplateInputStream().markSupported()) {
-                this.templateInputStream = writeWorkbook.getTemplateInputStream();
-            } else {
-                this.templateInputStream = new BufferedInputStream(writeWorkbook.getTemplateInputStream());
-            }
-        }
-        this.templateFile = writeWorkbook.getTemplateFile();
         if (writeWorkbook.getAutoCloseStream() == null) {
             this.autoCloseStream = Boolean.TRUE;
         } else {
             this.autoCloseStream = writeWorkbook.getAutoCloseStream();
+        }
+        try {
+            copyTemplate();
+        } catch (IOException e) {
+            throw new ExcelGenerateException("Copy template failure.", e);
         }
         if (writeWorkbook.getExcelType() == null) {
             if (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue())) {
@@ -127,7 +135,25 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.mandatoryUseInputStream = writeWorkbook.getMandatoryUseInputStream();
         }
         this.hasBeenInitializedSheet = new HashMap<Integer, WriteSheetHolder>();
-        this.templateLastRowMap = new HashMap<Integer, Integer>(8);
+    }
+
+    private void copyTemplate() throws IOException {
+        if (writeWorkbook.getTemplateFile() == null && writeWorkbook.getTemplateInputStream() == null) {
+            return;
+        }
+        byte[] templateFileByte = null;
+        if (writeWorkbook.getTemplateFile() != null) {
+            templateFileByte = FileUtils.readFileToByteArray(writeWorkbook.getTemplateFile());
+        } else if (writeWorkbook.getTemplateInputStream() == null) {
+            try {
+                templateFileByte = IoUtils.toByteArray(writeWorkbook.getTemplateInputStream());
+            } finally {
+                if (autoCloseStream) {
+                    writeWorkbook.getTemplateInputStream().close();
+                }
+            }
+        }
+        this.tempTemplateInputStream = new ByteArrayInputStream(templateFileByte);
     }
 
     public Workbook getWorkbook() {
@@ -138,12 +164,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         this.workbook = workbook;
     }
 
-    public XSSFWorkbook getXssfWorkbook() {
-        return xssfWorkbook;
+    public Workbook getCachedWorkbook() {
+        return cachedWorkbook;
     }
 
-    public void setXssfWorkbook(XSSFWorkbook xssfWorkbook) {
-        this.xssfWorkbook = xssfWorkbook;
+    public void setCachedWorkbook(Workbook cachedWorkbook) {
+        this.cachedWorkbook = cachedWorkbook;
     }
 
     public Map<Integer, WriteSheetHolder> getHasBeenInitializedSheet() {
@@ -224,14 +250,6 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
     public void setMandatoryUseInputStream(Boolean mandatoryUseInputStream) {
         this.mandatoryUseInputStream = mandatoryUseInputStream;
-    }
-
-    public Map<Integer, Integer> getTemplateLastRowMap() {
-        return templateLastRowMap;
-    }
-
-    public void setTemplateLastRowMap(Map<Integer, Integer> templateLastRowMap) {
-        this.templateLastRowMap = templateLastRowMap;
     }
 
     @Override

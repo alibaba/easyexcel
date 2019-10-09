@@ -1,6 +1,8 @@
 package com.alibaba.easyexcel.test.core.fill;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.NumberFormat;
+import com.alibaba.excel.converters.doubleconverter.DoubleStringConverter;
 
 import lombok.Data;
 
@@ -10,6 +12,7 @@ import lombok.Data;
 @Data
 public class FillData {
     private String name;
-    @NumberFormat("0#")
+    @NumberFormat("#")
+    @ExcelProperty(converter = DoubleStringConverter.class)
     private double number;
 }

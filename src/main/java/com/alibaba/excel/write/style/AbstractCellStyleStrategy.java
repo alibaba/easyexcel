@@ -1,5 +1,7 @@
 package com.alibaba.excel.write.style;
 
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -27,6 +29,31 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
     }
 
     @Override
+    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
+        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead) {
+
+    }
+
+    @Override
+    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
+        Head head, Integer relativeRowIndex, Boolean isHead) {
+
+    }
+
+    @Override
+    public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        if (isHead == null || head == null) {
+            return;
+        }
+        if (isHead) {
+            setHeadCellStyle(cell, head, relativeRowIndex);
+        } else {
+            setContentCellStyle(cell, head, relativeRowIndex);
+        }
+    }
+
+    @Override
     public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
 
     }
@@ -35,25 +62,6 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
     public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
         initCellStyle(writeWorkbookHolder.getWorkbook());
         hasInitialized = true;
-    }
-
-    @Override
-    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Head head, int relativeRowIndex, boolean isHead) {
-        if (!hasInitialized) {
-            initCellStyle(writeSheetHolder.getParentWriteWorkbookHolder().getWorkbook());
-            hasInitialized = true;
-        }
-    }
-
-    @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData,
-        Cell cell, Head head, int relativeRowIndex, boolean isHead) {
-        if (isHead) {
-            setHeadCellStyle(cell, head, relativeRowIndex);
-        } else {
-            setContentCellStyle(cell, head, relativeRowIndex);
-        }
     }
 
     /**
@@ -70,7 +78,7 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void setHeadCellStyle(Cell cell, Head head, int relativeRowIndex);
+    protected abstract void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex);
 
     /**
      * Sets the cell style of content
@@ -79,6 +87,6 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void setContentCellStyle(Cell cell, Head head, int relativeRowIndex);
+    protected abstract void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex);
 
 }

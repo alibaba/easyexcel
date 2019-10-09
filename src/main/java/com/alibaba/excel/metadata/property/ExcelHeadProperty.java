@@ -53,6 +53,10 @@ public class ExcelHeadProperty {
      */
     private Map<Integer, ExcelContentProperty> contentPropertyMap;
     /**
+     * Configuration column information
+     */
+    private Map<String, ExcelContentProperty> fieldNameContentPropertyMap;
+    /**
      * Fields ignored
      */
     private Map<String, Field> ignoreMap;
@@ -61,6 +65,7 @@ public class ExcelHeadProperty {
         this.headClazz = headClazz;
         headMap = new TreeMap<Integer, Head>();
         contentPropertyMap = new TreeMap<Integer, ExcelContentProperty>();
+        fieldNameContentPropertyMap = new HashMap<String, ExcelContentProperty>();
         ignoreMap = new HashMap<String, Field>(16);
         headKind = HeadKindEnum.NONE;
         headRowNumber = 0;
@@ -77,10 +82,6 @@ public class ExcelHeadProperty {
         initHeadRowNumber();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is {}", headKind);
-        }
-        if (!hasHead()) {
-            LOGGER.warn(
-                "The table has no header set and all annotations will not be read.If you want to use annotations, please use set head class in ExcelWriterBuilder/ExcelWriterSheetBuilder/ExcelWriterTableBuilder");
         }
     }
 
@@ -190,6 +191,7 @@ public class ExcelHeadProperty {
             .setNumberFormatProperty(NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
         headMap.put(index, head);
         contentPropertyMap.put(index, excelContentProperty);
+        fieldNameContentPropertyMap.put(field.getName(), excelContentProperty);
     }
 
     public Class getHeadClazz() {
@@ -234,6 +236,14 @@ public class ExcelHeadProperty {
 
     public void setContentPropertyMap(Map<Integer, ExcelContentProperty> contentPropertyMap) {
         this.contentPropertyMap = contentPropertyMap;
+    }
+
+    public Map<String, ExcelContentProperty> getFieldNameContentPropertyMap() {
+        return fieldNameContentPropertyMap;
+    }
+
+    public void setFieldNameContentPropertyMap(Map<String, ExcelContentProperty> fieldNameContentPropertyMap) {
+        this.fieldNameContentPropertyMap = fieldNameContentPropertyMap;
     }
 
     public Map<String, Field> getIgnoreMap() {
