@@ -98,10 +98,16 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable, String password) {
         try {
-            context.currentSheet(writeSheet);
+            if (data == null) {
+                return;
+            }
+            context.currentSheet(writeSheet, WriteTypeEnum.ADD);
             context.currentTable(writeTable);
             context.setPassword(password);
-            doAddContent(data);
+            if (excelWriteAddExecutor == null) {
+                excelWriteAddExecutor = new ExcelWriteAddExecutor(context);
+            }
+            excelWriteAddExecutor.add(data);
         } catch (RuntimeException e) {
             finish();
             throw e;

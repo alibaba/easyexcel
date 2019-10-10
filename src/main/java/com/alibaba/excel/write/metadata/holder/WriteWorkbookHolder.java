@@ -261,4 +261,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     public HolderEnum holderType() {
         return HolderEnum.WORKBOOK;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
