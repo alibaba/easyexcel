@@ -57,9 +57,8 @@ public class WriteTest {
         // 这里 需要指定写用哪个class去读
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
-        excelWriter.write(data(), writeSheet);
-        // doEncrypt 进行加密
-        //excelWriter.doEncrypt("123456");
+        excelWriter.write(data(), writeSheet,"12345");
+        // 进行加密
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
     }

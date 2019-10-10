@@ -89,14 +89,25 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     }
 
     @Override
-    public void setPassword(String password) {
-        context.setPassword(password);
-    }
-
-    @Override
     public void finish() {
         if (context != null) {
             context.finish();
+        }
+    }
+
+    @Override
+    public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable, String password) {
+        try {
+            context.currentSheet(writeSheet);
+            context.currentTable(writeTable);
+            context.setPassword(password);
+            doAddContent(data);
+        } catch (RuntimeException e) {
+            finish();
+            throw e;
+        } catch (Throwable e) {
+            finish();
+            throw new ExcelGenerateException(e);
         }
     }
 

@@ -157,8 +157,7 @@ public class ExcelWriterSheetBuilder {
         if (excelWriter == null) {
             throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
         }
-        excelWriter.write(data, build());
-        excelWriter.doEncrypt(password);
+        excelWriter.write(data, build(), password);
         excelWriter.finish();
     }
 
