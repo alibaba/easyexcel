@@ -79,6 +79,17 @@ public class ExcelWriterTableBuilder {
     }
 
     /**
+     * Use the default style.Default is true.
+     *
+     * @param useDefaultStyle
+     * @return
+     */
+    public ExcelWriterTableBuilder useDefaultStyle(Boolean useDefaultStyle) {
+        writeTable.setUseDefaultStyle(useDefaultStyle);
+        return this;
+    }
+
+    /**
      * Custom type conversions override the default.
      *
      * @param converter

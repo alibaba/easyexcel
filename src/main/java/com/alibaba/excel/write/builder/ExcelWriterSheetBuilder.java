@@ -75,6 +75,17 @@ public class ExcelWriterSheetBuilder {
     }
 
     /**
+     * Use the default style.Default is true.
+     *
+     * @param useDefaultStyle
+     * @return
+     */
+    public ExcelWriterSheetBuilder useDefaultStyle(Boolean useDefaultStyle) {
+        writeSheet.setUseDefaultStyle(useDefaultStyle);
+        return this;
+    }
+
+    /**
      * Custom type conversions override the default.
      *
      * @param converter

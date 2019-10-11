@@ -70,6 +70,7 @@ public class DemoData {
 ```
 ##### <span id="simpleReadListener" />监听器
 ```java
+// 有个很重要的点 DemoDataListener 不能被spring管理，要每次读取excel都要new,然后里面用到spring可以构造方法传进去
 public class DemoDataListener extends AnalysisEventListener<DemoData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoDataListener.class);
     /**
@@ -113,6 +114,7 @@ public class DemoDataListener extends AnalysisEventListener<DemoData> {
      */
     @Test
     public void simpleRead() {
+        // 有个很重要的点 DemoDataListener 不能被spring管理，要每次读取excel都要new,然后里面用到spring可以构造方法传进去
         // 写法1：
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
@@ -410,12 +412,20 @@ public class CustomStringStringConverter implements Converter<String> {
 ##### excel示例
 参照：[excel示例](#simpleReadExcel)
 ##### 对象
-参照：[对象](#simpleReadObject)
+```java
+@Data
+public class ExceptionDemoData {
+    /**
+     * 用日期去接字符串 肯定报错
+     */
+    private Date date;
+}
+```
 ##### 监听器
 参照：[监听器](#simpleReadListener)
 里面多了一个方法,只要重写onException方法即可
 ```java
-  /**
+    /**
      * 在转换异常 获取其他异常下会调用本接口。抛出异常则停止读取。如果这里不抛出异常则 继续读取下一行。
      *
      * @param exception
@@ -424,7 +434,14 @@ public class CustomStringStringConverter implements Converter<String> {
      */
     @Override
     public void onException(Exception exception, AnalysisContext context) {
-        LOGGER.error("解析失败，但是继续解析下一行", exception);
+        LOGGER.error("解析失败，但是继续解析下一行:{}", exception.getMessage());
+        // 如果是某一个单元格的转换异常 能获取到具体行号
+        // 如果要获取头的信息 配合invokeHeadMap使用
+        if (exception instanceof ExcelDataConvertException) {
+            ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException)exception;
+            LOGGER.error("第{}行，第{}列解析异常", excelDataConvertException.getRowIndex(),
+                excelDataConvertException.getColumnIndex());
+        }
     }
 ```
 ##### 代码
@@ -433,17 +450,17 @@ public class CustomStringStringConverter implements Converter<String> {
      * 数据转换等异常处理
      *
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * 1. 创建excel对应的实体对象 参照{@link ExceptionDemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExceptionListener}
      * <p>
      * 3. 直接读即可
      */
     @Test
     public void exceptionRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 
-        EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
+        EasyExcel.read(fileName, ExceptionDemoData.class, new DemoExceptionListener()).sheet().doRead();
     }
 ```
 
@@ -1123,7 +1140,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
      */
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {
-        // 这里注意 有同学反应下载的文件名不对。这个时候 请别使用swagger 他会有影响
+        // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系

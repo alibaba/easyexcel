@@ -24,6 +24,10 @@ public class WriteBasicParameter extends BasicParameter {
      * Custom type handler override the default
      */
     private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
+    /**
+     * Use the default style.Default is true.
+     */
+    private Boolean useDefaultStyle;
 
     public Integer getRelativeHeadRowIndex() {
         return relativeHeadRowIndex;
@@ -47,5 +51,13 @@ public class WriteBasicParameter extends BasicParameter {
 
     public void setCustomWriteHandlerList(List<WriteHandler> customWriteHandlerList) {
         this.customWriteHandlerList = customWriteHandlerList;
+    }
+
+    public Boolean getUseDefaultStyle() {
+        return useDefaultStyle;
+    }
+
+    public void setUseDefaultStyle(Boolean useDefaultStyle) {
+        this.useDefaultStyle = useDefaultStyle;
     }
 }

@@ -20,7 +20,7 @@ public class ExceptionDataListener extends AnalysisEventListener<ExceptionData> 
 
     @Override
     public void onException(Exception exception, AnalysisContext context) {
-        LOGGER.info("抛出异常,忽略：{}", exception.getMessage());
+        LOGGER.info("抛出异常,忽略：{}", exception.getMessage(), exception);
     }
 
     @Override

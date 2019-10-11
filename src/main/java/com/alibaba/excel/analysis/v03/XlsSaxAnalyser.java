@@ -92,7 +92,6 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
 
     @Override
     public void execute() {
-        analysisContext.readSheetHolder().getSheetNo();
         MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
         formatListener = new FormatTrackingHSSFListener(listener);
         workbookBuildingListener = new EventWorkbookBuilder.SheetRecordCollectingListener(formatListener);

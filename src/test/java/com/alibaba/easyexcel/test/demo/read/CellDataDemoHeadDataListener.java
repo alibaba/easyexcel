@@ -2,32 +2,32 @@ package com.alibaba.easyexcel.test.demo.read;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.metadata.CellData;
 import com.alibaba.fastjson.JSON;
 
 /**
- * 模板的读取类
+ * 读取头
  *
  * @author Jiaju Zhuang
  */
-// 有个很重要的点 DemoDataListener 不能被spring管理，要每次读取excel都要new,然后里面用到spring可以构造方法传进去
-public class DemoDataListener extends AnalysisEventListener<DemoData> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DemoDataListener.class);
+public class CellDataDemoHeadDataListener extends AnalysisEventListener<CellDataReadDemoData> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CellDataDemoHeadDataListener.class);
     /**
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 5;
-    List<DemoData> list = new ArrayList<DemoData>();
+    List<CellDataReadDemoData> list = new ArrayList<CellDataReadDemoData>();
 
     @Override
-    public void invoke(DemoData data, AnalysisContext context) {
+    public void invoke(CellDataReadDemoData data, AnalysisContext context) {
         LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
-        list.add(data);
         if (list.size() >= BATCH_COUNT) {
             saveData();
             list.clear();

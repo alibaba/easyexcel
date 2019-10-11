@@ -61,6 +61,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      * Write handler for workbook
      */
     private Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap;
+    /**
+     * Use the default style.Default is true.
+     */
+    private Boolean useDefaultStyle;
 
     public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder,
         Boolean convertAllFiled) {
@@ -96,6 +100,16 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             this.relativeHeadRowIndex = writeBasicParameter.getRelativeHeadRowIndex();
         }
 
+        if (writeBasicParameter.getUseDefaultStyle() == null) {
+            if (parentAbstractWriteHolder == null) {
+                this.useDefaultStyle = Boolean.TRUE;
+            } else {
+                this.useDefaultStyle = parentAbstractWriteHolder.getUseDefaultStyle();
+            }
+        } else {
+            this.useDefaultStyle = writeBasicParameter.getUseDefaultStyle();
+        }
+
         // Initialization property
         this.excelWriteHeadProperty = new ExcelWriteHeadProperty(getClazz(), getHead(), convertAllFiled);
 
@@ -117,7 +131,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         if (parentAbstractWriteHolder != null) {
             parentWriteHandlerMap = parentAbstractWriteHolder.getWriteHandlerMap();
         } else {
-            handlerList.addAll(DefaultWriteHandlerLoader.loadDefaultHandler());
+            handlerList.addAll(DefaultWriteHandlerLoader.loadDefaultHandler(useDefaultStyle));
         }
 
         this.writeHandlerMap = sortAndClearUpHandler(handlerList, parentWriteHandlerMap);
@@ -134,6 +148,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                 getConverterMap().put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
             }
         }
+
     }
 
     /**
@@ -358,6 +373,14 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
     public void setRelativeHeadRowIndex(Integer relativeHeadRowIndex) {
         this.relativeHeadRowIndex = relativeHeadRowIndex;
+    }
+
+    public Boolean getUseDefaultStyle() {
+        return useDefaultStyle;
+    }
+
+    public void setUseDefaultStyle(Boolean useDefaultStyle) {
+        this.useDefaultStyle = useDefaultStyle;
     }
 
     @Override
