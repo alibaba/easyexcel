@@ -1,8 +1,16 @@
 package com.alibaba.excel.context;
 
+import com.alibaba.excel.util.StringUtils;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
+import org.apache.poi.poifs.crypt.EncryptionMode;
+import org.apache.poi.poifs.crypt.Encryptor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -243,6 +251,12 @@ public class WriteContextImpl implements WriteContext {
         }
         try {
             writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
+            if (isEncrypt()){
+                LOGGER.debug("start encrypt");
+                encrypt(writeWorkbookHolder);
+                LOGGER.debug("finish encrypt");
+
+            }
             writeWorkbookHolder.getWorkbook().close();
         } catch (Throwable t) {
             throwCanNotCloseIo(t);
@@ -274,6 +288,16 @@ public class WriteContextImpl implements WriteContext {
         }
     }
 
+    @Override
+    public boolean isEncrypt() {
+        return !StringUtils.isEmpty(writeWorkbookHolder.getPassword());
+    }
+
+    @Override
+    public void setPassword(String password) {
+        writeWorkbookHolder.setPassword(password);
+    }
+
     private void throwCanNotCloseIo(Throwable t) {
         throw new ExcelGenerateException("Can not close IO", t);
     }
@@ -296,5 +320,30 @@ public class WriteContextImpl implements WriteContext {
     @Override
     public Workbook getWorkbook() {
         return writeWorkbookHolder.getWorkbook();
+    }
+
+    /**
+     * do encrypt
+     * @param writeWorkbookHolder
+     */
+    private void encrypt(WriteWorkbookHolder writeWorkbookHolder){
+        try {
+            POIFSFileSystem fs = new POIFSFileSystem();
+            EncryptionInfo info = new EncryptionInfo(EncryptionMode.standard);
+
+            Encryptor enc = info.getEncryptor();
+            enc.confirmPassword(writeWorkbookHolder.getPassword());
+
+            OPCPackage opc = OPCPackage.open(writeWorkbookHolder.getFile(), PackageAccess.READ_WRITE);
+            OutputStream os = enc.getDataStream(fs);
+            opc.save(os);
+            opc.close();
+            //write the encrypted file back to the stream
+            FileOutputStream fos = new FileOutputStream(writeWorkbookHolder.getFile());
+            fs.writeFilesystem(fos);
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

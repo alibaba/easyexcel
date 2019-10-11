@@ -96,6 +96,28 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     }
 
     @Override
+    public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable, String password) {
+        try {
+            if (data == null) {
+                return;
+            }
+            context.currentSheet(writeSheet, WriteTypeEnum.ADD);
+            context.currentTable(writeTable);
+            context.setPassword(password);
+            if (excelWriteAddExecutor == null) {
+                excelWriteAddExecutor = new ExcelWriteAddExecutor(context);
+            }
+            excelWriteAddExecutor.add(data);
+        } catch (RuntimeException e) {
+            finish();
+            throw e;
+        } catch (Throwable e) {
+            finish();
+            throw new ExcelGenerateException(e);
+        }
+    }
+
+    @Override
     public void merge(int firstRow, int lastRow, int firstCol, int lastCol) {
         CellRangeAddress cra = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
         context.writeSheetHolder().getSheet().addMergedRegion(cra);

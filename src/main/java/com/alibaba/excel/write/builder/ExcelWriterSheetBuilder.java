@@ -148,6 +148,19 @@ public class ExcelWriterSheetBuilder {
         excelWriter.finish();
     }
 
+    /**
+     * write with password
+     * @param data
+     * @param password
+     */
+    public void doWrite(List data,String password) {
+        if (excelWriter == null) {
+            throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
+        }
+        excelWriter.write(data, build(), password);
+        excelWriter.finish();
+    }
+
     public ExcelWriterTableBuilder table() {
         return table(null);
     }
