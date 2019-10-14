@@ -22,12 +22,10 @@ public interface AnalysisContext {
     /**
      * Select the current table
      *
-     * @param excelReadExecutor
-     *            Excel file Executor
      * @param readSheet
      *            sheet to read
      */
-    void currentSheet(ExcelReadExecutor excelReadExecutor, ReadSheet readSheet);
+    void currentSheet(ReadSheet readSheet);
 
     /**
      * All information about the workbook you are currently working on

@@ -1,8 +1,13 @@
 package com.alibaba.excel.analysis;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.List;
 
+import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.crypt.Decryptor;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.IOUtils;
@@ -19,7 +24,9 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * @author jipengfei
@@ -64,7 +71,8 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                     InputStream decryptedStream = null;
                     try {
                         decryptedStream =
-                            DocumentFactoryHelper.getDecryptedStream(poifsFileSystem.getRoot().getFileSystem(), null);
+                            DocumentFactoryHelper.getDecryptedStream(poifsFileSystem.getRoot().getFileSystem(),
+                                analysisContext.readWorkbookHolder().getPassword());
                         excelReadExecutor = new XlsxSaxAnalyser(analysisContext, decryptedStream);
                         return;
                     } finally {
@@ -73,6 +81,9 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                         // otherwise file handles are leaked
                         poifsFileSystem.close();
                     }
+                }
+                if (analysisContext.readWorkbookHolder().getPassword() != null) {
+                    Biff8EncryptionKey.setCurrentUserPassword(analysisContext.readWorkbookHolder().getPassword());
                 }
                 excelReadExecutor = new XlsSaxAnalyser(analysisContext, poifsFileSystem);
                 break;
@@ -84,17 +95,24 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     }
 
     @Override
-    public void analysis(ReadSheet readSheet) {
+    public void analysis(List<ReadSheet> readSheetList, Boolean readAll) {
         try {
-            analysisContext.currentSheet(excelReadExecutor, readSheet);
+            if (!readAll && CollectionUtils.isEmpty(readSheetList)) {
+                throw new IllegalArgumentException("Specify at least one read sheet.");
+            }
             try {
-                excelReadExecutor.execute();
+                excelReadExecutor.execute(readSheetList, readAll);
             } catch (ExcelAnalysisStopException e) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Custom stop!");
                 }
             }
-            analysisContext.readSheetHolder().notifyAfterAllAnalysed(analysisContext);
+            // The last sheet is read
+            if (excelReadExecutor instanceof XlsSaxAnalyser) {
+                if (analysisContext.readSheetHolder() != null) {
+                    analysisContext.readSheetHolder().notifyAfterAllAnalysed(analysisContext);
+                }
+            }
         } catch (RuntimeException e) {
             finish();
             throw e;
@@ -110,6 +128,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             return;
         }
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
+
         try {
             if (readWorkbookHolder.getReadCache() != null) {
                 readWorkbookHolder.getReadCache().destroy();
@@ -146,6 +165,16 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         } catch (Throwable t) {
             throwCanNotCloseIo(t);
         }
+
+        clearEncrypt03();
+    }
+
+    private void clearEncrypt03() {
+        if (StringUtils.isEmpty(analysisContext.readWorkbookHolder().getPassword())
+            || !ExcelTypeEnum.XLS.equals(analysisContext.readWorkbookHolder().getExcelType())) {
+            return;
+        }
+        Biff8EncryptionKey.setCurrentUserPassword(null);
     }
 
     private void throwCanNotCloseIo(Throwable t) {

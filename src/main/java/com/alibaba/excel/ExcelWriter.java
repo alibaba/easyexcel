@@ -138,17 +138,7 @@ public class ExcelWriter {
      * @return this current writer
      */
     public ExcelWriter write(List data, WriteSheet writeSheet) {
-        return write(data, writeSheet, (WriteTable)null);
-    }
-
-
-    public ExcelWriter write(List data, WriteSheet writeSheet, String password) {
-        return write(data, writeSheet, null, password);
-    }
-
-    private ExcelWriter write(List data, WriteSheet writeSheet, WriteTable writeTable, String password) {
-        excelBuilder.addContent(data, writeSheet, writeTable, password);
-        return this;
+        return write(data, writeSheet, null);
     }
 
     /**

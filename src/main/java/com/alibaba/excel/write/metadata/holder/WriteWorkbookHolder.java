@@ -1,15 +1,12 @@
 package com.alibaba.excel.write.metadata.holder;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,9 +93,8 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * prevent duplicate creation of sheet objects
      */
     private Map<Integer, WriteSheetHolder> hasBeenInitializedSheet;
-
     /**
-     * password
+     * Whether the encryption
      */
     private String password;
 
@@ -140,6 +136,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.mandatoryUseInputStream = writeWorkbook.getMandatoryUseInputStream();
         }
         this.hasBeenInitializedSheet = new HashMap<Integer, WriteSheetHolder>();
+        this.password = writeWorkbook.getPassword();
     }
 
     private void copyTemplate() throws IOException {
@@ -257,16 +254,16 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         this.mandatoryUseInputStream = mandatoryUseInputStream;
     }
 
-    @Override
-    public HolderEnum holderType() {
-        return HolderEnum.WORKBOOK;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public HolderEnum holderType() {
+        return HolderEnum.WORKBOOK;
     }
 }

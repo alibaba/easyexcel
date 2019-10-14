@@ -8,8 +8,6 @@ import java.util.Set;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.EternalReadCacheSelector;
@@ -28,7 +26,6 @@ import com.alibaba.excel.support.ExcelTypeEnum;
  * @author Jiaju Zhuang
  */
 public class ReadWorkbookHolder extends AbstractReadHolder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReadWorkbookHolder.class);
 
     /**
      * current param
@@ -82,7 +79,10 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      * Temporary files when reading excel
      */
     private File tempFile;
-
+    /**
+     * Whether the encryption
+     */
+    private String password;
     /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
@@ -174,6 +174,7 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         }
         this.hasReadSheet = new HashSet<Integer>();
         this.ignoreRecord03 = Boolean.FALSE;
+        this.password = readWorkbook.getPassword();
     }
 
     public ReadWorkbook getReadWorkbook() {
@@ -310,6 +311,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
 
     public void setIgnoreRecord03(Boolean ignoreRecord03) {
         this.ignoreRecord03 = ignoreRecord03;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

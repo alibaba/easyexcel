@@ -60,6 +60,10 @@ public class ReadWorkbook extends ReadBasicParameter {
      */
     private ReadCacheSelector readCacheSelector;
     /**
+     * Whether the encryption
+     */
+    private String password;
+    /**
      * The default is all excel objects.Default is true.
      * <p>
      * if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
@@ -163,5 +167,13 @@ public class ReadWorkbook extends ReadBasicParameter {
 
     public void setReadCacheSelector(ReadCacheSelector readCacheSelector) {
         this.readCacheSelector = readCacheSelector;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

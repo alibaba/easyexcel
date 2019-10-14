@@ -21,7 +21,7 @@
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
 * [最简单的读](#simpleRead)
 * [指定列的下标或者列名](#indexOrNameRead)
-* [读多个sheet](#repeatedRead)
+* [读多个或者全部sheet](#repeatedRead)
 * [日期、数字或者自定义格式转换](#converterRead)
 * [多行头](#complexHeaderRead)
 * [同步的返回](#synchronousRead)
@@ -180,7 +180,7 @@ public class IndexOrNameData {
 ##### 代码
 ```java
     /**
-     * 读多个sheet,这里注意一个sheet不能读取多次，多次读取需要重新读取文件
+     * 读多个或者全部sheet,这里注意一个sheet不能读取多次，多次读取需要重新读取文件
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
@@ -190,24 +190,21 @@ public class IndexOrNameData {
      */
     @Test
     public void repeatedRead() {
-        // 方法1 如果 sheet1 sheet2 都是同一数据 监听器和头 都写到最外层
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        ExcelReader excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
-        ReadSheet readSheet1 = EasyExcel.readSheet(0).build();
-        ReadSheet readSheet2 = EasyExcel.readSheet(1).build();
-        excelReader.read(readSheet1);
-        excelReader.read(readSheet2);
-        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
-        excelReader.finish();
+        // 读取全部sheet
+        // 这里需要注意 DemoDataListener的doAfterAllAnalysed 会在每个sheet读取完毕后调用一次。然后所有sheet都会往同一个DemoDataListener里面写
+        EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).doReadAll();
 
-        // 方法2 如果 sheet1 sheet2 数据不一致的话
+        // 读取部分sheet
         fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        excelReader = EasyExcel.read(fileName).build();
+        ExcelReader excelReader = EasyExcel.read(fileName).build();
         // 这里为了简单 所以注册了 同样的head 和Listener 自己使用功能必须不同的Listener
-        readSheet1 = EasyExcel.readSheet(0).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
-        readSheet2 = EasyExcel.readSheet(1).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
-        excelReader.read(readSheet1);
-        excelReader.read(readSheet2);
+        ReadSheet readSheet1 =
+            EasyExcel.readSheet(0).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
+        ReadSheet readSheet2 =
+            EasyExcel.readSheet(1).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
+        // 这里注意 一定要把sheet1 sheet2 一起传进去，不然有个问题就是03版的excel 会读取多次，浪费性能
+        excelReader.read(readSheet1, readSheet2);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
         excelReader.finish();
     }
@@ -518,6 +515,11 @@ public class DemoData {
     private Date date;
     @ExcelProperty("数字标题")
     private Double doubleData;
+    /**
+     * 忽略这个字段
+     */
+    @ExcelIgnore
+    private String ignore;
 }
 ```
 ##### 代码

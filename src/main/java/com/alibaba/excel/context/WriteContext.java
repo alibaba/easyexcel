@@ -69,18 +69,6 @@ public interface WriteContext {
      */
     void finish();
 
-    /**
-     * isEncrypt
-     * @return
-     */
-    boolean isEncrypt();
-
-    /**
-     * setPassword
-     * @param password
-     * @return
-     */
-     void setPassword(String password);
 
     /**
      * Current sheet

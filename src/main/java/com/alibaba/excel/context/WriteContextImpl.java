@@ -1,15 +1,27 @@
 package com.alibaba.excel.context;
 
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.StringUtils;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Map;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.GeneralSecurityException;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.poifs.crypt.Decryptor;
 import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.crypt.EncryptionMode;
 import org.apache.poi.poifs.crypt.Encryptor;
+import org.apache.poi.poifs.filesystem.DocumentOutputStream;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -120,7 +132,6 @@ public class WriteContextImpl implements WriteContext {
         WriteHandlerUtils.beforeSheetCreate(this);
         // Initialization current sheet
         initSheet(writeType);
-        WriteHandlerUtils.afterSheetCreate(this);
     }
 
     private void initCurrentSheetHolder(WriteSheet writeSheet) {
@@ -147,6 +158,7 @@ public class WriteContextImpl implements WriteContext {
             writeSheetHolder.setCachedSheet(currentSheet);
         }
         writeSheetHolder.setSheet(currentSheet);
+        WriteHandlerUtils.afterSheetCreate(this);
         if (WriteTypeEnum.ADD.equals(writeType)) {
             // Initialization head
             initHead(writeSheetHolder.excelWriteHeadProperty());
@@ -249,18 +261,23 @@ public class WriteContextImpl implements WriteContext {
         if (writeWorkbookHolder == null) {
             return;
         }
-        try {
-            writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
-            if (isEncrypt()){
-                LOGGER.debug("start encrypt");
-                encrypt(writeWorkbookHolder);
-                LOGGER.debug("finish encrypt");
 
-            }
-            writeWorkbookHolder.getWorkbook().close();
+        boolean isOutputStreamEncrypt = false;
+        try {
+            isOutputStreamEncrypt = doOutputStreamEncrypt07();
         } catch (Throwable t) {
             throwCanNotCloseIo(t);
         }
+
+        if (!isOutputStreamEncrypt) {
+            try {
+                writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
+                writeWorkbookHolder.getWorkbook().close();
+            } catch (Throwable t) {
+                throwCanNotCloseIo(t);
+            }
+        }
+
         try {
             Workbook workbook = writeWorkbookHolder.getWorkbook();
             if (workbook instanceof SXSSFWorkbook) {
@@ -269,6 +286,7 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwCanNotCloseIo(t);
         }
+
         try {
             if (writeWorkbookHolder.getAutoCloseStream() && writeWorkbookHolder.getOutputStream() != null) {
                 writeWorkbookHolder.getOutputStream().close();
@@ -276,6 +294,15 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwCanNotCloseIo(t);
         }
+
+        if (!isOutputStreamEncrypt) {
+            try {
+                doFileEncrypt07();
+            } catch (Throwable t) {
+                throwCanNotCloseIo(t);
+            }
+        }
+
         try {
             if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
                 writeWorkbookHolder.getTempTemplateInputStream().close();
@@ -283,19 +310,12 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwCanNotCloseIo(t);
         }
+
+        clearEncrypt03();
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Finished write.");
         }
-    }
-
-    @Override
-    public boolean isEncrypt() {
-        return !StringUtils.isEmpty(writeWorkbookHolder.getPassword());
-    }
-
-    @Override
-    public void setPassword(String password) {
-        writeWorkbookHolder.setPassword(password);
     }
 
     private void throwCanNotCloseIo(Throwable t) {
@@ -322,28 +342,94 @@ public class WriteContextImpl implements WriteContext {
         return writeWorkbookHolder.getWorkbook();
     }
 
-    /**
-     * do encrypt
-     * @param writeWorkbookHolder
-     */
-    private void encrypt(WriteWorkbookHolder writeWorkbookHolder){
-        try {
-            POIFSFileSystem fs = new POIFSFileSystem();
-            EncryptionInfo info = new EncryptionInfo(EncryptionMode.standard);
-
-            Encryptor enc = info.getEncryptor();
-            enc.confirmPassword(writeWorkbookHolder.getPassword());
-
-            OPCPackage opc = OPCPackage.open(writeWorkbookHolder.getFile(), PackageAccess.READ_WRITE);
-            OutputStream os = enc.getDataStream(fs);
-            opc.save(os);
-            opc.close();
-            //write the encrypted file back to the stream
-            FileOutputStream fos = new FileOutputStream(writeWorkbookHolder.getFile());
-            fs.writeFilesystem(fos);
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void clearEncrypt03() {
+        if (StringUtils.isEmpty(writeWorkbookHolder.getPassword())
+            || !ExcelTypeEnum.XLS.equals(writeWorkbookHolder.getExcelType())) {
+            return;
         }
+        Biff8EncryptionKey.setCurrentUserPassword(null);
+    }
+
+    /**
+     * To encrypt
+     */
+    private boolean doOutputStreamEncrypt07() throws Exception {
+        if (StringUtils.isEmpty(writeWorkbookHolder.getPassword())
+            || !ExcelTypeEnum.XLSX.equals(writeWorkbookHolder.getExcelType())) {
+            return false;
+        }
+        if (writeWorkbookHolder.getFile() != null) {
+            return false;
+        }
+        File tempXlsx = FileUtils.createTmpFile(UUID.randomUUID().toString() + ".xlsx");
+        FileOutputStream tempFileOutputStream = new FileOutputStream(tempXlsx);
+        try {
+            writeWorkbookHolder.getWorkbook().write(tempFileOutputStream);
+        } finally {
+            try {
+                writeWorkbookHolder.getWorkbook().close();
+                tempFileOutputStream.close();
+            } catch (Exception e) {
+                if (!tempXlsx.delete()) {
+                    throw new ExcelGenerateException("Can not delete temp File!");
+                }
+                throw e;
+            }
+        }
+        POIFSFileSystem fileSystem = null;
+        try {
+            fileSystem = openFileSystemAndEncrypt(tempXlsx);
+            fileSystem.writeFilesystem(writeWorkbookHolder.getOutputStream());
+        } finally {
+            if (fileSystem != null) {
+                fileSystem.close();
+            }
+            if (!tempXlsx.delete()) {
+                throw new ExcelGenerateException("Can not delete temp File!");
+            }
+        }
+        return true;
+    }
+
+    /**
+     * To encrypt
+     */
+    private void doFileEncrypt07() throws Exception {
+        if (StringUtils.isEmpty(writeWorkbookHolder.getPassword())
+            || !ExcelTypeEnum.XLSX.equals(writeWorkbookHolder.getExcelType())) {
+            return;
+        }
+        if (writeWorkbookHolder.getFile() == null) {
+            return;
+        }
+        FileOutputStream fileOutputStream = null;
+        POIFSFileSystem fileSystem = null;
+        try {
+            fileSystem = openFileSystemAndEncrypt(writeWorkbookHolder.getFile());
+            fileOutputStream = new FileOutputStream(writeWorkbookHolder.getFile());
+            fileSystem.writeFilesystem(fileOutputStream);
+        } finally {
+            if (fileOutputStream != null) {
+                fileOutputStream.close();
+            }
+            if (fileSystem != null) {
+                fileSystem.close();
+            }
+        }
+    }
+
+    private POIFSFileSystem openFileSystemAndEncrypt(File file) throws Exception {
+        POIFSFileSystem fileSystem = new POIFSFileSystem();
+        Encryptor encryptor = new EncryptionInfo(EncryptionMode.standard).getEncryptor();
+        encryptor.confirmPassword(writeWorkbookHolder.getPassword());
+        OPCPackage opcPackage = null;
+        try {
+            opcPackage = OPCPackage.open(file, PackageAccess.READ_WRITE);
+            OutputStream outputStream = encryptor.getDataStream(fileSystem);
+            opcPackage.save(outputStream);
+        } finally {
+            opcPackage.close();
+        }
+        return fileSystem;
     }
 }

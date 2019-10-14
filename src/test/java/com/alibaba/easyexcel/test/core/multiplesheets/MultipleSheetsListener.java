@@ -27,6 +27,7 @@ public class MultipleSheetsListener extends AnalysisEventListener<MultipleSheets
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
+        LOGGER.debug("A form is read finished.");
         Assert.assertEquals(list.get(0).getTitle(), "表1数据");
         LOGGER.debug("All row:{}", JSON.toJSONString(list));
     }

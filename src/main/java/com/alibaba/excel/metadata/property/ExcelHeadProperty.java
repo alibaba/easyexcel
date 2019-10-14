@@ -13,9 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.converters.AutoConverter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.HeadKindEnum;
@@ -120,6 +122,8 @@ public class ExcelHeadProperty {
             tempClass = tempClass.getSuperclass();
         }
 
+        ExcelIgnoreUnannotated excelIgnoreUnannotated =
+            (ExcelIgnoreUnannotated)headClazz.getAnnotation(ExcelIgnoreUnannotated.class);
         // Screening of field
         List<Field> defaultFieldList = new ArrayList<Field>();
         Map<Integer, Field> customFiledMap = new TreeMap<Integer, Field>();
@@ -130,7 +134,9 @@ public class ExcelHeadProperty {
                 continue;
             }
             ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-            if (excelProperty == null && convertAllFiled != null && !convertAllFiled) {
+            boolean noExcelProperty = excelProperty == null
+                && ((convertAllFiled != null && !convertAllFiled) || excelIgnoreUnannotated != null);
+            if (noExcelProperty) {
                 ignoreMap.put(field.getName(), field);
                 continue;
             }

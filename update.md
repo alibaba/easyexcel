@@ -2,10 +2,13 @@
 * 新增支持导入、导出支持公式
 * 新增支持读取单元格类型、写入指定单元格类型
 * 支持通过模板填充数据
-* 新增写支持 禁用头样式 autoHeadStyle
+* 新增写支持 禁用头样式 `autoHeadStyle`
 * 用map读取数据 空的单元格也会有个 null的数据
 * 转换报错 能获取到对应的行号和列号
 * 优化读取全部sheet方案
+* 新增注解`ExcelIgnoreUnannotated` 支持忽略未加`ExcelProperty`注解的字段
+* 支持导出加密 [Issue #361](https://github.com/alibaba/easyexcel/issues/361)
+* 支持导入加密 [Issue #295](https://github.com/alibaba/easyexcel/issues/295)
 
 # 2.0.5
 * 优化07版超大文件读取方案

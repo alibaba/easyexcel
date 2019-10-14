@@ -103,7 +103,6 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             context.currentSheet(writeSheet, WriteTypeEnum.ADD);
             context.currentTable(writeTable);
-            context.setPassword(password);
             if (excelWriteAddExecutor == null) {
                 excelWriteAddExecutor = new ExcelWriteAddExecutor(context);
             }

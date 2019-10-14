@@ -51,6 +51,13 @@ public class WriteWorkbook extends WriteBasicParameter {
      */
     private Boolean mandatoryUseInputStream;
     /**
+     * Whether the encryption
+     * <p>
+     * WARRING:Encryption is when the entire file is read into memory, so it is very memory intensive.
+     *
+     */
+    private String password;
+    /**
      * The default is all excel objects.Default is true.
      * <p>
      * if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
@@ -139,5 +146,13 @@ public class WriteWorkbook extends WriteBasicParameter {
 
     public void setWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
         this.writeHandler = writeHandler;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

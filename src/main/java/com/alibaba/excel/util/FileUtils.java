@@ -157,6 +157,15 @@ public class FileUtils {
         return directory;
     }
 
+    public static File createTmpFile(String fileName) {
+        String tmpDir = System.getProperty(JAVA_IO_TMPDIR);
+        if (tmpDir == null) {
+            throw new RuntimeException(
+                "Systems temporary directory not defined - set the -D" + JAVA_IO_TMPDIR + " jvm property!");
+        }
+        return new File(tmpDir, fileName);
+    }
+
     /**
      *
      * @param directory
