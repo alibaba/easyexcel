@@ -43,7 +43,7 @@ public class WriteWorkbook extends WriteBasicParameter {
      */
     private File templateFile;
     /**
-     * Default true
+     * Default trueuseDefaultStyle
      */
     private Boolean autoCloseStream;
     /**

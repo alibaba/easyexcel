@@ -57,7 +57,7 @@ public class EncryptDataTest {
 
     @Test
     public void t02ReadAndWriteStream03() throws Exception {
-        readAndWriteStream(file03OutputStream, ExcelTypeEnum.XLSX);
+        readAndWriteStream(file03OutputStream, ExcelTypeEnum.XLS);
     }
 
     private void readAndWrite(File file) {
@@ -72,8 +72,8 @@ public class EncryptDataTest {
         fileOutputStream.close();
 
         FileInputStream fileInputStream = new FileInputStream(file);
-        EasyExcel.read(fileInputStream, EncryptData.class, new EncryptDataListener()).password("123456").sheet()
-            .doRead();
+        EasyExcel.read(fileInputStream, EncryptData.class, new EncryptDataListener()).password("123456")
+            .excelType(excelType).sheet().doRead();
     }
 
     private List<SimpleData> data() {

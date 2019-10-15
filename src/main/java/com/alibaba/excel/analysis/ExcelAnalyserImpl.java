@@ -60,7 +60,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
         switch (excelType) {
             case XLS:
-                POIFSFileSystem poifsFileSystem = null;
+                POIFSFileSystem poifsFileSystem;
                 if (readWorkbookHolder.getFile() != null) {
                     poifsFileSystem = new POIFSFileSystem(readWorkbookHolder.getFile());
                 } else {

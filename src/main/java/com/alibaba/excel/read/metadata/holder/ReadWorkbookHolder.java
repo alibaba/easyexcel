@@ -141,11 +141,11 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         } else {
             this.autoCloseStream = readWorkbook.getAutoCloseStream();
         }
-        if (readWorkbook.getExcelType() == null) {
-            this.excelType = ExcelTypeEnum.valueOf(file, inputStream);
-        } else {
-            this.excelType = readWorkbook.getExcelType();
-        }
+
+        // The type of excel is read according to the judgment.Because encrypted XLSX needs to be specified as XLS to
+        // properly parse.
+        this.excelType = ExcelTypeEnum.valueOf(file, inputStream, readWorkbook.getExcelType());
+
         if (ExcelTypeEnum.XLS == excelType && getGlobalConfiguration().getUse1904windowing() == null) {
             getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
         }

@@ -12,6 +12,7 @@
 * `ExcelIgnore` 默认所有字段都会和excel去匹配，加了这个注解会忽略该字段
 * `DateTimeFormat` 日期转换，用`String`去接收excel日期格式的数据会调用这个注解。里面的`value`参照`java.text.SimpleDateFormat`
 * `NumberFormat` 数字转换，用`String`去接收excel数字格式的数据会调用这个注解。里面的`value`参照`java.text.DecimalFormat`
+* `ExcelIgnoreUnannotated` 默认不加`ExcelProperty` 的注解的都会参与读写，加了不会参与
 ### 参数
 #### 通用参数
 `ReadWorkbook`,`ReadSheet` 都会有的参数，如果为空，默认使用上级。
@@ -21,6 +22,7 @@
 * `head`  与`clazz`二选一。读取文件头对应的列表，会根据列表匹配数据，建议使用class。
 * `clazz` 与`head`二选一。读取文件的头对应的class，也可以使用注解。如果两个都不指定，则会读取全部数据。
 * `autoTrim` 字符串、表头等数据自动trim
+* `password` 读的时候是否需要使用密码
 #### ReadWorkbook（理解成excel对象）参数
 * `excelType` 当前excel的类型 默认会自动判断
 * `inputStream` 与`file`二选一。读取文件的流，如果接收到的是流就只用，不用流建议使用`file`参数。因为使用了`inputStream` easyexcel会帮忙创建临时文件，最终还是`file`
@@ -36,6 +38,7 @@
 * `ExcelIgnore` 默认所有字段都会写入excel，这个注解会忽略这个字段
 * `DateTimeFormat` 日期转换，将`Date`写到excel会调用这个注解。里面的`value`参照`java.text.SimpleDateFormat`
 * `NumberFormat` 数字转换，用`Number`写excel会调用这个注解。里面的`value`参照`java.text.DecimalFormat`
+* `ExcelIgnoreUnannotated` 默认不加`ExcelProperty` 的注解的都会参与读写，加了不会参与
 ### 参数
 #### 通用参数
 `WriteWorkbook`,`WriteSheet` ,`WriteTable`都会有的参数，如果为空，默认使用上级。
@@ -53,6 +56,8 @@
 * `templateInputStream` 模板的文件流
 * `templateFile` 模板文件
 * `autoCloseStream` 自动关闭流。
+* `password` 写的时候是否需要使用密码
+* `useDefaultStyle` 写的时候是否是使用默认头
 #### WriteSheet（就是excel的一个Sheet）参数
 * `sheetNo` 需要写入的编码。默认0
 * `sheetName` 需要些的Sheet名称，默认同`sheetNo`
