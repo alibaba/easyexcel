@@ -1,10 +1,5 @@
 package com.alibaba.excel.context;
 
-import java.io.InputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.analysis.ExcelExecutor;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.exception.ExcelAnalysisException;
@@ -17,6 +12,10 @@ import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
 
 /**
  *
@@ -46,6 +45,9 @@ public class AnalysisContextImpl implements AnalysisContext {
             throw new IllegalArgumentException("Workbook argument cannot be null");
         }
         readWorkbookHolder = new ReadWorkbookHolder(readWorkbook);
+        // set defaultReturnMap: true is Map, or false is List
+        readWorkbookHolder.setDefaultReturnMap(
+            readWorkbook.getDefaultReturnMap() == null ? Boolean.TRUE : readWorkbook.getDefaultReturnMap());
         currentReadHolder = readWorkbookHolder;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialization 'AnalysisContextImpl' complete");

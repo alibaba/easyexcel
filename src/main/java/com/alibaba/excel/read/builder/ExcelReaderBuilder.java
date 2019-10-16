@@ -1,10 +1,5 @@
 package com.alibaba.excel.read.builder;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
@@ -14,6 +9,11 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Build ExcelWriter
@@ -219,6 +219,16 @@ public class ExcelReaderBuilder {
      */
     public ExcelReaderBuilder autoTrim(Boolean autoTrim) {
         readWorkbook.setAutoTrim(autoTrim);
+        return this;
+    }
+
+    /**
+     * 设置返回 List / Map
+     * @param defaultReturnMap true 返回 Map；false 返回 List
+     * @return
+     */
+    public ExcelReaderBuilder setDefaultReturnMap(Boolean defaultReturnMap){
+        readWorkbook.setDefaultReturnMap(defaultReturnMap);
         return this;
     }
 

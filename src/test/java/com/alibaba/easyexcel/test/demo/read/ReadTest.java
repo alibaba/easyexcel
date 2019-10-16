@@ -1,14 +1,5 @@
 package com.alibaba.easyexcel.test.demo.read;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
@@ -18,6 +9,15 @@ import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.fastjson.JSON;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 读的常见写法
@@ -200,6 +200,23 @@ public class ReadTest {
             Map<Integer, String> data = (Map<Integer, String>)obj;
             LOGGER.info("读取到数据:{}", JSON.toJSONString(data));
         }
+    }
+
+    @Test
+    public void readReturnList() {
+        // 写法1：
+        int headLineNum = 2;
+        InputStream inputStream = TestFileUtil.getResourcesFileInputStream("demo" + File.separator + "自定义时间.xlsx");
+        ExcelReader excelReader = EasyExcel.read(inputStream, new ExcelListener()).setDefaultReturnMap(Boolean.FALSE).build();
+        ReadSheet readSheet = EasyExcel.readSheet(0).headRowNumber(headLineNum -1).build();
+        excelReader.read(readSheet);
+        excelReader.finish();
+
+        // 写法2：
+//        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+//        ExcelReader excelReader2 = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
+//        ReadSheet readSheet2 = EasyExcel.readSheet(0).build();
+//        excelReader2.read(readSheet2);
     }
 
 }

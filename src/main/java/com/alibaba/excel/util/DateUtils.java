@@ -1,10 +1,10 @@
 package com.alibaba.excel.util;
 
+import com.alibaba.excel.exception.ExcelDataConvertException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import com.alibaba.excel.exception.ExcelDataConvertException;
 
 /**
  * Date utils
@@ -12,6 +12,8 @@ import com.alibaba.excel.exception.ExcelDataConvertException;
  * @author Jiaju Zhuang
  **/
 public class DateUtils {
+    public static final String DATE_FORMAT_8_TIME = "HH:mm:ss";
+    public static final String DATE_FORMAT_10 = "yyyy-MM-dd";
     public static final String DATE_FORMAT_14 = "yyyyMMddHHmmss";
     public static final String DATE_FORMAT_17 = "yyyyMMdd HH:mm:ss";
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";

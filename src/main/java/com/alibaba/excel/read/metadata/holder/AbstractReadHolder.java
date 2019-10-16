@@ -1,13 +1,5 @@
 package com.alibaba.excel.read.metadata.holder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
@@ -30,6 +22,13 @@ import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Read Holder
@@ -132,9 +131,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
-        int currentheadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
+        int currentHeadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
 
-        if (rowIndex >= currentheadRowNumber) {
+        if (rowIndex >= currentHeadRowNumber) {
             // Now is data
             for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
                 try {
@@ -155,7 +154,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             }
         } else {
             // Last head column
-            if (currentheadRowNumber == rowIndex + 1) {
+            if (currentHeadRowNumber == rowIndex + 1) {
                 buildHead(analysisContext, cellDataMap);
             }
 
