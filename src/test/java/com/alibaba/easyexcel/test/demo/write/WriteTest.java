@@ -58,7 +58,6 @@ public class WriteTest {
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
         excelWriter.write(data(), writeSheet);
-        // 进行加密
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
     }
@@ -379,6 +378,17 @@ public class WriteTest {
             .registerWriteHandler(new CustomCellWriteHandler()).sheet("模板").doWrite(data());
     }
 
+    /**
+     * 不创建对象的写
+     */
+    @Test
+    public void noModleWrite() {
+        // 写法1
+        String fileName = TestFileUtil.getPath() + "noModleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
+    }
+
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = new ArrayList<LongestMatchColumnWidthData>();
         for (int i = 0; i < 10; i++) {
@@ -402,6 +412,18 @@ public class WriteTest {
         list.add(head0);
         list.add(head1);
         list.add(head2);
+        return list;
+    }
+
+    private List<List<Object>> dataList() {
+        List<List<Object>> list = new ArrayList<List<Object>>();
+        for (int i = 0; i < 10; i++) {
+            List<Object> data = new ArrayList<Object>();
+            data.add("字符串" + i);
+            data.add(new Date());
+            data.add(0.56);
+            list.add(data);
+        }
         return list;
     }
 
