@@ -83,7 +83,7 @@ public class WriteTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link ComplexHeadData}
      * <p>
-     * 2. 使用{@link ExcelProperty}注解指定复杂的头
+     * 2. 使用{@link ExcelProperty}注解指定复杂的头,写入时会忽略static fianl和transient
      * <p>
      * 3. 直接写即可
      */
