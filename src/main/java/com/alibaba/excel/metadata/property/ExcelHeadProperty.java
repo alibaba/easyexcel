@@ -122,7 +122,16 @@ public class ExcelHeadProperty {
         List<Field> defaultFieldList = new ArrayList<Field>();
         Map<Integer, Field> customFiledMap = new TreeMap<Integer, Field>();
         for (Field field : fieldList) {
+
             ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
+            if(Modifier.isStatic(field.getModifiers())&&Modifier.isFinal(field.getModifiers())){
+                ignoreMap.put(field.getName(),field);
+                continue;
+            }
+            if(Modifier.isTransient(field.getModifiers())){
+                ignoreMap.put(field.getName(),field);
+                continue;
+            }
             if (excelIgnore != null) {
                 ignoreMap.put(field.getName(), field);
                 continue;
