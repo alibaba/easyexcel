@@ -94,7 +94,6 @@ public class WriteTest {
         EasyExcel.write(fileName, ComplexHeadData.class).sheet("模板").doWrite(data());
     }
 
-
     /**
      * 重复多次写入
      * <p>
