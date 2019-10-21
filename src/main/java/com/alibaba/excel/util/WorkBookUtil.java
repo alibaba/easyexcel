@@ -1,16 +1,9 @@
 package com.alibaba.excel.util;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.openxml4j.opc.PackageAccess;
-import org.apache.poi.poifs.crypt.EncryptionInfo;
-import org.apache.poi.poifs.crypt.EncryptionMode;
-import org.apache.poi.poifs.crypt.Encryptor;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
