@@ -9,6 +9,7 @@
 ```java
  // 强制使用内存存储，这样大概一个20M的excel使用150M（很多临时对象，所以100M会一直GC）的内存
 // 这样效率会比上面的复杂的策略高很多
+   // 这里再说明下 就是加了个readCache(new MapCache()) 参数而已，其他的参照其他demo写 这里没有写全 
   EasyExcel.read().readCache(new MapCache());
 ```
 ### 对并发要求较高，而且都是经常有超级大文件
@@ -16,7 +17,10 @@
  // 第一个参数的意思是 多少M共享字符串以后 采用文件存储 单位MB 默认5M
 // 第二个参数 文件存储时，内存存放多少M缓存数据 默认20M
 // 比如 你希望用100M内存(这里说的是解析过程中的永久占用,临时对象不算)来解析excel，前面算过了 大概是 20M+90M 所以设置参数为:20 和 90 
+   // 这里再说明下 就是加了个readCacheSelector(new SimpleReadCacheSelector(5, 20))参数而已，其他的参照其他demo写 这里没有写全 
 EasyExcel.read().readCacheSelector(new SimpleReadCacheSelector(5, 20));
 ```
 ### 关于maxCacheActivateSize 也就是前面第二个参数的详细说明
 easyexcel在使用文件存储的时候，会把共享字符串拆分成1000条一批，然后放到文件存储。然后excel来读取共享字符串大概率是按照顺序的，所以默认20M的1000条的数据放在内存，命中后直接返回，没命中去读文件。所以不能设置太小，太小了，很难命中，一直去读取文件，太大了的话会占用过多的内存。
+### 如何判断 maxCacheActivateSize是否需要调整
+开启debug日志会输出`Already put :4000000` 最后一次输出，大概可以得出值为400W,然后看`Cache misses count:4001`得到值为4K，400W/4K=1000 这代表已经`maxCacheActivateSize` 已经非常合理了。如果小于500 问题就非常大了，500到1000 应该都还行。

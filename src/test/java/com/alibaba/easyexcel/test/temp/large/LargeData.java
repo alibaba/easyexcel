@@ -1,11 +1,13 @@
 package com.alibaba.easyexcel.test.temp.large;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
  * @author Jiaju Zhuang
  */
 @Data
+@Builder
 public class LargeData {
 
     private String str1;

@@ -1,3 +1,15 @@
+# 2.1.0-beta1
+* 新增支持导入、导出支持公式
+* 新增支持读取单元格类型、写入指定单元格类型
+* 支持通过模板填充数据
+* 新增写支持 禁用头样式 `useDefaultStyle`
+* 用map读取数据 空的单元格也会有个 null的数据
+* 转换报错 能获取到对应的行号和列号
+* 优化读取全部sheet方案
+* 新增注解`ExcelIgnoreUnannotated` 支持忽略未加`ExcelProperty`注解的字段
+* 支持导出加密 [Issue #361](https://github.com/alibaba/easyexcel/issues/361)
+* 支持导入加密 [Issue #295](https://github.com/alibaba/easyexcel/issues/295)
+
 # 2.0.5
 * 优化07版超大文件读取方案
 * 支持自己设置超大文件读取参数
@@ -53,23 +65,33 @@
 * sheetNo 改成0开始
 * 读支持指定列名
 * 升级poi 到4.0.1
+
 # 1.2.4
 修复read()方法存在的bug
+
 # 1.2.1
 修复POI在大并发情况下创建临时目录失败的bug
+
 # 1.0.9 
 修复excel超过16列被覆盖的问题，修复数据只有一行时候无法透传的bug。
+
 # 1.0.8
 如果整行excel数据全部为空，则不解析返回。完善多sheet的解析。
+
 # 1.0.6
 增加@ExcelColumnNum,修复字符串前后空白，增加过滤功能。
+
 # 1.0.5
 优化类型转换的性能。
+
 # 1.0.4
 修复日期类型转换时候数字问题。基础模型支持字段类型int,long,double,boolean,date,string
+
 # 1.0.3
 修复无@ExcelProperty标注的多余字段时候报错。
+
 # 1.0.2 
 修复拿到一行数据后，存到list中，但最后处理时候变为空的bug。
+
 # 1.0.1
 完善测试用例，防止歧义，模型字段映射不上时候有抛异常，改为提醒。

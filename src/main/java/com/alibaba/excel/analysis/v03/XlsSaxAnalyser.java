@@ -22,7 +22,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.analysis.v03.handlers.BlankOrErrorRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.BofRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler;
@@ -56,10 +56,12 @@ import com.alibaba.excel.util.CollectionUtils;
  *
  * @author jipengfei
  */
-public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
+public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(XlsSaxAnalyser.class);
 
     private POIFSFileSystem poifsFileSystem;
+    private Boolean readAll;
+    private List<ReadSheet> readSheetList;
     private int lastRowNumber;
     private int lastColumnNumber;
     /**
@@ -91,8 +93,9 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
     }
 
     @Override
-    public void execute() {
-        analysisContext.readSheetHolder().getSheetNo();
+    public void execute(List<ReadSheet> readSheetList, Boolean readAll) {
+        this.readAll = readAll;
+        this.readSheetList = readSheetList;
         MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
         formatListener = new FormatTrackingHSSFListener(listener);
         workbookBuildingListener = new EventWorkbookBuilder.SheetRecordCollectingListener(formatListener);
@@ -196,9 +199,9 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
             // The table has been counted and there are no duplicate statistics
             if (sheets == null) {
                 sheets = new ArrayList<ReadSheet>();
-                recordHandlers.add(new BofRecordHandler(analysisContext, sheets, false));
+                recordHandlers.add(new BofRecordHandler(analysisContext, sheets, false, true));
             } else {
-                recordHandlers.add(new BofRecordHandler(analysisContext, sheets, true));
+                recordHandlers.add(new BofRecordHandler(analysisContext, sheets, true, true));
             }
             recordHandlers.add(new FormulaRecordHandler(stubWorkbook, formatListener));
             recordHandlers.add(new LabelRecordHandler());
@@ -212,6 +215,10 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelExecutor {
 
         for (XlsRecordHandler x : recordHandlers) {
             x.init();
+            if (x instanceof BofRecordHandler) {
+                BofRecordHandler bofRecordHandler = (BofRecordHandler)x;
+                bofRecordHandler.init(readSheetList, readAll);
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.alibaba.easyexcel.test.demo.write;
 
+import java.util.List;
+
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -25,13 +27,19 @@ public class CustomCellWriteHandler implements CellWriteHandler {
 
     @Override
     public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Head head, int relativeRowIndex, boolean isHead) {
+        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead) {
 
     }
 
     @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData,
-        Cell cell, Head head, int relativeRowIndex, boolean isHead) {
+    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
+        Head head, Integer relativeRowIndex, Boolean isHead) {
+
+    }
+
+    @Override
+    public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         // 这里可以对cell进行任何操作
         LOGGER.info("第{}行，第{}列写入完成。", cell.getRowIndex(), cell.getColumnIndex());
         if (isHead && cell.getColumnIndex() == 0) {

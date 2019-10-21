@@ -85,7 +85,7 @@ public class WriteTest {
      * <p>
      * 2. 使用{@link ExcelProperty}注解指定复杂的头
      * <p>
-     * 3. 直接写即可,写入时会忽略static final和 transient
+     * 3. 直接写即可
      */
     @Test
     public void complexHeadWrite() {
@@ -378,6 +378,17 @@ public class WriteTest {
             .registerWriteHandler(new CustomCellWriteHandler()).sheet("模板").doWrite(data());
     }
 
+    /**
+     * 不创建对象的写
+     */
+    @Test
+    public void noModleWrite() {
+        // 写法1
+        String fileName = TestFileUtil.getPath() + "noModleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
+    }
+
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = new ArrayList<LongestMatchColumnWidthData>();
         for (int i = 0; i < 10; i++) {
@@ -401,6 +412,18 @@ public class WriteTest {
         list.add(head0);
         list.add(head1);
         list.add(head2);
+        return list;
+    }
+
+    private List<List<Object>> dataList() {
+        List<List<Object>> list = new ArrayList<List<Object>>();
+        for (int i = 0; i < 10; i++) {
+            List<Object> data = new ArrayList<Object>();
+            data.add("字符串" + i);
+            data.add(new Date());
+            data.add(0.56);
+            list.add(data);
+        }
         return list;
     }
 

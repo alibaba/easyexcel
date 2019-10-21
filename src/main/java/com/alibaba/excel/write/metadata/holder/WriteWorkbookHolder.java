@@ -1,19 +1,25 @@
 package com.alibaba.excel.write.metadata.holder;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.IoUtils;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
 /**
@@ -23,10 +29,22 @@ import com.alibaba.excel.write.metadata.WriteWorkbook;
  */
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
-     * poi Workbook
+     * Current poi Workbook.This is only for writing, and there may be no data in version 07 when template data needs to
+     * be read.
+     * <ul>
+     * <li>03:{@link HSSFWorkbook}</li>
+     * <li>07:{@link SXSSFWorkbook}</li>
+     * </ul>
      */
     private Workbook workbook;
-
+    /***
+     * Current poi Workbook.Be sure to use and this method when reading template data.
+     * <ul>
+     * <li>03:{@link HSSFWorkbook}</li>
+     * <li>07:{@link XSSFWorkbook}</li>
+     * </ul>
+     */
+    private Workbook cachedWorkbook;
     /**
      * current param
      */
@@ -54,6 +72,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private File templateFile;
     /**
+     * Temporary template file stream.
+     * <p>
+     * A temporary file stream needs to be created in order not to modify the original template file.
+     */
+    private InputStream tempTemplateInputStream;
+    /**
      * Default true
      */
     private Boolean autoCloseStream;
@@ -70,10 +94,9 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private Map<Integer, WriteSheetHolder> hasBeenInitializedSheet;
     /**
-     * When using SXSSFWorkbook, you can't get the actual last line.But we need to read the last line when we are using
-     * the template, so we cache it
+     * Whether the encryption
      */
-    private Map<Integer, Integer> templateLastRowMap;
+    private String password;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
@@ -88,18 +111,15 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.outputStream = writeWorkbook.getOutputStream();
         }
-        if (writeWorkbook.getTemplateInputStream() != null) {
-            if (writeWorkbook.getTemplateInputStream().markSupported()) {
-                this.templateInputStream = writeWorkbook.getTemplateInputStream();
-            } else {
-                this.templateInputStream = new BufferedInputStream(writeWorkbook.getTemplateInputStream());
-            }
-        }
-        this.templateFile = writeWorkbook.getTemplateFile();
         if (writeWorkbook.getAutoCloseStream() == null) {
             this.autoCloseStream = Boolean.TRUE;
         } else {
             this.autoCloseStream = writeWorkbook.getAutoCloseStream();
+        }
+        try {
+            copyTemplate();
+        } catch (IOException e) {
+            throw new ExcelGenerateException("Copy template failure.", e);
         }
         if (writeWorkbook.getExcelType() == null) {
             if (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue())) {
@@ -116,7 +136,26 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.mandatoryUseInputStream = writeWorkbook.getMandatoryUseInputStream();
         }
         this.hasBeenInitializedSheet = new HashMap<Integer, WriteSheetHolder>();
-        this.templateLastRowMap = new HashMap<Integer, Integer>(8);
+        this.password = writeWorkbook.getPassword();
+    }
+
+    private void copyTemplate() throws IOException {
+        if (writeWorkbook.getTemplateFile() == null && writeWorkbook.getTemplateInputStream() == null) {
+            return;
+        }
+        byte[] templateFileByte = null;
+        if (writeWorkbook.getTemplateFile() != null) {
+            templateFileByte = FileUtils.readFileToByteArray(writeWorkbook.getTemplateFile());
+        } else if (writeWorkbook.getTemplateInputStream() == null) {
+            try {
+                templateFileByte = IoUtils.toByteArray(writeWorkbook.getTemplateInputStream());
+            } finally {
+                if (autoCloseStream) {
+                    writeWorkbook.getTemplateInputStream().close();
+                }
+            }
+        }
+        this.tempTemplateInputStream = new ByteArrayInputStream(templateFileByte);
     }
 
     public Workbook getWorkbook() {
@@ -125,6 +164,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
     public void setWorkbook(Workbook workbook) {
         this.workbook = workbook;
+    }
+
+    public Workbook getCachedWorkbook() {
+        return cachedWorkbook;
+    }
+
+    public void setCachedWorkbook(Workbook cachedWorkbook) {
+        this.cachedWorkbook = cachedWorkbook;
     }
 
     public Map<Integer, WriteSheetHolder> getHasBeenInitializedSheet() {
@@ -167,6 +214,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         this.templateInputStream = templateInputStream;
     }
 
+    public InputStream getTempTemplateInputStream() {
+        return tempTemplateInputStream;
+    }
+
+    public void setTempTemplateInputStream(InputStream tempTemplateInputStream) {
+        this.tempTemplateInputStream = tempTemplateInputStream;
+    }
+
     public File getTemplateFile() {
         return templateFile;
     }
@@ -199,12 +254,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         this.mandatoryUseInputStream = mandatoryUseInputStream;
     }
 
-    public Map<Integer, Integer> getTemplateLastRowMap() {
-        return templateLastRowMap;
+    public String getPassword() {
+        return password;
     }
 
-    public void setTemplateLastRowMap(Map<Integer, Integer> templateLastRowMap) {
-        this.templateLastRowMap = templateLastRowMap;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

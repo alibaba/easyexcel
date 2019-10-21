@@ -74,4 +74,5 @@ public class BasicParameter {
     public void setUse1904windowing(Boolean use1904windowing) {
         this.use1904windowing = use1904windowing;
     }
+
 }

@@ -80,6 +80,30 @@ public class ExcelWriterBuilder {
     }
 
     /**
+     * Use the default style.Default is true.
+     *
+     * @param useDefaultStyle
+     * @return
+     */
+    public ExcelWriterBuilder useDefaultStyle(Boolean useDefaultStyle) {
+        writeWorkbook.setUseDefaultStyle(useDefaultStyle);
+        return this;
+    }
+
+    /**
+     * Whether the encryption.
+     * <p>
+     * WARRING:Encryption is when the entire file is read into memory, so it is very memory intensive.
+     *
+     * @param password
+     * @return
+     */
+    public ExcelWriterBuilder password(String password) {
+        writeWorkbook.setPassword(password);
+        return this;
+    }
+
+    /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
      * <p>

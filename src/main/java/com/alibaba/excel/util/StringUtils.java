@@ -6,10 +6,11 @@ package com.alibaba.excel.util;
  * @author jipengfei
  */
 public class StringUtils {
+    public static final String EMPTY = "";
 
     private StringUtils() {}
 
     public static boolean isEmpty(Object str) {
-        return (str == null || "".equals(str));
+        return (str == null || EMPTY.equals(str));
     }
 }

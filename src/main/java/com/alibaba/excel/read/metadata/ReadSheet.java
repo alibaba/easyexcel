@@ -42,6 +42,19 @@ public class ReadSheet extends ReadBasicParameter {
         this.sheetName = sheetName;
     }
 
+    public void copyBasicParameter(ReadSheet other) {
+        if (other == null) {
+            return;
+        }
+        this.setHeadRowNumber(other.getHeadRowNumber());
+        this.setCustomReadListenerList(other.getCustomReadListenerList());
+        this.setHead(other.getHead());
+        this.setClazz(other.getClazz());
+        this.setCustomConverterList(other.getCustomConverterList());
+        this.setAutoTrim(other.getAutoTrim());
+        this.setUse1904windowing(other.getUse1904windowing());
+    }
+
     @Override
     public String toString() {
         return "ReadSheet{" + "sheetNo=" + sheetNo + ", sheetName='" + sheetName + '\'' + "} " + super.toString();

@@ -29,7 +29,7 @@ public class Lock2Test {
 
     @Test
     public void test() throws Exception {
-        File file = new File("D:\\test\\test001.xlsx");
+        File file = new File("D:\\test\\000001.xlsx");
 
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());

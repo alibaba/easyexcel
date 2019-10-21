@@ -40,6 +40,16 @@ public class MultipleSheetsDataTest {
         read(file03);
     }
 
+    @Test
+    public void t03Read07All() {
+        readAll(file07);
+    }
+
+    @Test
+    public void t04Read03All() {
+        readAll(file03);
+    }
+
     private void read(File file) {
         MultipleSheetsListener multipleSheetsListener = new MultipleSheetsListener();
         ExcelReader excelReader = EasyExcel.read(file, MultipleSheetsData.class, multipleSheetsListener).build();
@@ -51,6 +61,10 @@ public class MultipleSheetsDataTest {
             count++;
         }
         excelReader.finish();
+    }
+
+    private void readAll(File file) {
+        EasyExcel.read(file, MultipleSheetsData.class, new MultipleSheetsListener()).doReadAll();
     }
 
 }

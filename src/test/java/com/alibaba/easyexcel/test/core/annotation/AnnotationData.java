@@ -29,4 +29,6 @@ public class AnnotationData {
     private Double number;
     @ExcelIgnore
     private String ignore;
+    private static final String staticFinal = "test";
+    private transient String transientString;
 }

@@ -2,6 +2,7 @@ package com.alibaba.excel;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.ExcelAnalyser;
 import com.alibaba.excel.analysis.ExcelAnalyserImpl;
-import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.cache.MapCache;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -147,27 +148,41 @@ public class ExcelReader {
 
     /**
      * Parse all sheet content by default
+     *
+     * @deprecated lease use {@link #readAll()}
      */
+    @Deprecated
     public void read() {
-        ExcelExecutor excelExecutor = excelAnalyser.excelExecutor();
-        if (excelExecutor.sheetList().isEmpty()) {
-            LOGGER.warn("Excel doesn't have any sheets.");
-            return;
-        }
-        for (ReadSheet readSheet : excelExecutor.sheetList()) {
-            read(readSheet);
-        }
+        readAll();
+    }
+
+    /***
+     * Parse all sheet content by default
+     */
+    public void readAll() {
+        checkFinished();
+        excelAnalyser.analysis(null, Boolean.TRUE);
     }
 
     /**
-     * Parse the specified sheet，SheetNo start from 1
+     * Parse the specified sheet，SheetNo start from 0
      *
      * @param readSheet
      *            Read sheet
      */
-    public ExcelReader read(ReadSheet readSheet) {
+    public ExcelReader read(ReadSheet... readSheet) {
+        return read(Arrays.asList(readSheet));
+    }
+
+    /**
+     * Read multiple sheets.
+     *
+     * @param readSheetList
+     * @return
+     */
+    public ExcelReader read(List<ReadSheet> readSheetList) {
         checkFinished();
-        excelAnalyser.analysis(readSheet);
+        excelAnalyser.analysis(readSheetList, Boolean.FALSE);
         return this;
     }
 
@@ -225,7 +240,7 @@ public class ExcelReader {
      *
      * @return
      */
-    public ExcelExecutor excelExecutor() {
+    public ExcelReadExecutor excelExecutor() {
         checkFinished();
         return excelAnalyser.excelExecutor();
     }

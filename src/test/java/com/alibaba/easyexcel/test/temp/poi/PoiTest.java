@@ -1,9 +1,15 @@
 package com.alibaba.easyexcel.test.temp.poi;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellCopyPolicy;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -17,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.util.FileUtils;
 
 /**
  * 测试poi
@@ -51,4 +59,169 @@ public class PoiTest {
         xssfSheet.createRow(20);
         LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
     }
+
+    @Test
+    public void lastRowNum233() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+        Workbook xx = new XSSFWorkbook(file);
+        System.out.println(new File(file).exists());
+
+        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook();
+        Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
+
+        Cell cell = xssfSheet.getRow(0).createCell(9);
+        cell.setCellValue("testssdf是士大夫否t");
+
+        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
+        xssfWorkbook.write(fileout);
+        xssfWorkbook.close();
+    }
+
+    @Test
+    public void lastRowNum255() throws IOException, InvalidFormatException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "complex.xlsx";
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
+        SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
+        Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
+        xssfSheet.shiftRows(2, 4, 10);
+
+        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
+        sxssfWorkbook.write(fileout);
+        sxssfWorkbook.dispose();
+        sxssfWorkbook.close();
+
+        xssfWorkbook.close();
+    }
+
+    @Test
+    public void cp() throws IOException, InvalidFormatException {
+        String file = "d://test/tt.xlsx";
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
+        XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
+        XSSFRow row = xssfSheet.getRow(2);
+        xssfSheet.removeRow(row);
+//       Row r2= xssfSheet.createRow(2);
+//        r2.createCell(1);
+        SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
+
+
+        SXSSFSheet sxssfSheet = sxssfWorkbook.getSheetAt(0);
+        sxssfSheet.createRow(2);
+
+
+        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
+        sxssfWorkbook.write(fileout);
+        sxssfWorkbook.dispose();
+        sxssfWorkbook.close();
+
+        xssfWorkbook.close();
+    }
+
+    @Test
+    public void lastRowNum233443() throws IOException, InvalidFormatException {
+        String file = "d://test/tt.xlsx";
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
+        SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
+        XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
+        XSSFRow row = xssfSheet.getRow(2);
+        xssfSheet.removeRow(row);
+        new CellCopyPolicy().createBuilder().build();
+
+        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
+        sxssfWorkbook.write(fileout);
+        sxssfWorkbook.dispose();
+        sxssfWorkbook.close();
+
+        xssfWorkbook.close();
+    }
+
+    @Test
+    public void lastRowNum2333() throws IOException, InvalidFormatException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
+        SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
+        Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
+        Cell cell = xssfSheet.getRow(0).createCell(9);
+        cell.setCellValue("testssdf是士大夫否t");
+
+        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
+        sxssfWorkbook.write(fileout);
+        sxssfWorkbook.dispose();
+        sxssfWorkbook.close();
+
+        xssfWorkbook.close();
+    }
+
+    @Test
+    public void testread() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+
+        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
+        Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
+        //
+        // Cell cell = xssfSheet.getRow(0).createCell(9);
+
+        String file1 = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+
+        SXSSFWorkbook xssfWorkbook1 = new SXSSFWorkbook(new XSSFWorkbook(file1));
+        Sheet xssfSheet1 = xssfWorkbook1.getXSSFWorkbook().getSheetAt(0);
+
+        // Cell cell1 = xssfSheet1.getRow(0).createCell(9);
+
+        xssfWorkbook.close();
+        xssfWorkbook1.close();
+    }
+
+    @Test
+    public void testreadRead() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+        FileUtils.readFileToByteArray(new File(file));
+    }
+
+    @Test
+    public void lastRowNum2332222() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
+        Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
+
+        Cell cell = xssfSheet.getRow(0).createCell(9);
+        cell.setCellValue("testssdf是士大夫否t");
+
+        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
+        xssfWorkbook.write(fileout);
+    }
+
+    @Test
+    public void lastRowNum23443() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
+        Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
+
+        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
+        xssfWorkbook.write(fileout);
+        xssfWorkbook.close();
+    }
+
+    @Test
+    public void lastRowNum2() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
+        Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
+        LOGGER.info("一共行数:{}", xssfSheet.getPhysicalNumberOfRows());
+        LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
+        LOGGER.info("一共行数:{}", xssfSheet.getFirstRowNum());
+
+    }
+
+    @Test
+    public void lastRowNumXSSF2() throws IOException {
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
+        LOGGER.info("一共:{}个sheet", xssfWorkbook.getNumberOfSheets());
+        XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
+        LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
+        XSSFRow row = xssfSheet.getRow(0);
+        LOGGER.info("第一行数据:{}", row);
+    }
+
 }

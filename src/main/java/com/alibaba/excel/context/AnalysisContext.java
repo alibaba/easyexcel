@@ -2,7 +2,7 @@ package com.alibaba.excel.context;
 
 import java.io.InputStream;
 
-import com.alibaba.excel.analysis.ExcelExecutor;
+import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -22,12 +22,10 @@ public interface AnalysisContext {
     /**
      * Select the current table
      *
-     * @param excelExecutor
-     *            Excel file Executor
      * @param readSheet
      *            sheet to read
      */
-    void currentSheet(ExcelExecutor excelExecutor, ReadSheet readSheet);
+    void currentSheet(ReadSheet readSheet);
 
     /**
      * All information about the workbook you are currently working on

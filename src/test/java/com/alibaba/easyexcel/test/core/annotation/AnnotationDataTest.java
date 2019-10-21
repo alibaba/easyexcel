@@ -48,6 +48,7 @@ public class AnnotationDataTest {
         data.setDate(DateUtils.parseDate("2020-01-01 01:01:01"));
         data.setNumber(99.99);
         data.setIgnore("忽略");
+        data.setTransientString("忽略");
         list.add(data);
         return list;
     }

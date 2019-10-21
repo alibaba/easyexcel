@@ -1,5 +1,7 @@
 package com.alibaba.excel.write.style.column;
 
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
@@ -24,27 +26,28 @@ public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandl
 
     @Override
     public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Head head, int relativeRowIndex, boolean isHead) {
-
-    }
+        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead) {}
 
     @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, CellData cellData,
-        Cell cell, Head head, int relativeRowIndex, boolean isHead) {
-        setColumnWidth(writeSheetHolder, cellData, cell, head, relativeRowIndex, isHead);
+    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
+        Head head, Integer relativeRowIndex, Boolean isHead) {}
+
+    @Override
+    public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        setColumnWidth(writeSheetHolder, cellDataList, cell, head, relativeRowIndex, isHead);
     }
 
     /**
      * Sets the column width when head create
      *
      * @param writeSheetHolder
-     * @param cellData
+     * @param cellDataList
      * @param cell
      * @param head
      * @param relativeRowIndex
      * @param isHead
      */
-    protected abstract void setColumnWidth(WriteSheetHolder writeSheetHolder, CellData cellData, Cell cell, Head head,
-        int relativeRowIndex, boolean isHead);
+    protected abstract void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell, Head head,
+        Integer relativeRowIndex, Boolean isHead);
 
 }

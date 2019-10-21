@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -34,7 +35,12 @@ public class DemoHeadDataListener extends AnalysisEventListener<DemoData> {
      */
     @Override
     public void onException(Exception exception, AnalysisContext context) {
-        LOGGER.error("解析失败，但是继续解析下一行", exception);
+        LOGGER.error("解析失败，但是继续解析下一行:{}", exception.getMessage());
+        if (exception instanceof ExcelDataConvertException) {
+            ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException)exception;
+            LOGGER.error("第{}行，第{}列解析异常", excelDataConvertException.getRowIndex(),
+                excelDataConvertException.getColumnIndex());
+        }
     }
 
     /**

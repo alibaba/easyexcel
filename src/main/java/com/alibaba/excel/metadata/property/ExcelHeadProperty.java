@@ -13,9 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.converters.AutoConverter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.HeadKindEnum;
@@ -54,6 +56,10 @@ public class ExcelHeadProperty {
      */
     private Map<Integer, ExcelContentProperty> contentPropertyMap;
     /**
+     * Configuration column information
+     */
+    private Map<String, ExcelContentProperty> fieldNameContentPropertyMap;
+    /**
      * Fields ignored
      */
     private Map<String, Field> ignoreMap;
@@ -62,6 +68,7 @@ public class ExcelHeadProperty {
         this.headClazz = headClazz;
         headMap = new TreeMap<Integer, Head>();
         contentPropertyMap = new TreeMap<Integer, ExcelContentProperty>();
+        fieldNameContentPropertyMap = new HashMap<String, ExcelContentProperty>();
         ignoreMap = new HashMap<String, Field>(16);
         headKind = HeadKindEnum.NONE;
         headRowNumber = 0;
@@ -78,10 +85,6 @@ public class ExcelHeadProperty {
         initHeadRowNumber();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is {}", headKind);
-        }
-        if (!hasHead()) {
-            LOGGER.warn(
-                "The table has no header set and all annotations will not be read.If you want to use annotations, please use set head class in ExcelWriterBuilder/ExcelWriterSheetBuilder/ExcelWriterTableBuilder");
         }
     }
 
@@ -119,25 +122,28 @@ public class ExcelHeadProperty {
             tempClass = tempClass.getSuperclass();
         }
 
+        ExcelIgnoreUnannotated excelIgnoreUnannotated =
+            (ExcelIgnoreUnannotated)headClazz.getAnnotation(ExcelIgnoreUnannotated.class);
         // Screening of field
         List<Field> defaultFieldList = new ArrayList<Field>();
         Map<Integer, Field> customFiledMap = new TreeMap<Integer, Field>();
         for (Field field : fieldList) {
             ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
-            if(Modifier.isStatic(field.getModifiers())&&Modifier.isFinal(field.getModifiers())){
-                ignoreMap.put(field.getName(),field);
-                continue;
-            }
-            if(Modifier.isTransient(field.getModifiers())){
-                ignoreMap.put(field.getName(),field);
-                continue;
-            }
             if (excelIgnore != null) {
                 ignoreMap.put(field.getName(), field);
                 continue;
             }
             ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-            if (excelProperty == null && convertAllFiled != null && !convertAllFiled) {
+            boolean noExcelProperty = excelProperty == null
+                && ((convertAllFiled != null && !convertAllFiled) || excelIgnoreUnannotated != null);
+            if (noExcelProperty) {
+                ignoreMap.put(field.getName(), field);
+                continue;
+            }
+            boolean isStaticFinalOrTransient =
+                (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()))
+                    || Modifier.isTransient(field.getModifiers());
+            if (excelProperty == null && isStaticFinalOrTransient) {
                 ignoreMap.put(field.getName(), field);
                 continue;
             }
@@ -199,6 +205,7 @@ public class ExcelHeadProperty {
             .setNumberFormatProperty(NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
         headMap.put(index, head);
         contentPropertyMap.put(index, excelContentProperty);
+        fieldNameContentPropertyMap.put(field.getName(), excelContentProperty);
     }
 
     public Class getHeadClazz() {
@@ -243,6 +250,14 @@ public class ExcelHeadProperty {
 
     public void setContentPropertyMap(Map<Integer, ExcelContentProperty> contentPropertyMap) {
         this.contentPropertyMap = contentPropertyMap;
+    }
+
+    public Map<String, ExcelContentProperty> getFieldNameContentPropertyMap() {
+        return fieldNameContentPropertyMap;
+    }
+
+    public void setFieldNameContentPropertyMap(Map<String, ExcelContentProperty> fieldNameContentPropertyMap) {
+        this.fieldNameContentPropertyMap = fieldNameContentPropertyMap;
     }
 
     public Map<String, Field> getIgnoreMap() {

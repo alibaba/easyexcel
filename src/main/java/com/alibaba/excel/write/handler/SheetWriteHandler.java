@@ -11,7 +11,7 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 public interface SheetWriteHandler extends WriteHandler {
 
     /**
-     * called before create the sheet
+     * Called before create the sheet
      *
      * @param writeWorkbookHolder
      * @param writeSheetHolder
@@ -19,7 +19,7 @@ public interface SheetWriteHandler extends WriteHandler {
     void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder);
 
     /**
-     * called after the sheet is created
+     * Called after the sheet is created
      *
      * @param writeWorkbookHolder
      * @param writeSheetHolder
