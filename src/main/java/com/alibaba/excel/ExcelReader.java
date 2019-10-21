@@ -191,7 +191,7 @@ public class ExcelReader {
      *
      * @param sheet
      *            Read sheet
-     * @deprecated please us {@link #read(ReadSheet)}
+     * @deprecated please us {@link #read(ReadSheet...)}
      */
     @Deprecated
     public void read(Sheet sheet) {

@@ -20,7 +20,7 @@ public class ExcelDataConvertException extends RuntimeException {
     /**
      * Nullable.Only when the header is configured and when the class header is used is not null.
      *
-     * @see {@link ExcelWriterBuilder#head(Class)}
+     * @see ExcelWriterBuilder#head(Class)
      */
     private ExcelContentProperty excelContentProperty;
 
