@@ -13,6 +13,8 @@ import lombok.Data;
  **/
 @Data
 public class ComplexHeadData {
+    private final static String TITLE = "title";
+    private transient String trans = "transient";
     @ExcelProperty({"主标题", "字符串标题"})
     private String string;
     @ExcelProperty({"主标题", "日期标题"})

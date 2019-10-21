@@ -85,7 +85,7 @@ public class WriteTest {
      * <p>
      * 2. 使用{@link ExcelProperty}注解指定复杂的头
      * <p>
-     * 3. 直接写即可
+     * 3. 直接写即可,写入时会忽略static final和 transient
      */
     @Test
     public void complexHeadWrite() {

@@ -21,7 +21,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 * [更新记事](/update.md)
 
 ## 维护者
-姬朋飞（玉霄）
+玉霄、庄家钜、怀宇
 ## 快速开始
 ### 读Excel
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
