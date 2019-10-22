@@ -146,7 +146,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         byte[] templateFileByte = null;
         if (writeWorkbook.getTemplateFile() != null) {
             templateFileByte = FileUtils.readFileToByteArray(writeWorkbook.getTemplateFile());
-        } else if (writeWorkbook.getTemplateInputStream() == null) {
+        } else if (writeWorkbook.getTemplateInputStream() != null) {
             try {
                 templateFileByte = IoUtils.toByteArray(writeWorkbook.getTemplateInputStream());
             } finally {

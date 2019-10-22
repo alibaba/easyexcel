@@ -5,18 +5,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.easyexcel.test.core.large.LargeData;
+import com.alibaba.easyexcel.test.core.simple.SimpleData;
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSON;
+
+import net.sf.cglib.beans.BeanMap;
 
 /**
  * 测试poi
@@ -26,6 +31,17 @@ import com.alibaba.fastjson.JSON;
 @Ignore
 public class Wirte {
     private static final Logger LOGGER = LoggerFactory.getLogger(Wirte.class);
+
+    @Test
+    public void simpleWrite1() {
+        LargeData ss = new LargeData();
+        ss.setStr23("ttt");
+        Map map = BeanMap.create(ss);
+        System.out.println(map.containsKey("str23"));
+        System.out.println(map.containsKey("str22"));
+        System.out.println(map.get("str23"));
+        System.out.println(map.get("str22"));
+    }
 
     @Test
     public void simpleWrite() {
