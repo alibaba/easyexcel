@@ -337,15 +337,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 }
             }
             if (analysisCell == null) {
-                analysisCell = new AnalysisCell();
-                analysisCell.setRowIndex(rowIndex);
-                analysisCell.setColumnIndex(columnIndex);
-                analysisCell.setOnlyOneVariable(Boolean.TRUE);
-                List<String> variableList = new ArrayList<String>();
-                analysisCell.setVariableList(variableList);
-                List<String> prepareDataList = new ArrayList<String>();
-                analysisCell.setPrepareDataList(prepareDataList);
-                analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COMMON);
+                analysisCell = initAnalysisCell(rowIndex, columnIndex);
             }
             String variable = value.substring(prefixIndex + 1, suffixIndex);
             if (StringUtils.isEmpty(variable)) {
@@ -383,6 +375,19 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             return true;
         }
         return false;
+    }
+
+    private AnalysisCell initAnalysisCell(Integer rowIndex, Integer columnIndex) {
+        AnalysisCell analysisCell = new AnalysisCell();
+        analysisCell.setRowIndex(rowIndex);
+        analysisCell.setColumnIndex(columnIndex);
+        analysisCell.setOnlyOneVariable(Boolean.TRUE);
+        List<String> variableList = new ArrayList<String>();
+        analysisCell.setVariableList(variableList);
+        List<String> prepareDataList = new ArrayList<String>();
+        analysisCell.setPrepareDataList(prepareDataList);
+        analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COMMON);
+        return analysisCell;
     }
 
     private String convertPrepareData(String prepareData) {
