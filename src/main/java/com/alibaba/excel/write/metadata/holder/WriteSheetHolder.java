@@ -156,6 +156,11 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         int newRowIndex = 0;
         switch (writeLastRowTypeEnum) {
             case TEMPLATE_EMPTY:
+                newRowIndex = Math.max(sheet.getLastRowNum(), cachedSheet.getLastRowNum());
+                if (newRowIndex != 0 || cachedSheet.getRow(0) != null) {
+                    newRowIndex++;
+                }
+                break;
             case HAS_DATA:
                 newRowIndex = Math.max(sheet.getLastRowNum(), cachedSheet.getLastRowNum());
                 newRowIndex++;

@@ -279,7 +279,12 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (cell == null) {
                     continue;
                 }
-                prepareData(cell.getStringCellValue(), analysisCellList, collectionAnalysisCellList, i, j);
+                boolean needFill =
+                    prepareData(cell.getStringCellValue(), analysisCellList, collectionAnalysisCellList, i, j);
+                // Prevent empty data from not being replaced
+                if (needFill) {
+                    cell.setCellValue(StringUtils.EMPTY);
+                }
             }
         }
         templateAnalysisCache.put(sheetNo, analysisCellList);
@@ -287,10 +292,20 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         return analysisCache.get(sheetNo);
     }
 
-    private void prepareData(String value, List<AnalysisCell> analysisCellList,
+    /**
+     * To prepare data
+     *
+     * @param value
+     * @param analysisCellList
+     * @param collectionAnalysisCellList
+     * @param rowIndex
+     * @param columnIndex
+     * @return Is a cell to be filled
+     */
+    private boolean prepareData(String value, List<AnalysisCell> analysisCellList,
         List<AnalysisCell> collectionAnalysisCellList, int rowIndex, int columnIndex) {
         if (StringUtils.isEmpty(value)) {
-            return;
+            return false;
         }
         AnalysisCell analysisCell = null;
         int startIndex = 0;
@@ -322,15 +337,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 }
             }
             if (analysisCell == null) {
-                analysisCell = new AnalysisCell();
-                analysisCell.setRowIndex(rowIndex);
-                analysisCell.setColumnIndex(columnIndex);
-                analysisCell.setOnlyOneVariable(Boolean.TRUE);
-                List<String> variableList = new ArrayList<String>();
-                analysisCell.setVariableList(variableList);
-                List<String> prepareDataList = new ArrayList<String>();
-                analysisCell.setPrepareDataList(prepareDataList);
-                analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COMMON);
+                analysisCell = initAnalysisCell(rowIndex, columnIndex);
             }
             String variable = value.substring(prefixIndex + 1, suffixIndex);
             if (StringUtils.isEmpty(variable)) {
@@ -365,7 +372,22 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             } else {
                 collectionAnalysisCellList.add(analysisCell);
             }
+            return true;
         }
+        return false;
+    }
+
+    private AnalysisCell initAnalysisCell(Integer rowIndex, Integer columnIndex) {
+        AnalysisCell analysisCell = new AnalysisCell();
+        analysisCell.setRowIndex(rowIndex);
+        analysisCell.setColumnIndex(columnIndex);
+        analysisCell.setOnlyOneVariable(Boolean.TRUE);
+        List<String> variableList = new ArrayList<String>();
+        analysisCell.setVariableList(variableList);
+        List<String> prepareDataList = new ArrayList<String>();
+        analysisCell.setPrepareDataList(prepareDataList);
+        analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COMMON);
+        return analysisCell;
     }
 
     private String convertPrepareData(String prepareData) {
