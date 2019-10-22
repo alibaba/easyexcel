@@ -1,5 +1,6 @@
 package com.alibaba.excel.analysis.v07;
 
+import org.apache.poi.ss.usermodel.Comment;
 import org.xml.sax.Attributes;
 
 /**
@@ -25,7 +26,7 @@ public interface XlsxCellHandler {
      * @param attributes
      *            Tag attributes
      */
-    void startHandle(String name, Attributes attributes);
+    void startHandle(String name, Attributes attributes, Comment comment);
 
     /**
      * End handle

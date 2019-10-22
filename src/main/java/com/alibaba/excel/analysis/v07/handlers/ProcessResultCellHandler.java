@@ -2,6 +2,7 @@ package com.alibaba.excel.analysis.v07.handlers;
 
 import static com.alibaba.excel.constant.ExcelXmlConstants.ROW_TAG;
 
+import org.apache.poi.ss.usermodel.Comment;
 import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
@@ -32,7 +33,7 @@ public class ProcessResultCellHandler implements XlsxCellHandler {
     }
 
     @Override
-    public void startHandle(String name, Attributes attributes) {
+    public void startHandle(String name, Attributes attributes, Comment comment) {
         analysisContext.readRowHolder(
             new ReadRowHolder(PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.POSITION)),
                 analysisContext.readSheetHolder().getGlobalConfiguration()));

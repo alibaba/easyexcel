@@ -17,6 +17,7 @@ import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.CommentsTable;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
@@ -46,6 +47,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
     private AnalysisContext analysisContext;
     private List<ReadSheet> sheetList;
     private Map<Integer, InputStream> sheetMap;
+    private Map<Integer, CommentsTable> commentsTableMap;
     /**
      * Current style information
      */
@@ -78,6 +80,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         sheetList = new ArrayList<ReadSheet>();
         sheetMap = new HashMap<Integer, InputStream>();
         XSSFReader.SheetIterator ite = (XSSFReader.SheetIterator)xssfReader.getSheetsData();
+        commentsTableMap = new HashMap<Integer, CommentsTable>();
         int index = 0;
         if (!ite.hasNext()) {
             throw new ExcelAnalysisException("Can not find any sheet!");
@@ -86,6 +89,10 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             InputStream inputStream = ite.next();
             sheetList.add(new ReadSheet(index, ite.getSheetName()));
             sheetMap.put(index, inputStream);
+            CommentsTable sheetComments = ite.getSheetComments();
+            if (null != sheetComments) {
+                commentsTableMap.put(index, sheetComments);
+            }
             index++;
         }
     }
@@ -181,7 +188,8 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
                 analysisContext.readWorkbookHolder().getGlobalConfiguration());
             if (readSheet != null) {
                 analysisContext.currentSheet(readSheet);
-                parseXmlSource(sheetMap.get(readSheet.getSheetNo()), new XlsxRowHandler(analysisContext, stylesTable));
+                Integer sheetNo = readSheet.getSheetNo();
+                parseXmlSource(sheetMap.get(sheetNo), new XlsxRowHandler(analysisContext, stylesTable, commentsTableMap.get(sheetNo)));
                 // The last sheet is read
                 analysisContext.readSheetHolder().notifyAfterAllAnalysed(analysisContext);
             }

@@ -13,7 +13,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.alibaba.excel.util.StringUtils;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
+import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -64,7 +66,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     }
 
     @Override
-    public void startHandle(String name, Attributes attributes) {
+    public void startHandle(String name, Attributes attributes, Comment comment) {
         currentTagDeque.push(name);
         // start a cell
         if (CELL_TAG.equals(name)) {
@@ -94,6 +96,9 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
                 } else {
                     currentCellData.setDataFormatString(dataFormatString);
                 }
+            }
+            if (null != comment && StringUtils.isNotEmpty(comment.getString())) {
+                currentCellData.setComment(comment.getString().toString());
             }
         }
         // cell is formula

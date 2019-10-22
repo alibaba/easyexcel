@@ -3,6 +3,7 @@ package com.alibaba.excel.analysis.v07.handlers;
 import static com.alibaba.excel.constant.ExcelXmlConstants.DIMENSION;
 import static com.alibaba.excel.constant.ExcelXmlConstants.DIMENSION_REF;
 
+import org.apache.poi.ss.usermodel.Comment;
 import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
@@ -27,7 +28,7 @@ public class CountRowCellHandler implements XlsxCellHandler {
     }
 
     @Override
-    public void startHandle(String name, Attributes attributes) {
+    public void startHandle(String name, Attributes attributes, Comment comment) {
         String d = attributes.getValue(DIMENSION_REF);
         String totalStr = d.substring(d.indexOf(":") + 1, d.length());
         String c = totalStr.toUpperCase().replaceAll("[A-Z]", "");

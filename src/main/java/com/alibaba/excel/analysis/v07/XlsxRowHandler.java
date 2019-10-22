@@ -2,7 +2,12 @@ package com.alibaba.excel.analysis.v07;
 
 import java.util.List;
 
+import com.alibaba.excel.constant.ExcelXmlConstants;
+import com.alibaba.excel.util.StringUtils;
+import org.apache.poi.ss.util.CellAddress;
+import org.apache.poi.xssf.model.CommentsTable;
 import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -17,6 +22,12 @@ public class XlsxRowHandler extends DefaultHandler {
 
     private List<XlsxCellHandler> cellHandlers;
     private XlsxRowResultHolder rowResultHolder;
+    private CommentsTable commentsTable;
+
+    public XlsxRowHandler(AnalysisContext analysisContext, StylesTable stylesTable, CommentsTable commentsTable) {
+        this(analysisContext, stylesTable);
+        this.commentsTable = commentsTable;
+    }
 
     public XlsxRowHandler(AnalysisContext analysisContext, StylesTable stylesTable) {
         this.cellHandlers = XlsxHandlerFactory.buildCellHandlers(analysisContext, stylesTable);
@@ -30,9 +41,15 @@ public class XlsxRowHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
+        String address = attributes.getValue(ExcelXmlConstants.POSITION);
+        XSSFComment xssfComment = null;
+        if (StringUtils.isNotEmpty(address)) {
+            CellAddress cellAddress = new CellAddress(attributes.getValue(ExcelXmlConstants.POSITION));
+            xssfComment = commentsTable.getCellComments().get(cellAddress);
+        }
         for (XlsxCellHandler cellHandler : cellHandlers) {
             if (cellHandler.support(name)) {
-                cellHandler.startHandle(name, attributes);
+                cellHandler.startHandle(name, attributes, xssfComment);
             }
         }
     }

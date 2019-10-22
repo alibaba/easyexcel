@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.util.StringUtils;
+import org.apache.poi.ss.usermodel.RichTextString;
 
 /**
  * Excel internal cell data.
@@ -42,6 +43,8 @@ public class CellData<T> {
      */
     private T data;
 
+    private String comment;
+
     public CellData(CellData<T> other) {
         this.type = other.type;
         this.numberValue = other.numberValue;
@@ -53,6 +56,7 @@ public class CellData<T> {
         this.dataFormat = other.dataFormat;
         this.dataFormatString = other.dataFormatString;
         this.data = other.data;
+        this.comment = other.comment;
     }
 
     public CellData() {}
@@ -196,6 +200,14 @@ public class CellData<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getComment() {
+        return comment;
     }
 
     /**
