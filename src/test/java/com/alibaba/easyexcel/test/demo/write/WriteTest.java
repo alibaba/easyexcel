@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -60,6 +62,35 @@ public class WriteTest {
         excelWriter.write(data(), writeSheet);
         /// 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
+    }
+
+    /**
+     * 根据参数只导出指定列
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 根据自己或者排除自己需要的列
+     * <p>
+     * 3. 直接写即可
+     */
+    @Test
+    public void excludeOrIncludeWrite() {
+        String fileName = TestFileUtil.getPath() + "excludeOrIncludeWrite" + System.currentTimeMillis() + ".xlsx";
+
+        // 根据用户传入字段 假设我们要忽略 date
+        Set<String> excludeColumnFiledNames = new HashSet<String>();
+        excludeColumnFiledNames.add("date");
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).excludeColumnFiledNames(excludeColumnFiledNames).sheet("模板")
+            .doWrite(data());
+
+        fileName = TestFileUtil.getPath() + "excludeOrIncludeWrite" + System.currentTimeMillis() + ".xlsx";
+        // 根据用户传入字段 假设我们只要导出 date
+        Set<String> includeColumnFiledNames = new HashSet<String>();
+        includeColumnFiledNames.add("date");
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).includeColumnFiledNames(includeColumnFiledNames).sheet("模板")
+            .doWrite(data());
     }
 
     /**

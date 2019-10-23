@@ -31,12 +31,21 @@ public class WorkBookUtil {
             if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
                 XSSFWorkbook xssfWorkbook = new XSSFWorkbook(writeWorkbookHolder.getTempTemplateInputStream());
                 writeWorkbookHolder.setCachedWorkbook(xssfWorkbook);
-                writeWorkbookHolder.setWorkbook(new SXSSFWorkbook(xssfWorkbook, ROW_ACCESS_WINDOW_SIZE));
+                if (writeWorkbookHolder.getInMemory()) {
+                    writeWorkbookHolder.setWorkbook(xssfWorkbook);
+                } else {
+                    writeWorkbookHolder.setWorkbook(new SXSSFWorkbook(xssfWorkbook, ROW_ACCESS_WINDOW_SIZE));
+                }
                 return;
             }
-            SXSSFWorkbook sxssWorkbook = new SXSSFWorkbook(ROW_ACCESS_WINDOW_SIZE);
-            writeWorkbookHolder.setCachedWorkbook(sxssWorkbook);
-            writeWorkbookHolder.setWorkbook(sxssWorkbook);
+            Workbook workbook = null;
+            if (writeWorkbookHolder.getInMemory()) {
+                workbook = new XSSFWorkbook();
+            } else {
+                workbook = new SXSSFWorkbook(ROW_ACCESS_WINDOW_SIZE);
+            }
+            writeWorkbookHolder.setCachedWorkbook(workbook);
+            writeWorkbookHolder.setWorkbook(workbook);
             return;
         }
         HSSFWorkbook hssfWorkbook;

@@ -15,7 +15,6 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.openxml4j.opc.PackagePart;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFRelation;
@@ -35,7 +34,6 @@ import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.SheetUtils;
-import com.alibaba.excel.util.StringUtils;
 
 /**
  *

@@ -1,6 +1,7 @@
 package com.alibaba.excel.write.metadata.holder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,6 +66,22 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      * Use the default style.Default is true.
      */
     private Boolean useDefaultStyle;
+    /**
+     * Ignore the custom columns.
+     */
+    private Collection<Integer> excludeColumnIndexes;
+    /**
+     * Ignore the custom columns.
+     */
+    private Collection<String> excludeColumnFiledNames;
+    /**
+     * Only output the custom columns.
+     */
+    private Collection<Integer> includeColumnIndexes;
+    /**
+     * Only output the custom columns.
+     */
+    private Collection<String> includeColumnFiledNames;
 
     public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder,
         Boolean convertAllFiled) {
@@ -110,8 +127,29 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             this.useDefaultStyle = writeBasicParameter.getUseDefaultStyle();
         }
 
+        if (writeBasicParameter.getExcludeColumnFiledNames() == null && parentAbstractWriteHolder != null) {
+            this.excludeColumnFiledNames = parentAbstractWriteHolder.getExcludeColumnFiledNames();
+        } else {
+            this.excludeColumnFiledNames = writeBasicParameter.getExcludeColumnFiledNames();
+        }
+        if (writeBasicParameter.getExcludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
+            this.excludeColumnIndexes = parentAbstractWriteHolder.getExcludeColumnIndexes();
+        } else {
+            this.excludeColumnIndexes = writeBasicParameter.getExcludeColumnIndexes();
+        }
+        if (writeBasicParameter.getIncludeColumnFiledNames() == null && parentAbstractWriteHolder != null) {
+            this.includeColumnFiledNames = parentAbstractWriteHolder.getIncludeColumnFiledNames();
+        } else {
+            this.includeColumnFiledNames = writeBasicParameter.getIncludeColumnFiledNames();
+        }
+        if (writeBasicParameter.getIncludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
+            this.includeColumnIndexes = parentAbstractWriteHolder.getIncludeColumnIndexes();
+        } else {
+            this.includeColumnIndexes = writeBasicParameter.getIncludeColumnIndexes();
+        }
+
         // Initialization property
-        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(getClazz(), getHead(), convertAllFiled);
+        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllFiled);
 
         // Compatible with old code
         compatibleOldCode(writeBasicParameter);
@@ -148,7 +186,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                 getConverterMap().put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
             }
         }
-
     }
 
     /**
@@ -343,6 +380,27 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         return result;
     }
 
+    @Override
+    public boolean ignore(String fieldName, Integer columnIndex) {
+        if (fieldName != null) {
+            if (includeColumnFiledNames != null && !includeColumnFiledNames.contains(fieldName)) {
+                return true;
+            }
+            if (excludeColumnFiledNames != null && excludeColumnFiledNames.contains(fieldName)) {
+                return true;
+            }
+        }
+        if (columnIndex != null) {
+            if (includeColumnIndexes != null && !includeColumnIndexes.contains(columnIndex)) {
+                return true;
+            }
+            if (excludeColumnIndexes != null && excludeColumnIndexes.contains(columnIndex)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Boolean getNeedHead() {
         return needHead;
     }
@@ -381,6 +439,38 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
     public void setUseDefaultStyle(Boolean useDefaultStyle) {
         this.useDefaultStyle = useDefaultStyle;
+    }
+
+    public Collection<Integer> getExcludeColumnIndexes() {
+        return excludeColumnIndexes;
+    }
+
+    public void setExcludeColumnIndexes(Collection<Integer> excludeColumnIndexes) {
+        this.excludeColumnIndexes = excludeColumnIndexes;
+    }
+
+    public Collection<String> getExcludeColumnFiledNames() {
+        return excludeColumnFiledNames;
+    }
+
+    public void setExcludeColumnFiledNames(Collection<String> excludeColumnFiledNames) {
+        this.excludeColumnFiledNames = excludeColumnFiledNames;
+    }
+
+    public Collection<Integer> getIncludeColumnIndexes() {
+        return includeColumnIndexes;
+    }
+
+    public void setIncludeColumnIndexes(Collection<Integer> includeColumnIndexes) {
+        this.includeColumnIndexes = includeColumnIndexes;
+    }
+
+    public Collection<String> getIncludeColumnFiledNames() {
+        return includeColumnFiledNames;
+    }
+
+    public void setIncludeColumnFiledNames(Collection<String> includeColumnFiledNames) {
+        this.includeColumnFiledNames = includeColumnFiledNames;
     }
 
     @Override

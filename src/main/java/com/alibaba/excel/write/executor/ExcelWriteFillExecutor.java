@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -141,6 +142,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             Cell cell = getOneCell(analysisCell, fillConfig);
             if (analysisCell.getOnlyOneVariable()) {
                 String variable = analysisCell.getVariableList().get(0);
+                if (writeContext.currentWriteHolder().ignore(variable, analysisCell.getColumnIndex())) {
+                    continue;
+                }
                 if (!dataMap.containsKey(variable)) {
                     continue;
                 }
@@ -154,6 +158,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 List<CellData> cellDataList = new ArrayList<CellData>();
                 for (String variable : analysisCell.getVariableList()) {
                     cellValueBuild.append(analysisCell.getPrepareDataList().get(index++));
+                    if (writeContext.currentWriteHolder().ignore(variable, analysisCell.getColumnIndex())) {
+                        continue;
+                    }
                     if (!dataMap.containsKey(variable)) {
                         continue;
                     }
@@ -279,11 +286,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (cell == null) {
                     continue;
                 }
-                boolean needFill =
-                    prepareData(cell.getStringCellValue(), analysisCellList, collectionAnalysisCellList, i, j);
+                String preparedData = prepareData(cell, analysisCellList, collectionAnalysisCellList, i, j);
                 // Prevent empty data from not being replaced
-                if (needFill) {
-                    cell.setCellValue(StringUtils.EMPTY);
+                if (preparedData != null) {
+                    cell.setCellValue(preparedData);
                 }
             }
         }
@@ -295,18 +301,23 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     /**
      * To prepare data
      *
-     * @param value
+     * @param cell
      * @param analysisCellList
      * @param collectionAnalysisCellList
      * @param rowIndex
      * @param columnIndex
-     * @return Is a cell to be filled
+     * @return Returns the data that the cell needs to replace
      */
-    private boolean prepareData(String value, List<AnalysisCell> analysisCellList,
+    private String prepareData(Cell cell, List<AnalysisCell> analysisCellList,
         List<AnalysisCell> collectionAnalysisCellList, int rowIndex, int columnIndex) {
-        if (StringUtils.isEmpty(value)) {
-            return false;
+        if (!CellType.STRING.equals(cell.getCellTypeEnum())) {
+            return null;
         }
+        String value = cell.getStringCellValue();
+        if (StringUtils.isEmpty(value)) {
+            return null;
+        }
+        StringBuilder preparedData = new StringBuilder();
         AnalysisCell analysisCell = null;
         int startIndex = 0;
         int length = value.length();
@@ -354,8 +365,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             if (lastPrepareDataIndex == prefixIndex) {
                 analysisCell.getPrepareDataList().add(StringUtils.EMPTY);
             } else {
-                analysisCell.getPrepareDataList()
-                    .add(convertPrepareData(value.substring(lastPrepareDataIndex, prefixIndex)));
+                String data = convertPrepareData(value.substring(lastPrepareDataIndex, prefixIndex));
+                preparedData.append(data);
+                analysisCell.getPrepareDataList().add(data);
                 analysisCell.setOnlyOneVariable(Boolean.FALSE);
             }
             lastPrepareDataIndex = suffixIndex + 1;
@@ -372,9 +384,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             } else {
                 collectionAnalysisCellList.add(analysisCell);
             }
-            return true;
+            return preparedData.toString();
         }
-        return false;
+        return null;
     }
 
     private AnalysisCell initAnalysisCell(Integer rowIndex, Integer columnIndex) {

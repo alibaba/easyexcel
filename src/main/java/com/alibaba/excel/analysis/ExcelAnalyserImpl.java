@@ -129,26 +129,28 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
 
+        Throwable throwable = null;
+
         try {
             if (readWorkbookHolder.getReadCache() != null) {
                 readWorkbookHolder.getReadCache().destroy();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
         try {
             if (readWorkbookHolder.getOpcPackage() != null) {
                 readWorkbookHolder.getOpcPackage().revert();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
         try {
             if (readWorkbookHolder.getPoifsFileSystem() != null) {
                 readWorkbookHolder.getPoifsFileSystem().close();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
         try {
             if (analysisContext.readWorkbookHolder().getAutoCloseStream()
@@ -156,17 +158,21 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                 readWorkbookHolder.getInputStream().close();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
         try {
             if (readWorkbookHolder.getTempFile() != null) {
                 FileUtils.delete(readWorkbookHolder.getTempFile());
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
         clearEncrypt03();
+
+        if (throwable != null) {
+            throw new ExcelAnalysisException("Can not close IO", throwable);
+        }
     }
 
     private void clearEncrypt03() {
@@ -175,10 +181,6 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             return;
         }
         Biff8EncryptionKey.setCurrentUserPassword(null);
-    }
-
-    private void throwCanNotCloseIo(Throwable t) {
-        throw new ExcelAnalysisException("Can not close IO", t);
     }
 
     @Override

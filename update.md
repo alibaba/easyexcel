@@ -1,3 +1,11 @@
+# 2.1.0-beta3
+* 支持强行指定在内存处理，以支持备注、RichTextString等的写入
+* 修复关闭流失败，可能会不删除临时文件的问题
+* 支持根据参数自定义导出列
+* 修改最长匹配策略的最大长度 [Issue #734](https://github.com/alibaba/easyexcel/issues/734)
+* 修复策略头未生效的bug [Issue #735](https://github.com/alibaba/easyexcel/issues/735)
+* 修复填充的时候有数字会异常
+
 # 2.1.0-beta2
 * 修改模板通过流创建报错的bug
 * 修复空数据未替换掉的bug

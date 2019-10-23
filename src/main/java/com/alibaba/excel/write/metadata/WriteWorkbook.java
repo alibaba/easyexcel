@@ -43,7 +43,7 @@ public class WriteWorkbook extends WriteBasicParameter {
      */
     private File templateFile;
     /**
-     * Default trueuseDefaultStyle
+     * Default true.
      */
     private Boolean autoCloseStream;
     /**
@@ -57,6 +57,12 @@ public class WriteWorkbook extends WriteBasicParameter {
      *
      */
     private String password;
+    /**
+     * Write excel in memory. Default false,the cache file is created and finally written to excel.
+     * <p>
+     * Comment and RichTextString are only supported in memory mode.
+     */
+    private Boolean inMemory;
     /**
      * The default is all excel objects.Default is true.
      * <p>
@@ -154,5 +160,13 @@ public class WriteWorkbook extends WriteBasicParameter {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getInMemory() {
+        return inMemory;
+    }
+
+    public void setInMemory(Boolean inMemory) {
+        this.inMemory = inMemory;
     }
 }
