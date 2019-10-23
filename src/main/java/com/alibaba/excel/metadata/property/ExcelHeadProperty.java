@@ -168,8 +168,9 @@ public class ExcelHeadProperty {
         int index = 0;
         for (Field field : defaultFieldList) {
             while (customFiledMap.containsKey(index)) {
+                Field customFiled = customFiledMap.get(index);
                 customFiledMap.remove(index);
-                if (!initOneColumnProperty(holder, index, customFiledMap.get(index), Boolean.TRUE)) {
+                if (!initOneColumnProperty(holder, index, customFiled, Boolean.TRUE)) {
                     index++;
                 }
             }
