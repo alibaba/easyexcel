@@ -3,10 +3,12 @@ package com.alibaba.excel.analysis.v03;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.alibaba.excel.util.StringUtils;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.eventusermodel.HSSFEventFactory;
@@ -19,6 +21,11 @@ import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,11 +81,18 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
     private HSSFWorkbook stubWorkbook;
     private List<XlsRecordHandler> recordHandlers = new ArrayList<XlsRecordHandler>();
     private AnalysisContext analysisContext;
+    private Workbook poiWorkbook;
+    private Map<Integer, String> rowComments;
 
     public XlsSaxAnalyser(AnalysisContext context, POIFSFileSystem poifsFileSystem) {
         this.analysisContext = context;
         this.records = new TreeMap<Integer, CellData>();
         this.poifsFileSystem = poifsFileSystem;
+        try {
+            this.poiWorkbook = WorkbookFactory.create(poifsFileSystem);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         analysisContext.readWorkbookHolder().setPoifsFileSystem(poifsFileSystem);
     }
 
@@ -139,6 +153,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
                 thisRow = handler.getRow();
                 thisColumn = handler.getColumn();
                 cellData = handler.getCellData();
+                handleComments(thisRow, thisColumn);
                 if (cellData != null) {
                     cellData.checkEmpty();
                     if (CellDataTypeEnum.EMPTY != cellData.getType()) {
@@ -170,6 +185,26 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         processLastCellOfRow(record);
     }
 
+    public void handleComments(int row, int col) {
+        if (null == this.poiWorkbook || null == analysisContext.readSheetHolder() || row < 0 || col < 0) {
+            return;
+        }
+        Sheet currentSheet = poiWorkbook.getSheetAt(analysisContext.readSheetHolder().getSheetNo());
+        Map<CellAddress, ? extends Comment> cellComments = currentSheet.getCellComments();
+        if (CollectionUtils.isEmpty(cellComments)) {
+            return;
+        }
+        Comment comment = cellComments.get(new CellAddress(row, col));
+        if (null == comment) {
+            return;
+        }
+        String commentsStr = comment.getString().toString();
+        if (!StringUtils.isEmpty(commentsStr)) {
+            rowComments = rowComments == null ? new HashMap<Integer, String>(8) : rowComments;
+            rowComments.put(col, commentsStr);
+        }
+    }
+
     private boolean ignoreRecord(Record record) {
         return analysisContext.readWorkbookHolder().getIgnoreRecord03() && record.getSid() != BoundSheetRecord.sid
             && record.getSid() != BOFRecord.sid;
@@ -188,6 +223,9 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         }
         analysisContext.readRowHolder(
             new ReadRowHolder(lastRowNumber, analysisContext.readSheetHolder().getGlobalConfiguration()));
+        if (!CollectionUtils.isEmpty(rowComments)) {
+            analysisContext.readRowHolder().setRowComments(rowComments);
+        }
         analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records), analysisContext);
         records.clear();
         lastColumnNumber = -1;

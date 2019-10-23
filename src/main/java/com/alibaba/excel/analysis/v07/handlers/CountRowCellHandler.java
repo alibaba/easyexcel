@@ -39,4 +39,9 @@ public class CountRowCellHandler implements XlsxCellHandler {
 
     }
 
+    @Override
+    public void handleComments(String comment) {
+
+    }
+
 }

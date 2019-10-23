@@ -45,4 +45,9 @@ public class ProcessResultCellHandler implements XlsxCellHandler {
         rowResultHandler.clearResult();
     }
 
+    @Override
+    public void handleComments(String comment) {
+
+    }
+
 }

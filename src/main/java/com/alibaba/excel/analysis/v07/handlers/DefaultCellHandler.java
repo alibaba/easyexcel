@@ -161,6 +161,11 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     }
 
     @Override
+    public void handleComments(String comment) {
+        analysisContext.readRowHolder().addComments(curCol, comment);
+    }
+
+    @Override
     public void appendCurrentCellValue(char[] ch, int start, int length) {
         String currentTag = currentTagDeque.peek();
         if (currentTag == null) {
