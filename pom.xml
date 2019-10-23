@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>2.1.0-beta2</version>
+    <version>2.1.0-beta3</version>
     <packaging>jar</packaging>
     <name>easyexcel</name>
 

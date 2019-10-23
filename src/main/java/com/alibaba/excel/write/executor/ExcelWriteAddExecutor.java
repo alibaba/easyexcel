@@ -98,6 +98,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
 
     private void doAddBasicTypeToExcel(List<Object> oneRowData, Head head, Row row, int relativeRowIndex, int dataIndex,
         int cellIndex) {
+        if (writeContext.currentWriteHolder().ignore(null, cellIndex)) {
+            return;
+        }
         WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
         WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
@@ -121,6 +124,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 cellIndex = entry.getKey();
                 ExcelContentProperty excelContentProperty = entry.getValue();
                 String name = excelContentProperty.getField().getName();
+                if (writeContext.currentWriteHolder().ignore(name, cellIndex)) {
+                    continue;
+                }
                 if (!beanMap.containsKey(name)) {
                     continue;
                 }
@@ -147,7 +153,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         for (Field field : fieldList) {
             String filedName = field.getName();
             boolean uselessData = !beanMap.containsKey(filedName) || beanMapHandledSet.contains(filedName)
-                || ignoreMap.containsKey(filedName);
+                || ignoreMap.containsKey(filedName) || writeContext.currentWriteHolder().ignore(filedName, cellIndex);
             if (uselessData) {
                 continue;
             }

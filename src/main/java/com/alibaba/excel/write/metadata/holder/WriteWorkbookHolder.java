@@ -97,6 +97,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * Whether the encryption
      */
     private String password;
+    /**
+     * Write excel in memory. Default false,the cache file is created and finally written to excel.
+     * <p>
+     * Comment and RichTextString are only supported in memory mode.
+     */
+    private Boolean inMemory;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
@@ -137,6 +143,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         }
         this.hasBeenInitializedSheet = new HashMap<Integer, WriteSheetHolder>();
         this.password = writeWorkbook.getPassword();
+        if (writeWorkbook.getInMemory() == null) {
+            this.inMemory = Boolean.FALSE;
+        } else {
+            this.inMemory = writeWorkbook.getInMemory();
+        }
     }
 
     private void copyTemplate() throws IOException {
@@ -260,6 +271,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getInMemory() {
+        return inMemory;
+    }
+
+    public void setInMemory(Boolean inMemory) {
+        this.inMemory = inMemory;
     }
 
     @Override

@@ -21,7 +21,7 @@ import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
  */
 public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrategy {
 
-    private static final int MAX_COLUMN_WIDTH = 256;
+    private static final int MAX_COLUMN_WIDTH = 255;
 
     private static final Map<Integer, Map<Integer, Integer>> CACHE = new HashMap<Integer, Map<Integer, Integer>>(8);
 

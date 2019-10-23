@@ -1,6 +1,7 @@
 package com.alibaba.excel.write.builder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.alibaba.excel.ExcelWriter;
@@ -125,6 +126,39 @@ public class ExcelWriterTableBuilder {
      */
     public ExcelWriterTableBuilder tableNo(Integer tableNo) {
         writeTable.setTableNo(tableNo);
+        return this;
+    }
+
+
+    /**
+     * Ignore the custom columns.
+     */
+    public ExcelWriterTableBuilder excludeColumnIndexes(Collection<Integer> excludeColumnIndexes) {
+        writeTable.setExcludeColumnIndexes(excludeColumnIndexes);
+        return this;
+    }
+
+    /**
+     * Ignore the custom columns.
+     */
+    public ExcelWriterTableBuilder excludeColumnFiledNames(Collection<String> excludeColumnFiledNames) {
+        writeTable.setExcludeColumnFiledNames(excludeColumnFiledNames);
+        return this;
+    }
+
+    /**
+     * Only output the custom columns.
+     */
+    public ExcelWriterTableBuilder includeColumnIndexes(Collection<Integer> includeColumnIndexes) {
+        writeTable.setIncludeColumnIndexes(includeColumnIndexes);
+        return this;
+    }
+
+    /**
+     * Only output the custom columns.
+     */
+    public ExcelWriterTableBuilder includeColumnFiledNames(Collection<String> includeColumnFiledNames) {
+        writeSheet.setIncludeColumnFiledNames(includeColumnFiledNames);
         return this;
     }
 

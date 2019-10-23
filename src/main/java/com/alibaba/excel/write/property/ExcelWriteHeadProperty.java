@@ -17,6 +17,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.metadata.property.ColumnWidthProperty;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
@@ -31,8 +32,8 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
     private RowHeightProperty headRowHeightProperty;
     private RowHeightProperty contentRowHeightProperty;
 
-    public ExcelWriteHeadProperty(Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
-        super(headClazz, head, convertAllFiled);
+    public ExcelWriteHeadProperty(Holder holder, Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
+        super(holder, headClazz, head, convertAllFiled);
         if (getHeadKind() != HeadKindEnum.CLASS) {
             return;
         }

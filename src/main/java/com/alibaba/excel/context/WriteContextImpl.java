@@ -179,6 +179,7 @@ public class WriteContextImpl implements WriteContext {
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
             addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
+            WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.FALSE);
         }
     }
 
@@ -197,8 +198,7 @@ public class WriteContextImpl implements WriteContext {
             Cell cell = row.createCell(columnIndex);
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
             cell.setCellValue(head.getHeadNameList().get(relativeRowIndex));
-            CellData cellData = null;
-            WriteHandlerUtils.afterCellDispose(this, cellData, cell, head, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.afterCellDispose(this, (CellData)null, cell, head, relativeRowIndex, Boolean.TRUE);
         }
     }
 
@@ -261,12 +261,13 @@ public class WriteContextImpl implements WriteContext {
         if (writeWorkbookHolder == null) {
             return;
         }
+        Throwable throwable = null;
 
         boolean isOutputStreamEncrypt = false;
         try {
             isOutputStreamEncrypt = doOutputStreamEncrypt07();
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
         if (!isOutputStreamEncrypt) {
@@ -274,7 +275,7 @@ public class WriteContextImpl implements WriteContext {
                 writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
                 writeWorkbookHolder.getWorkbook().close();
             } catch (Throwable t) {
-                throwCanNotCloseIo(t);
+                throwable = t;
             }
         }
 
@@ -284,7 +285,7 @@ public class WriteContextImpl implements WriteContext {
                 ((SXSSFWorkbook)workbook).dispose();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
         try {
@@ -292,14 +293,14 @@ public class WriteContextImpl implements WriteContext {
                 writeWorkbookHolder.getOutputStream().close();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
         if (!isOutputStreamEncrypt) {
             try {
                 doFileEncrypt07();
             } catch (Throwable t) {
-                throwCanNotCloseIo(t);
+                throwable = t;
             }
         }
 
@@ -308,18 +309,18 @@ public class WriteContextImpl implements WriteContext {
                 writeWorkbookHolder.getTempTemplateInputStream().close();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
         clearEncrypt03();
 
+        if (throwable != null) {
+            throw new ExcelGenerateException("Can not close IO", throwable);
+        }
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Finished write.");
         }
-    }
-
-    private void throwCanNotCloseIo(Throwable t) {
-        throw new ExcelGenerateException("Can not close IO", t);
     }
 
     @Override

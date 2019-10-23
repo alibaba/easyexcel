@@ -17,14 +17,15 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.converters.AutoConverter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.util.StringUtils;
+import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 
 /**
  * Define the header attribute of excel
@@ -46,7 +47,6 @@ public class ExcelHeadProperty {
      * The number of rows in the line with the most rows
      */
     private int headRowNumber;
-
     /**
      * Configuration header information
      */
@@ -64,7 +64,7 @@ public class ExcelHeadProperty {
      */
     private Map<String, Field> ignoreMap;
 
-    public ExcelHeadProperty(Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
+    public ExcelHeadProperty(Holder holder, Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
         this.headClazz = headClazz;
         headMap = new TreeMap<Integer, Head>();
         contentPropertyMap = new TreeMap<Integer, ExcelContentProperty>();
@@ -73,14 +73,21 @@ public class ExcelHeadProperty {
         headKind = HeadKindEnum.NONE;
         headRowNumber = 0;
         if (head != null && !head.isEmpty()) {
+            int headIndex = 0;
             for (int i = 0; i < head.size(); i++) {
-                headMap.put(i, new Head(i, null, head.get(i), Boolean.FALSE, Boolean.TRUE));
-                contentPropertyMap.put(i, null);
+                if (holder instanceof AbstractWriteHolder) {
+                    if (((AbstractWriteHolder)holder).ignore(null, i)) {
+                        continue;
+                    }
+                }
+                headMap.put(headIndex, new Head(headIndex, null, head.get(i), Boolean.FALSE, Boolean.TRUE));
+                contentPropertyMap.put(headIndex, null);
+                headIndex++;
             }
             headKind = HeadKindEnum.STRING;
         } else {
             // convert headClazz to head
-            initColumnProperties(convertAllFiled);
+            initColumnProperties(holder, convertAllFiled);
         }
         initHeadRowNumber();
         if (LOGGER.isDebugEnabled()) {
@@ -108,7 +115,7 @@ public class ExcelHeadProperty {
         }
     }
 
-    private void initColumnProperties(Boolean convertAllFiled) {
+    private void initColumnProperties(Holder holder, Boolean convertAllFiled) {
         if (headClazz == null) {
             return;
         }
@@ -161,20 +168,37 @@ public class ExcelHeadProperty {
         int index = 0;
         for (Field field : defaultFieldList) {
             while (customFiledMap.containsKey(index)) {
-                initOneColumnProperty(index, customFiledMap.get(index), Boolean.TRUE);
+                Field customFiled = customFiledMap.get(index);
                 customFiledMap.remove(index);
+                if (!initOneColumnProperty(holder, index, customFiled, Boolean.TRUE)) {
+                    index++;
+                }
+            }
+            if (!initOneColumnProperty(holder, index, field, Boolean.FALSE)) {
                 index++;
             }
-            initOneColumnProperty(index, field, Boolean.FALSE);
-            index++;
         }
         for (Map.Entry<Integer, Field> entry : customFiledMap.entrySet()) {
-            initOneColumnProperty(entry.getKey(), entry.getValue(), Boolean.TRUE);
+            initOneColumnProperty(holder, entry.getKey(), entry.getValue(), Boolean.TRUE);
         }
         headKind = HeadKindEnum.CLASS;
     }
 
-    private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
+    /**
+     * Initialization column property
+     *
+     * @param holder
+     * @param index
+     * @param field
+     * @param forceIndex
+     * @return Ignore current field
+     */
+    private boolean initOneColumnProperty(Holder holder, int index, Field field, Boolean forceIndex) {
+        if (holder instanceof AbstractWriteHolder) {
+            if (((AbstractWriteHolder)holder).ignore(field.getName(), index)) {
+                return true;
+            }
+        }
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         List<String> tmpHeadList = new ArrayList<String>();
         boolean notForceName = excelProperty == null || excelProperty.value().length <= 0
@@ -206,6 +230,7 @@ public class ExcelHeadProperty {
         headMap.put(index, head);
         contentPropertyMap.put(index, excelContentProperty);
         fieldNameContentPropertyMap.put(field.getName(), excelContentProperty);
+        return false;
     }
 
     public Class getHeadClazz() {
