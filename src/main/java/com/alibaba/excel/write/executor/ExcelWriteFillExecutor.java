@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import com.alibaba.excel.context.WriteContext;
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
@@ -168,18 +169,21 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     CellData cellData = convert(writeSheetHolder, value == null ? null : value.getClass(), cell, value,
                         fieldNameContentPropertyMap.get(variable));
                     cellDataList.add(cellData);
-                    switch (cellData.getType()) {
-                        case STRING:
-                            cellValueBuild.append(cellData.getStringValue());
-                            break;
-                        case BOOLEAN:
-                            cellValueBuild.append(cellData.getBooleanValue());
-                            break;
-                        case NUMBER:
-                            cellValueBuild.append(cellData.getNumberValue());
-                            break;
-                        default:
-                            break;
+                    CellDataTypeEnum type = cellData.getType();
+                    if (type != null) {
+                        switch (type) {
+                            case STRING:
+                                cellValueBuild.append(cellData.getStringValue());
+                                break;
+                            case BOOLEAN:
+                                cellValueBuild.append(cellData.getBooleanValue());
+                                break;
+                            case NUMBER:
+                                cellValueBuild.append(cellData.getNumberValue());
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 cellValueBuild.append(analysisCell.getPrepareDataList().get(index));

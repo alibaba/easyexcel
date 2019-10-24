@@ -1,27 +1,17 @@
 package com.alibaba.excel.context;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.util.FileUtils;
-import com.alibaba.excel.util.StringUtils;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
-import org.apache.poi.poifs.crypt.Decryptor;
 import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.crypt.EncryptionMode;
 import org.apache.poi.poifs.crypt.Encryptor;
-import org.apache.poi.poifs.filesystem.DocumentOutputStream;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -36,6 +26,9 @@ import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
@@ -179,7 +172,7 @@ public class WriteContextImpl implements WriteContext {
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
             addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
-            WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.FALSE);
+            WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.TRUE);
         }
     }
 

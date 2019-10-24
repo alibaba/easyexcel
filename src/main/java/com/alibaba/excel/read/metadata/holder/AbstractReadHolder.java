@@ -158,7 +158,6 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             if (currentheadRowNumber == rowIndex + 1) {
                 buildHead(analysisContext, cellDataMap);
             }
-
             // Now is header
             for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
                 try {
@@ -206,8 +205,8 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                 tmpContentPropertyMap.put(entry.getKey(), contentPropertyMapData.get(entry.getKey()));
                 continue;
             }
-            String headName = headData.getHeadNameList().get(0);
-
+            List<String> headNameList = headData.getHeadNameList();
+            String headName = headNameList.get(headNameList.size() - 1);
             for (Map.Entry<Integer, String> stringEntry : dataMap.entrySet()) {
                 String headString = stringEntry.getValue();
                 Integer stringKey = stringEntry.getKey();

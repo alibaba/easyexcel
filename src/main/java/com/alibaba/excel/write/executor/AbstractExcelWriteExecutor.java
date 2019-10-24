@@ -31,7 +31,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     protected CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty) {
         if (value == null) {
-            return new CellData();
+            return new CellData(CellDataTypeEnum.EMPTY);
         }
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
             value = ((String)value).trim();
@@ -39,6 +39,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         CellData cellData = convert(currentWriteHolder, clazz, cell, value, excelContentProperty);
         if (cellData.getFormula() != null && cellData.getFormula()) {
             cell.setCellFormula(cellData.getFormulaValue());
+        }
+        if (cellData.getType() == null) {
+            cellData.setType(CellDataTypeEnum.EMPTY);
         }
         switch (cellData.getType()) {
             case STRING:
@@ -64,7 +67,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     protected CellData convert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty) {
         if (value == null) {
-            return new CellData();
+            return new CellData(CellDataTypeEnum.EMPTY);
         }
         // This means that the user has defined the data.
         if (value instanceof CellData) {

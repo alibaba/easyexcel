@@ -50,13 +50,13 @@ public class WriteTest {
     public void simpleWrite() {
         // 写法1
         String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
         EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
 
         // 写法2
         fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读
+        // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
         excelWriter.write(data(), writeSheet);
@@ -80,7 +80,7 @@ public class WriteTest {
         // 根据用户传入字段 假设我们要忽略 date
         Set<String> excludeColumnFiledNames = new HashSet<String>();
         excludeColumnFiledNames.add("date");
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).excludeColumnFiledNames(excludeColumnFiledNames).sheet("模板")
             .doWrite(data());
 
@@ -88,7 +88,7 @@ public class WriteTest {
         // 根据用户传入字段 假设我们只要导出 date
         Set<String> includeColumnFiledNames = new HashSet<String>();
         includeColumnFiledNames.add("date");
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).includeColumnFiledNames(includeColumnFiledNames).sheet("模板")
             .doWrite(data());
     }
@@ -105,7 +105,7 @@ public class WriteTest {
     @Test
     public void indexWrite() {
         String fileName = TestFileUtil.getPath() + "indexWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, IndexData.class).sheet("模板").doWrite(data());
     }
 
@@ -121,7 +121,7 @@ public class WriteTest {
     @Test
     public void complexHeadWrite() {
         String fileName = TestFileUtil.getPath() + "complexHeadWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, ComplexHeadData.class).sheet("模板").doWrite(data());
     }
 
@@ -138,7 +138,7 @@ public class WriteTest {
     public void repeatedWrite() {
         // 方法1 如果写到同一个sheet
         String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读
+        // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
         // 这里注意 如果同一个sheet只要创建一次
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
@@ -194,7 +194,7 @@ public class WriteTest {
     @Test
     public void converterWrite() {
         String fileName = TestFileUtil.getPath() + "converterWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, ConverterData.class).sheet("模板").doWrite(data());
     }
 
@@ -236,7 +236,7 @@ public class WriteTest {
      * <p>
      * 2. 使用{@link ExcelProperty}注解指定写入的列
      * <p>
-     * 3. 使用withTemplate 读取模板
+     * 3. 使用withTemplate 写取模板
      * <p>
      * 4. 直接写即可
      */
@@ -244,7 +244,7 @@ public class WriteTest {
     public void templateWrite() {
         String templateFileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         String fileName = TestFileUtil.getPath() + "templateWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).withTemplate(templateFileName).sheet().doWrite(data());
     }
 
@@ -260,7 +260,7 @@ public class WriteTest {
     @Test
     public void widthAndHeightWrite() {
         String fileName = TestFileUtil.getPath() + "widthAndHeightWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, WidthAndHeightData.class).sheet("模板").doWrite(data());
     }
 
@@ -297,7 +297,7 @@ public class WriteTest {
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
             new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
 
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).registerWriteHandler(horizontalCellStyleStrategy).sheet("模板")
             .doWrite(data());
     }
@@ -316,7 +316,7 @@ public class WriteTest {
         String fileName = TestFileUtil.getPath() + "mergeWrite" + System.currentTimeMillis() + ".xlsx";
         // 每隔2行会合并 把eachColumn 设置成 3 也就是我们数据的长度，所以就第一列会合并。当然其他合并策略也可以自己写
         LoopMergeStrategy loopMergeStrategy = new LoopMergeStrategy(2, 0);
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).registerWriteHandler(loopMergeStrategy).sheet("模板").doWrite(data());
     }
 
@@ -331,7 +331,7 @@ public class WriteTest {
     public void tableWrite() {
         String fileName = TestFileUtil.getPath() + "tableWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里直接写多个table的案例了，如果只有一个 也可以直一行代码搞定，参照其他案例
-        // 这里 需要指定写用哪个class去读
+        // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
         // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
         WriteSheet writeSheet = EasyExcel.writerSheet("模板").needHead(Boolean.FALSE).build();
@@ -385,7 +385,7 @@ public class WriteTest {
     public void longestMatchColumnWidthWrite() {
         String fileName =
             TestFileUtil.getPath() + "longestMatchColumnWidthWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, LongestMatchColumnWidthData.class)
             .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet("模板").doWrite(dataLong());
     }
@@ -404,7 +404,7 @@ public class WriteTest {
     @Test
     public void customHandlerWrite() {
         String fileName = TestFileUtil.getPath() + "customHandlerWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new CustomSheetWriteHandler())
             .registerWriteHandler(new CustomCellWriteHandler()).sheet("模板").doWrite(data());
     }
@@ -416,7 +416,7 @@ public class WriteTest {
     public void noModleWrite() {
         // 写法1
         String fileName = TestFileUtil.getPath() + "noModleWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
