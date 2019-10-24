@@ -1,3 +1,8 @@
+# 2.1.0-beta4
+* 修改最长匹配策略会空指针的bug [Issue #747](https://github.com/alibaba/easyexcel/issues/747)
+* 修改afterRowDispose错误 [Issue #751](https://github.com/alibaba/easyexcel/issues/751)
+* 修复多个头的情况下会读取数据为空
+
 # 2.1.0-beta3
 * 支持强行指定在内存处理，以支持备注、RichTextString等的写入
 * 修复关闭流失败，可能会不删除临时文件的问题

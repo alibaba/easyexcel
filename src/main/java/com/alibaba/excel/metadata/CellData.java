@@ -202,6 +202,9 @@ public class CellData<T> {
      * Ensure that the object does not appear null
      */
     public void checkEmpty() {
+        if (type == null) {
+            type = CellDataTypeEnum.EMPTY;
+        }
         switch (type) {
             case STRING:
             case ERROR:
@@ -225,6 +228,9 @@ public class CellData<T> {
 
     @Override
     public String toString() {
+        if (type == null) {
+            return "empty";
+        }
         switch (type) {
             case NUMBER:
                 return numberValue.toString();
