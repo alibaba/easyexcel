@@ -144,7 +144,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                         try {
                             readListenerException.onException(e, analysisContext);
                         } catch (Exception exception) {
-                            throw new ExcelAnalysisException("Listen error!", exception);
+                            throw new ExcelAnalysisException(exception.getMessage(), exception);
                         }
                     }
                     break;
@@ -167,7 +167,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
                         try {
                             readListenerException.onException(e, analysisContext);
                         } catch (Exception exception) {
-                            throw new ExcelAnalysisException("Listen error!", exception);
+                            throw new ExcelAnalysisException(exception.getMessage(), exception);
                         }
                     }
                     break;
