@@ -1,5 +1,5 @@
 # 2.1.0-bea5
-
+* 修改map返回为LinkedHashMap
 
 # 2.1.0-beta4
 * 修改最长匹配策略会空指针的bug [Issue #747](https://github.com/alibaba/easyexcel/issues/747)
