@@ -23,6 +23,22 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 ## 维护者
 玉霄、庄家钜、怀宇
 ## 快速开始
+### 引入项目
+Maven
+```java
+<!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>easyexcel</artifactId>
+    <version>2.1.0-beta4</version>
+</dependency>
+```
+Gradle
+```java
+// https://mvnrepository.com/artifact/com.alibaba/easyexcel
+compile group: 'com.alibaba', name: 'easyexcel', version: '2.1.0-beta4'
+```
+
 ### 读Excel
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
 
