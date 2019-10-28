@@ -1,3 +1,6 @@
+# 2.1.0-bea5
+
+
 # 2.1.0-beta4
 * 修改最长匹配策略会空指针的bug [Issue #747](https://github.com/alibaba/easyexcel/issues/747)
 * 修改afterRowDispose错误 [Issue #751](https://github.com/alibaba/easyexcel/issues/751)
