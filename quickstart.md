@@ -2,7 +2,7 @@
 ## 目录
 ### 前言
 #### 关于@Data
-读写的对象都用到了[Lombok](https://www.projectlombok.org/),他会自动生成`get`,`set` ，不需要自己创建对象和生成`get`,`set` 。
+读写的对象都用到了[Lombok](https://www.projectlombok.org/),他会自动生成`get`,`set` ，如果不需要自己创建对象并生成`get`,`set` 。
 #### 以下功能目前不支持
 * 单个文件的并发写入、读取
 * 读取图片
