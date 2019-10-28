@@ -9,6 +9,7 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 
 import java.math.BigDecimal;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -37,7 +38,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private final AnalysisContext analysisContext;
     private Deque<String> currentTagDeque = new LinkedList<String>();
     private int curCol;
-    private Map<Integer, CellData> curRowContent = new TreeMap<Integer, CellData>();
+    private Map<Integer, CellData> curRowContent = new LinkedHashMap<Integer, CellData>();
     private CellData currentCellData;
     private StringBuilder dataStringBuilder;
     private StringBuilder formulaStringBuilder;

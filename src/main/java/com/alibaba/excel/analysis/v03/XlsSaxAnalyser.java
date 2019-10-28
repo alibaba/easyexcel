@@ -3,6 +3,7 @@ package com.alibaba.excel.analysis.v03;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -77,7 +78,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
 
     public XlsSaxAnalyser(AnalysisContext context, POIFSFileSystem poifsFileSystem) {
         this.analysisContext = context;
-        this.records = new TreeMap<Integer, CellData>();
+        this.records = new LinkedHashMap<Integer, CellData>();
         this.poifsFileSystem = poifsFileSystem;
         analysisContext.readWorkbookHolder().setPoifsFileSystem(poifsFileSystem);
     }
