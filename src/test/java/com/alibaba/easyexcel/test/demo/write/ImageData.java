@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.demo.write;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
@@ -27,4 +28,10 @@ public class ImageData {
     @ExcelProperty(converter = StringImageConverter.class)
     private String string;
     private byte[] byteArray;
+    /**
+     * 根据url导出
+     *
+     * @since 2.1.1
+     */
+    private URL url;
 }

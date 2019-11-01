@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.demo.write;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -215,12 +216,14 @@ public class WriteTest {
             ImageData imageData = new ImageData();
             list.add(imageData);
             String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
-            // 放入四种类型的图片 实际使用只要选一种即可
+            // 放入五种类型的图片 实际使用只要选一种即可
             imageData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
             imageData.setFile(new File(imagePath));
             imageData.setString(imagePath);
             inputStream = FileUtils.openInputStream(new File(imagePath));
             imageData.setInputStream(inputStream);
+            imageData.setUrl(new URL(
+                "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
             EasyExcel.write(fileName, ImageData.class).sheet().doWrite(list);
         } finally {
             if (inputStream != null) {

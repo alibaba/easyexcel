@@ -34,6 +34,10 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     private AnalysisContext analysisContext;
 
     private ExcelReadExecutor excelReadExecutor;
+    /**
+     * Prevent multiple shutdowns
+     */
+    private boolean finished = false;
 
     public ExcelAnalyserImpl(ReadWorkbook readWorkbook) {
         try {
@@ -121,6 +125,10 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
     @Override
     public void finish() {
+        if (finished) {
+            return;
+        }
+        finished = true;
         if (analysisContext == null || analysisContext.readWorkbookHolder() == null) {
             return;
         }

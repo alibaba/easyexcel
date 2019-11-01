@@ -121,7 +121,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
     private void init() {
         lastRowNumber = 0;
         lastColumnNumber = 0;
-        records = new TreeMap<Integer, CellData>();
+        records = new LinkedHashMap<Integer, CellData>();
         buildXlsRecordHandlers();
     }
 

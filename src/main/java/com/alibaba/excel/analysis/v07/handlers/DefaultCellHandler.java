@@ -12,7 +12,6 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.xssf.model.StylesTable;
@@ -55,7 +54,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
 
     @Override
     public void clearResult() {
-        curRowContent = new TreeMap<Integer, CellData>();
+        curRowContent = new LinkedHashMap<Integer, CellData>();
     }
 
     @Override

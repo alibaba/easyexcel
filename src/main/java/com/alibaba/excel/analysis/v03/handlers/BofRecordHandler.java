@@ -73,7 +73,7 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
                     readSheet = SheetUtils.match(readSheet, readSheetList, readAll,
                         context.readWorkbookHolder().getGlobalConfiguration());
                     if (readSheet != null) {
-                        if (readSheet.getSheetNo() != 0) {
+                        if (readSheet.getSheetNo() != 0 && context.readSheetHolder() != null) {
                             // Prompt for the end of the previous form read
                             context.readSheetHolder().notifyAfterAllAnalysed(context);
                         }

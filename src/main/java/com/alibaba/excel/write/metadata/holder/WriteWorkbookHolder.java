@@ -103,6 +103,10 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * Comment and RichTextString are only supported in memory mode.
      */
     private Boolean inMemory;
+    /**
+     * Excel is also written in the event of an exception being thrown.The default false.
+     */
+    private Boolean writeExcelOnException;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
@@ -128,7 +132,10 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             throw new ExcelGenerateException("Copy template failure.", e);
         }
         if (writeWorkbook.getExcelType() == null) {
-            if (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue())) {
+            boolean isXls = (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue()))
+                || (writeWorkbook.getTemplateFile() != null
+                    && writeWorkbook.getTemplateFile().getName().endsWith(ExcelTypeEnum.XLS.getValue()));
+            if (isXls) {
                 this.excelType = ExcelTypeEnum.XLS;
             } else {
                 this.excelType = ExcelTypeEnum.XLSX;
@@ -147,6 +154,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.inMemory = Boolean.FALSE;
         } else {
             this.inMemory = writeWorkbook.getInMemory();
+        }
+        if (writeWorkbook.getWriteExcelOnException() == null) {
+            this.writeExcelOnException = Boolean.FALSE;
+        } else {
+            this.writeExcelOnException = writeWorkbook.getWriteExcelOnException();
         }
     }
 
@@ -279,6 +291,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
     public void setInMemory(Boolean inMemory) {
         this.inMemory = inMemory;
+    }
+
+    public Boolean getWriteExcelOnException() {
+        return writeExcelOnException;
+    }
+
+    public void setWriteExcelOnException(Boolean writeExcelOnException) {
+        this.writeExcelOnException = writeExcelOnException;
     }
 
     @Override

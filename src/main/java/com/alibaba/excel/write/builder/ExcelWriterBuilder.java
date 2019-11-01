@@ -147,6 +147,14 @@ public class ExcelWriterBuilder {
     }
 
     /**
+     * Excel is also written in the event of an exception being thrown.The default false.
+     */
+    public ExcelWriterBuilder writeExcelOnException(Boolean writeExcelOnException) {
+        writeWorkbook.setWriteExcelOnException(writeExcelOnException);
+        return this;
+    }
+
+    /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
      * <p>

@@ -33,10 +33,17 @@ public class ConverterUtils {
      */
     public static Map<Integer, String> convertToStringMap(Map<Integer, CellData> cellDataMap, ReadHolder readHolder) {
         Map<Integer, String> stringMap = new HashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
+        int index = 0;
         for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
+            Integer key = entry.getKey();
             CellData cellData = entry.getValue();
+            while (index < key) {
+                stringMap.put(index, null);
+                index++;
+            }
+            index++;
             if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                stringMap.put(entry.getKey(), null);
+                stringMap.put(key, null);
                 continue;
             }
             Converter converter =
@@ -46,7 +53,7 @@ public class ConverterUtils {
                     "Converter not found, convert " + cellData.getType() + " to String");
             }
             try {
-                stringMap.put(entry.getKey(),
+                stringMap.put(key,
                     (String)(converter.convertToJavaData(cellData, null, readHolder.globalConfiguration())));
             } catch (Exception e) {
                 throw new ExcelDataConvertException("Convert data " + cellData + " to String error ", e);

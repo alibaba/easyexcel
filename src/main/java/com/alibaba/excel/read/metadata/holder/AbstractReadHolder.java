@@ -208,6 +208,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             List<String> headNameList = headData.getHeadNameList();
             String headName = headNameList.get(headNameList.size() - 1);
             for (Map.Entry<Integer, String> stringEntry : dataMap.entrySet()) {
+                if (stringEntry == null) {
+                    continue;
+                }
                 String headString = stringEntry.getValue();
                 Integer stringKey = stringEntry.getKey();
                 if (StringUtils.isEmpty(headString)) {
