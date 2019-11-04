@@ -350,6 +350,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
         StringBuilder preparedData = new StringBuilder();
         AnalysisCell analysisCell = null;
+
         int startIndex = 0;
         int length = value.length();
         int lastPrepareDataIndex = 0;
@@ -403,6 +404,13 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             }
             lastPrepareDataIndex = suffixIndex + 1;
         }
+        return dealAnalysisCell(analysisCell, value, rowIndex, lastPrepareDataIndex, length, analysisCellList,
+            collectionAnalysisCellList, firstColumnCache, preparedData);
+    }
+
+    private String dealAnalysisCell(AnalysisCell analysisCell, String value, int rowIndex, int lastPrepareDataIndex,
+        int length, List<AnalysisCell> analysisCellList, List<AnalysisCell> collectionAnalysisCellList,
+        Set<Integer> firstColumnCache, StringBuilder preparedData) {
         if (analysisCell != null) {
             if (lastPrepareDataIndex == length) {
                 analysisCell.getPrepareDataList().add(StringUtils.EMPTY);
