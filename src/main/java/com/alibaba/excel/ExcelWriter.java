@@ -5,6 +5,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.Table;
@@ -31,6 +34,8 @@ import com.alibaba.excel.write.metadata.fill.FillConfig;
  * @author jipengfei
  */
 public class ExcelWriter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelWriter.class);
+
     private ExcelBuilder excelBuilder;
 
     /**
@@ -320,7 +325,20 @@ public class ExcelWriter {
      * Close IO
      */
     public void finish() {
-        excelBuilder.finish();
+        excelBuilder.finish(false);
+    }
+
+    /**
+     * Prevents calls to {@link #finish} from freeing the cache
+     *
+     */
+    @Override
+    protected void finalize() {
+        try {
+            finish();
+        } catch (Throwable e) {
+            LOGGER.warn("Destroy object failed", e);
+        }
     }
 
     /**

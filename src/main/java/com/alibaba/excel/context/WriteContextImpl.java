@@ -65,6 +65,10 @@ public class WriteContextImpl implements WriteContext {
      * Configuration of currently operated cell
      */
     private WriteHolder currentWriteHolder;
+    /**
+     * Prevent multiple shutdowns
+     */
+    private boolean finished = false;
 
     public WriteContextImpl(WriteWorkbook writeWorkbook) {
         if (writeWorkbook == null) {
@@ -249,23 +253,36 @@ public class WriteContextImpl implements WriteContext {
     }
 
     @Override
-    public void finish() {
+    public void finish(boolean onException) {
+        if (finished) {
+            return;
+        }
+        finished = true;
         WriteHandlerUtils.afterWorkbookDispose(this);
         if (writeWorkbookHolder == null) {
             return;
         }
         Throwable throwable = null;
-
         boolean isOutputStreamEncrypt = false;
-        try {
-            isOutputStreamEncrypt = doOutputStreamEncrypt07();
-        } catch (Throwable t) {
-            throwable = t;
+        // Determine if you need to write excel
+        boolean writeExcel = !onException;
+        if (writeWorkbookHolder.getWriteExcelOnException()) {
+            writeExcel = Boolean.TRUE;
+        }
+        // No data is written if an exception is thrown
+        if (writeExcel) {
+            try {
+                isOutputStreamEncrypt = doOutputStreamEncrypt07();
+            } catch (Throwable t) {
+                throwable = t;
+            }
         }
 
         if (!isOutputStreamEncrypt) {
             try {
-                writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
+                if (writeExcel) {
+                    writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
+                }
                 writeWorkbookHolder.getWorkbook().close();
             } catch (Throwable t) {
                 throwable = t;
@@ -289,7 +306,7 @@ public class WriteContextImpl implements WriteContext {
             throwable = t;
         }
 
-        if (!isOutputStreamEncrypt) {
+        if (writeExcel && !isOutputStreamEncrypt) {
             try {
                 doFileEncrypt07();
             } catch (Throwable t) {

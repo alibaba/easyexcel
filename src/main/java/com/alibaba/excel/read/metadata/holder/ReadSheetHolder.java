@@ -26,10 +26,9 @@ public class ReadSheetHolder extends AbstractReadHolder {
      */
     private String sheetName;
     /**
-     * get total row , Data may be inaccurate
+     * Gets the total number of rows , data may be inaccurate
      */
-    @Deprecated
-    private Integer total;
+    private Integer approximateTotalRowNumber;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
         super(readSheet, readWorkbookHolder, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
@@ -71,12 +70,29 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.sheetName = sheetName;
     }
 
+    /**
+     *
+     * Approximate total number of rows
+     *
+     * @return
+     * @see #getApproximateTotalRowNumber()
+     */
+    @Deprecated
     public Integer getTotal() {
-        return total;
+        return approximateTotalRowNumber;
     }
 
-    public void setTotal(Integer total) {
-        this.total = total;
+    /**
+     * Approximate total number of rows
+     *
+     * @return
+     */
+    public Integer getApproximateTotalRowNumber() {
+        return approximateTotalRowNumber;
+    }
+
+    public void setApproximateTotalRowNumber(Integer approximateTotalRowNumber) {
+        this.approximateTotalRowNumber = approximateTotalRowNumber;
     }
 
     @Override

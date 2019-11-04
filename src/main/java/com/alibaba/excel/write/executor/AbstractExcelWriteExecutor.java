@@ -59,8 +59,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             case EMPTY:
                 return cellData;
             default:
-                throw new ExcelDataConvertException("Not supported data:" + value + " return type:" + cell.getCellType()
-                    + "at row:" + cell.getRow().getRowNum());
+                throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(), cellData,
+                    excelContentProperty, "Not supported data:" + value + " return type:" + cell.getCellType()
+                        + "at row:" + cell.getRow().getRowNum());
         }
     }
 
@@ -102,7 +103,8 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
         }
         if (converter == null) {
-            throw new ExcelDataConvertException(
+            throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
+                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
         }
         CellData cellData;
@@ -110,11 +112,13 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             cellData =
                 converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
         } catch (Exception e) {
-            throw new ExcelDataConvertException("Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(),
-                e);
+            throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
+                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
+                "Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(), e);
         }
         if (cellData == null || cellData.getType() == null) {
-            throw new ExcelDataConvertException(
+            throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
+                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Convert data:" + value + " return null,at row:" + cell.getRow().getRowNum());
         }
         return cellData;

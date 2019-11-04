@@ -229,18 +229,21 @@ public class CellData<T> {
     @Override
     public String toString() {
         if (type == null) {
-            return "empty";
+            return StringUtils.EMPTY;
         }
         switch (type) {
             case NUMBER:
                 return numberValue.toString();
             case BOOLEAN:
                 return booleanValue.toString();
+            case DIRECT_STRING:
             case STRING:
             case ERROR:
                 return stringValue;
+            case IMAGE:
+                return "image[" + imageValue.length + "]";
             default:
-                return "empty";
+                return StringUtils.EMPTY;
         }
     }
 

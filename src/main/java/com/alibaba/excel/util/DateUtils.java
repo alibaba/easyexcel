@@ -12,6 +12,7 @@ import com.alibaba.excel.exception.ExcelDataConvertException;
  * @author Jiaju Zhuang
  **/
 public class DateUtils {
+    public static final String DATE_FORMAT_10 = "yyyy-MM-dd";
     public static final String DATE_FORMAT_14 = "yyyyMMddHHmmss";
     public static final String DATE_FORMAT_17 = "yyyyMMdd HH:mm:ss";
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";
@@ -65,8 +66,10 @@ public class DateUtils {
                 return DATE_FORMAT_17;
             case 14:
                 return DATE_FORMAT_14;
+            case 10:
+                return DATE_FORMAT_10;
             default:
-                throw new ExcelDataConvertException("can not find date format for：" + dateString);
+                throw new IllegalArgumentException("can not find date format for：" + dateString);
         }
     }
 

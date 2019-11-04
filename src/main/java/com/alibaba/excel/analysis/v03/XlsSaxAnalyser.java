@@ -3,6 +3,7 @@ package com.alibaba.excel.analysis.v03;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -26,6 +27,7 @@ import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.analysis.v03.handlers.BlankOrErrorRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.BofRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.IndexRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.LabelRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.MissingCellDummyRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.NoteRecordHandler;
@@ -77,7 +79,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
 
     public XlsSaxAnalyser(AnalysisContext context, POIFSFileSystem poifsFileSystem) {
         this.analysisContext = context;
-        this.records = new TreeMap<Integer, CellData>();
+        this.records = new LinkedHashMap<Integer, CellData>();
         this.poifsFileSystem = poifsFileSystem;
         analysisContext.readWorkbookHolder().setPoifsFileSystem(poifsFileSystem);
     }
@@ -120,7 +122,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
     private void init() {
         lastRowNumber = 0;
         lastColumnNumber = 0;
-        records = new TreeMap<Integer, CellData>();
+        records = new LinkedHashMap<Integer, CellData>();
         buildXlsRecordHandlers();
     }
 
@@ -210,6 +212,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
             recordHandlers.add(new RkRecordHandler());
             recordHandlers.add(new SstRecordHandler());
             recordHandlers.add(new MissingCellDummyRecordHandler());
+            recordHandlers.add(new IndexRecordHandler(analysisContext));
             Collections.sort(recordHandlers);
         }
 
