@@ -10,7 +10,7 @@ import com.alibaba.excel.context.AnalysisContext;
 
 /**
  * Cell Handler
- * 
+ *
  * @author jipengfei
  */
 public class CountRowCellHandler implements XlsxCellHandler {
@@ -31,7 +31,7 @@ public class CountRowCellHandler implements XlsxCellHandler {
         String d = attributes.getValue(DIMENSION_REF);
         String totalStr = d.substring(d.indexOf(":") + 1, d.length());
         String c = totalStr.toUpperCase().replaceAll("[A-Z]", "");
-        analysisContext.readSheetHolder().setTotal(Integer.parseInt(c));
+        analysisContext.readSheetHolder().setApproximateTotalRowNumber(Integer.parseInt(c));
     }
 
     @Override

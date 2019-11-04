@@ -39,8 +39,8 @@ public class DemoExceptionListener extends AnalysisEventListener<ExceptionDemoDa
         // 如果要获取头的信息 配合invokeHeadMap使用
         if (exception instanceof ExcelDataConvertException) {
             ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException)exception;
-            LOGGER.error("第{}行，第{}列解析异常", excelDataConvertException.getRowIndex(),
-                excelDataConvertException.getColumnIndex());
+            LOGGER.error("第{}行，第{}列解析异常，数据为:{}", excelDataConvertException.getRowIndex(),
+                excelDataConvertException.getColumnIndex(), excelDataConvertException.getCellData());
         }
     }
 

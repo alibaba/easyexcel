@@ -27,6 +27,7 @@ import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.analysis.v03.handlers.BlankOrErrorRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.BofRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.IndexRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.LabelRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.MissingCellDummyRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.NoteRecordHandler;
@@ -211,6 +212,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
             recordHandlers.add(new RkRecordHandler());
             recordHandlers.add(new SstRecordHandler());
             recordHandlers.add(new MissingCellDummyRecordHandler());
+            recordHandlers.add(new IndexRecordHandler(analysisContext));
             Collections.sort(recordHandlers);
         }
 

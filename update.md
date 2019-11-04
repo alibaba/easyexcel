@@ -7,6 +7,11 @@
 * 加入多次关闭判断，防止多次关闭异常
 * 加入根据模板自动识别导出的excel类型
 * 修改默认失败后，不再往文件流写入数据。通过参数`writeExcelOnException` 参数设置异常了也要写入前面的数据。
+* 循环合并策略支持一次性合并多列
+* `ExcelDataConvertException`返回新增具体报错的数据
+* 加入解析class缓存
+* 修复填充的时候行高不复制的Bug [Issue #780](https://github.com/alibaba/easyexcel/issues/780)
+* 修复03版无法获取大概总行数的bug
 
 # 2.1.0-beta4
 * 修改最长匹配策略会空指针的bug [Issue #747](https://github.com/alibaba/easyexcel/issues/747)

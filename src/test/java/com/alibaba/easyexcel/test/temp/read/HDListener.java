@@ -25,6 +25,7 @@ public class HDListener extends AnalysisEventListener<HeadReadData> {
     @Override
     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
         LOGGER.info("HEAD:{}", JSON.toJSONString(headMap));
+        LOGGER.info("total:{}", context.readSheetHolder().getTotal());
 
     }
 

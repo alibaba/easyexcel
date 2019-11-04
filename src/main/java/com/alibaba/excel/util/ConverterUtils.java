@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -28,11 +29,12 @@ public class ConverterUtils {
      * Convert it into a String map
      *
      * @param cellDataMap
-     * @param readHolder
+     * @param context
      * @return
      */
-    public static Map<Integer, String> convertToStringMap(Map<Integer, CellData> cellDataMap, ReadHolder readHolder) {
+    public static Map<Integer, String> convertToStringMap(Map<Integer, CellData> cellDataMap, AnalysisContext context) {
         Map<Integer, String> stringMap = new HashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
+        ReadHolder currentReadHolder = context.currentReadHolder();
         int index = 0;
         for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
             Integer key = entry.getKey();
@@ -47,16 +49,17 @@ public class ConverterUtils {
                 continue;
             }
             Converter converter =
-                readHolder.converterMap().get(ConverterKeyBuild.buildKey(String.class, cellData.getType()));
+                currentReadHolder.converterMap().get(ConverterKeyBuild.buildKey(String.class, cellData.getType()));
             if (converter == null) {
-                throw new ExcelDataConvertException(
+                throw new ExcelDataConvertException(context.readRowHolder().getRowIndex(), key, cellData, null,
                     "Converter not found, convert " + cellData.getType() + " to String");
             }
             try {
                 stringMap.put(key,
-                    (String)(converter.convertToJavaData(cellData, null, readHolder.globalConfiguration())));
+                    (String)(converter.convertToJavaData(cellData, null, currentReadHolder.globalConfiguration())));
             } catch (Exception e) {
-                throw new ExcelDataConvertException("Convert data " + cellData + " to String error ", e);
+                throw new ExcelDataConvertException(context.readRowHolder().getRowIndex(), key, cellData, null,
+                    "Convert data " + cellData + " to String error ", e);
             }
         }
         return stringMap;
@@ -123,13 +126,13 @@ public class ConverterUtils {
             converter = converterMap.get(ConverterKeyBuild.buildKey(clazz, cellData.getType()));
         }
         if (converter == null) {
-            throw new ExcelDataConvertException(rowIndex, columnIndex, contentProperty,
+            throw new ExcelDataConvertException(rowIndex, columnIndex, cellData, contentProperty,
                 "Converter not found, convert " + cellData.getType() + " to " + clazz.getName());
         }
         try {
             return converter.convertToJavaData(cellData, contentProperty, globalConfiguration);
         } catch (Exception e) {
-            throw new ExcelDataConvertException(rowIndex, columnIndex, contentProperty,
+            throw new ExcelDataConvertException(rowIndex, columnIndex, cellData, contentProperty,
                 "Convert data " + cellData + " to " + clazz + " error ", e);
         }
     }

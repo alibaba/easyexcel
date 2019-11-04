@@ -93,7 +93,8 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
         try {
             resultModel = excelReadHeadProperty.getHeadClazz().newInstance();
         } catch (Exception e) {
-            throw new ExcelDataConvertException(
+            throw new ExcelDataConvertException(context.readRowHolder().getRowIndex(), 0,
+                new CellData(CellDataTypeEnum.EMPTY), null,
                 "Can not instance class: " + excelReadHeadProperty.getHeadClazz().getName(), e);
         }
         Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();

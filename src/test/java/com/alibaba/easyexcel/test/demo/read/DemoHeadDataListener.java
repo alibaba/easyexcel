@@ -38,8 +38,8 @@ public class DemoHeadDataListener extends AnalysisEventListener<DemoData> {
         LOGGER.error("解析失败，但是继续解析下一行:{}", exception.getMessage());
         if (exception instanceof ExcelDataConvertException) {
             ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException)exception;
-            LOGGER.error("第{}行，第{}列解析异常", excelDataConvertException.getRowIndex(),
-                excelDataConvertException.getColumnIndex());
+            LOGGER.error("第{}行，第{}列解析异常，数据为:{}", excelDataConvertException.getRowIndex(),
+                excelDataConvertException.getColumnIndex(), excelDataConvertException.getCellData());
         }
     }
 

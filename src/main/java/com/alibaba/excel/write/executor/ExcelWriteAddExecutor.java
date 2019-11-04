@@ -2,7 +2,6 @@ package com.alibaba.excel.write.executor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +12,10 @@ import org.apache.poi.ss.usermodel.Row;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
@@ -158,13 +157,11 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 continue;
             }
             Object value = beanMap.get(filedName);
-            if (value == null) {
-                continue;
-            }
             WriteHandlerUtils.beforeCellCreate(writeContext, row, null, cellIndex, relativeRowIndex, Boolean.FALSE);
             Cell cell = WorkBookUtil.createCell(row, cellIndex++);
             WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
-            CellData cellData = converterAndSet(currentWriteHolder, value.getClass(), cell, value, null);
+            CellData cellData =
+                converterAndSet(currentWriteHolder, value == null ? null : value.getClass(), cell, value, null);
             WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
         }
     }
@@ -173,13 +170,8 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         if (!fieldList.isEmpty()) {
             return;
         }
-        Class tempClass = clazz;
-        while (tempClass != null) {
-            if (tempClass != BaseRowModel.class) {
-                Collections.addAll(fieldList, tempClass.getDeclaredFields());
-            }
-            tempClass = tempClass.getSuperclass();
-        }
+        ClassUtils.declaredFields(clazz, fieldList,
+            writeContext.writeWorkbookHolder().getWriteWorkbook().getConvertAllFiled());
     }
 
 }

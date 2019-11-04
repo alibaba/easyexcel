@@ -69,7 +69,7 @@ public class DateUtils {
             case 10:
                 return DATE_FORMAT_10;
             default:
-                throw new ExcelDataConvertException("can not find date format for：" + dateString);
+                throw new IllegalArgumentException("can not find date format for：" + dateString);
         }
     }
 

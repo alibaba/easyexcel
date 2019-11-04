@@ -3,9 +3,11 @@ package com.alibaba.excel.write.executor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -57,6 +59,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
      */
     private Map<Integer, Map<AnalysisCell, CellStyle>> collectionFieldStyleCache =
         new HashMap<Integer, Map<AnalysisCell, CellStyle>>(8);
+    /**
+     * Row height cache for collection
+     */
+    private Map<Integer, Short> collectionRowHeightCache = new HashMap<Integer, Short>(8);
     /**
      * Last index cache for collection fields
      */
@@ -121,7 +127,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (collectionLastIndexMap == null) {
             number--;
         }
-        sheet.shiftRows(maxRowIndex + 1, lastRowIndex, number);
+        sheet.shiftRows(maxRowIndex + 1, lastRowIndex, number, true, false);
         for (AnalysisCell analysisCell : templateAnalysisCache.get(writeContext.writeSheetHolder().getSheetNo())) {
             if (analysisCell.getRowIndex() > maxRowIndex) {
                 analysisCell.setRowIndex(analysisCell.getRowIndex() + number);
@@ -245,7 +251,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 } else {
                     row = sheet.createRow(lastRowIndex);
                 }
+                checkRowHeight(analysisCell, fillConfig, isOriginalCell, row, sheetNo);
                 WriteHandlerUtils.afterRowCreate(writeContext, row, null, Boolean.FALSE);
+            } else {
+                checkRowHeight(analysisCell, fillConfig, isOriginalCell, row, sheetNo);
             }
         }
         Cell cell = row.getCell(lastColumnIndex);
@@ -271,6 +280,21 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         return cell;
     }
 
+    private void checkRowHeight(AnalysisCell analysisCell, FillConfig fillConfig, boolean isOriginalCell, Row row,
+        Integer sheetNo) {
+        if (!analysisCell.getFirstColumn() || !WriteDirectionEnum.VERTICAL.equals(fillConfig.getDirection())) {
+            return;
+        }
+        if (isOriginalCell) {
+            collectionRowHeightCache.put(sheetNo, row.getHeight());
+            return;
+        }
+        Short rowHeight = collectionRowHeightCache.get(sheetNo);
+        if (rowHeight != null) {
+            row.setHeight(rowHeight);
+        }
+    }
+
     private List<AnalysisCell> readTemplateData(Map<Integer, List<AnalysisCell>> analysisCache) {
         Integer sheetNo = writeContext.writeSheetHolder().getSheetNo();
         List<AnalysisCell> analysisCellList = analysisCache.get(sheetNo);
@@ -280,6 +304,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         Sheet sheet = writeContext.writeSheetHolder().getCachedSheet();
         analysisCellList = new ArrayList<AnalysisCell>();
         List<AnalysisCell> collectionAnalysisCellList = new ArrayList<AnalysisCell>();
+        Set<Integer> firstColumnCache = new HashSet<Integer>();
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
             if (row == null) {
@@ -290,7 +315,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (cell == null) {
                     continue;
                 }
-                String preparedData = prepareData(cell, analysisCellList, collectionAnalysisCellList, i, j);
+                String preparedData =
+                    prepareData(cell, analysisCellList, collectionAnalysisCellList, i, j, firstColumnCache);
                 // Prevent empty data from not being replaced
                 if (preparedData != null) {
                     cell.setCellValue(preparedData);
@@ -310,10 +336,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
      * @param collectionAnalysisCellList
      * @param rowIndex
      * @param columnIndex
+     * @param firstColumnCache
      * @return Returns the data that the cell needs to replace
      */
     private String prepareData(Cell cell, List<AnalysisCell> analysisCellList,
-        List<AnalysisCell> collectionAnalysisCellList, int rowIndex, int columnIndex) {
+        List<AnalysisCell> collectionAnalysisCellList, int rowIndex, int columnIndex, Set<Integer> firstColumnCache) {
         if (!CellType.STRING.equals(cell.getCellTypeEnum())) {
             return null;
         }
@@ -386,6 +413,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             if (WriteTemplateAnalysisCellTypeEnum.COMMON.equals(analysisCell.getCellType())) {
                 analysisCellList.add(analysisCell);
             } else {
+                if (!firstColumnCache.contains(rowIndex)) {
+                    analysisCell.setFirstColumn(Boolean.TRUE);
+                    firstColumnCache.add(rowIndex);
+                }
                 collectionAnalysisCellList.add(analysisCell);
             }
             return preparedData.toString();
@@ -403,6 +434,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         List<String> prepareDataList = new ArrayList<String>();
         analysisCell.setPrepareDataList(prepareDataList);
         analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COMMON);
+        analysisCell.setFirstColumn(Boolean.FALSE);
         return analysisCell;
     }
 

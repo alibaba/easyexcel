@@ -24,6 +24,7 @@ import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 
@@ -119,51 +120,10 @@ public class ExcelHeadProperty {
         if (headClazz == null) {
             return;
         }
-        List<Field> fieldList = new ArrayList<Field>();
-        Class tempClass = headClazz;
-        // When the parent class is null, it indicates that the parent class (Object class) has reached the top
-        // level.
-        while (tempClass != null) {
-            Collections.addAll(fieldList, tempClass.getDeclaredFields());
-            // Get the parent class and give it to yourself
-            tempClass = tempClass.getSuperclass();
-        }
-
-        ExcelIgnoreUnannotated excelIgnoreUnannotated =
-            (ExcelIgnoreUnannotated)headClazz.getAnnotation(ExcelIgnoreUnannotated.class);
-        // Screening of field
+        // Declared fields
         List<Field> defaultFieldList = new ArrayList<Field>();
         Map<Integer, Field> customFiledMap = new TreeMap<Integer, Field>();
-        for (Field field : fieldList) {
-            ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
-            if (excelIgnore != null) {
-                ignoreMap.put(field.getName(), field);
-                continue;
-            }
-            ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-            boolean noExcelProperty = excelProperty == null
-                && ((convertAllFiled != null && !convertAllFiled) || excelIgnoreUnannotated != null);
-            if (noExcelProperty) {
-                ignoreMap.put(field.getName(), field);
-                continue;
-            }
-            boolean isStaticFinalOrTransient =
-                (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()))
-                    || Modifier.isTransient(field.getModifiers());
-            if (excelProperty == null && isStaticFinalOrTransient) {
-                ignoreMap.put(field.getName(), field);
-                continue;
-            }
-            if (excelProperty == null || excelProperty.index() < 0) {
-                defaultFieldList.add(field);
-                continue;
-            }
-            if (customFiledMap.containsKey(excelProperty.index())) {
-                throw new ExcelGenerateException("The index of '" + customFiledMap.get(excelProperty.index()).getName()
-                    + "' and '" + field.getName() + "' must be inconsistent");
-            }
-            customFiledMap.put(excelProperty.index(), field);
-        }
+        ClassUtils.declaredFields(headClazz, defaultFieldList, customFiledMap, ignoreMap, convertAllFiled);
 
         int index = 0;
         for (Field field : defaultFieldList) {
