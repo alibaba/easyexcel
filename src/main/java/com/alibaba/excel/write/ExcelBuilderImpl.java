@@ -25,10 +25,13 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     private ExcelWriteFillExecutor excelWriteFillExecutor;
     private ExcelWriteAddExecutor excelWriteAddExecutor;
 
+    static {
+        // Create temporary cache directory at initialization time to avoid POI concurrent write bugs
+        FileUtils.createPoiFilesDirectory();
+    }
+
     public ExcelBuilderImpl(WriteWorkbook writeWorkbook) {
         try {
-            // Create temporary cache directory at initialization time to avoid POI concurrent write bugs
-            FileUtils.createPoiFilesDirectory();
             context = new WriteContextImpl(writeWorkbook);
         } catch (RuntimeException e) {
             finishOnException();
