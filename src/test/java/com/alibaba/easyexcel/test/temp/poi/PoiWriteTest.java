@@ -7,7 +7,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.regex.Pattern;
 
-import com.alibaba.fastjson.util.ParameterizedTypeImpl;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
@@ -21,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.fastjson.JSON;
 
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * 测试poi
@@ -118,7 +118,7 @@ public class PoiWriteTest {
             Type[] tArgs = pType.getActualTypeArguments();
             // 获得泛型类型的泛型参数（实际类型参数)
             ParameterizedTypeImpl c = (ParameterizedTypeImpl)pType.getActualTypeArguments()[0];
-            Class ttt = c.getClass();
+            Class ttt = c.getRawType();
             System.out.println(ttt);
         } else {
             System.out.println("出错！！！");
@@ -145,7 +145,7 @@ public class PoiWriteTest {
             Type[] tArgs = pType.getActualTypeArguments();
             // 获得泛型类型的泛型参数（实际类型参数)
             ParameterizedTypeImpl c = (ParameterizedTypeImpl)pType.getActualTypeArguments()[0];
-            Class ttt = c.getClass();
+            Class ttt = c.getRawType();
             System.out.println(ttt);
         } else {
             System.out.println("出错！！！");
