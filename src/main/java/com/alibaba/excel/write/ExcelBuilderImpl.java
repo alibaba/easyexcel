@@ -47,9 +47,6 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable) {
         try {
-            if (data == null) {
-                return;
-            }
             context.currentSheet(writeSheet, WriteTypeEnum.ADD);
             context.currentTable(writeTable);
             if (excelWriteAddExecutor == null) {
@@ -102,9 +99,6 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable, String password) {
         try {
-            if (data == null) {
-                return;
-            }
             context.currentSheet(writeSheet, WriteTypeEnum.ADD);
             context.currentTable(writeTable);
             if (excelWriteAddExecutor == null) {
