@@ -190,8 +190,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         if (!HeadKindEnum.CLASS.equals(analysisContext.currentReadHolder().excelReadHeadProperty().getHeadKind())) {
             return;
         }
-        Map<Integer, String> dataMap =
-            ConverterUtils.convertToStringMap(cellDataMap, analysisContext.currentReadHolder());
+        Map<Integer, String> dataMap = ConverterUtils.convertToStringMap(cellDataMap, analysisContext);
         ExcelReadHeadProperty excelHeadPropertyData = analysisContext.readSheetHolder().excelReadHeadProperty();
         Map<Integer, Head> headMapData = excelHeadPropertyData.getHeadMap();
         Map<Integer, ExcelContentProperty> contentPropertyMapData = excelHeadPropertyData.getContentPropertyMap();
@@ -208,6 +207,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             List<String> headNameList = headData.getHeadNameList();
             String headName = headNameList.get(headNameList.size() - 1);
             for (Map.Entry<Integer, String> stringEntry : dataMap.entrySet()) {
+                if (stringEntry == null) {
+                    continue;
+                }
                 String headString = stringEntry.getValue();
                 Integer stringKey = stringEntry.getKey();
                 if (StringUtils.isEmpty(headString)) {

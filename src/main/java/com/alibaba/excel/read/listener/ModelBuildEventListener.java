@@ -2,6 +2,7 @@ package com.alibaba.excel.read.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
         AnalysisContext context) {
         int index = 0;
         if (context.readWorkbookHolder().getDefaultReturnMap()) {
-            Map<Integer, String> map = new HashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
+            Map<Integer, String> map = new LinkedHashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
             for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
                 Integer key = entry.getKey();
                 CellData cellData = entry.getValue();
@@ -92,7 +93,8 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
         try {
             resultModel = excelReadHeadProperty.getHeadClazz().newInstance();
         } catch (Exception e) {
-            throw new ExcelDataConvertException(
+            throw new ExcelDataConvertException(context.readRowHolder().getRowIndex(), 0,
+                new CellData(CellDataTypeEnum.EMPTY), null,
                 "Can not instance class: " + excelReadHeadProperty.getHeadClazz().getName(), e);
         }
         Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();

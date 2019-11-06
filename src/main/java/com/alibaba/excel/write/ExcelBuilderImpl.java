@@ -31,10 +31,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             FileUtils.createPoiFilesDirectory();
             context = new WriteContextImpl(writeWorkbook);
         } catch (RuntimeException e) {
-            finish();
+            finishOnException();
             throw e;
         } catch (Throwable e) {
-            finish();
+            finishOnException();
             throw new ExcelGenerateException(e);
         }
     }
@@ -57,10 +57,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             excelWriteAddExecutor.add(data);
         } catch (RuntimeException e) {
-            finish();
+            finishOnException();
             throw e;
         } catch (Throwable e) {
-            finish();
+            finishOnException();
             throw new ExcelGenerateException(e);
         }
     }
@@ -80,18 +80,22 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             excelWriteFillExecutor.fill(data, fillConfig);
         } catch (RuntimeException e) {
-            finish();
+            finishOnException();
             throw e;
         } catch (Throwable e) {
-            finish();
+            finishOnException();
             throw new ExcelGenerateException(e);
         }
     }
 
+    private void finishOnException() {
+        finish(true);
+    }
+
     @Override
-    public void finish() {
+    public void finish(boolean onException) {
         if (context != null) {
-            context.finish();
+            context.finish(onException);
         }
     }
 
@@ -108,10 +112,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             excelWriteAddExecutor.add(data);
         } catch (RuntimeException e) {
-            finish();
+            finishOnException();
             throw e;
         } catch (Throwable e) {
-            finish();
+            finishOnException();
             throw new ExcelGenerateException(e);
         }
     }

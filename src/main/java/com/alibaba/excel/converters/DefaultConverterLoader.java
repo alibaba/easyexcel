@@ -37,6 +37,7 @@ import com.alibaba.excel.converters.string.StringBooleanConverter;
 import com.alibaba.excel.converters.string.StringErrorConverter;
 import com.alibaba.excel.converters.string.StringNumberConverter;
 import com.alibaba.excel.converters.string.StringStringConverter;
+import com.alibaba.excel.converters.url.UrlImageConverter;
 
 /**
  * Load default handler
@@ -71,6 +72,7 @@ public class DefaultConverterLoader {
         putWriteConverter(new InputStreamImageConverter());
         putWriteConverter(new ByteArrayImageConverter());
         putWriteConverter(new BoxingByteArrayImageConverter());
+        putWriteConverter(new UrlImageConverter());
         return defaultWriteConverter;
     }
 

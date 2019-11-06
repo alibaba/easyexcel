@@ -79,11 +79,11 @@ public class PoiTest {
 
     @Test
     public void lastRowNum255() throws IOException, InvalidFormatException {
-        String file = TestFileUtil.getPath() + "fill" + File.separator + "complex.xlsx";
+        String file = "D:\\test\\complex.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
         SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
         Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
-        xssfSheet.shiftRows(2, 4, 10);
+        xssfSheet.shiftRows(1, 4, 10, true, true);
 
         FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
         sxssfWorkbook.write(fileout);

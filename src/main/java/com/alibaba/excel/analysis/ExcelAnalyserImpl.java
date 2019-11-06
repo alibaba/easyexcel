@@ -1,13 +1,10 @@
 package com.alibaba.excel.analysis;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.crypt.Decryptor;
-import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.IOUtils;
@@ -37,6 +34,10 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     private AnalysisContext analysisContext;
 
     private ExcelReadExecutor excelReadExecutor;
+    /**
+     * Prevent multiple shutdowns
+     */
+    private boolean finished = false;
 
     public ExcelAnalyserImpl(ReadWorkbook readWorkbook) {
         try {
@@ -124,6 +125,10 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
     @Override
     public void finish() {
+        if (finished) {
+            return;
+        }
+        finished = true;
         if (analysisContext == null || analysisContext.readWorkbookHolder() == null) {
             return;
         }

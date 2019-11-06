@@ -16,6 +16,7 @@ public class AnalysisCell {
     private List<String> prepareDataList;
     private Boolean onlyOneVariable;
     private WriteTemplateAnalysisCellTypeEnum cellType;
+    private Boolean firstColumn;
 
     public int getColumnIndex() {
         return columnIndex;
@@ -63,6 +64,14 @@ public class AnalysisCell {
 
     public void setCellType(WriteTemplateAnalysisCellTypeEnum cellType) {
         this.cellType = cellType;
+    }
+
+    public Boolean getFirstColumn() {
+        return firstColumn;
+    }
+
+    public void setFirstColumn(Boolean firstColumn) {
+        this.firstColumn = firstColumn;
     }
 
     @Override

@@ -64,6 +64,10 @@ public class WriteWorkbook extends WriteBasicParameter {
      */
     private Boolean inMemory;
     /**
+     * Excel is also written in the event of an exception being thrown.The default false.
+     */
+    private Boolean writeExcelOnException;
+    /**
      * The default is all excel objects.Default is true.
      * <p>
      * if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
@@ -168,5 +172,13 @@ public class WriteWorkbook extends WriteBasicParameter {
 
     public void setInMemory(Boolean inMemory) {
         this.inMemory = inMemory;
+    }
+
+    public Boolean getWriteExcelOnException() {
+        return writeExcelOnException;
+    }
+
+    public void setWriteExcelOnException(Boolean writeExcelOnException) {
+        this.writeExcelOnException = writeExcelOnException;
     }
 }

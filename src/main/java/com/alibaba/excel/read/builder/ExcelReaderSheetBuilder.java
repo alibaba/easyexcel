@@ -166,7 +166,7 @@ public class ExcelReaderSheetBuilder {
      *
      * @return
      */
-    public List<Object> doReadSync() {
+    public <T> List<T> doReadSync() {
         if (excelReader == null) {
             throw new ExcelAnalysisException("Must use 'EasyExcelFactory.read().sheet()' to call this method");
         }
@@ -174,7 +174,7 @@ public class ExcelReaderSheetBuilder {
         registerReadListener(syncReadListener);
         excelReader.read(build());
         excelReader.finish();
-        return syncReadListener.getList();
+        return (List<T>)syncReadListener.getList();
     }
 
 }

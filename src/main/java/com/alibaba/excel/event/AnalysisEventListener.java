@@ -16,7 +16,7 @@ public abstract class AnalysisEventListener<T> implements ReadListener<T> {
 
     @Override
     public void invokeHead(Map<Integer, CellData> headMap, AnalysisContext context) {
-        invokeHeadMap(ConverterUtils.convertToStringMap(headMap, context.currentReadHolder()), context);
+        invokeHeadMap(ConverterUtils.convertToStringMap(headMap, context), context);
     }
 
     /**
