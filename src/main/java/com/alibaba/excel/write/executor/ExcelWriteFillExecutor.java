@@ -127,6 +127,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (collectionLastIndexMap == null) {
             number--;
         }
+        if (number <= 0) {
+            return;
+        }
         sheet.shiftRows(maxRowIndex + 1, lastRowIndex, number, true, false);
         for (AnalysisCell analysisCell : templateAnalysisCache.get(writeContext.writeSheetHolder().getSheetNo())) {
             if (analysisCell.getRowIndex() > maxRowIndex) {
