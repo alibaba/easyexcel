@@ -23,11 +23,12 @@ import com.alibaba.excel.metadata.BaseRowModel;
  * @author Jiaju Zhuang
  **/
 public class ClassUtils {
+    private static final String SPECIAL_BOOLEAN_PREFIX = "is";
     private static final Map<Class, SoftReference<FieldCache>> FIELD_CACHE =
         new ConcurrentHashMap<Class, SoftReference<FieldCache>>();
 
     public static void declaredFields(Class clazz, List<Field> defaultFieldList, Map<Integer, Field> customFiledMap,
-        Map<String, Field> ignoreMap, Boolean convertAllFiled) {
+                                      Map<String, Field> ignoreMap, Boolean convertAllFiled) {
         FieldCache fieldCache = getFieldCache(clazz, convertAllFiled);
         if (fieldCache != null) {
             defaultFieldList.addAll(fieldCache.getDefaultFieldList());
@@ -78,7 +79,7 @@ public class ClassUtils {
         Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
 
         ExcelIgnoreUnannotated excelIgnoreUnannotated =
-            (ExcelIgnoreUnannotated)clazz.getAnnotation(ExcelIgnoreUnannotated.class);
+            (ExcelIgnoreUnannotated) clazz.getAnnotation(ExcelIgnoreUnannotated.class);
         for (Field field : tempFieldList) {
             ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
             if (excelIgnore != null) {
@@ -116,6 +117,18 @@ public class ClassUtils {
             new SoftReference<FieldCache>(new FieldCache(defaultFieldList, customFiledMap, allFieldList, ignoreMap)));
     }
 
+    /**
+     * get boolean field alias starts with 'is'
+     * @param name name like 'isActive'
+     * @return like 'active', or itself
+     */
+    public static String getBooleanFieldAlias(String name) {
+        if (name.startsWith(SPECIAL_BOOLEAN_PREFIX) && name.length() > SPECIAL_BOOLEAN_PREFIX.length()) {
+            return Character.toLowerCase(name.charAt(2)) + name.substring(3);
+        }
+        return name;
+    }
+
     private static class FieldCache {
         private List<Field> defaultFieldList;
         private Map<Integer, Field> customFiledMap;
@@ -123,7 +136,7 @@ public class ClassUtils {
         private Map<String, Field> ignoreMap;
 
         public FieldCache(List<Field> defaultFieldList, Map<Integer, Field> customFiledMap, List<Field> allFieldList,
-            Map<String, Field> ignoreMap) {
+                          Map<String, Field> ignoreMap) {
             this.defaultFieldList = defaultFieldList;
             this.customFiledMap = customFiledMap;
             this.allFieldList = allFieldList;

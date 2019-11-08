@@ -60,7 +60,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Row row = WorkBookUtil.createRow(writeContext.writeSheetHolder().getSheet(), n);
         WriteHandlerUtils.afterRowCreate(writeContext, row, relativeRowIndex, Boolean.FALSE);
         if (oneRowData instanceof List) {
-            addBasicTypeToExcel((List)oneRowData, row, relativeRowIndex);
+            addBasicTypeToExcel((List) oneRowData, row, relativeRowIndex);
         } else {
             addJavaObjectToExcel(oneRowData, row, relativeRowIndex, fieldList);
         }
@@ -96,7 +96,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void doAddBasicTypeToExcel(List<Object> oneRowData, Head head, Row row, int relativeRowIndex, int dataIndex,
-        int cellIndex) {
+                                       int cellIndex) {
         if (writeContext.currentWriteHolder().ignore(null, cellIndex)) {
             return;
         }
@@ -127,7 +127,10 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                     continue;
                 }
                 if (!beanMap.containsKey(name)) {
-                    continue;
+                    name = ClassUtils.getBooleanFieldAlias(name);
+                    if (!beanMap.containsKey(name)) {
+                        continue;
+                    }
                 }
                 Head head = headMap.get(cellIndex);
                 WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE);
