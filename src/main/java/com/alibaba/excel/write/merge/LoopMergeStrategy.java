@@ -46,7 +46,11 @@ public class LoopMergeStrategy extends AbstractMergeStrategy {
                 cell.getRowIndex() + eachRow - 1,
                 cell.getColumnIndex(),
                 cell.getColumnIndex() + columnCount - 1);
-            sheet.addMergedRegion(cellRangeAddress);
+            addMergedRegion(sheet, cellRangeAddress);
         }
+    }
+
+    protected void addMergedRegion(Sheet sheet, CellRangeAddress cellRangeAddress) {
+        sheet.addMergedRegion(cellRangeAddress);
     }
 }
