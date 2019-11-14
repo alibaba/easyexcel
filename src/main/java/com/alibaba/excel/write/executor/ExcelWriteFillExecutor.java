@@ -205,7 +205,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
     }
 
-    private int getRelativeRowIndex() {
+    private Integer getRelativeRowIndex() {
         Integer sheetNo = writeContext.writeSheetHolder().getSheetNo();
         Integer relativeRowIndex = relativeRowIndexMap.get(sheetNo);
         if (relativeRowIndex == null) {
