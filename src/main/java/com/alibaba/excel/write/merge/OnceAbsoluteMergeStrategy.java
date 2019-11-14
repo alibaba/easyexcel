@@ -29,11 +29,11 @@ public class OnceAbsoluteMergeStrategy extends AbstractMergeStrategy {
     }
 
     @Override
-    protected void merge(Sheet sheet, Cell cell, Head head, int relativeRowIndex) {
+    protected void merge(Sheet sheet, Cell cell, Head head, Integer relativeRowIndex) {
         if (cell.getRowIndex() == firstRowIndex && cell.getColumnIndex() == firstColumnIndex) {
             CellRangeAddress cellRangeAddress =
                 new CellRangeAddress(firstRowIndex, lastRowIndex, firstColumnIndex, lastColumnIndex);
-            sheet.addMergedRegion(cellRangeAddress);
+            sheet.addMergedRegionUnsafe(cellRangeAddress);
         }
     }
 }

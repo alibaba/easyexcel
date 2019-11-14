@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
@@ -83,6 +85,17 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      * Whether the encryption
      */
     private String password;
+    /**
+     * SAXParserFactory used when reading xlsx.
+     * <p>
+     * The default will automatically find.
+     * <p>
+     * Please pass in the name of a class ,like : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"
+     *
+     * @see SAXParserFactory#newInstance()
+     * @see SAXParserFactory#newInstance(String, ClassLoader)
+     */
+    private String xlsxSAXParserFactoryName;
     /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
@@ -172,6 +185,7 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         } else {
             this.defaultReturnMap = readWorkbook.getDefaultReturnMap();
         }
+        this.xlsxSAXParserFactoryName = readWorkbook.getXlsxSAXParserFactoryName();
         this.hasReadSheet = new HashSet<Integer>();
         this.ignoreRecord03 = Boolean.FALSE;
         this.password = readWorkbook.getPassword();
@@ -319,6 +333,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getXlsxSAXParserFactoryName() {
+        return xlsxSAXParserFactoryName;
+    }
+
+    public void setXlsxSAXParserFactoryName(String xlsxSAXParserFactoryName) {
+        this.xlsxSAXParserFactoryName = xlsxSAXParserFactoryName;
     }
 
     @Override

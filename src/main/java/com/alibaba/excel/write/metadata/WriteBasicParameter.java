@@ -30,6 +30,10 @@ public class WriteBasicParameter extends BasicParameter {
      */
     private Boolean useDefaultStyle;
     /**
+     * Whether to automatically merge headers.Default is true.
+     */
+    private Boolean automaticMergeHead;
+    /**
      * Ignore the custom columns.
      */
     private Collection<Integer> excludeColumnIndexes;
@@ -78,6 +82,14 @@ public class WriteBasicParameter extends BasicParameter {
         this.useDefaultStyle = useDefaultStyle;
     }
 
+    public Boolean getAutomaticMergeHead() {
+        return automaticMergeHead;
+    }
+
+    public void setAutomaticMergeHead(Boolean automaticMergeHead) {
+        this.automaticMergeHead = automaticMergeHead;
+    }
+
     public Collection<Integer> getExcludeColumnIndexes() {
         return excludeColumnIndexes;
     }
@@ -109,4 +121,5 @@ public class WriteBasicParameter extends BasicParameter {
     public void setIncludeColumnFiledNames(Collection<String> includeColumnFiledNames) {
         this.includeColumnFiledNames = includeColumnFiledNames;
     }
+
 }

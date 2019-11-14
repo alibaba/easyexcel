@@ -19,7 +19,7 @@ public class SimpleColumnWidthStyleStrategy extends AbstractHeadColumnWidthStyle
     }
 
     @Override
-    protected Integer columnWidth(Head head) {
+    protected Integer columnWidth(Head head, Integer columnIndex) {
         return columnWidth;
     }
 }

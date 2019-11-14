@@ -176,7 +176,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         clearEncrypt03();
 
         if (throwable != null) {
-            throw new ExcelAnalysisException("Can not close IO", throwable);
+            throw new ExcelAnalysisException("Can not close IO.", throwable);
         }
     }
 

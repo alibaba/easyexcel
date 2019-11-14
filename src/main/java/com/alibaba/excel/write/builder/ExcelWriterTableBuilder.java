@@ -91,6 +91,17 @@ public class ExcelWriterTableBuilder {
     }
 
     /**
+     * Whether to automatically merge headers.Default is true.
+     *
+     * @param automaticMergeHead
+     * @return
+     */
+    public ExcelWriterTableBuilder automaticMergeHead(Boolean automaticMergeHead) {
+        writeTable.setAutomaticMergeHead(automaticMergeHead);
+        return this;
+    }
+
+    /**
      * Custom type conversions override the default.
      *
      * @param converter
@@ -128,7 +139,6 @@ public class ExcelWriterTableBuilder {
         writeTable.setTableNo(tableNo);
         return this;
     }
-
 
     /**
      * Ignore the custom columns.

@@ -87,6 +87,17 @@ public class ExcelWriterSheetBuilder {
     }
 
     /**
+     * Whether to automatically merge headers.Default is true.
+     *
+     * @param automaticMergeHead
+     * @return
+     */
+    public ExcelWriterSheetBuilder automaticMergeHead(Boolean automaticMergeHead) {
+        writeSheet.setAutomaticMergeHead(automaticMergeHead);
+        return this;
+    }
+
+    /**
      * Custom type conversions override the default.
      *
      * @param converter
