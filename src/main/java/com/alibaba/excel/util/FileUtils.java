@@ -28,7 +28,7 @@ public class FileUtils {
      * project creates a unique UUID as a separate Temporary Files.
      */
     private static String tempFilePrefix =
-        System.getProperty(TempFile.JAVA_IO_TMPDIR) + UUID.randomUUID().toString() + File.separator;
+        System.getProperty(TempFile.JAVA_IO_TMPDIR) + File.separator + UUID.randomUUID().toString() + File.separator;
     /**
      * Used to store poi temporary files.
      */
