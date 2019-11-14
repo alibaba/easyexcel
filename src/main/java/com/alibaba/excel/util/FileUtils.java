@@ -144,7 +144,8 @@ public class FileUtils {
     }
 
     public static File createTmpFile(String fileName) {
-        return createDirectory(new File(tempFilePrefix + fileName));
+        File directory = createDirectory(new File(tempFilePrefix));
+        return new File(directory, fileName);
     }
 
     /**
