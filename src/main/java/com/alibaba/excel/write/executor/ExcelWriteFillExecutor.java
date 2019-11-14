@@ -21,7 +21,6 @@ import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
-import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.StringUtils;
@@ -69,6 +68,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     private Map<Integer, Map<AnalysisCell, Integer>> collectionLastIndexCache =
         new HashMap<Integer, Map<AnalysisCell, Integer>>(8);
 
+    private Map<Integer, Integer> relativeRowIndexMap = new HashMap<Integer, Integer>(8);
+
     public ExcelWriteFillExecutor(WriteContext writeContext) {
         super(writeContext);
     }
@@ -89,10 +90,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 shiftRows(collectionData.size(), analysisCellList);
             }
             while (iterator.hasNext()) {
-                doFill(analysisCellList, iterator.next(), fillConfig);
+                doFill(analysisCellList, iterator.next(), fillConfig, getRelativeRowIndex());
             }
         } else {
-            doFill(readTemplateData(templateAnalysisCache), data, fillConfig);
+            doFill(readTemplateData(templateAnalysisCache), data, fillConfig, null);
         }
     }
 
@@ -138,7 +139,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
     }
 
-    private void doFill(List<AnalysisCell> analysisCellList, Object oneRowData, FillConfig fillConfig) {
+    private void doFill(List<AnalysisCell> analysisCellList, Object oneRowData, FillConfig fillConfig,
+        Integer relativeRowIndex) {
         Map dataMap;
         if (oneRowData instanceof Map) {
             dataMap = (Map)oneRowData;
@@ -161,7 +163,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 Object value = dataMap.get(variable);
                 CellData cellData = converterAndSet(writeSheetHolder, value == null ? null : value.getClass(), cell,
                     value, fieldNameContentPropertyMap.get(variable));
-                WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, null, Boolean.FALSE);
+                WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();
                 int index = 0;
@@ -197,9 +199,22 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 }
                 cellValueBuild.append(analysisCell.getPrepareDataList().get(index));
                 cell.setCellValue(cellValueBuild.toString());
-                WriteHandlerUtils.afterCellDispose(writeContext, cellDataList, cell, null, null, Boolean.FALSE);
+                WriteHandlerUtils.afterCellDispose(writeContext, cellDataList, cell, null, relativeRowIndex,
+                    Boolean.FALSE);
             }
         }
+    }
+
+    private Integer getRelativeRowIndex() {
+        Integer sheetNo = writeContext.writeSheetHolder().getSheetNo();
+        Integer relativeRowIndex = relativeRowIndexMap.get(sheetNo);
+        if (relativeRowIndex == null) {
+            relativeRowIndex = 0;
+        } else {
+            relativeRowIndex++;
+        }
+        relativeRowIndexMap.put(sheetNo, relativeRowIndex);
+        return relativeRowIndex;
     }
 
     private Cell getOneCell(AnalysisCell analysisCell, FillConfig fillConfig) {

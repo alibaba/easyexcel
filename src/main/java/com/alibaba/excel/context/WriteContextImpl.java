@@ -169,7 +169,9 @@ public class WriteContextImpl implements WriteContext {
         int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
         newRowIndex += currentWriteHolder.relativeHeadRowIndex();
         // Combined head
-        addMergedRegionToCurrentSheet(excelWriteHeadProperty, newRowIndex);
+        if (currentWriteHolder.automaticMergeHead()) {
+            addMergedRegionToCurrentSheet(excelWriteHeadProperty, newRowIndex);
+        }
         for (int relativeRowIndex = 0, i = newRowIndex; i < excelWriteHeadProperty.getHeadRowNumber() + newRowIndex;
             i++, relativeRowIndex++) {
             WriteHandlerUtils.beforeRowCreate(this, newRowIndex, relativeRowIndex, Boolean.TRUE);
@@ -182,8 +184,9 @@ public class WriteContextImpl implements WriteContext {
 
     private void addMergedRegionToCurrentSheet(ExcelWriteHeadProperty excelWriteHeadProperty, int rowIndex) {
         for (com.alibaba.excel.metadata.CellRange cellRangeModel : excelWriteHeadProperty.headCellRangeList()) {
-            writeSheetHolder.getSheet().addMergedRegion(new CellRangeAddress(cellRangeModel.getFirstRow() + rowIndex,
-                cellRangeModel.getLastRow() + rowIndex, cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
+            writeSheetHolder.getSheet()
+                .addMergedRegionUnsafe(new CellRangeAddress(cellRangeModel.getFirstRow() + rowIndex,
+                    cellRangeModel.getLastRow() + rowIndex, cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
         }
     }
 
@@ -325,7 +328,7 @@ public class WriteContextImpl implements WriteContext {
         clearEncrypt03();
 
         if (throwable != null) {
-            throw new ExcelGenerateException("Can not close IO", throwable);
+            throw new ExcelGenerateException("Can not close IO.", throwable);
         }
 
         if (LOGGER.isDebugEnabled()) {

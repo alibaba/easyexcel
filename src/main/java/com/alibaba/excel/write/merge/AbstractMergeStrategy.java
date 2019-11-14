@@ -45,5 +45,5 @@ public abstract class AbstractMergeStrategy implements CellWriteHandler {
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void merge(Sheet sheet, Cell cell, Head head, int relativeRowIndex);
+    protected abstract void merge(Sheet sheet, Cell cell, Head head, Integer relativeRowIndex);
 }

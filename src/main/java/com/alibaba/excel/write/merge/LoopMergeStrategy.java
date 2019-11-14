@@ -39,14 +39,20 @@ public class LoopMergeStrategy extends AbstractMergeStrategy {
     }
 
     @Override
-    protected void merge(Sheet sheet, Cell cell, Head head, int relativeRowIndex) {
-        if (head.getColumnIndex() == columnIndex && relativeRowIndex % eachRow == 0) {
-            CellRangeAddress cellRangeAddress = new CellRangeAddress(
-                cell.getRowIndex(),
-                cell.getRowIndex() + eachRow - 1,
-                cell.getColumnIndex(),
-                cell.getColumnIndex() + columnCount - 1);
-            sheet.addMergedRegion(cellRangeAddress);
+    protected void merge(Sheet sheet, Cell cell, Head head, Integer relativeRowIndex) {
+        if (relativeRowIndex == null) {
+            return;
+        }
+        Integer currentColumnIndex;
+        if (head != null) {
+            currentColumnIndex = head.getColumnIndex();
+        } else {
+            currentColumnIndex = cell.getColumnIndex();
+        }
+        if (currentColumnIndex == columnIndex && relativeRowIndex % eachRow == 0) {
+            CellRangeAddress cellRangeAddress = new CellRangeAddress(cell.getRowIndex(),
+                cell.getRowIndex() + eachRow - 1, cell.getColumnIndex(), cell.getColumnIndex() + columnCount - 1);
+            sheet.addMergedRegionUnsafe(cellRangeAddress);
         }
     }
 }

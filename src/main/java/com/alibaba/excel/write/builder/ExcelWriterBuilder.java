@@ -92,6 +92,17 @@ public class ExcelWriterBuilder {
     }
 
     /**
+     * Whether to automatically merge headers.Default is true.
+     *
+     * @param automaticMergeHead
+     * @return
+     */
+    public ExcelWriterBuilder automaticMergeHead(Boolean automaticMergeHead) {
+        writeWorkbook.setAutomaticMergeHead(automaticMergeHead);
+        return this;
+    }
+
+    /**
      * Whether the encryption.
      * <p>
      * WARRING:Encryption is when the entire file is read into memory, so it is very memory intensive.
