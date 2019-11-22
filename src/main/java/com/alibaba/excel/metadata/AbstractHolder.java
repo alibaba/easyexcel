@@ -1,9 +1,10 @@
 package com.alibaba.excel.metadata;
 
+import com.alibaba.excel.converters.Converter;
+
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.excel.converters.Converter;
 
 /**
  * Write/read holder
@@ -38,15 +39,20 @@ public abstract class AbstractHolder implements ConfigurationHolder {
 
     public AbstractHolder(BasicParameter basicParameter, AbstractHolder prentAbstractHolder) {
         this.newInitialization = Boolean.TRUE;
-        if (basicParameter.getHead() == null && basicParameter.getClazz() == null && prentAbstractHolder != null) {
+        final List<List<String>> basicHead = basicParameter.getHead();
+        if (basicHead == null && basicParameter.getClazz() == null && prentAbstractHolder != null) {
+            this.clazz = prentAbstractHolder.getClazz();
             this.head = prentAbstractHolder.getHead();
         } else {
-            this.head = basicParameter.getHead();
-        }
-        if (basicParameter.getHead() == null && basicParameter.getClazz() == null && prentAbstractHolder != null) {
-            this.clazz = prentAbstractHolder.getClazz();
-        } else {
             this.clazz = basicParameter.getClazz();
+            if (basicHead != null) {
+                //The basicParameter head list may not implement the List#add(T t) method.
+                final List<List<String>> safeBasicHead = new LinkedList<List<String>>();
+                for (List<String> headStringList : basicHead) {
+                    safeBasicHead.add(new LinkedList<String>(headStringList));
+                }
+                this.head = safeBasicHead;
+            }
         }
         this.globalConfiguration = new GlobalConfiguration();
         if (basicParameter.getAutoTrim() == null) {
