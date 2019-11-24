@@ -22,7 +22,7 @@ public class NoModleDataListener extends AnalysisEventListener<Map<Integer, Stri
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 5;
-    List<Map<Integer, String>> list = new ArrayList<Map<Integer, String>>();
+    List<Map<Integer, String>> list = new ArrayList<Map<Integer, String>>(BATCH_COUNT);
 
     @Override
     public void invoke(Map<Integer, String> data, AnalysisContext context) {
@@ -30,7 +30,7 @@ public class NoModleDataListener extends AnalysisEventListener<Map<Integer, Stri
         list.add(data);
         if (list.size() >= BATCH_COUNT) {
             saveData();
-            list.clear();
+            list = new ArrayList<Map<Integer, String>>(BATCH_COUNT);
         }
     }
 

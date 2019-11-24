@@ -23,14 +23,14 @@ public class CellDataDemoHeadDataListener extends AnalysisEventListener<CellData
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 5;
-    List<CellDataReadDemoData> list = new ArrayList<CellDataReadDemoData>();
+    List<CellDataReadDemoData> list = new ArrayList<CellDataReadDemoData>(BATCH_COUNT);
 
     @Override
     public void invoke(CellDataReadDemoData data, AnalysisContext context) {
         LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
         if (list.size() >= BATCH_COUNT) {
             saveData();
-            list.clear();
+            list = new ArrayList<CellDataReadDemoData>(BATCH_COUNT);
         }
     }
 

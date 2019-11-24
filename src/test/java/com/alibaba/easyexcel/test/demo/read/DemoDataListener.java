@@ -22,7 +22,7 @@ public class DemoDataListener extends AnalysisEventListener<DemoData> {
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 5;
-    List<DemoData> list = new ArrayList<DemoData>();
+    List<DemoData> list = new ArrayList<DemoData>(BATCH_COUNT);
     /**
      * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
      */
@@ -57,7 +57,7 @@ public class DemoDataListener extends AnalysisEventListener<DemoData> {
         if (list.size() >= BATCH_COUNT) {
             saveData();
             // 存储完成清理 list
-            list.clear();
+            list = new ArrayList<DemoData>(BATCH_COUNT);
         }
     }
 

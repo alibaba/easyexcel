@@ -23,7 +23,7 @@ public class DemoExceptionListener extends AnalysisEventListener<ExceptionDemoDa
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 5;
-    List<ExceptionDemoData> list = new ArrayList<ExceptionDemoData>();
+    List<ExceptionDemoData> list = new ArrayList<ExceptionDemoData>(BATCH_COUNT);
 
     /**
      * 在转换异常 获取其他异常下会调用本接口。抛出异常则停止读取。如果这里不抛出异常则 继续读取下一行。
@@ -60,7 +60,7 @@ public class DemoExceptionListener extends AnalysisEventListener<ExceptionDemoDa
         LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
         if (list.size() >= BATCH_COUNT) {
             saveData();
-            list.clear();
+            list = new ArrayList<ExceptionDemoData>(BATCH_COUNT);
         }
     }
 
