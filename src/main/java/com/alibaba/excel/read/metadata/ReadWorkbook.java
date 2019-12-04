@@ -7,6 +7,7 @@ import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -63,6 +64,12 @@ public class ReadWorkbook extends ReadBasicParameter {
      * Whether the encryption
      */
     private String password;
+    /**
+     * Whether to use the default listener, which is used by default.
+     * <p>
+     * The {@link ModelBuildEventListener} is loaded by default to convert the object.
+     */
+    private Boolean useDefaultListener;
     /**
      * The default is all excel objects.Default is true.
      * <p>
@@ -175,5 +182,13 @@ public class ReadWorkbook extends ReadBasicParameter {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getUseDefaultListener() {
+        return useDefaultListener;
+    }
+
+    public void setUseDefaultListener(Boolean useDefaultListener) {
+        this.useDefaultListener = useDefaultListener;
     }
 }

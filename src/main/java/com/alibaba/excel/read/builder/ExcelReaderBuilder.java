@@ -11,6 +11,7 @@ import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -230,6 +231,19 @@ public class ExcelReaderBuilder {
      */
     public ExcelReaderBuilder password(String password) {
         readWorkbook.setPassword(password);
+        return this;
+    }
+
+    /**
+     * Whether to use the default listener, which is used by default.
+     * <p>
+     * The {@link ModelBuildEventListener} is loaded by default to convert the object.
+     *
+     * @param useDefaultListener
+     * @return
+     */
+    public ExcelReaderBuilder useDefaultListener(Boolean useDefaultListener) {
+        readWorkbook.setUseDefaultListener(useDefaultListener);
         return this;
     }
 
