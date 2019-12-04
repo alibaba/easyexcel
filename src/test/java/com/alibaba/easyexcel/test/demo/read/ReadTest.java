@@ -33,7 +33,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -60,7 +60,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象,并使用{@link ExcelProperty}注解. 参照{@link IndexOrNameData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link IndexOrNameDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link IndexOrNameDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -76,7 +76,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -108,7 +108,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link ConverterData}.里面可以使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link ConverterDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link ConverterDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -130,7 +130,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <p>
      * 3. 设置headRowNumber参数，然后读。 这里要注意headRowNumber如果不指定， 会根据你传入的class的{@link ExcelProperty#value()}里面的表头的数量来决定行数，
      * 如果不传入class则默认为1.当然你指定了headRowNumber不管是否传入class都是以你传入的为准。
@@ -150,7 +150,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -167,7 +167,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -184,7 +184,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link ExceptionDemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExceptionListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExceptionListener}
      * <p>
      * 3. 直接读即可
      */

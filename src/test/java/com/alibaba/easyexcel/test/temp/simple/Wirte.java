@@ -64,7 +64,7 @@ public class Wirte {
         List<DemoData> list = new ArrayList<DemoData>();
         for (int i = 0; i < 10; i++) {
             DemoData data = new DemoData();
-            data.setString("字符串" + i);
+            data.setString("640121807369666560" + i);
             data.setDate(new Date());
             data.setDoubleData(null);
             list.add(data);
