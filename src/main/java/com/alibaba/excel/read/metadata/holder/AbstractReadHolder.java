@@ -26,6 +26,7 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.listener.ReadListenerRegistryCenter;
 import com.alibaba.excel.read.listener.event.AnalysisFinishEvent;
 import com.alibaba.excel.read.metadata.ReadBasicParameter;
+import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.ConverterUtils;
@@ -91,7 +92,10 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             this.readListenerList = new ArrayList<ReadListener>(parentAbstractReadHolder.getReadListenerList());
         }
         if (HolderEnum.WORKBOOK.equals(holderType())) {
-            readListenerList.add(new ModelBuildEventListener());
+            Boolean useDefaultListener = ((ReadWorkbook)readBasicParameter).getUseDefaultListener();
+            if (useDefaultListener == null || useDefaultListener) {
+                readListenerList.add(new ModelBuildEventListener());
+            }
         }
         if (readBasicParameter.getCustomReadListenerList() != null
             && !readBasicParameter.getCustomReadListenerList().isEmpty()) {
