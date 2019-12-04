@@ -45,6 +45,13 @@ public interface WriteHolder extends ConfigurationHolder {
     boolean needHead();
 
     /**
+     * Whether need automatic merge headers.
+     *
+     * @return
+     */
+    boolean automaticMergeHead();
+
+    /**
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
      *
      * @return

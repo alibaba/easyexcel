@@ -34,6 +34,7 @@ import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.SheetUtils;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  *
@@ -148,7 +149,13 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
     private void parseXmlSource(InputStream inputStream, ContentHandler handler) {
         InputSource inputSource = new InputSource(inputStream);
         try {
-            SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+            SAXParserFactory saxFactory;
+            String xlsxSAXParserFactoryName = analysisContext.readWorkbookHolder().getXlsxSAXParserFactoryName();
+            if (StringUtils.isEmpty(xlsxSAXParserFactoryName)) {
+                saxFactory = SAXParserFactory.newInstance();
+            } else {
+                saxFactory = SAXParserFactory.newInstance(xlsxSAXParserFactoryName, null);
+            }
             saxFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);

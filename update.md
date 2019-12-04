@@ -1,3 +1,15 @@
+# 2.1.3
+* 每个java进程单独创建一个缓存目录 [Issue #813](https://github.com/alibaba/easyexcel/issues/813)
+* 统一修改合并为unsafe，提高大量数据导出的合并的效率
+* 修改merge返回参数`relativeRowIndex`为`Integer`
+* 新增参数`automaticMergeHead` 可以设置不自动合并头 [Issue #822](https://github.com/alibaba/easyexcel/issues/822)
+* 新增参数`xlsxSAXParserFactoryName` 可以指定`SAXParserFactory`
+* 修复合并策略 空指针的问题
+* `SimpleColumnWidthStyleStrategy` 新增 参数`columnIndex`  [Issue #806](https://github.com/alibaba/easyexcel/issues/806)
+
+# 2.1.2
+* 修复强制创建新行填充，只有一行数据会未填充的bug
+
 # 2.1.1
 * 发布正式版
 * 修改map返回为LinkedHashMap
@@ -61,7 +73,7 @@
 * 修复监听器转换异常会重复提示的bug
 
 # 2.0.1
-* 降级poi为3.1.7 兼容jdk6
+* 降级poi为3.17 兼容jdk6
 
 # 2.0.0
 * 修复当cell为空可能会抛出空指针的bug

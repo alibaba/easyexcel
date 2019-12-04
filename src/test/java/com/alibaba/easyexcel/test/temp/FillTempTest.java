@@ -1,6 +1,5 @@
 package com.alibaba.easyexcel.test.temp;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,12 +9,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.alibaba.easyexcel.test.demo.fill.FillData;
+import com.alibaba.easyexcel.test.temp.fill.FillData2;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
-import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
 /**
  * 写的填充写法
@@ -46,7 +45,7 @@ public class FillTempTest {
         // 如果数据量大 list不是最后一行 参照下一个
         FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
         excelWriter.fill(data(), fillConfig, writeSheet);
-        excelWriter.fill(data(), fillConfig, writeSheet);
+//        excelWriter.fill(data2(), fillConfig, writeSheet);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("date", "2019年10月9日13:28:28");
         map.put("total", 1000);
@@ -73,7 +72,7 @@ public class FillTempTest {
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
         // 直接写入数据
         excelWriter.fill(data(), writeSheet);
-        excelWriter.fill(data(), writeSheet);
+        excelWriter.fill(data2(), writeSheet);
 
         // 写入list之前的数据
         Map<String, Object> map = new HashMap<String, Object>();
@@ -95,6 +94,16 @@ public class FillTempTest {
         excelWriter.finish();
         // 总体上写法比较复杂 但是也没有想到好的版本 异步的去写入excel 不支持行的删除和移动，也不支持备注这种的写入，所以也排除了可以
         // 新建一个 然后一点点复制过来的方案，最后导致list需要新增行的时候，后面的列的数据没法后移，后续会继续想想解决方案
+    }
+
+    private List<FillData2> data2() {
+        List<FillData2> list = new ArrayList<FillData2>();
+        for (int i = 0; i < 10; i++) {
+            FillData2 fillData = new FillData2();
+            list.add(fillData);
+            fillData.setTest("ttttttt" + i);
+        }
+        return list;
     }
 
     private List<FillData> data() {

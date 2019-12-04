@@ -18,11 +18,15 @@ public class ComplexHeadDataTest {
 
     private static File file07;
     private static File file03;
+    private static File file07AutomaticMergeHead;
+    private static File file03AutomaticMergeHead;
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("complexHead07.xlsx");
         file03 = TestFileUtil.createNewFile("complexHead03.xls");
+        file07AutomaticMergeHead = TestFileUtil.createNewFile("complexHeadAutomaticMergeHead07.xlsx");
+        file03AutomaticMergeHead = TestFileUtil.createNewFile("complexHeadAutomaticMergeHead03.xls");
     }
 
     @Test
@@ -37,6 +41,22 @@ public class ComplexHeadDataTest {
 
     private void readAndWrite(File file) {
         EasyExcel.write(file, ComplexHeadData.class).sheet().doWrite(data());
+        EasyExcel.read(file, ComplexHeadData.class, new ComplexDataListener())
+            .xlsxSAXParserFactoryName("com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl").sheet().doRead();
+    }
+
+    @Test
+    public void t03ReadAndWriteAutomaticMergeHead07() {
+        readAndWriteAutomaticMergeHead07(file07AutomaticMergeHead);
+    }
+
+    @Test
+    public void t04ReadAndWriteAutomaticMergeHead0703() {
+        readAndWriteAutomaticMergeHead07(file03AutomaticMergeHead);
+    }
+
+    private void readAndWriteAutomaticMergeHead07(File file) {
+        EasyExcel.write(file, ComplexHeadData.class).automaticMergeHead(Boolean.FALSE).sheet().doWrite(data());
         EasyExcel.read(file, ComplexHeadData.class, new ComplexDataListener()).sheet().doRead();
     }
 

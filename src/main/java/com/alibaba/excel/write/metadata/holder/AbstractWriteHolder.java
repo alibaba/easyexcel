@@ -67,6 +67,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      */
     private Boolean useDefaultStyle;
     /**
+     * Whether to automatically merge headers.Default is true.
+     */
+    private Boolean automaticMergeHead;
+    /**
      * Ignore the custom columns.
      */
     private Collection<Integer> excludeColumnIndexes;
@@ -125,6 +129,16 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             }
         } else {
             this.useDefaultStyle = writeBasicParameter.getUseDefaultStyle();
+        }
+
+        if (writeBasicParameter.getAutomaticMergeHead() == null) {
+            if (parentAbstractWriteHolder == null) {
+                this.automaticMergeHead = Boolean.TRUE;
+            } else {
+                this.automaticMergeHead = parentAbstractWriteHolder.getAutomaticMergeHead();
+            }
+        } else {
+            this.automaticMergeHead = writeBasicParameter.getAutomaticMergeHead();
         }
 
         if (writeBasicParameter.getExcludeColumnFiledNames() == null && parentAbstractWriteHolder != null) {
@@ -251,7 +265,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
         writeBasicParameter.getCustomWriteHandlerList().add(new AbstractHeadColumnWidthStyleStrategy() {
             @Override
-            protected Integer columnWidth(Head head) {
+            protected Integer columnWidth(Head head, Integer columnIndex) {
                 if (columnWidthMap.containsKey(head.getColumnIndex())) {
                     return columnWidthMap.get(head.getColumnIndex()) / 256;
                 }
@@ -300,7 +314,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     private void dealColumnWidth(List<WriteHandler> handlerList) {
         WriteHandler columnWidthStyleStrategy = new AbstractHeadColumnWidthStyleStrategy() {
             @Override
-            protected Integer columnWidth(Head head) {
+            protected Integer columnWidth(Head head, Integer columnIndex) {
                 if (head == null) {
                     return null;
                 }
@@ -441,6 +455,14 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         this.useDefaultStyle = useDefaultStyle;
     }
 
+    public Boolean getAutomaticMergeHead() {
+        return automaticMergeHead;
+    }
+
+    public void setAutomaticMergeHead(Boolean automaticMergeHead) {
+        this.automaticMergeHead = automaticMergeHead;
+    }
+
     public Collection<Integer> getExcludeColumnIndexes() {
         return excludeColumnIndexes;
     }
@@ -491,5 +513,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     @Override
     public int relativeHeadRowIndex() {
         return getRelativeHeadRowIndex();
+    }
+
+    @Override
+    public boolean automaticMergeHead() {
+        return getAutomaticMergeHead();
     }
 }

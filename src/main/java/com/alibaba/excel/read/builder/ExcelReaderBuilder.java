@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.SAXParserFactory;
+
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
@@ -231,6 +233,23 @@ public class ExcelReaderBuilder {
      */
     public ExcelReaderBuilder password(String password) {
         readWorkbook.setPassword(password);
+        return this;
+    }
+
+    /**
+     * SAXParserFactory used when reading xlsx.
+     * <p>
+     * The default will automatically find.
+     * <p>
+     * Please pass in the name of a class ,like : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"
+     *
+     * @see SAXParserFactory#newInstance()
+     * @see SAXParserFactory#newInstance(String, ClassLoader)
+     * @param xlsxSAXParserFactoryName
+     * @return
+     */
+    public ExcelReaderBuilder xlsxSAXParserFactoryName(String xlsxSAXParserFactoryName) {
+        readWorkbook.setXlsxSAXParserFactoryName(xlsxSAXParserFactoryName);
         return this;
     }
 
