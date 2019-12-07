@@ -12,7 +12,9 @@ import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
+import com.alibaba.excel.read.listener.EasyExcelDataConsumerListener;
 import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.support.EasyExcelConsumer;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
@@ -398,6 +400,25 @@ public class EasyExcelFactory {
         }
         return excelReaderBuilder;
     }
+    
+    /**
+     * Build excel the read and batch consumer list
+     *
+     * @param file
+     *            File to read.
+     * @param head
+     *            Annotate the class for configuration information.
+     * @param pageSize
+     *            Batch count.
+     * @param consumer
+     *            EasyExcelConsumer page list
+     * @return Excel reader builder.
+     * 
+     * @author gmx@yiynx.cn
+     */
+    public static <T> ExcelReaderBuilder read(File file, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
+        return EasyExcel.read(file, head, new EasyExcelDataConsumerListener<>(pageSize, consumer));
+    }
 
     /**
      * Build excel the read
@@ -445,6 +466,25 @@ public class EasyExcelFactory {
         }
         return excelReaderBuilder;
     }
+    
+    /**
+     * Build excel the read and batch consumer list
+     *
+     * @param pathName
+     *            File path to read.
+     * @param head
+     *            Annotate the class for configuration information.
+     * @param pageSize
+     *            Batch count.
+     * @param consumer
+     *            EasyExcelConsumer page list
+     * @return Excel reader builder.
+     * 
+     * @author gmx@yiynx.cn
+     */
+    public static <T> ExcelReaderBuilder read(String pathName, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
+        return EasyExcel.read(pathName, head, new EasyExcelDataConsumerListener<>(pageSize, consumer));
+    }
 
     /**
      * Build excel the read
@@ -491,6 +531,25 @@ public class EasyExcelFactory {
             excelReaderBuilder.registerReadListener(readListener);
         }
         return excelReaderBuilder;
+    }
+    
+    /**
+     * Build excel the read and batch consumer list
+     *
+     * @param inputStream
+     *            Input stream to read.
+     * @param head
+     *            Annotate the class for configuration information.
+     * @param pageSize
+     *            Batch count.
+     * @param consumer
+     *            EasyExcelConsumer page list
+     * @return Excel reader builder.
+     * 
+     * @author gmx@yiynx.cn
+     */
+    public static <T> ExcelReaderBuilder read(InputStream inputStream, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
+        return EasyExcel.read(inputStream, head, new EasyExcelDataConsumerListener<>(pageSize, consumer));
     }
 
     /**

@@ -1,6 +1,9 @@
 package com.alibaba.easyexcel.test.demo.read;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +20,7 @@ import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.support.EasyExcelConsumer;
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -52,6 +56,50 @@ public class ReadTest {
         excelReader.read(readSheet);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
         excelReader.finish();
+    }
+    
+    /**
+     * 简单的读
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 由于默认一行行的读取excel，所有分页消费集合数据
+     * <p>
+     * 3. 直接读即可
+     * @author gmx@yiynx.cn
+     * @throws IOException 
+     */
+    @Test
+    public void easyRead() throws IOException {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        int pageSize = 7; // 分页大小
+        // Java 8：
+        // EasyExcel.read(fileName, DemoData.class, pageSize, pageList -> LOGGER.info("读取到数据:{}", JSON.toJSONString(pageList))).sheet().doRead();
+        // Java 7：pathName
+        EasyExcel.read(fileName, DemoData.class, pageSize, new EasyExcelConsumer<List<DemoData>>() {
+            @Override
+            public void accept(List<DemoData> pageList) {
+                LOGGER.info("读取到数据:{}", JSON.toJSONString(pageList));
+            }
+        }).sheet().doRead();
+        // Java 7：file
+        EasyExcel.read(new File(fileName), DemoData.class, pageSize, new EasyExcelConsumer<List<DemoData>>() {
+            @Override
+            public void accept(List<DemoData> pageList) {
+                LOGGER.info("读取到数据:{}", JSON.toJSONString(pageList));
+            }
+        }).sheet().doRead();
+        // Java 7：inputStream
+        try (InputStream inputStream = new FileInputStream(new File(fileName))) {
+            EasyExcel.read(inputStream, DemoData.class, pageSize, new EasyExcelConsumer<List<DemoData>>() {
+                @Override
+                public void accept(List<DemoData> pageList) {
+                    LOGGER.info("读取到数据:{}", JSON.toJSONString(pageList));
+                }
+           }).sheet().doRead();
+        } catch (IOException e) {
+            throw e;
+        }
     }
 
     /**
