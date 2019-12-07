@@ -59,13 +59,13 @@ public class ReadTest {
     }
     
     /**
-     * 简单的读
+     * 简单分页读并处理
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认一行行的读取excel，所有分页消费集合数据
+     * 2. 由于默认一行行的读取excel，所以分页读取并消费集合数据
      * <p>
-     * 3. 直接读即可
+     * 3. 直接读即可并处理
      * @author gmx@yiynx.cn
      * @throws IOException 
      */
