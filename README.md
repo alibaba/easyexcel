@@ -46,7 +46,6 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
      * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>2. 由于默认一行行的读取excel，所以分页读取并消费集合数据
      * <p>3. 直接读即可并处理
-     * @author gmx@yiynx.cn
      */
     @Test
     public void easyRead() {
