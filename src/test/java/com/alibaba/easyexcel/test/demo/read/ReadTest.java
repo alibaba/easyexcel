@@ -26,7 +26,7 @@ import com.alibaba.fastjson.JSON;
  *
  * @author Jiaju Zhuang
  */
-//@Ignore
+@Ignore
 public class ReadTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadTest.class);
 
