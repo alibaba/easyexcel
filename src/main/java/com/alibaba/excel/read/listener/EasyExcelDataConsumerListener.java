@@ -16,7 +16,7 @@ import com.alibaba.excel.support.EasyExcelConsumer;
  * @since 1.7
  */
 public class EasyExcelDataConsumerListener<T> extends AnalysisEventListener<T> {
-    private int pageSize = Integer.MAX_VALUE - 1; // default int max
+    private int pageSize;
     private List<T> list = new ArrayList<T>();
     private EasyExcelConsumer<List<T>> consumer;
     
@@ -30,14 +30,6 @@ public class EasyExcelDataConsumerListener<T> extends AnalysisEventListener<T> {
      */
     public EasyExcelDataConsumerListener(Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
         this.pageSize = pageSize - 1;
-        this.consumer = consumer;
-    }
-    
-    /**
-     * ConsumerEasyExcelDataListener
-     * @param consumer
-     */
-    public EasyExcelDataConsumerListener(EasyExcelConsumer<List<T>> consumer) {
         this.consumer = consumer;
     }
     

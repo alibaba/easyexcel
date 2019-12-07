@@ -72,7 +72,7 @@ public class ReadTest {
     @Test
     public void easyRead() throws IOException {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        int pageSize = 7; // 分页大小
+        int pageSize = 7;
         // Java 8：
         // EasyExcel.read(fileName, DemoData.class, pageSize, pageList -> LOGGER.info("读取到数据:{}", JSON.toJSONString(pageList))).sheet().doRead();
         // Java 7：pathName
