@@ -1,9 +1,7 @@
 package com.alibaba.easyexcel.test.demo.read;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +26,7 @@ import com.alibaba.fastjson.JSON;
  *
  * @author Jiaju Zhuang
  */
-@Ignore
+//@Ignore
 public class ReadTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadTest.class);
 
@@ -70,7 +68,7 @@ public class ReadTest {
      * @throws IOException 
      */
     @Test
-    public void easyRead() throws IOException {
+    public void easyRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         int pageSize = 7;
         // Java 8：
@@ -82,24 +80,6 @@ public class ReadTest {
                 LOGGER.info("读取到数据:{}", JSON.toJSONString(pageList));
             }
         }).sheet().doRead();
-        // Java 7：file
-        EasyExcel.read(new File(fileName), DemoData.class, pageSize, new EasyExcelConsumer<List<DemoData>>() {
-            @Override
-            public void accept(List<DemoData> pageList) {
-                LOGGER.info("读取到数据:{}", JSON.toJSONString(pageList));
-            }
-        }).sheet().doRead();
-        // Java 7：inputStream
-        try (InputStream inputStream = new FileInputStream(new File(fileName))) {
-            EasyExcel.read(inputStream, DemoData.class, pageSize, new EasyExcelConsumer<List<DemoData>>() {
-                @Override
-                public void accept(List<DemoData> pageList) {
-                    LOGGER.info("读取到数据:{}", JSON.toJSONString(pageList));
-                }
-           }).sheet().doRead();
-        } catch (IOException e) {
-            throw e;
-        }
     }
 
     /**

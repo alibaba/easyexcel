@@ -417,7 +417,7 @@ public class EasyExcelFactory {
      * @author gmx@yiynx.cn
      */
     public static <T> ExcelReaderBuilder read(File file, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return EasyExcel.read(file, head, new EasyExcelDataConsumerListener<>(pageSize, consumer));
+        return EasyExcel.read(file, head, new EasyExcelDataConsumerListener(pageSize, consumer));
     }
 
     /**
@@ -483,7 +483,7 @@ public class EasyExcelFactory {
      * @author gmx@yiynx.cn
      */
     public static <T> ExcelReaderBuilder read(String pathName, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return EasyExcel.read(pathName, head, new EasyExcelDataConsumerListener<>(pageSize, consumer));
+        return EasyExcel.read(pathName, head, new EasyExcelDataConsumerListener(pageSize, consumer));
     }
 
     /**
@@ -549,7 +549,7 @@ public class EasyExcelFactory {
      * @author gmx@yiynx.cn
      */
     public static <T> ExcelReaderBuilder read(InputStream inputStream, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return EasyExcel.read(inputStream, head, new EasyExcelDataConsumerListener<>(pageSize, consumer));
+        return EasyExcel.read(inputStream, head, new EasyExcelDataConsumerListener(pageSize, consumer));
     }
 
     /**
