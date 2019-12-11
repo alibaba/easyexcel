@@ -15,20 +15,19 @@ import com.alibaba.excel.support.EasyExcelConsumer;
  * @see <a href="https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/test/demo/read/DemoDataListener.java">DemoDataListener</a>
  * @since 1.7
  */
-public class EasyExcelDataConsumerListener<T> extends AnalysisEventListener<T> {
+public class EasyExcelConsumerDataListener<T> extends AnalysisEventListener<T> {
     private int pageSize;
     private List<T> list = new ArrayList<T>();
     private EasyExcelConsumer<List<T>> consumer;
     
-    private EasyExcelDataConsumerListener() {
-    }
+    private EasyExcelConsumerDataListener() {}
     
     /**
      * ConsumerEasyExcelDataListener
      * @param pageSize
      * @param consumer
      */
-    public EasyExcelDataConsumerListener(Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
+    public EasyExcelConsumerDataListener(Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
         this.pageSize = pageSize - 1;
         this.consumer = consumer;
     }
