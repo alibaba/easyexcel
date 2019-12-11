@@ -12,7 +12,7 @@ import com.alibaba.excel.event.WriteHandler;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
-import com.alibaba.excel.read.listener.EasyExcelConsumerDataListener;
+import com.alibaba.excel.read.listener.EasyExcelConsumerListener;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.support.EasyExcelConsumer;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -417,7 +417,7 @@ public class EasyExcelFactory {
      * @author gmx@yiynx.cn
      */
     public static <T> ExcelReaderBuilder read(File file, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return read(file, head, new EasyExcelConsumerDataListener(pageSize, consumer));
+        return read(file, head, new EasyExcelConsumerListener(pageSize, consumer));
     }
 
     /**
@@ -483,7 +483,7 @@ public class EasyExcelFactory {
      * @author gmx@yiynx.cn
      */
     public static <T> ExcelReaderBuilder read(String pathName, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return read(pathName, head, new EasyExcelConsumerDataListener(pageSize, consumer));
+        return read(pathName, head, new EasyExcelConsumerListener(pageSize, consumer));
     }
 
     /**
@@ -549,7 +549,7 @@ public class EasyExcelFactory {
      * @author gmx@yiynx.cn
      */
     public static <T> ExcelReaderBuilder read(InputStream inputStream, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return read(inputStream, head, new EasyExcelConsumerDataListener(pageSize, consumer));
+        return read(inputStream, head, new EasyExcelConsumerListener(pageSize, consumer));
     }
 
     /**
