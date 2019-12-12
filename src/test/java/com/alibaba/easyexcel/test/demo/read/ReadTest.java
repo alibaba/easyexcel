@@ -220,10 +220,10 @@ public class ReadTest {
      * 不创建对象的读，不是特别推荐使用，都用String接收对日期的支持不是很好
      */
     @Test
-    public void noModleRead() {
+    public void noModelRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
-        EasyExcel.read(fileName, new NoModleDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
     }
 
     /**
@@ -232,7 +232,7 @@ public class ReadTest {
     @Test
     public void mergedCellRead() {
         String fileName = TestFileUtil.getPath() + "merge" + File.separator + "merge.xlsx";
-        ExcelReader excelReader = EasyExcel.read(fileName, new NoModleDataListener()).build();
+        ExcelReader excelReader = EasyExcel.read(fileName, new NoModelDataListener()).build();
         ReadSheet readSheet = EasyExcel.readSheet(0).build();
         MergedCellHandler mergedCellHandler = new MergedCellHandler();
         excelReader.registerXlsxCellHandler(mergedCellHandler);
