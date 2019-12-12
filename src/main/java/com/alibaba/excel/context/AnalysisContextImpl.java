@@ -1,10 +1,6 @@
 package com.alibaba.excel.context;
 
-import java.io.InputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -14,6 +10,12 @@ import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -37,6 +39,10 @@ public class AnalysisContextImpl implements AnalysisContext {
      * Configuration of currently operated cell
      */
     private ReadHolder currentReadHolder;
+    /**
+     * The Xlsx cell handlers.
+     */
+    private List<XlsxCellHandler> xlsxCellHandlers;
 
     public AnalysisContextImpl(ReadWorkbook readWorkbook) {
         if (readWorkbook == null) {
@@ -44,6 +50,7 @@ public class AnalysisContextImpl implements AnalysisContext {
         }
         readWorkbookHolder = new ReadWorkbookHolder(readWorkbook);
         currentReadHolder = readWorkbookHolder;
+        xlsxCellHandlers = new ArrayList<XlsxCellHandler>();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialization 'AnalysisContextImpl' complete");
         }
@@ -90,6 +97,16 @@ public class AnalysisContextImpl implements AnalysisContext {
     @Override
     public Object getCustom() {
         return readWorkbookHolder.getCustomObject();
+    }
+
+    @Override
+    public void addXlsxCellHandler(XlsxCellHandler xlsxCellHandler) {
+        xlsxCellHandlers.add(xlsxCellHandler);
+    }
+
+    @Override
+    public List<XlsxCellHandler> getXlsxCellHandlers() {
+        return xlsxCellHandlers;
     }
 
     @Override

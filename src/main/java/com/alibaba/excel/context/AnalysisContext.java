@@ -1,8 +1,6 @@
 package com.alibaba.excel.context;
 
-import java.io.InputStream;
-
-import com.alibaba.excel.analysis.ExcelReadExecutor;
+import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -11,6 +9,9 @@ import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  *
@@ -69,6 +70,18 @@ public interface AnalysisContext {
      * @return
      */
     Object getCustom();
+
+    /**
+     * add xlsxCellHandler
+     * @param xlsxCellHandler the xlsxCellHandler
+     */
+    void addXlsxCellHandler(XlsxCellHandler xlsxCellHandler);
+
+    /**
+     * get xlsxCellHandlers
+     * @return the xlsxCellHandlers
+     */
+    List<XlsxCellHandler> getXlsxCellHandlers();
 
     /**
      * get current sheet

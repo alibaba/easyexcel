@@ -1,23 +1,24 @@
 package com.alibaba.easyexcel.test.demo.read;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.analysis.v07.handlers.MergedCellHandler;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.fastjson.JSON;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 读的常见写法
@@ -137,7 +138,7 @@ public class ReadTest {
      */
     @Test
     public void complexHeaderRead() {
-        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "merge" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet()
             // 这里可以设置1，因为头就是一行。如果多行头，可以设置其他值。不传入也可以，因为默认会根据DemoData 来解析，他没有指定头，也就是默认1行
@@ -224,4 +225,27 @@ public class ReadTest {
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new NoModleDataListener()).sheet().doRead();
     }
+
+    /**
+     * 读取excel的同时，获取单元格合并区域的信息
+     */
+    @Test
+    public void mergedCellRead() {
+        String fileName = TestFileUtil.getPath() + "merge" + File.separator + "merge.xlsx";
+        ExcelReader excelReader = EasyExcel.read(fileName, new NoModleDataListener()).build();
+        ReadSheet readSheet = EasyExcel.readSheet(0).build();
+        MergedCellHandler mergedCellHandler = new MergedCellHandler();
+        excelReader.registerXlsxCellHandler(mergedCellHandler);
+        excelReader.read(readSheet);
+        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
+        excelReader.finish();
+        List<CellRangeAddress> cellRangeAddresses = mergedCellHandler.getCellRangeAddresses();
+        for (CellRangeAddress cellRangeAddress : cellRangeAddresses) {
+            System.out.println(cellRangeAddress.formatAsString());
+            System.out.printf("起止行：%d %d%n", cellRangeAddress.getFirstRow(), cellRangeAddress.getLastRow());
+            System.out.printf("起止列：%d %d%n", cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+        }
+    }
+
+
 }

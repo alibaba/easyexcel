@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -236,6 +237,15 @@ public class ExcelReader {
      */
     public ExcelReadExecutor excelExecutor() {
         return excelAnalyser.excelExecutor();
+    }
+
+    /**
+     * Register xlsx cell handler.
+     *
+     * @param xlsxCellHandler the xlsxCellHandler
+     */
+    public void registerXlsxCellHandler(XlsxCellHandler xlsxCellHandler) {
+        analysisContext().addXlsxCellHandler(xlsxCellHandler);
     }
 
     /**
