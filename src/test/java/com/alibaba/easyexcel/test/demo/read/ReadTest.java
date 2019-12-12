@@ -234,16 +234,20 @@ public class ReadTest {
         String fileName = TestFileUtil.getPath() + "merge" + File.separator + "merge.xlsx";
         ExcelReader excelReader = EasyExcel.read(fileName, new NoModelDataListener()).build();
         ReadSheet readSheet = EasyExcel.readSheet(0).build();
-        MergedCellHandler mergedCellHandler = new MergedCellHandler();
+        MergedCellHandler mergedCellHandler = new MergedCellHandler(excelReader.analysisContext());
         excelReader.registerXlsxCellHandler(mergedCellHandler);
         excelReader.read(readSheet);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
         excelReader.finish();
-        List<CellRangeAddress> cellRangeAddresses = mergedCellHandler.getCellRangeAddresses();
-        for (CellRangeAddress cellRangeAddress : cellRangeAddresses) {
-            System.out.println(cellRangeAddress.formatAsString());
-            System.out.printf("起止行：%d %d%n", cellRangeAddress.getFirstRow(), cellRangeAddress.getLastRow());
-            System.out.printf("起止列：%d %d%n", cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+        Map<Integer, List<CellRangeAddress>> cellRangeAddresses =
+            mergedCellHandler.getSheetAndMergedCellRangeAddresses();
+        for (Map.Entry<Integer, List<CellRangeAddress>> sheetAndMergedCell : cellRangeAddresses.entrySet()) {
+            System.out.printf("sheetNo: %d%n", sheetAndMergedCell.getKey());
+            for (CellRangeAddress cellRangeAddress : sheetAndMergedCell.getValue()) {
+                System.out.println(cellRangeAddress.formatAsString());
+                System.out.printf("起止行：%d %d%n", cellRangeAddress.getFirstRow(), cellRangeAddress.getLastRow());
+                System.out.printf("起止列：%d %d%n", cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+            }
         }
     }
 
