@@ -65,7 +65,6 @@ public class ReadTest {
      * <p>
      * 3. 直接读即可并处理
      * @author gmx@yiynx.cn
-     * @throws IOException 
      */
     @Test
     public void easyRead() {
