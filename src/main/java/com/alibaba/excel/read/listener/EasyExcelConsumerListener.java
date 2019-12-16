@@ -20,14 +20,12 @@ public class EasyExcelConsumerListener<T> extends AnalysisEventListener<T> {
     private List<T> list = new ArrayList<T>();
     private EasyExcelConsumer<List<T>> consumer;
     
-    private EasyExcelConsumerListener() {}
-    
     /**
      * EasyExcelConsumerListener
      * @param pageSize
      * @param consumer
      */
-    public EasyExcelConsumerListener(Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
+    public EasyExcelConsumerListener(int pageSize, EasyExcelConsumer<List<T>> consumer) {
         this.pageSize = pageSize - 1;
         this.consumer = consumer;
     }
@@ -44,7 +42,6 @@ public class EasyExcelConsumerListener<T> extends AnalysisEventListener<T> {
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         consumer.accept(list);
-        list.clear();
     }
 
 }
