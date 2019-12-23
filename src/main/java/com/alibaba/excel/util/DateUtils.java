@@ -1,24 +1,45 @@
 package com.alibaba.excel.util;
 
-import java.text.Format;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.ExcelNumberFormat;
-import org.apache.poi.ss.usermodel.ExcelStyleDateFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Date utils
  *
  * @author Jiaju Zhuang
  **/
-public class DateUtils {
+public class DateUtils implements ThreadLocalCachedUtils {
+    /**
+     * Is a cache of dates
+     */
+    private static final ThreadLocal<Map<Integer, Boolean>> DATE_THREAD_LOCAL =
+        new ThreadLocal<Map<Integer, Boolean>>();
+    /**
+     * Is a cache of dates
+     */
+    private static final ThreadLocal<Map<String, SimpleDateFormat>> DATE_FORMAT_THREAD_LOCAL =
+        new ThreadLocal<Map<String, SimpleDateFormat>>();
 
-
+    /**
+     * The following patterns are used in {@link #isADateFormat(Integer, String)}
+     */
+    private static final Pattern date_ptrn1 = Pattern.compile("^\\[\\$\\-.*?\\]");
+    private static final Pattern date_ptrn2 = Pattern.compile("^\\[[a-zA-Z]+\\]");
+    private static final Pattern date_ptrn3a = Pattern.compile("[yYmMdDhHsS]");
+    // add "\u5e74 \u6708 \u65e5" for Chinese/Japanese date format:2017 \u5e74 2 \u6708 7 \u65e5
+    private static final Pattern date_ptrn3b =
+        Pattern.compile("^[\\[\\]yYmMdDhHsS\\-T/\u5e74\u6708\u65e5,. :\"\\\\]+0*[ampAMP/]*$");
+    // elapsed time patterns: [h],[m] and [s]
+    private static final Pattern date_ptrn4 = Pattern.compile("^\\[([hH]+|[mM]+|[sS]+)\\]");
+    // for format which start with "[DBNum1]" or "[DBNum2]" or "[DBNum3]" could be a Chinese date
+    private static final Pattern date_ptrn5 = Pattern.compile("^\\[DBNum(1|2|3)\\]");
+    // for format which start with "年" or "月" or "日" or "时" or "分" or "秒" could be a Chinese date
+    private static final Pattern date_ptrn6 = Pattern.compile("(年|月|日|时|分|秒)+");
 
     public static final String DATE_FORMAT_10 = "yyyy-MM-dd";
     public static final String DATE_FORMAT_14 = "yyyyMMddHHmmss";
@@ -41,7 +62,7 @@ public class DateUtils {
         if (StringUtils.isEmpty(dateFormat)) {
             dateFormat = switchDateFormat(dateString);
         }
-        return new SimpleDateFormat(dateFormat).parse(dateString);
+        return getCacheDateFormat(dateFormat).parse(dateString);
     }
 
     /**
@@ -107,196 +128,183 @@ public class DateUtils {
         if (StringUtils.isEmpty(dateFormat)) {
             dateFormat = DATE_FORMAT_19;
         }
-        return new SimpleDateFormat(dateFormat).format(date);
+        return getCacheDateFormat(dateFormat).format(date);
     }
 
-//
-//    /**
-//     * Determine if it is a date format.
-//     *
-//     * @param dataFormat
-//     * @param dataFormatString
-//     * @return
-//     */
-//    public static boolean isDateFormatted(Integer dataFormat, String dataFormatString) {
-//        if (cell == null) {
-//            return false;
-//        }
-//        boolean isDate = false;
-//
-//        double d = cell.getNumericCellValue();
-//        if (DateUtil.isValidExcelDate(d)) {
-//            ExcelNumberFormat nf = ExcelNumberFormat.from(cell, cfEvaluator);
-//            if (nf == null) {
-//                return false;
-//            }
-//            bDate = isADateFormat(nf);
-//        }
-//        return bDate;
-//    }
-//
-//    private String getFormattedDateString(Cell cell, ConditionalFormattingEvaluator cfEvaluator) {
-//        if (cell == null) {
-//            return null;
-//        }
-//        Format dateFormat = getFormat(cell, cfEvaluator);
-//        synchronized (dateFormat) {
-//            if(dateFormat instanceof ExcelStyleDateFormatter) {
-//                // Hint about the raw excel value
-//                ((ExcelStyleDateFormatter)dateFormat).setDateToBeFormatted(
-//                    cell.getNumericCellValue()
-//                );
-//            }
-//            Date d = cell.getDateCellValue();
-//            return performDateFormatting(d, dateFormat);
-//        }
-//    }
-//
-//
-//    public static boolean isADateFormat(int formatIndex, String formatString) {
-//        // First up, is this an internal date format?
-//        if (isInternalDateFormat(formatIndex)) {
-//            return true;
-//        }
-//        if (StringUtils.isEmpty(formatString)) {
-//            return false;
-//        }
-//
-//        // check the cache first
-//        if (isCached(formatString, formatIndex)) {
-//            return lastCachedResult.get();
-//        }
-//
-//        String fs = formatString;
-//        /*if (false) {
-//            // Normalize the format string. The code below is equivalent
-//            // to the following consecutive regexp replacements:
-//
-//             // Translate \- into just -, before matching
-//             fs = fs.replaceAll("\\\\-","-");
-//             // And \, into ,
-//             fs = fs.replaceAll("\\\\,",",");
-//             // And \. into .
-//             fs = fs.replaceAll("\\\\\\.",".");
-//             // And '\ ' into ' '
-//             fs = fs.replaceAll("\\\\ "," ");
-//
-//             // If it end in ;@, that's some crazy dd/mm vs mm/dd
-//             //  switching stuff, which we can ignore
-//             fs = fs.replaceAll(";@", "");
-//
-//             // The code above was reworked as suggested in bug 48425:
-//             // simple loop is more efficient than consecutive regexp replacements.
-//        }*/
-//        final int length = fs.length();
-//        StringBuilder sb = new StringBuilder(length);
-//        for (int i = 0; i < length; i++) {
-//            char c = fs.charAt(i);
-//            if (i < length - 1) {
-//                char nc = fs.charAt(i + 1);
-//                if (c == '\\') {
-//                    switch (nc) {
-//                        case '-':
-//                        case ',':
-//                        case '.':
-//                        case ' ':
-//                        case '\\':
-//                            // skip current '\' and continue to the next char
-//                            continue;
-//                    }
-//                } else if (c == ';' && nc == '@') {
-//                    i++;
-//                    // skip ";@" duplets
-//                    continue;
-//                }
-//            }
-//            sb.append(c);
-//        }
-//        fs = sb.toString();
-//
-//        // short-circuit if it indicates elapsed time: [h], [m] or [s]
-//        if (date_ptrn4.matcher(fs).matches()) {
-//            cache(formatString, formatIndex, true);
-//            return true;
-//        }
-//        // If it starts with [DBNum1] or [DBNum2] or [DBNum3]
-//        // then it could be a Chinese date
-//        fs = date_ptrn5.matcher(fs).replaceAll("");
-//        // If it starts with [$-...], then could be a date, but
-//        // who knows what that starting bit is all about
-//        fs = date_ptrn1.matcher(fs).replaceAll("");
-//        // If it starts with something like [Black] or [Yellow],
-//        // then it could be a date
-//        fs = date_ptrn2.matcher(fs).replaceAll("");
-//        // You're allowed something like dd/mm/yy;[red]dd/mm/yy
-//        // which would place dates before 1900/1904 in red
-//        // For now, only consider the first one
-//        final int separatorIndex = fs.indexOf(';');
-//        if (0 < separatorIndex && separatorIndex < fs.length() - 1) {
-//            fs = fs.substring(0, separatorIndex);
-//        }
-//
-//        // Ensure it has some date letters in it
-//        // (Avoids false positives on the rest of pattern 3)
-//        if (!date_ptrn3a.matcher(fs).find()) {
-//            return false;
-//        }
-//
-//        // If we get here, check it's only made up, in any case, of:
-//        // y m d h s - \ / , . : [ ] T
-//        // optionally followed by AM/PM
-//
-//        boolean result = date_ptrn3b.matcher(fs).matches();
-//        cache(formatString, formatIndex, result);
-//        return result;
-//    }
-//
-//    /**
-//     * Given a format ID this will check whether the format represents an internal excel date format or not.
-//     *
-//     * @see #isADateFormat(int, java.lang.String)
-//     */
-//    public static boolean isInternalDateFormat(int format) {
-//        switch (format) {
-//            // Internal Date Formats as described on page 427 in
-//            // Microsoft Excel Dev's Kit...
-//            // 14-22
-//            case 0x0e:
-//            case 0x0f:
-//            case 0x10:
-//            case 0x11:
-//            case 0x12:
-//            case 0x13:
-//            case 0x14:
-//            case 0x15:
-//            case 0x16:
-//                // 27-36
-//            case 0x1b:
-//            case 0x1c:
-//            case 0x1d:
-//            case 0x1e:
-//            case 0x1f:
-//            case 0x20:
-//            case 0x21:
-//            case 0x22:
-//            case 0x23:
-//            case 0x24:
-//                // 45-47
-//            case 0x2d:
-//            case 0x2e:
-//            case 0x2f:
-//                // 50-58
-//            case 0x32:
-//            case 0x33:
-//            case 0x34:
-//            case 0x35:
-//            case 0x36:
-//            case 0x37:
-//            case 0x38:
-//            case 0x39:
-//            case 0x3a:
-//                return true;
-//        }
-//        return false;
-//    }
+    private static DateFormat getCacheDateFormat(String dateFormat) {
+        Map<String, SimpleDateFormat> dateFormatMap = DATE_FORMAT_THREAD_LOCAL.get();
+        if (dateFormatMap == null) {
+            dateFormatMap = new HashMap<String, SimpleDateFormat>();
+            DATE_FORMAT_THREAD_LOCAL.set(dateFormatMap);
+        } else {
+            SimpleDateFormat dateFormatCached = dateFormatMap.get(dateFormat);
+            if (dateFormatCached != null) {
+                return dateFormatCached;
+            }
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        dateFormatMap.put(dateFormat, simpleDateFormat);
+        return simpleDateFormat;
+    }
+
+    /**
+     * Determine if it is a date format.
+     *
+     * @param formatIndex
+     * @param formatString
+     * @return
+     */
+    public static boolean isADateFormat(Integer formatIndex, String formatString) {
+        if (formatIndex == null) {
+            return false;
+        }
+        Map<Integer, Boolean> isDateCache = DATE_THREAD_LOCAL.get();
+        if (isDateCache == null) {
+            isDateCache = new HashMap<Integer, Boolean>();
+            DATE_THREAD_LOCAL.set(isDateCache);
+        } else {
+            Boolean isDateCachedData = isDateCache.get(formatIndex);
+            if (isDateCachedData != null) {
+                return isDateCachedData;
+            }
+        }
+        boolean isDate = isADateFormatUncached(formatIndex, formatString);
+        isDateCache.put(formatIndex, isDate);
+        return isDate;
+    }
+
+    /**
+     * Determine if it is a date format.
+     *
+     * @param formatIndex
+     * @param formatString
+     * @return
+     */
+    public static boolean isADateFormatUncached(Integer formatIndex, String formatString) {
+        // First up, is this an internal date format?
+        if (isInternalDateFormat(formatIndex)) {
+            return true;
+        }
+        if (StringUtils.isEmpty(formatString)) {
+            return false;
+        }
+        String fs = formatString;
+        final int length = fs.length();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            char c = fs.charAt(i);
+            if (i < length - 1) {
+                char nc = fs.charAt(i + 1);
+                if (c == '\\') {
+                    switch (nc) {
+                        case '-':
+                        case ',':
+                        case '.':
+                        case ' ':
+                        case '\\':
+                            // skip current '\' and continue to the next char
+                            continue;
+                    }
+                } else if (c == ';' && nc == '@') {
+                    i++;
+                    // skip ";@" duplets
+                    continue;
+                }
+            }
+            sb.append(c);
+        }
+        fs = sb.toString();
+
+        // short-circuit if it indicates elapsed time: [h], [m] or [s]
+        if (date_ptrn4.matcher(fs).matches()) {
+            return true;
+        }
+        // If it starts with [DBNum1] or [DBNum2] or [DBNum3]
+        // then it could be a Chinese date
+        fs = date_ptrn5.matcher(fs).replaceAll("");
+        // If it starts with [$-...], then could be a date, but
+        // who knows what that starting bit is all about
+        fs = date_ptrn1.matcher(fs).replaceAll("");
+        // If it starts with something like [Black] or [Yellow],
+        // then it could be a date
+        fs = date_ptrn2.matcher(fs).replaceAll("");
+        // You're allowed something like dd/mm/yy;[red]dd/mm/yy
+        // which would place dates before 1900/1904 in red
+        // For now, only consider the first one
+        final int separatorIndex = fs.indexOf(';');
+        if (0 < separatorIndex && separatorIndex < fs.length() - 1) {
+            fs = fs.substring(0, separatorIndex);
+        }
+
+        // Ensure it has some date letters in it
+        // (Avoids false positives on the rest of pattern 3)
+        if (!date_ptrn3a.matcher(fs).find()) {
+            return false;
+        }
+
+        // If we get here, check it's only made up, in any case, of:
+        // y m d h s - \ / , . : [ ] T
+        // optionally followed by AM/PM
+        boolean result = date_ptrn3b.matcher(fs).matches();
+        if (result) {
+            return true;
+        }
+        result = date_ptrn6.matcher(fs).find();
+        return result;
+    }
+
+    /**
+     * Given a format ID this will check whether the format represents an internal excel date format or not.
+     *
+     * @see #isADateFormat(Integer, String)
+     */
+    public static boolean isInternalDateFormat(int format) {
+        switch (format) {
+            // Internal Date Formats as described on page 427 in
+            // Microsoft Excel Dev's Kit...
+            // 14-22
+            case 0x0e:
+            case 0x0f:
+            case 0x10:
+            case 0x11:
+            case 0x12:
+            case 0x13:
+            case 0x14:
+            case 0x15:
+            case 0x16:
+                // 27-36
+            case 0x1b:
+            case 0x1c:
+            case 0x1d:
+            case 0x1e:
+            case 0x1f:
+            case 0x20:
+            case 0x21:
+            case 0x22:
+            case 0x23:
+            case 0x24:
+                // 45-47
+            case 0x2d:
+            case 0x2e:
+            case 0x2f:
+                // 50-58
+            case 0x32:
+            case 0x33:
+            case 0x34:
+            case 0x35:
+            case 0x36:
+            case 0x37:
+            case 0x38:
+            case 0x39:
+            case 0x3a:
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void removeThreadLocalCache() {
+        DATE_THREAD_LOCAL.remove();
+        DATE_FORMAT_THREAD_LOCAL.remove();
+    }
 }

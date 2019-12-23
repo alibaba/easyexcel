@@ -13,7 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -21,6 +20,7 @@ import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
+import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -87,12 +87,11 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
                 int dateFormatIndexInteger = Integer.parseInt(dateFormatIndex);
                 XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
                 int dataFormat = xssfCellStyle.getDataFormat();
-                String dataFormatString = xssfCellStyle.getDataFormatString();
                 currentCellData.setDataFormat(dataFormat);
-                if (dataFormatString == null) {
+                if (dataFormat <= BuiltinFormats.builtinFormats.length) {
                     currentCellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat));
                 } else {
-                    currentCellData.setDataFormatString(dataFormatString);
+                    currentCellData.setDataFormatString(xssfCellStyle.getDataFormatString());
                 }
             }
         }

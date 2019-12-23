@@ -6,10 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Ignore;
@@ -17,7 +21,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.easyexcel.test.core.dataformat.DateFormatData;
 import com.alibaba.easyexcel.test.temp.Lock2Test;
+import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 
@@ -124,4 +130,61 @@ public class DataFormatTest {
         System.out.println("end:" + (System.currentTimeMillis() - start));
     }
 
+    @Test
+    public void test355() throws IOException, InvalidFormatException {
+        File file = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xlsx");
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
+        Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
+        DataFormatter d = new DataFormatter(Locale.CHINA);
+
+        for (int i = 0; i < xssfSheet.getLastRowNum(); i++) {
+            Row row = xssfSheet.getRow(i);
+            System.out.println(d.formatCellValue(row.getCell(0)));
+        }
+
+    }
+
+    @Test
+    public void test3556() throws IOException, InvalidFormatException {
+        String file = "D://test/dataformat.xlsx";
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
+        Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
+        DataFormatter d = new DataFormatter(Locale.CHINA);
+
+        for (int i = 0; i < xssfSheet.getLastRowNum(); i++) {
+            Row row = xssfSheet.getRow(i);
+            System.out.println(d.formatCellValue(row.getCell(0)));
+        }
+
+    }
+
+    @Test
+    public void tests() throws IOException, InvalidFormatException {
+        SimpleDateFormat s1 = new SimpleDateFormat("yyyy\"5E74\"m\"6708\"d\"65E5\"");
+        System.out.println(s1.format(new Date()));
+        s1 = new SimpleDateFormat("yyyy年m月d日");
+        System.out.println(s1.format(new Date()));
+    }
+
+    @Test
+    public void tests1() throws IOException, InvalidFormatException {
+        String file = "D://test/dataformat1.xlsx";
+        List<DateFormatData> list = EasyExcel.read(file, DateFormatData.class, null).sheet().doReadSync();
+        for (DateFormatData data : list) {
+            LOGGER.info("返回:{}", JSON.toJSONString(data));
+        }
+    }
+
+    @Test
+    public void tests3() throws IOException, InvalidFormatException {
+        SimpleDateFormat s1 = new SimpleDateFormat("ah\"时\"mm\"分\"");
+        System.out.println(s1.format(new Date()));
+    }
+
+    private static final Pattern date_ptrn6 = Pattern.compile("^.*(年|月|日|时|分|秒)+.*$");
+
+    @Test
+    public void tests34() throws IOException, InvalidFormatException {
+        System.out.println(date_ptrn6.matcher("2017但是").matches());
+    }
 }

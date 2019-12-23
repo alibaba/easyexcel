@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.alibaba.excel.converters.Converter;
 
@@ -34,6 +35,11 @@ public class BasicParameter {
      * @return
      */
     private Boolean use1904windowing;
+    /**
+     * A <code>Locale</code> object represents a specific geographical, political, or cultural region. This parameter is
+     * used when formatting dates and numbers.
+     */
+    private Locale locale;
 
     public List<List<String>> getHead() {
         return head;
@@ -75,4 +81,11 @@ public class BasicParameter {
         this.use1904windowing = use1904windowing;
     }
 
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 }
