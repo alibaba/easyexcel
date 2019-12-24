@@ -34,4 +34,12 @@ public interface XlsxCellHandler {
      *            Tag name
      */
     void endHandle(String name);
+
+    /**
+     * Set the comment of the cell
+     *
+     * @param comment
+     *              cell comment
+     */
+    void handleComments(String comment);
 }

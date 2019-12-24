@@ -162,6 +162,23 @@ public class ReadTest {
     }
 
     /**
+     * 读取单元格批注
+     *
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * <p>
+     * 3. 直接读即可
+     */
+    @Test
+    public void commentsRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
+        EasyExcel.read(fileName, DemoData.class, new DemoCellCommentsListener()).sheet().doRead();
+    }
+
+    /**
      * 读取公式和单元格类型
      *
      * <p>
