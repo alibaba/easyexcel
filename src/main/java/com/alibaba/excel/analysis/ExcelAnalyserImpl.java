@@ -1,13 +1,10 @@
 package com.alibaba.excel.analysis;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.crypt.Decryptor;
-import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.IOUtils;
@@ -25,7 +22,9 @@ import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.CollectionUtils;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
 
 /**
@@ -37,6 +36,10 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     private AnalysisContext analysisContext;
 
     private ExcelReadExecutor excelReadExecutor;
+    /**
+     * Prevent multiple shutdowns
+     */
+    private boolean finished = false;
 
     public ExcelAnalyserImpl(ReadWorkbook readWorkbook) {
         try {
@@ -124,31 +127,37 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
     @Override
     public void finish() {
+        if (finished) {
+            return;
+        }
+        finished = true;
         if (analysisContext == null || analysisContext.readWorkbookHolder() == null) {
             return;
         }
         ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
+
+        Throwable throwable = null;
 
         try {
             if (readWorkbookHolder.getReadCache() != null) {
                 readWorkbookHolder.getReadCache().destroy();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
         try {
             if (readWorkbookHolder.getOpcPackage() != null) {
                 readWorkbookHolder.getOpcPackage().revert();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
         try {
             if (readWorkbookHolder.getPoifsFileSystem() != null) {
                 readWorkbookHolder.getPoifsFileSystem().close();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
         try {
             if (analysisContext.readWorkbookHolder().getAutoCloseStream()
@@ -156,17 +165,28 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                 readWorkbookHolder.getInputStream().close();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
         try {
             if (readWorkbookHolder.getTempFile() != null) {
                 FileUtils.delete(readWorkbookHolder.getTempFile());
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
         clearEncrypt03();
+
+        removeThreadLocalCache();
+
+        if (throwable != null) {
+            throw new ExcelAnalysisException("Can not close IO.", throwable);
+        }
+    }
+
+    private void removeThreadLocalCache() {
+        NumberDataFormatterUtils.removeThreadLocalCache();
+        DateUtils.removeThreadLocalCache();
     }
 
     private void clearEncrypt03() {
@@ -175,10 +195,6 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             return;
         }
         Biff8EncryptionKey.setCurrentUserPassword(null);
-    }
-
-    private void throwCanNotCloseIo(Throwable t) {
-        throw new ExcelAnalysisException("Can not close IO", t);
     }
 
     @Override

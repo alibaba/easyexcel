@@ -1,6 +1,7 @@
 package com.alibaba.excel.write.metadata;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.alibaba.excel.metadata.BasicParameter;
@@ -28,6 +29,26 @@ public class WriteBasicParameter extends BasicParameter {
      * Use the default style.Default is true.
      */
     private Boolean useDefaultStyle;
+    /**
+     * Whether to automatically merge headers.Default is true.
+     */
+    private Boolean automaticMergeHead;
+    /**
+     * Ignore the custom columns.
+     */
+    private Collection<Integer> excludeColumnIndexes;
+    /**
+     * Ignore the custom columns.
+     */
+    private Collection<String> excludeColumnFiledNames;
+    /**
+     * Only output the custom columns.
+     */
+    private Collection<Integer> includeColumnIndexes;
+    /**
+     * Only output the custom columns.
+     */
+    private Collection<String> includeColumnFiledNames;
 
     public Integer getRelativeHeadRowIndex() {
         return relativeHeadRowIndex;
@@ -60,4 +81,45 @@ public class WriteBasicParameter extends BasicParameter {
     public void setUseDefaultStyle(Boolean useDefaultStyle) {
         this.useDefaultStyle = useDefaultStyle;
     }
+
+    public Boolean getAutomaticMergeHead() {
+        return automaticMergeHead;
+    }
+
+    public void setAutomaticMergeHead(Boolean automaticMergeHead) {
+        this.automaticMergeHead = automaticMergeHead;
+    }
+
+    public Collection<Integer> getExcludeColumnIndexes() {
+        return excludeColumnIndexes;
+    }
+
+    public void setExcludeColumnIndexes(Collection<Integer> excludeColumnIndexes) {
+        this.excludeColumnIndexes = excludeColumnIndexes;
+    }
+
+    public Collection<String> getExcludeColumnFiledNames() {
+        return excludeColumnFiledNames;
+    }
+
+    public void setExcludeColumnFiledNames(Collection<String> excludeColumnFiledNames) {
+        this.excludeColumnFiledNames = excludeColumnFiledNames;
+    }
+
+    public Collection<Integer> getIncludeColumnIndexes() {
+        return includeColumnIndexes;
+    }
+
+    public void setIncludeColumnIndexes(Collection<Integer> includeColumnIndexes) {
+        this.includeColumnIndexes = includeColumnIndexes;
+    }
+
+    public Collection<String> getIncludeColumnFiledNames() {
+        return includeColumnFiledNames;
+    }
+
+    public void setIncludeColumnFiledNames(Collection<String> includeColumnFiledNames) {
+        this.includeColumnFiledNames = includeColumnFiledNames;
+    }
+
 }

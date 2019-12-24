@@ -22,7 +22,7 @@ public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColum
         if (!needSetWidth) {
             return;
         }
-        Integer width = columnWidth(head);
+        Integer width = columnWidth(head, cell.getColumnIndex());
         if (width != null) {
             width = width * 256;
             writeSheetHolder.getSheet().setColumnWidth(cell.getColumnIndex(), width);
@@ -36,9 +36,11 @@ public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColum
      * if return null,ignore
      *
      * @param head
-     *            Nullable
+     *            Nullable.
+     * @param columnIndex
+     *            Not null.
      * @return
      */
-    protected abstract Integer columnWidth(Head head);
+    protected abstract Integer columnWidth(Head head, Integer columnIndex);
 
 }

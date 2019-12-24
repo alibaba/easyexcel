@@ -1,3 +1,57 @@
+# 2.2.0-beta1
+* 修复用String接收日期、数字和excel显示不一致的bug(不是完美修复，但是大部分情况已经兼容)
+* 降低Ehcache版本 3.7.1(jkd7) -> 3.4.0(jdk6)
+* 修复xls 用Map接收时多次接收会是同一个对象的bug
+* 修复浮点型数据导入到excel 会丢失精度的bug
+
+# 2.1.4
+* 新增参数`useDefaultListener` 可以排除默认对象转换
+
+# 2.1.3
+* 每个java进程单独创建一个缓存目录 [Issue #813](https://github.com/alibaba/easyexcel/issues/813)
+* 统一修改合并为unsafe，提高大量数据导出的合并的效率
+* 修改merge返回参数`relativeRowIndex`为`Integer`
+* 新增参数`automaticMergeHead` 可以设置不自动合并头 [Issue #822](https://github.com/alibaba/easyexcel/issues/822)
+* 新增参数`xlsxSAXParserFactoryName` 可以指定`SAXParserFactory`
+* 修复合并策略 空指针的问题
+* `SimpleColumnWidthStyleStrategy` 新增 参数`columnIndex`  [Issue #806](https://github.com/alibaba/easyexcel/issues/806)
+
+# 2.1.2
+* 修复强制创建新行填充，只有一行数据会未填充的bug
+
+# 2.1.1
+* 发布正式版
+* 修改map返回为LinkedHashMap
+* 修改同步读取返回对象支持泛型
+* 修复03版不能直接读取第二个sheet的bug [Issue #772](https://github.com/alibaba/easyexcel/issues/772)
+* 新增支持图片导出用URL [Issue #774](https://github.com/alibaba/easyexcel/issues/774)
+* 加入多次关闭判断，防止多次关闭异常
+* 加入根据模板自动识别导出的excel类型
+* 修改默认失败后，不再往文件流写入数据。通过参数`writeExcelOnException` 参数设置异常了也要写入前面的数据。
+* 循环合并策略支持一次性合并多列
+* `ExcelDataConvertException`返回新增具体报错的数据
+* 加入解析class缓存
+* 修复填充的时候行高不复制的Bug [Issue #780](https://github.com/alibaba/easyexcel/issues/780)
+* 修复03版无法获取大概总行数的bug
+
+# 2.1.0-beta4
+* 修改最长匹配策略会空指针的bug [Issue #747](https://github.com/alibaba/easyexcel/issues/747)
+* 修改afterRowDispose错误 [Issue #751](https://github.com/alibaba/easyexcel/issues/751)
+* 修复多个头的情况下会读取数据为空
+
+# 2.1.0-beta3
+* 支持强行指定在内存处理，以支持备注、RichTextString等的写入
+* 修复关闭流失败，可能会不删除临时文件的问题
+* 支持根据参数自定义导出列
+* 修改最长匹配策略的最大长度 [Issue #734](https://github.com/alibaba/easyexcel/issues/734)
+* 修复策略头未生效的bug [Issue #735](https://github.com/alibaba/easyexcel/issues/735)
+* 修复填充的时候有数字会异常
+
+# 2.1.0-beta2
+* 修改模板通过流创建报错的bug
+* 修复空数据未替换掉的bug
+* 修复空模板会空一行的bug
+
 # 2.1.0-beta1
 * 新增支持导入、导出支持公式
 * 新增支持读取单元格类型、写入指定单元格类型
@@ -28,7 +82,7 @@
 * 修复监听器转换异常会重复提示的bug
 
 # 2.0.1
-* 降级poi为3.1.7 兼容jdk6
+* 降级poi为3.17 兼容jdk6
 
 # 2.0.0
 * 修复当cell为空可能会抛出空指针的bug

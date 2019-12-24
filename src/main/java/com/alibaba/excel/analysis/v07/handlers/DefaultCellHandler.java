@@ -9,11 +9,10 @@ import static com.alibaba.excel.constant.ExcelXmlConstants.CELL_VALUE_TYPE_TAG;
 
 import java.math.BigDecimal;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.TreeMap;
 
-import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -21,6 +20,7 @@ import org.xml.sax.Attributes;
 
 import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
+import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -37,7 +37,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private final AnalysisContext analysisContext;
     private Deque<String> currentTagDeque = new LinkedList<String>();
     private int curCol;
-    private Map<Integer, CellData> curRowContent = new TreeMap<Integer, CellData>();
+    private Map<Integer, CellData> curRowContent = new LinkedHashMap<Integer, CellData>();
     private CellData currentCellData;
     private StringBuilder dataStringBuilder;
     private StringBuilder formulaStringBuilder;
@@ -54,7 +54,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
 
     @Override
     public void clearResult() {
-        curRowContent = new TreeMap<Integer, CellData>();
+        curRowContent = new LinkedHashMap<Integer, CellData>();
     }
 
     @Override
@@ -87,13 +87,10 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
                 int dateFormatIndexInteger = Integer.parseInt(dateFormatIndex);
                 XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
                 int dataFormat = xssfCellStyle.getDataFormat();
-                String dataFormatString = xssfCellStyle.getDataFormatString();
                 currentCellData.setDataFormat(dataFormat);
-                if (dataFormatString == null) {
-                    currentCellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat));
-                } else {
-                    currentCellData.setDataFormatString(dataFormatString);
-                }
+                currentCellData.setDataFormatString(
+                    BuiltinFormats.getBuiltinFormat(dataFormat, xssfCellStyle.getDataFormatString(),
+                        analysisContext.readSheetHolder().getGlobalConfiguration().getLocale()));
             }
         }
         // cell is formula

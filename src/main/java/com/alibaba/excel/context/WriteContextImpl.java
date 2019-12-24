@@ -1,27 +1,17 @@
 package com.alibaba.excel.context;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.util.FileUtils;
-import com.alibaba.excel.util.StringUtils;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
-import org.apache.poi.poifs.crypt.Decryptor;
 import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.crypt.EncryptionMode;
 import org.apache.poi.poifs.crypt.Encryptor;
-import org.apache.poi.poifs.filesystem.DocumentOutputStream;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -36,6 +26,11 @@ import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.DateUtils;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
@@ -72,6 +67,10 @@ public class WriteContextImpl implements WriteContext {
      * Configuration of currently operated cell
      */
     private WriteHolder currentWriteHolder;
+    /**
+     * Prevent multiple shutdowns
+     */
+    private boolean finished = false;
 
     public WriteContextImpl(WriteWorkbook writeWorkbook) {
         if (writeWorkbook == null) {
@@ -172,20 +171,24 @@ public class WriteContextImpl implements WriteContext {
         int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
         newRowIndex += currentWriteHolder.relativeHeadRowIndex();
         // Combined head
-        addMergedRegionToCurrentSheet(excelWriteHeadProperty, newRowIndex);
+        if (currentWriteHolder.automaticMergeHead()) {
+            addMergedRegionToCurrentSheet(excelWriteHeadProperty, newRowIndex);
+        }
         for (int relativeRowIndex = 0, i = newRowIndex; i < excelWriteHeadProperty.getHeadRowNumber() + newRowIndex;
             i++, relativeRowIndex++) {
             WriteHandlerUtils.beforeRowCreate(this, newRowIndex, relativeRowIndex, Boolean.TRUE);
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
             addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
+            WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.TRUE);
         }
     }
 
     private void addMergedRegionToCurrentSheet(ExcelWriteHeadProperty excelWriteHeadProperty, int rowIndex) {
         for (com.alibaba.excel.metadata.CellRange cellRangeModel : excelWriteHeadProperty.headCellRangeList()) {
-            writeSheetHolder.getSheet().addMergedRegion(new CellRangeAddress(cellRangeModel.getFirstRow() + rowIndex,
-                cellRangeModel.getLastRow() + rowIndex, cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
+            writeSheetHolder.getSheet()
+                .addMergedRegionUnsafe(new CellRangeAddress(cellRangeModel.getFirstRow() + rowIndex,
+                    cellRangeModel.getLastRow() + rowIndex, cellRangeModel.getFirstCol(), cellRangeModel.getLastCol()));
         }
     }
 
@@ -197,8 +200,7 @@ public class WriteContextImpl implements WriteContext {
             Cell cell = row.createCell(columnIndex);
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
             cell.setCellValue(head.getHeadNameList().get(relativeRowIndex));
-            CellData cellData = null;
-            WriteHandlerUtils.afterCellDispose(this, cellData, cell, head, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.afterCellDispose(this, (CellData)null, cell, head, relativeRowIndex, Boolean.TRUE);
         }
     }
 
@@ -256,25 +258,39 @@ public class WriteContextImpl implements WriteContext {
     }
 
     @Override
-    public void finish() {
+    public void finish(boolean onException) {
+        if (finished) {
+            return;
+        }
+        finished = true;
         WriteHandlerUtils.afterWorkbookDispose(this);
         if (writeWorkbookHolder == null) {
             return;
         }
-
+        Throwable throwable = null;
         boolean isOutputStreamEncrypt = false;
-        try {
-            isOutputStreamEncrypt = doOutputStreamEncrypt07();
-        } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+        // Determine if you need to write excel
+        boolean writeExcel = !onException;
+        if (writeWorkbookHolder.getWriteExcelOnException()) {
+            writeExcel = Boolean.TRUE;
+        }
+        // No data is written if an exception is thrown
+        if (writeExcel) {
+            try {
+                isOutputStreamEncrypt = doOutputStreamEncrypt07();
+            } catch (Throwable t) {
+                throwable = t;
+            }
         }
 
         if (!isOutputStreamEncrypt) {
             try {
-                writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
+                if (writeExcel) {
+                    writeWorkbookHolder.getWorkbook().write(writeWorkbookHolder.getOutputStream());
+                }
                 writeWorkbookHolder.getWorkbook().close();
             } catch (Throwable t) {
-                throwCanNotCloseIo(t);
+                throwable = t;
             }
         }
 
@@ -284,7 +300,7 @@ public class WriteContextImpl implements WriteContext {
                 ((SXSSFWorkbook)workbook).dispose();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
         try {
@@ -292,14 +308,14 @@ public class WriteContextImpl implements WriteContext {
                 writeWorkbookHolder.getOutputStream().close();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
-        if (!isOutputStreamEncrypt) {
+        if (writeExcel && !isOutputStreamEncrypt) {
             try {
                 doFileEncrypt07();
             } catch (Throwable t) {
-                throwCanNotCloseIo(t);
+                throwable = t;
             }
         }
 
@@ -308,18 +324,25 @@ public class WriteContextImpl implements WriteContext {
                 writeWorkbookHolder.getTempTemplateInputStream().close();
             }
         } catch (Throwable t) {
-            throwCanNotCloseIo(t);
+            throwable = t;
         }
 
         clearEncrypt03();
+
+        removeThreadLocalCache();
+
+        if (throwable != null) {
+            throw new ExcelGenerateException("Can not close IO.", throwable);
+        }
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Finished write.");
         }
     }
 
-    private void throwCanNotCloseIo(Throwable t) {
-        throw new ExcelGenerateException("Can not close IO", t);
+    private void removeThreadLocalCache() {
+        NumberDataFormatterUtils.removeThreadLocalCache();
+        DateUtils.removeThreadLocalCache();
     }
 
     @Override
@@ -428,7 +451,9 @@ public class WriteContextImpl implements WriteContext {
             OutputStream outputStream = encryptor.getDataStream(fileSystem);
             opcPackage.save(outputStream);
         } finally {
-            opcPackage.close();
+            if (opcPackage != null) {
+                opcPackage.close();
+            }
         }
         return fileSystem;
     }

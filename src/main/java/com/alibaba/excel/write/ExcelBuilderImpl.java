@@ -25,16 +25,19 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     private ExcelWriteFillExecutor excelWriteFillExecutor;
     private ExcelWriteAddExecutor excelWriteAddExecutor;
 
+    static {
+        // Create temporary cache directory at initialization time to avoid POI concurrent write bugs
+        FileUtils.createPoiFilesDirectory();
+    }
+
     public ExcelBuilderImpl(WriteWorkbook writeWorkbook) {
         try {
-            // Create temporary cache directory at initialization time to avoid POI concurrent write bugs
-            FileUtils.createPoiFilesDirectory();
             context = new WriteContextImpl(writeWorkbook);
         } catch (RuntimeException e) {
-            finish();
+            finishOnException();
             throw e;
         } catch (Throwable e) {
-            finish();
+            finishOnException();
             throw new ExcelGenerateException(e);
         }
     }
@@ -57,10 +60,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             excelWriteAddExecutor.add(data);
         } catch (RuntimeException e) {
-            finish();
+            finishOnException();
             throw e;
         } catch (Throwable e) {
-            finish();
+            finishOnException();
             throw new ExcelGenerateException(e);
         }
     }
@@ -80,18 +83,22 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             excelWriteFillExecutor.fill(data, fillConfig);
         } catch (RuntimeException e) {
-            finish();
+            finishOnException();
             throw e;
         } catch (Throwable e) {
-            finish();
+            finishOnException();
             throw new ExcelGenerateException(e);
         }
     }
 
+    private void finishOnException() {
+        finish(true);
+    }
+
     @Override
-    public void finish() {
+    public void finish(boolean onException) {
         if (context != null) {
-            context.finish();
+            context.finish(onException);
         }
     }
 
@@ -108,10 +115,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
             }
             excelWriteAddExecutor.add(data);
         } catch (RuntimeException e) {
-            finish();
+            finishOnException();
             throw e;
         } catch (Throwable e) {
-            finish();
+            finishOnException();
             throw new ExcelGenerateException(e);
         }
     }

@@ -31,7 +31,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     protected CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty) {
         if (value == null) {
-            return new CellData();
+            return new CellData(CellDataTypeEnum.EMPTY);
         }
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
             value = ((String)value).trim();
@@ -39,6 +39,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         CellData cellData = convert(currentWriteHolder, clazz, cell, value, excelContentProperty);
         if (cellData.getFormula() != null && cellData.getFormula()) {
             cell.setCellFormula(cellData.getFormulaValue());
+        }
+        if (cellData.getType() == null) {
+            cellData.setType(CellDataTypeEnum.EMPTY);
         }
         switch (cellData.getType()) {
             case STRING:
@@ -56,15 +59,16 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             case EMPTY:
                 return cellData;
             default:
-                throw new ExcelDataConvertException("Not supported data:" + value + " return type:" + cell.getCellType()
-                    + "at row:" + cell.getRow().getRowNum());
+                throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(), cellData,
+                    excelContentProperty, "Not supported data:" + value + " return type:" + cell.getCellType()
+                        + "at row:" + cell.getRow().getRowNum());
         }
     }
 
     protected CellData convert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty) {
         if (value == null) {
-            return new CellData();
+            return new CellData(CellDataTypeEnum.EMPTY);
         }
         // This means that the user has defined the data.
         if (value instanceof CellData) {
@@ -99,7 +103,8 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
         }
         if (converter == null) {
-            throw new ExcelDataConvertException(
+            throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
+                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
         }
         CellData cellData;
@@ -107,11 +112,13 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             cellData =
                 converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
         } catch (Exception e) {
-            throw new ExcelDataConvertException("Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(),
-                e);
+            throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
+                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
+                "Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(), e);
         }
         if (cellData == null || cellData.getType() == null) {
-            throw new ExcelDataConvertException(
+            throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
+                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Convert data:" + value + " return null,at row:" + cell.getRow().getRowNum());
         }
         return cellData;

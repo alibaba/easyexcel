@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.alibaba.excel.util.StringUtils;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
@@ -33,6 +33,7 @@ import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.analysis.v03.handlers.BlankOrErrorRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.BofRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.IndexRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.LabelRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.MissingCellDummyRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.NoteRecordHandler;
@@ -86,7 +87,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
 
     public XlsSaxAnalyser(AnalysisContext context, POIFSFileSystem poifsFileSystem) {
         this.analysisContext = context;
-        this.records = new TreeMap<Integer, CellData>();
+        this.records = new LinkedHashMap<Integer, CellData>();
         this.poifsFileSystem = poifsFileSystem;
         try {
             this.poiWorkbook = WorkbookFactory.create(poifsFileSystem);
@@ -134,7 +135,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
     private void init() {
         lastRowNumber = 0;
         lastColumnNumber = 0;
-        records = new TreeMap<Integer, CellData>();
+        records = new LinkedHashMap<Integer, CellData>();
         buildXlsRecordHandlers();
     }
 
@@ -227,7 +228,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
             analysisContext.readRowHolder().setRowComments(rowComments);
         }
         analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records), analysisContext);
-        records.clear();
+        records = new HashMap<Integer, CellData>();
         lastColumnNumber = -1;
     }
 
@@ -244,10 +245,11 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
             recordHandlers.add(new FormulaRecordHandler(stubWorkbook, formatListener));
             recordHandlers.add(new LabelRecordHandler());
             recordHandlers.add(new NoteRecordHandler());
-            recordHandlers.add(new NumberRecordHandler(formatListener));
+            recordHandlers.add(new NumberRecordHandler(analysisContext, formatListener));
             recordHandlers.add(new RkRecordHandler());
             recordHandlers.add(new SstRecordHandler());
             recordHandlers.add(new MissingCellDummyRecordHandler());
+            recordHandlers.add(new IndexRecordHandler(analysisContext));
             Collections.sort(recordHandlers);
         }
 

@@ -66,9 +66,10 @@ public interface WriteContext {
 
     /**
      * close
+     *
+     * @param onException
      */
-    void finish();
-
+    void finish(boolean onException);
 
     /**
      * Current sheet

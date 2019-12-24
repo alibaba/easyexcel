@@ -71,11 +71,14 @@ public interface ExcelBuilder {
 
     /**
      * Close io
+     *
+     * @param onException
      */
-    void finish();
+    void finish(boolean onException);
 
     /**
      * add password
+     *
      * @param data
      * @param writeSheet
      * @param writeTable

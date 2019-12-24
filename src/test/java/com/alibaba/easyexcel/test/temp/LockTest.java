@@ -39,7 +39,7 @@ public class LockTest {
     @Test
     public void test2() throws Exception {
         List<Object> list =
-            EasyExcel.read(new FileInputStream("D:\\test\\null.xlsx")).sheet().headRowNumber(0).doReadSync();
+            EasyExcel.read(new FileInputStream("D:\\test\\开发部.xls")).sheet().headRowNumber(0).doReadSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", ((Map)data).size());
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));

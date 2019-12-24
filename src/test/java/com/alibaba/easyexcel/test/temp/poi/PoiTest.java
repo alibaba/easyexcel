@@ -79,11 +79,11 @@ public class PoiTest {
 
     @Test
     public void lastRowNum255() throws IOException, InvalidFormatException {
-        String file = TestFileUtil.getPath() + "fill" + File.separator + "complex.xlsx";
+        String file = "D:\\test\\complex.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
         SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
         Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
-        xssfSheet.shiftRows(2, 4, 10);
+        xssfSheet.shiftRows(1, 4, 10, true, true);
 
         FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
         sxssfWorkbook.write(fileout);
@@ -96,43 +96,23 @@ public class PoiTest {
     @Test
     public void cp() throws IOException, InvalidFormatException {
         String file = "d://test/tt.xlsx";
-        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
-        XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
-        XSSFRow row = xssfSheet.getRow(2);
-        xssfSheet.removeRow(row);
-//       Row r2= xssfSheet.createRow(2);
-//        r2.createCell(1);
-        SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
-
-
-        SXSSFSheet sxssfSheet = sxssfWorkbook.getSheetAt(0);
-        sxssfSheet.createRow(2);
-
-
-        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
-        sxssfWorkbook.write(fileout);
-        sxssfWorkbook.dispose();
-        sxssfWorkbook.close();
-
-        xssfWorkbook.close();
+        SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
+        SXSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
+        LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
+        SXSSFRow row = xssfSheet.getRow(0);
+        LOGGER.info("第一行数据:{}", row);
+        xssfSheet.createRow(20);
+        LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
     }
 
     @Test
     public void lastRowNum233443() throws IOException, InvalidFormatException {
-        String file = "d://test/tt.xlsx";
+        String file = "d://test/em0.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
-        SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
         XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
-        XSSFRow row = xssfSheet.getRow(2);
-        xssfSheet.removeRow(row);
-        new CellCopyPolicy().createBuilder().build();
+        System.out.println(xssfSheet.getLastRowNum());
+        System.out.println(xssfSheet.getRow(0));
 
-        FileOutputStream fileout = new FileOutputStream("d://test/r2" + System.currentTimeMillis() + ".xlsx");
-        sxssfWorkbook.write(fileout);
-        sxssfWorkbook.dispose();
-        sxssfWorkbook.close();
-
-        xssfWorkbook.close();
     }
 
     @Test

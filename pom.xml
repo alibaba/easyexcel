@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>2.1.0-beta1</version>
+    <version>2.1.4</version>
     <packaging>jar</packaging>
     <name>easyexcel</name>
 
@@ -17,7 +17,7 @@
     <properties>
         <!--<gpg.skip>true</gpg.skip>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.7</jdk.version>
+        <jdk.version>1.6</jdk.version>
     </properties>
 
     <scm>
@@ -67,6 +67,11 @@
             <version>3.17</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>3.1</version>
@@ -79,7 +84,7 @@
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <version>3.7.1</version>
+            <version>3.4.0</version>
         </dependency>
         <!--test-->
         <dependency>
@@ -132,11 +137,11 @@
 
     <build>
         <plugins>
-            <!-- 用pmd校验阿里的p3c规范 -->
+            <!-- code style -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.12.0</version>
+                <version>3.8</version>
                 <configuration>
                     <printFailingErrors>true</printFailingErrors>
                     <verbose>true</verbose>
@@ -157,7 +162,6 @@
                     </excludes>
                 </configuration>
                 <executions>
-                    <!-- 绑定pmd:check到verify生命周期 -->
                     <execution>
                         <id>pmd-check-verify</id>
                         <phase>validate</phase>
@@ -170,7 +174,7 @@
                     <dependency>
                         <groupId>com.alibaba.p3c</groupId>
                         <artifactId>p3c-pmd</artifactId>
-                        <version>2.0.0</version>
+                        <version>1.3.6</version>
                     </dependency>
                 </dependencies>
             </plugin>

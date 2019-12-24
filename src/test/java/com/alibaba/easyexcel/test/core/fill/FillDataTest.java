@@ -6,35 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.alibaba.easyexcel.test.core.style.StyleData;
-import com.alibaba.easyexcel.test.core.style.StyleDataListener;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.enums.WriteDirectionEnum;
-import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
-import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
-import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
-import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
 /**
  *
@@ -121,7 +105,7 @@ public class FillDataTest {
 
     private void complexFill(File file, File template) {
         ExcelWriter excelWriter = EasyExcel.write(file).withTemplate(template).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
+        WriteSheet writeSheet = EasyExcel.writerSheet().registerWriteHandler(new LoopMergeStrategy(2, 0)).build();
         FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
         excelWriter.fill(data(), fillConfig, writeSheet);
         excelWriter.fill(data(), fillConfig, writeSheet);

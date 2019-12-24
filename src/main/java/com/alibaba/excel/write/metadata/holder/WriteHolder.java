@@ -29,11 +29,27 @@ public interface WriteHolder extends ConfigurationHolder {
     Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap();
 
     /**
+     * Is to determine if a field needs to be ignored
+     *
+     * @param fieldName
+     * @param columnIndex
+     * @return
+     */
+    boolean ignore(String fieldName, Integer columnIndex);
+
+    /**
      * Whether a header is required for the currently operated cell
      *
      * @return
      */
     boolean needHead();
+
+    /**
+     * Whether need automatic merge headers.
+     *
+     * @return
+     */
+    boolean automaticMergeHead();
 
     /**
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.

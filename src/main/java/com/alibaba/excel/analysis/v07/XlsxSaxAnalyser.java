@@ -15,7 +15,6 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.openxml4j.opc.PackagePart;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.CommentsTable;
 import org.apache.poi.xssf.model.StylesTable;
@@ -164,7 +163,13 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
     private void parseXmlSource(InputStream inputStream, ContentHandler handler) {
         InputSource inputSource = new InputSource(inputStream);
         try {
-            SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+            SAXParserFactory saxFactory;
+            String xlsxSAXParserFactoryName = analysisContext.readWorkbookHolder().getXlsxSAXParserFactoryName();
+            if (StringUtils.isEmpty(xlsxSAXParserFactoryName)) {
+                saxFactory = SAXParserFactory.newInstance();
+            } else {
+                saxFactory = SAXParserFactory.newInstance(xlsxSAXParserFactoryName, null);
+            }
             saxFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);

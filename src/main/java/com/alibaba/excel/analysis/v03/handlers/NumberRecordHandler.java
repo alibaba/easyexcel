@@ -7,6 +7,8 @@ import org.apache.poi.hssf.record.NumberRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.metadata.CellData;
 
 /**
@@ -17,7 +19,10 @@ import com.alibaba.excel.metadata.CellData;
 public class NumberRecordHandler extends AbstractXlsRecordHandler {
     private FormatTrackingHSSFListener formatListener;
 
-    public NumberRecordHandler(FormatTrackingHSSFListener formatListener) {
+    private AnalysisContext context;
+
+    public NumberRecordHandler(AnalysisContext context, FormatTrackingHSSFListener formatListener) {
+        this.context = context;
         this.formatListener = formatListener;
     }
 
@@ -32,8 +37,10 @@ public class NumberRecordHandler extends AbstractXlsRecordHandler {
         this.row = numrec.getRow();
         this.column = numrec.getColumn();
         this.cellData = new CellData(BigDecimal.valueOf(numrec.getValue()));
-        this.cellData.setDataFormat(formatListener.getFormatIndex(numrec));
-        this.cellData.setDataFormatString(formatListener.getFormatString(numrec));
+        int dataFormat = formatListener.getFormatIndex(numrec);
+        this.cellData.setDataFormat(dataFormat);
+        this.cellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+            formatListener.getFormatString(numrec), context.readSheetHolder().getGlobalConfiguration().getLocale()));
     }
 
     @Override

@@ -14,5 +14,6 @@ public class FillData {
     private String name;
     @NumberFormat("#")
     @ExcelProperty(converter = DoubleStringConverter.class)
-    private double number;
+    private Double number;
+    private String empty;
 }

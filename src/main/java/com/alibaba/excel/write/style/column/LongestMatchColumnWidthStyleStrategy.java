@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.CollectionUtils;
@@ -21,7 +22,7 @@ import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
  */
 public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrategy {
 
-    private static final int MAX_COLUMN_WIDTH = 256;
+    private static final int MAX_COLUMN_WIDTH = 255;
 
     private static final Map<Integer, Map<Integer, Integer>> CACHE = new HashMap<Integer, Map<Integer, Integer>>(8);
 
@@ -56,7 +57,11 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
             return cell.getStringCellValue().getBytes().length;
         }
         CellData cellData = cellDataList.get(0);
-        switch (cellData.getType()) {
+        CellDataTypeEnum type = cellData.getType();
+        if (type == null) {
+            return -1;
+        }
+        switch (type) {
             case STRING:
                 return cellData.getStringValue().getBytes().length;
             case BOOLEAN:

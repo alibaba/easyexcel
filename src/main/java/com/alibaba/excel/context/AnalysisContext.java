@@ -2,7 +2,6 @@ package com.alibaba.excel.context;
 
 import java.io.InputStream;
 
-import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
