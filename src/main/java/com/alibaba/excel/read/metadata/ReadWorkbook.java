@@ -9,6 +9,7 @@ import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -76,6 +77,12 @@ public class ReadWorkbook extends ReadBasicParameter {
      * @see SAXParserFactory#newInstance(String, ClassLoader)
      */
     private String xlsxSAXParserFactoryName;
+    /**
+     * Whether to use the default listener, which is used by default.
+     * <p>
+     * The {@link ModelBuildEventListener} is loaded by default to convert the object.
+     */
+    private Boolean useDefaultListener;
     /**
      * The default is all excel objects.Default is true.
      * <p>
@@ -196,5 +203,13 @@ public class ReadWorkbook extends ReadBasicParameter {
 
     public void setXlsxSAXParserFactoryName(String xlsxSAXParserFactoryName) {
         this.xlsxSAXParserFactoryName = xlsxSAXParserFactoryName;
+    }
+
+    public Boolean getUseDefaultListener() {
+        return useDefaultListener;
+    }
+
+    public void setUseDefaultListener(Boolean useDefaultListener) {
+        this.useDefaultListener = useDefaultListener;
     }
 }

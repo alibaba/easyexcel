@@ -1,7 +1,6 @@
 package com.alibaba.easyexcel.test.temp;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -9,13 +8,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.easyexcel.test.demo.read.DemoData;
-import com.alibaba.easyexcel.test.demo.read.DemoDataListener;
-import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.read.metadata.ReadSheet;
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -43,7 +36,7 @@ public class Lock2Test {
         // 写法1：
         String fileName = "D:\\test\\珠海 (1).xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
-        EasyExcel.read(fileName, LockData.class, new LockDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, LockData.class, new LockDataListener()).useDefaultListener(false).sheet().doRead();
     }
 
     @Test

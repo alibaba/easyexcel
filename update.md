@@ -4,6 +4,9 @@
 * 修复xls 用Map接收时多次接收会是同一个对象的bug
 * 修复浮点型数据导入到excel 会丢失精度的bug
 
+# 2.1.4
+* 新增参数`useDefaultListener` 可以排除默认对象转换
+
 # 2.1.3
 * 每个java进程单独创建一个缓存目录 [Issue #813](https://github.com/alibaba/easyexcel/issues/813)
 * 统一修改合并为unsafe，提高大量数据导出的合并的效率

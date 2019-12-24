@@ -451,7 +451,9 @@ public class WriteContextImpl implements WriteContext {
             OutputStream outputStream = encryptor.getDataStream(fileSystem);
             opcPackage.save(outputStream);
         } finally {
-            opcPackage.close();
+            if (opcPackage != null) {
+                opcPackage.close();
+            }
         }
         return fileSystem;
     }
