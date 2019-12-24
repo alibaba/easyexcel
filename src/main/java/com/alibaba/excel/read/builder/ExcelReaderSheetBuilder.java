@@ -1,14 +1,11 @@
 package com.alibaba.excel.read.builder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.event.SyncReadListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
 
 /**
@@ -16,7 +13,7 @@ import com.alibaba.excel.read.metadata.ReadSheet;
  *
  * @author Jiaju Zhuang
  */
-public class ExcelReaderSheetBuilder {
+public class ExcelReaderSheetBuilder extends AbstractExcelReaderParameterBuilder<ExcelReaderSheetBuilder, ReadSheet> {
     private ExcelReader excelReader;
     /**
      * Sheet
@@ -54,98 +51,6 @@ public class ExcelReaderSheetBuilder {
         return this;
     }
 
-    /**
-     * Count the number of added heads when read sheet.
-     *
-     * <p>
-     * 0 - This Sheet has no head ,since the first row are the data
-     * <p>
-     * 1 - This Sheet has one row head , this is the default
-     * <p>
-     * 2 - This Sheet has two row head ,since the third row is the data
-     *
-     * @param headRowNumber
-     * @return
-     */
-    public ExcelReaderSheetBuilder headRowNumber(Integer headRowNumber) {
-        readSheet.setHeadRowNumber(headRowNumber);
-        return this;
-    }
-
-    /**
-     * You can only choose one of the {@link ExcelReaderBuilder#head(List)} and {@link ExcelReaderBuilder#head(Class)}
-     *
-     * @param head
-     * @return
-     */
-    public ExcelReaderSheetBuilder head(List<List<String>> head) {
-        readSheet.setHead(head);
-        return this;
-    }
-
-    /**
-     * You can only choose one of the {@link ExcelReaderBuilder#head(List)} and {@link ExcelReaderBuilder#head(Class)}
-     *
-     * @param clazz
-     * @return
-     */
-    public ExcelReaderSheetBuilder head(Class clazz) {
-        readSheet.setClazz(clazz);
-        return this;
-    }
-
-    /**
-     * Custom type conversions override the default.
-     *
-     * @param converter
-     * @return
-     */
-    public ExcelReaderSheetBuilder registerConverter(Converter converter) {
-        if (readSheet.getCustomConverterList() == null) {
-            readSheet.setCustomConverterList(new ArrayList<Converter>());
-        }
-        readSheet.getCustomConverterList().add(converter);
-        return this;
-    }
-
-    /**
-     * Custom type listener run after default
-     *
-     * @param readListener
-     * @return
-     */
-    public ExcelReaderSheetBuilder registerReadListener(ReadListener readListener) {
-        if (readSheet.getCustomReadListenerList() == null) {
-            readSheet.setCustomReadListenerList(new ArrayList<ReadListener>());
-        }
-        readSheet.getCustomReadListenerList().add(readListener);
-        return this;
-    }
-
-    /**
-     * true if date uses 1904 windowing, or false if using 1900 date windowing.
-     *
-     * default is false
-     *
-     * @param use1904windowing
-     * @return
-     */
-    public ExcelReaderSheetBuilder use1904windowing(Boolean use1904windowing) {
-        readSheet.setUse1904windowing(use1904windowing);
-        return this;
-    }
-
-    /**
-     * Automatic trim includes sheet name and content
-     *
-     * @param autoTrim
-     * @return
-     */
-    public ExcelReaderSheetBuilder autoTrim(Boolean autoTrim) {
-        readSheet.setAutoTrim(autoTrim);
-        return this;
-    }
-
     public ReadSheet build() {
         return readSheet;
     }
@@ -177,4 +82,8 @@ public class ExcelReaderSheetBuilder {
         return (List<T>)syncReadListener.getList();
     }
 
+    @Override
+    protected ReadSheet parameter() {
+        return readSheet;
+    }
 }

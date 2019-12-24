@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  *
  * @author Jiaju Zhuang
  **/
-public class DateUtils implements ThreadLocalCachedUtils {
+public class DateUtils {
     /**
      * Is a cache of dates
      */
@@ -302,8 +302,7 @@ public class DateUtils implements ThreadLocalCachedUtils {
         return false;
     }
 
-    @Override
-    public void removeThreadLocalCache() {
+    public static void removeThreadLocalCache() {
         DATE_THREAD_LOCAL.remove();
         DATE_FORMAT_THREAD_LOCAL.remove();
     }

@@ -146,7 +146,7 @@ public class DataFormatTest {
 
     @Test
     public void test3556() throws IOException, InvalidFormatException {
-        String file = "D://test/dataformat.xlsx";
+        String file = "D://test/dataformat1.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
         DataFormatter d = new DataFormatter(Locale.CHINA);

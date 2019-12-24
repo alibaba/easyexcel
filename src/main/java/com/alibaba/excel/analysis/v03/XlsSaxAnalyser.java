@@ -3,10 +3,10 @@ package com.alibaba.excel.analysis.v03;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
@@ -191,7 +191,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         analysisContext.readRowHolder(
             new ReadRowHolder(lastRowNumber, analysisContext.readSheetHolder().getGlobalConfiguration()));
         analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records), analysisContext);
-        records.clear();
+        records = new HashMap<Integer, CellData>();
         lastColumnNumber = -1;
     }
 
@@ -208,7 +208,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
             recordHandlers.add(new FormulaRecordHandler(stubWorkbook, formatListener));
             recordHandlers.add(new LabelRecordHandler());
             recordHandlers.add(new NoteRecordHandler());
-            recordHandlers.add(new NumberRecordHandler(formatListener));
+            recordHandlers.add(new NumberRecordHandler(analysisContext, formatListener));
             recordHandlers.add(new RkRecordHandler());
             recordHandlers.add(new SstRecordHandler());
             recordHandlers.add(new MissingCellDummyRecordHandler());

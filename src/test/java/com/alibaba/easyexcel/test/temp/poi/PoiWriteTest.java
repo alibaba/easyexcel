@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.temp.poi;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -35,7 +36,18 @@ public class PoiWriteTest {
         cell1.setCellValue(999999999999999L);
         SXSSFCell cell2 = row.createCell(1);
         cell2.setCellValue(1000000000000001L);
+        SXSSFCell cell32 = row.createCell(2);
+        cell32.setCellValue(300.35f);
         sxxsFWorkbook.write(fileOutputStream);
+    }
+
+    @Test
+    public void write01() throws IOException {
+        float ff = 300.35f;
+        BigDecimal bd = new BigDecimal(Float.toString(ff));
+        System.out.println(bd.doubleValue());
+        System.out.println(bd.floatValue());
+
     }
 
     @Test

@@ -2,7 +2,9 @@ package com.alibaba.easyexcel.test.core.dataformat;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -10,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSON;
 
 /**
  *
@@ -30,21 +31,31 @@ public class DateFormatTest {
 
     @Test
     public void t01Read07() {
-        read(file07);
+        readCn(file07);
+        readUs(file07);
     }
 
     @Test
     public void t02Read03() {
-        read(file03);
+        readCn(file03);
+        readUs(file03);
     }
 
-    private void read(File file) {
-        List<DateFormatData> list = EasyExcel.read(file, DateFormatData.class, null).sheet().doReadSync();
+    private void readCn(File file) {
+        List<DateFormatData> list =
+            EasyExcel.read(file, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
         for (DateFormatData data : list) {
-            if (!data.getDate().equals(data.getDateString())) {
-                LOGGER.info("返回:{}", JSON.toJSONString(data));
-            }
+            Assert.assertEquals(data.getDate(), data.getDateStringCn());
+            Assert.assertEquals(data.getNumber(), data.getNumberStringCn());
         }
     }
 
+    private void readUs(File file) {
+        List<DateFormatData> list =
+            EasyExcel.read(file, DateFormatData.class, null).locale(Locale.US).sheet().doReadSync();
+        for (DateFormatData data : list) {
+            Assert.assertEquals(data.getDate(), data.getDateStringUs());
+            Assert.assertEquals(data.getNumber(), data.getNumberStringUs());
+        }
+    }
 }

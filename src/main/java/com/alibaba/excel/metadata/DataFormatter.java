@@ -63,7 +63,8 @@ public class DataFormatter {
     private static final Pattern daysAsText = Pattern.compile("([d]{3,})", Pattern.CASE_INSENSITIVE);
 
     /** Pattern to find "AM/PM" marker */
-    private static final Pattern amPmPattern = Pattern.compile("(([AP])[M/P]*)|(([上下])[午/下]*)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern amPmPattern =
+        Pattern.compile("(([AP])[M/P]*)|(([上下])[午/下]*)", Pattern.CASE_INSENSITIVE);
 
     /** Pattern to find formats with condition ranges e.g. [>=100] */
     private static final Pattern rangeConditionalPattern =
@@ -152,7 +153,6 @@ public class DataFormatter {
     public DataFormatter(Locale locale, Boolean use1904windowing) {
         this.use1904windowing = use1904windowing != null ? use1904windowing : Boolean.FALSE;
         this.locale = locale != null ? locale : Locale.getDefault();
-        this.locale = Locale.US;
         this.dateSymbols = DateFormatSymbols.getInstance(this.locale);
         this.decimalSymbols = DecimalFormatSymbols.getInstance(this.locale);
     }

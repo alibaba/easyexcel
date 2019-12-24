@@ -17,7 +17,7 @@
     <properties>
         <!--<gpg.skip>true</gpg.skip>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.7</jdk.version>
+        <jdk.version>1.6</jdk.version>
     </properties>
 
     <scm>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <version>3.7.1</version>
+            <version>3.4.0</version>
         </dependency>
         <!--test-->
         <dependency>

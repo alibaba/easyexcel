@@ -1,3 +1,9 @@
+# 2.2.0-beta1
+* 修复用String接收日期、数字和excel显示不一致的bug(不是完美修复，但是大部分情况已经兼容)
+* 降低Ehcache版本 3.7.1(jkd7) -> 3.4.0(jdk6)
+* 修复xls 用Map接收时多次接收会是同一个对象的bug
+* 修复浮点型数据导入到excel 会丢失精度的bug
+
 # 2.1.3
 * 每个java进程单独创建一个缓存目录 [Issue #813](https://github.com/alibaba/easyexcel/issues/813)
 * 统一修改合并为unsafe，提高大量数据导出的合并的效率

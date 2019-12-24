@@ -8,7 +8,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
  *
  * @author Jiaju Zhuang
  **/
-public class NumberDataFormatterUtils implements ThreadLocalCachedUtils {
+public class NumberDataFormatterUtils {
     /**
      * Cache DataFormatter.
      */
@@ -40,8 +40,7 @@ public class NumberDataFormatterUtils implements ThreadLocalCachedUtils {
 
     }
 
-    @Override
-    public void removeThreadLocalCache() {
+    public static void removeThreadLocalCache() {
         DATA_FORMATTER_THREAD_LOCAL.remove();
     }
 }

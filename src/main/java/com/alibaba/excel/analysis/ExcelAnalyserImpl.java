@@ -22,7 +22,9 @@ import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.CollectionUtils;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
 
 /**
@@ -175,9 +177,16 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
         clearEncrypt03();
 
+        removeThreadLocalCache();
+
         if (throwable != null) {
             throw new ExcelAnalysisException("Can not close IO.", throwable);
         }
+    }
+
+    private void removeThreadLocalCache() {
+        NumberDataFormatterUtils.removeThreadLocalCache();
+        DateUtils.removeThreadLocalCache();
     }
 
     private void clearEncrypt03() {

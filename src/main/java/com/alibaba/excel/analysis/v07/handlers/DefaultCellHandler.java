@@ -88,11 +88,9 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
                 XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
                 int dataFormat = xssfCellStyle.getDataFormat();
                 currentCellData.setDataFormat(dataFormat);
-                if (dataFormat <= BuiltinFormats.builtinFormats.length) {
-                    currentCellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat));
-                } else {
-                    currentCellData.setDataFormatString(xssfCellStyle.getDataFormatString());
-                }
+                currentCellData.setDataFormatString(
+                    BuiltinFormats.getBuiltinFormat(dataFormat, xssfCellStyle.getDataFormatString(),
+                        analysisContext.readSheetHolder().getGlobalConfiguration().getLocale()));
             }
         }
         // cell is formula

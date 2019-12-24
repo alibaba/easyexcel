@@ -8,7 +8,9 @@ import lombok.Data;
 @Data
 public class DateFormatData {
     private String date;
-    private String dateString;
+    private String dateStringCn;
+    private String dateStringUs;
     private String number;
-    private String numberString;
+    private String numberStringCn;
+    private String numberStringUs;
 }

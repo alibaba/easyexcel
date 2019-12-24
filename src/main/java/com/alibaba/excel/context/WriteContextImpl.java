@@ -27,7 +27,9 @@ import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
@@ -327,6 +329,8 @@ public class WriteContextImpl implements WriteContext {
 
         clearEncrypt03();
 
+        removeThreadLocalCache();
+
         if (throwable != null) {
             throw new ExcelGenerateException("Can not close IO.", throwable);
         }
@@ -334,6 +338,11 @@ public class WriteContextImpl implements WriteContext {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Finished write.");
         }
+    }
+
+    private void removeThreadLocalCache() {
+        NumberDataFormatterUtils.removeThreadLocalCache();
+        DateUtils.removeThreadLocalCache();
     }
 
     @Override
