@@ -4,7 +4,7 @@ import org.apache.poi.hssf.record.IndexRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
-import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.context.XlsReadContext;
 
 /**
  * Record handler
@@ -13,10 +13,8 @@ import com.alibaba.excel.context.AnalysisContext;
  */
 public class IndexRecordHandler extends AbstractXlsRecordHandler {
 
-    private AnalysisContext context;
-
-    public IndexRecordHandler(AnalysisContext context) {
-        this.context = context;
+    public IndexRecordHandler(XlsReadContext analysisContext) {
+        super(analysisContext);
     }
 
     @Override
@@ -29,10 +27,10 @@ public class IndexRecordHandler extends AbstractXlsRecordHandler {
 
     @Override
     public void processRecord(Record record) {
-        if (context.readSheetHolder() == null) {
+        if (analysisContext.readSheetHolder() == null) {
             return;
         }
-        context.readSheetHolder().setApproximateTotalRowNumber(((IndexRecord)record).getLastRowAdd1());
+        analysisContext.readSheetHolder().setApproximateTotalRowNumber(((IndexRecord)record).getLastRowAdd1());
     }
 
     @Override

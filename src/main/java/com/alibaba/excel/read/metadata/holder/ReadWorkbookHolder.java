@@ -16,6 +16,7 @@ import com.alibaba.excel.cache.selector.EternalReadCacheSelector;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.cache.selector.SimpleReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.enums.ExtraReadEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
@@ -97,6 +98,12 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      */
     private String xlsxSAXParserFactoryName;
     /**
+     * Read some additional fields. None are read by default.
+     *
+     * @see ExtraReadEnum
+     */
+    private Set<ExtraReadEnum> extraReadSet;
+    /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
      *
@@ -155,9 +162,7 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             this.autoCloseStream = readWorkbook.getAutoCloseStream();
         }
 
-        // The type of excel is read according to the judgment.Because encrypted XLSX needs to be specified as XLS to
-        // properly parse.
-        this.excelType = ExcelTypeEnum.valueOf(file, inputStream, readWorkbook.getExcelType());
+        this.excelType = readWorkbook.getExcelType();
 
         if (ExcelTypeEnum.XLS == excelType && getGlobalConfiguration().getUse1904windowing() == null) {
             getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
@@ -186,6 +191,11 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             this.defaultReturnMap = readWorkbook.getDefaultReturnMap();
         }
         this.xlsxSAXParserFactoryName = readWorkbook.getXlsxSAXParserFactoryName();
+        if (readWorkbook.getExtraReadSet() == null) {
+            this.extraReadSet = new HashSet<ExtraReadEnum>();
+        } else {
+            this.extraReadSet = readWorkbook.getExtraReadSet();
+        }
         this.hasReadSheet = new HashSet<Integer>();
         this.ignoreRecord03 = Boolean.FALSE;
         this.password = readWorkbook.getPassword();
@@ -341,6 +351,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
 
     public void setXlsxSAXParserFactoryName(String xlsxSAXParserFactoryName) {
         this.xlsxSAXParserFactoryName = xlsxSAXParserFactoryName;
+    }
+
+    public Set<ExtraReadEnum> getExtraReadSet() {
+        return extraReadSet;
+    }
+
+    public void setExtraReadSet(Set<ExtraReadEnum> extraReadSet) {
+        this.extraReadSet = extraReadSet;
     }
 
     @Override

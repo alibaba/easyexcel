@@ -3,6 +3,8 @@
 * 降低Ehcache版本 3.7.1(jkd7) -> 3.4.0(jdk6)
 * 修复xls 用Map接收时多次接收会是同一个对象的bug
 * 修复浮点型数据导入到excel 会丢失精度的bug
+* 新增支持接收批注
+
 
 # 2.1.4
 * 新增参数`useDefaultListener` 可以排除默认对象转换

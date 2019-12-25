@@ -5,6 +5,7 @@ import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.SSTRecord;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.context.XlsReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 
@@ -15,6 +16,10 @@ import com.alibaba.excel.metadata.CellData;
  */
 public class SstRecordHandler extends AbstractXlsRecordHandler {
     private SSTRecord sstRecord;
+
+    public SstRecordHandler(XlsReadContext analysisContext) {
+        super(analysisContext);
+    }
 
     @Override
     public boolean support(Record record) {

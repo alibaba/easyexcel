@@ -282,7 +282,6 @@ public class WriteContextImpl implements WriteContext {
                 throwable = t;
             }
         }
-
         if (!isOutputStreamEncrypt) {
             try {
                 if (writeExcel) {
@@ -293,7 +292,6 @@ public class WriteContextImpl implements WriteContext {
                 throwable = t;
             }
         }
-
         try {
             Workbook workbook = writeWorkbookHolder.getWorkbook();
             if (workbook instanceof SXSSFWorkbook) {
@@ -302,7 +300,6 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwable = t;
         }
-
         try {
             if (writeWorkbookHolder.getAutoCloseStream() && writeWorkbookHolder.getOutputStream() != null) {
                 writeWorkbookHolder.getOutputStream().close();
@@ -310,7 +307,6 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwable = t;
         }
-
         if (writeExcel && !isOutputStreamEncrypt) {
             try {
                 doFileEncrypt07();
@@ -318,7 +314,6 @@ public class WriteContextImpl implements WriteContext {
                 throwable = t;
             }
         }
-
         try {
             if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
                 writeWorkbookHolder.getTempTemplateInputStream().close();
@@ -326,15 +321,11 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwable = t;
         }
-
         clearEncrypt03();
-
         removeThreadLocalCache();
-
         if (throwable != null) {
             throw new ExcelGenerateException("Can not close IO.", throwable);
         }
-
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Finished write.");
         }

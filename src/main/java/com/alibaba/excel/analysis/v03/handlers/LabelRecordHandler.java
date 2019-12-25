@@ -4,6 +4,7 @@ import org.apache.poi.hssf.record.LabelRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.context.XlsReadContext;
 import com.alibaba.excel.metadata.CellData;
 
 /**
@@ -12,6 +13,11 @@ import com.alibaba.excel.metadata.CellData;
  * @author Dan Zheng
  */
 public class LabelRecordHandler extends AbstractXlsRecordHandler {
+
+    public LabelRecordHandler(XlsReadContext analysisContext) {
+        super(analysisContext);
+    }
+
     @Override
     public boolean support(Record record) {
         return LabelRecord.sid == record.getSid();

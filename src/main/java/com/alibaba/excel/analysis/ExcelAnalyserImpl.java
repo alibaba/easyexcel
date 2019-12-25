@@ -15,6 +15,8 @@ import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
+import com.alibaba.excel.context.DefaultXlsReadContext;
+import com.alibaba.excel.context.XlsReadContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -43,8 +45,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
 
     public ExcelAnalyserImpl(ReadWorkbook readWorkbook) {
         try {
-            analysisContext = new AnalysisContextImpl(readWorkbook);
-            choiceExcelExecutor();
+            choiceExcelExecutor(readWorkbook);
         } catch (RuntimeException e) {
             finish();
             throw e;
@@ -54,28 +55,25 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
     }
 
-    private void choiceExcelExecutor() throws Exception {
-        ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
-        ExcelTypeEnum excelType = readWorkbookHolder.getExcelType();
-        if (excelType == null) {
-            excelReadExecutor = new XlsxSaxAnalyser(analysisContext, null);
-            return;
-        }
+    private void choiceExcelExecutor(ReadWorkbook readWorkbook) throws Exception {
+        ExcelTypeEnum excelType =
+            ExcelTypeEnum.valueOf(readWorkbook.getFile(), readWorkbook.getInputStream(), readWorkbook.getExcelType());
+        readWorkbook.setExcelType(excelType);
         switch (excelType) {
             case XLS:
                 POIFSFileSystem poifsFileSystem;
-                if (readWorkbookHolder.getFile() != null) {
-                    poifsFileSystem = new POIFSFileSystem(readWorkbookHolder.getFile());
+                if (readWorkbook.getFile() != null) {
+                    poifsFileSystem = new POIFSFileSystem(readWorkbook.getFile());
                 } else {
-                    poifsFileSystem = new POIFSFileSystem(readWorkbookHolder.getInputStream());
+                    poifsFileSystem = new POIFSFileSystem(readWorkbook.getInputStream());
                 }
                 // So in encrypted excel, it looks like XLS but it's actually XLSX
                 if (poifsFileSystem.getRoot().hasEntry(Decryptor.DEFAULT_POIFS_ENTRY)) {
                     InputStream decryptedStream = null;
                     try {
-                        decryptedStream =
-                            DocumentFactoryHelper.getDecryptedStream(poifsFileSystem.getRoot().getFileSystem(),
-                                analysisContext.readWorkbookHolder().getPassword());
+                        decryptedStream = DocumentFactoryHelper
+                            .getDecryptedStream(poifsFileSystem.getRoot().getFileSystem(), readWorkbook.getPassword());
+                        analysisContext = new AnalysisContextImpl(readWorkbook);
                         excelReadExecutor = new XlsxSaxAnalyser(analysisContext, decryptedStream);
                         return;
                     } finally {
@@ -85,12 +83,15 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                         poifsFileSystem.close();
                     }
                 }
-                if (analysisContext.readWorkbookHolder().getPassword() != null) {
-                    Biff8EncryptionKey.setCurrentUserPassword(analysisContext.readWorkbookHolder().getPassword());
+                if (readWorkbook.getPassword() != null) {
+                    Biff8EncryptionKey.setCurrentUserPassword(readWorkbook.getPassword());
                 }
-                excelReadExecutor = new XlsSaxAnalyser(analysisContext, poifsFileSystem);
+                XlsReadContext xlsReadContext = new DefaultXlsReadContext(readWorkbook);
+                analysisContext = xlsReadContext;
+                excelReadExecutor = new XlsSaxAnalyser(xlsReadContext, poifsFileSystem);
                 break;
             case XLSX:
+                analysisContext = new AnalysisContextImpl(readWorkbook);
                 excelReadExecutor = new XlsxSaxAnalyser(analysisContext, null);
                 break;
             default:

@@ -1,16 +1,16 @@
 package com.alibaba.easyexcel.test.demo.read;
 
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.exception.ExcelDataConvertException;
-import com.alibaba.excel.util.CollectionUtils;
-import com.alibaba.fastjson.JSON;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.exception.ExcelDataConvertException;
+import com.alibaba.fastjson.JSON;
 
 /**
  * 读取单元格的批注
@@ -37,7 +37,7 @@ public class DemoCellCommentsListener extends AnalysisEventListener<DemoData> {
     public void onException(Exception exception, AnalysisContext context) {
         LOGGER.error("解析失败，但是继续解析下一行:{}", exception.getMessage());
         if (exception instanceof ExcelDataConvertException) {
-            ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException) exception;
+            ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException)exception;
             LOGGER.error("第{}行，第{}列解析异常", excelDataConvertException.getRowIndex(),
                 excelDataConvertException.getColumnIndex());
         }
@@ -50,15 +50,7 @@ public class DemoCellCommentsListener extends AnalysisEventListener<DemoData> {
      * @param context
      */
     @Override
-    public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
-        Map<Integer, String> rowComments = context.readRowHolder().getRowComments();
-        LOGGER.info("解析到一条头数据:{}", JSON.toJSONString(headMap));
-        if (!CollectionUtils.isEmpty(rowComments)) {
-            for (Integer i : rowComments.keySet()) {
-                LOGGER.info("解析到头数据低{}列包含批注:{}", i, rowComments.get(i));
-            }
-        }
-    }
+    public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {}
 
     @Override
     public void invoke(DemoData data, AnalysisContext context) {

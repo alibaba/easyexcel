@@ -8,7 +8,7 @@ import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
-import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.context.XlsReadContext;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.util.SheetUtils;
 
@@ -24,13 +24,12 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
     private List<ReadSheet> sheets;
     private Boolean readAll;
     private List<ReadSheet> readSheetList;
-    private AnalysisContext context;
     private boolean alreadyInit;
     private boolean needInitSheet;
 
-    public BofRecordHandler(AnalysisContext context, List<ReadSheet> sheets, boolean alreadyInit,
+    public BofRecordHandler(XlsReadContext analysisContext, List<ReadSheet> sheets, boolean alreadyInit,
         boolean needInitSheet) {
-        this.context = context;
+        super(analysisContext);
         this.sheets = sheets;
         this.alreadyInit = alreadyInit;
         this.needInitSheet = needInitSheet;
@@ -68,17 +67,17 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
                         }
                     }
                     assert readSheet != null : "Can't find the sheet.";
-                    context.readWorkbookHolder().setIgnoreRecord03(Boolean.TRUE);
+                    analysisContext.readWorkbookHolder().setIgnoreRecord03(Boolean.TRUE);
                     // Copy the parameter to the current sheet
                     readSheet = SheetUtils.match(readSheet, readSheetList, readAll,
-                        context.readWorkbookHolder().getGlobalConfiguration());
+                        analysisContext.readWorkbookHolder().getGlobalConfiguration());
                     if (readSheet != null) {
-                        if (readSheet.getSheetNo() != 0 && context.readSheetHolder() != null) {
+                        if (readSheet.getSheetNo() != 0 && analysisContext.readSheetHolder() != null) {
                             // Prompt for the end of the previous form read
-                            context.readSheetHolder().notifyAfterAllAnalysed(context);
+                            analysisContext.readSheetHolder().notifyAfterAllAnalysed(analysisContext);
                         }
-                        context.currentSheet(readSheet);
-                        context.readWorkbookHolder().setIgnoreRecord03(Boolean.FALSE);
+                        analysisContext.currentSheet(readSheet);
+                        analysisContext.readWorkbookHolder().setIgnoreRecord03(Boolean.FALSE);
                     }
                 }
                 sheetIndex++;

@@ -14,7 +14,7 @@ import org.apache.poi.hssf.record.Record;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.alibaba.excel.analysis.v03.handlers.BofRecordHandler;
-import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.context.XlsReadContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 
@@ -28,7 +28,7 @@ public class XlsListSheetListener implements HSSFListener {
     private List<ReadSheet> sheetList;
     private BofRecordHandler bofRecordHandler;
 
-    public XlsListSheetListener(AnalysisContext analysisContext, POIFSFileSystem poifsFileSystem) {
+    public XlsListSheetListener(XlsReadContext analysisContext, POIFSFileSystem poifsFileSystem) {
         this.poifsFileSystem = poifsFileSystem;
         sheetList = new ArrayList<ReadSheet>();
         bofRecordHandler = new BofRecordHandler(analysisContext, sheetList, false, false);

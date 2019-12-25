@@ -1,35 +1,30 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import org.apache.poi.hssf.record.RKRecord;
+import org.apache.poi.hssf.record.ObjRecord;
 import org.apache.poi.hssf.record.Record;
+import org.apache.poi.hssf.record.TextObjectRecord;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
 import com.alibaba.excel.context.XlsReadContext;
-import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 
 /**
  * Record handler
  *
- * @author Dan Zheng
+ * @author Jiaju Zhuang
  */
-public class RkRecordHandler extends AbstractXlsRecordHandler {
-    public RkRecordHandler(XlsReadContext analysisContext) {
+public class TextObjectRecordHandler extends AbstractXlsRecordHandler {
+    public TextObjectRecordHandler(XlsReadContext analysisContext) {
         super(analysisContext);
     }
 
     @Override
     public boolean support(Record record) {
-        return RKRecord.sid == record.getSid();
+        return TextObjectRecord.sid == record.getSid() || ObjRecord.sid == record.getSid();
     }
 
     @Override
     public void processRecord(Record record) {
-        RKRecord rkrec = (RKRecord)record;
-
-        this.row = rkrec.getRow();
-        this.row = rkrec.getColumn();
-        this.cellData = new CellData(CellDataTypeEnum.EMPTY);
+        System.out.println(record);
     }
 
     @Override

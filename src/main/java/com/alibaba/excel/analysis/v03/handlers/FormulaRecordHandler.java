@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.context.XlsReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 
@@ -32,7 +33,9 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler {
     private FormatTrackingHSSFListener formatListener;
     private HSSFWorkbook stubWorkbook;
 
-    public FormulaRecordHandler(HSSFWorkbook stubWorkbook, FormatTrackingHSSFListener formatListener) {
+    public FormulaRecordHandler(XlsReadContext analysisContext, HSSFWorkbook stubWorkbook,
+        FormatTrackingHSSFListener formatListener) {
+        super(analysisContext);
         this.stubWorkbook = stubWorkbook;
         this.formatListener = formatListener;
     }
@@ -46,7 +49,6 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler {
     public void processRecord(Record record) {
         if (record.getSid() == FormulaRecord.sid) {
             FormulaRecord frec = (FormulaRecord)record;
-
             this.row = frec.getRow();
             this.column = frec.getColumn();
             CellType cellType = CellType.forInt(frec.getCachedResultType());

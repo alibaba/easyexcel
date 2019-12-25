@@ -89,5 +89,10 @@ public abstract class AbstractParameterBuilder<T extends AbstractParameterBuilde
         return (T)this;
     }
 
+    /**
+     * Get parameter
+     *
+     * @return
+     */
     protected abstract C parameter();
 }

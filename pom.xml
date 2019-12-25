@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>2.1.4</version>
+    <version>2.2.0-beta1</version>
     <packaging>jar</packaging>
     <name>easyexcel</name>
 
@@ -15,9 +15,10 @@
 
 
     <properties>
-        <!--<gpg.skip>true</gpg.skip>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.6</jdk.version>
+        <gpg.skip>true</gpg.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
     <scm>
@@ -159,6 +160,8 @@
                     </rulesets>
                     <excludes>
                         <exclude>com/alibaba/excel/event/AnalysisEventListener.java</exclude>
+                        <exclude>com/alibaba/excel/metadata/DataFormatter.java</exclude>
+                        <exclude>com/alibaba/excel/util/DateUtils.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -201,7 +204,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>

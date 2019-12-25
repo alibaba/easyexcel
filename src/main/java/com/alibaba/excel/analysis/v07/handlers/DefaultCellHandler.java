@@ -159,7 +159,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
 
     @Override
     public void handleComments(String comment) {
-        analysisContext.readRowHolder().addComments(curCol, comment);
+        // analysisContext.readRowHolder().addComments(curCol, comment);
     }
 
     @Override
