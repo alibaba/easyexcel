@@ -5,14 +5,14 @@ package com.alibaba.excel.metadata;
  *
  * @author Jiaju Zhuang
  */
-public class CellExtra {
-    private String comment;
+public class CellExtra extends AbstractCell {
+    private String note;
 
-    public String getComment() {
-        return comment;
+    public String getNote() {
+        return note;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setNote(String note) {
+        this.note = note;
     }
 }

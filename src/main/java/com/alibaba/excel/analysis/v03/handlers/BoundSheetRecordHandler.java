@@ -1,10 +1,9 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
+import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
-import org.apache.poi.hssf.record.SSTRecord;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
-import com.alibaba.excel.cache.XlsCache;
 import com.alibaba.excel.context.XlsReadContext;
 
 /**
@@ -12,9 +11,11 @@ import com.alibaba.excel.context.XlsReadContext;
  *
  * @author Dan Zheng
  */
-public class SstRecordHandler implements IgnorableXlsRecordHandler {
+public class BoundSheetRecordHandler implements IgnorableXlsRecordHandler {
+
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
-        xlsReadContext.readWorkbookHolder().setReadCache(new XlsCache((SSTRecord)record));
+        BoundSheetRecord bsr = (BoundSheetRecord)record;
+        xlsReadContext.boundSheetRecordList().add((BoundSheetRecord)record);
     }
 }

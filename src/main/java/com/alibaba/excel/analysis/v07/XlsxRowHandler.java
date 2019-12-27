@@ -2,8 +2,6 @@ package com.alibaba.excel.analysis.v07;
 
 import java.util.List;
 
-import com.alibaba.excel.constant.ExcelXmlConstants;
-import com.alibaba.excel.util.StringUtils;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.model.CommentsTable;
 import org.apache.poi.xssf.model.StylesTable;
@@ -12,7 +10,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  *

@@ -1,10 +1,11 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import org.apache.poi.hssf.record.ObjRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.TextObjectRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.context.XlsReadContext;
 
 /**
@@ -12,28 +13,18 @@ import com.alibaba.excel.context.XlsReadContext;
  *
  * @author Jiaju Zhuang
  */
-public class TextObjectRecordHandler extends AbstractXlsRecordHandler {
-    public TextObjectRecordHandler(XlsReadContext analysisContext) {
-        super(analysisContext);
-    }
+public class TextObjectRecordHandler implements IgnorableXlsRecordHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TextObjectRecordHandler.class);
 
     @Override
-    public boolean support(Record record) {
-        return TextObjectRecord.sid == record.getSid() || ObjRecord.sid == record.getSid();
-    }
-
-    @Override
-    public void processRecord(Record record) {
-        System.out.println(record);
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public int getOrder() {
-        return 0;
+    public void processRecord(XlsReadContext xlsReadContext, Record record) {
+        TextObjectRecord tor = (TextObjectRecord)record;
+        Integer tempObjectIndex = xlsReadContext.tempObjectIndex();
+        if (tempObjectIndex == null) {
+            LOGGER.debug("tempObjectIndex is null.");
+            return;
+        }
+        xlsReadContext.objectCacheMap().put(tempObjectIndex, tor.getStr().getString());
+        xlsReadContext.tempObjectIndex(null);
     }
 }

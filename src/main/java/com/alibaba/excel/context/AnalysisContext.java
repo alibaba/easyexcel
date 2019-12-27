@@ -1,6 +1,7 @@
 package com.alibaba.excel.context;
 
 import java.io.InputStream;
+import java.util.List;
 
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.Sheet;
@@ -9,6 +10,7 @@ import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.read.processor.AnalysisEventProcessor;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -68,6 +70,41 @@ public interface AnalysisContext {
      * @return
      */
     Object getCustom();
+
+    /**
+     * Event processor
+     *
+     * @return
+     */
+    AnalysisEventProcessor analysisEventProcessor();
+
+    /**
+     * Data that the customer needs to read
+     *
+     * @return
+     */
+    List<ReadSheet> readSheetList();
+
+    /**
+     * Data that the customer needs to read
+     *
+     * @return
+     */
+    void readSheetList(List<ReadSheet> readSheetList);
+
+    /**
+     * Read all sheets
+     *
+     * @return
+     */
+    Boolean readAll();
+
+    /**
+     * Read all sheets
+     *
+     * @return
+     */
+    void readAll(Boolean readAll);
 
     /**
      * get current sheet

@@ -3,41 +3,27 @@ package com.alibaba.excel.analysis.v03.handlers;
 import org.apache.poi.hssf.record.NoteRecord;
 import org.apache.poi.hssf.record.Record;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.context.XlsReadContext;
-import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.enums.RowTypeEnum;
+import com.alibaba.excel.metadata.CellExtra;
 
 /**
  * Record handler
  *
  * @author Dan Zheng
  */
-public class NoteRecordHandler extends AbstractXlsRecordHandler {
-    public NoteRecordHandler(XlsReadContext analysisContext) {
-        super(analysisContext);
-    }
+public class NoteRecordHandler implements IgnorableXlsRecordHandler {
 
     @Override
-    public boolean support(Record record) {
-        return NoteRecord.sid == record.getSid();
-    }
-
-    @Override
-    public void processRecord(Record record) {
-        NoteRecord nrec = (NoteRecord)record;
-        this.row = nrec.getRow();
-        this.column = nrec.getColumn();
-        this.cellData = new CellData(CellDataTypeEnum.EMPTY);
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public int getOrder() {
-        return 0;
+    public void processRecord(XlsReadContext xlsReadContext, Record record) {
+        NoteRecord nr = (NoteRecord)record;
+        String note = xlsReadContext.objectCacheMap().get(nr.getShapeId());
+        CellExtra cellExtra = new CellExtra();
+        cellExtra.setRowIndex(nr.getRow());
+        cellExtra.setRowIndex(nr.getColumn());
+        cellExtra.setNote(note);
+        xlsReadContext.cellMap().put(nr.getColumn(), cellExtra);
+        xlsReadContext.tempRowType(RowTypeEnum.EXTRA);
     }
 }

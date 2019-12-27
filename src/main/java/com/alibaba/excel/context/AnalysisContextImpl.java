@@ -13,6 +13,8 @@ import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.read.processor.AnalysisEventProcessor;
+import com.alibaba.excel.read.processor.DefalutAnalysisEventProcessor;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -37,6 +39,10 @@ public class AnalysisContextImpl implements AnalysisContext {
      * Configuration of currently operated cell
      */
     private ReadHolder currentReadHolder;
+    /**
+     * Event processor
+     */
+    private AnalysisEventProcessor analysisEventProcessor;
 
     public AnalysisContextImpl(ReadWorkbook readWorkbook) {
         if (readWorkbook == null) {
@@ -44,6 +50,7 @@ public class AnalysisContextImpl implements AnalysisContext {
         }
         readWorkbookHolder = new ReadWorkbookHolder(readWorkbook);
         currentReadHolder = readWorkbookHolder;
+        analysisEventProcessor = new DefalutAnalysisEventProcessor();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialization 'AnalysisContextImpl' complete");
         }
@@ -90,6 +97,11 @@ public class AnalysisContextImpl implements AnalysisContext {
     @Override
     public Object getCustom() {
         return readWorkbookHolder.getCustomObject();
+    }
+
+    @Override
+    public AnalysisEventProcessor analysisEventProcessor() {
+        return analysisEventProcessor;
     }
 
     @Override

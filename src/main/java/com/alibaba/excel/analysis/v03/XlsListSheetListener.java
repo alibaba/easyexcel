@@ -25,8 +25,9 @@ import com.alibaba.excel.read.metadata.ReadSheet;
  */
 public class XlsListSheetListener implements HSSFListener {
     private POIFSFileSystem poifsFileSystem;
-    private List<ReadSheet> sheetList;
     private BofRecordHandler bofRecordHandler;
+
+    private static fin
 
     public XlsListSheetListener(XlsReadContext analysisContext, POIFSFileSystem poifsFileSystem) {
         this.poifsFileSystem = poifsFileSystem;
@@ -49,7 +50,6 @@ public class XlsListSheetListener implements HSSFListener {
         EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener =
             new EventWorkbookBuilder.SheetRecordCollectingListener(formatListener);
         request.addListenerForAllRecords(workbookBuildingListener);
-
         try {
             factory.processWorkbookEvents(request, poifsFileSystem);
         } catch (IOException e) {

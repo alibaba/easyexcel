@@ -3,7 +3,7 @@ package com.alibaba.excel.analysis.v03;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,15 +15,16 @@ import org.apache.poi.hssf.eventusermodel.HSSFRequest;
 import org.apache.poi.hssf.eventusermodel.MissingRecordAwareHSSFListener;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
 import org.apache.poi.hssf.record.BOFRecord;
+import org.apache.poi.hssf.record.BlankRecord;
 import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.analysis.v03.handlers.BlankOrErrorRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.BlankRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.BofRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.IndexRecordHandler;
@@ -60,44 +61,56 @@ import com.alibaba.excel.util.CollectionUtils;
  */
 public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(XlsSaxAnalyser.class);
-
+    //
+    // private Boolean readAll;
+    // private List<ReadSheet> readSheetList;
+    // /**
+    // * For parsing Formulas
+    // */
+    // private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
+    // private FormatTrackingHSSFListener formatListener;
+    // private List<ReadSheet> sheets;
+    // private HSSFWorkbook stubWorkbook;
+    // private Map<Short, XlsRecordHandler> recordHandlerMap;
+    private XlsReadContext xlsReadContext;
     private POIFSFileSystem poifsFileSystem;
-    private Boolean readAll;
-    private List<ReadSheet> readSheetList;
-    private int lastRowNumber;
-    private int lastColumnNumber;
-    private int ii = 0;
 
-    /**
-     * For parsing Formulas
-     */
-    private EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener;
-    private FormatTrackingHSSFListener formatListener;
-    private Map<Integer, CellData> records;
-    private List<ReadSheet> sheets;
-    private HSSFWorkbook stubWorkbook;
-    private List<XlsRecordHandler> recordHandlers = new ArrayList<XlsRecordHandler>();
-    private XlsReadContext analysisContext;
+    private static final Map<Short, XlsRecordHandler> XLS_RECORD_HANDLER_MAP = new HashMap<Short, XlsRecordHandler>(32);
 
-    public XlsSaxAnalyser(XlsReadContext context, POIFSFileSystem poifsFileSystem) {
-        this.analysisContext = context;
-        this.records = new LinkedHashMap<Integer, CellData>();
+    static {
+        XLS_RECORD_HANDLER_MAP.put(BlankRecord.sid, new BlankRecordHandler());
+    }
+
+    public XlsSaxAnalyser(XlsReadContext xlsReadContext, POIFSFileSystem poifsFileSystem) {
+        this.xlsReadContext = xlsReadContext;
         this.poifsFileSystem = poifsFileSystem;
-        analysisContext.readWorkbookHolder().setPoifsFileSystem(poifsFileSystem);
+        xlsReadContext.readWorkbookHolder().setPoifsFileSystem(poifsFileSystem);
     }
 
     @Override
     public List<ReadSheet> sheetList() {
-        if (sheets == null) {
+        if (xlsReadContext.readSheetDataList() == null) {
+            earlySheetDataList();
+
             LOGGER.warn("Getting the 'sheetList' before reading will cause the file to be read twice.");
-            XlsListSheetListener xlsListSheetListener = new XlsListSheetListener(analysisContext, poifsFileSystem);
-            sheets = xlsListSheetListener.getSheetList();
+            XlsListSheetListener xlsListSheetListener = new XlsListSheetListener(xlsReadContext, poifsFileSystem);
         }
-        return sheets;
+        return xlsReadContext.readSheetDataList();
+    }
+
+    private void earlySheetDataList() {
+        LOGGER.warn("Getting the 'sheetList' before reading will cause the file to be read twice.");
+
+        sheetList = new ArrayList<ReadSheet>();
+        bofRecordHandler = new BofRecordHandler(analysisContext, sheetList, false, false);
+        bofRecordHandler.init();
+        bofRecordHandler.init(null, true);
+
+        XlsListSheetListener xlsListSheetListener = new XlsListSheetListener(xlsReadContext, poifsFileSystem);
     }
 
     @Override
-    public void execute(List<ReadSheet> readSheetList, Boolean readAll) {
+    public void execute() {
         this.readAll = readAll;
         this.readSheetList = readSheetList;
         MissingRecordAwareHSSFListener listener = new MissingRecordAwareHSSFListener(this);
@@ -116,24 +129,27 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
             throw new ExcelAnalysisException(e);
         }
         // Sometimes tables lack the end record of the last column
-        if (!records.isEmpty()) {
+        if (!xlsReadContext.cellMap().isEmpty()) {
             endRow();
         }
     }
 
     private void init() {
-        lastRowNumber = 0;
-        lastColumnNumber = 0;
-        records = new LinkedHashMap<Integer, CellData>();
+        recordHandlerMap = new HashMap<Short, XlsRecordHandler>(32);
+
         buildXlsRecordHandlers();
+
     }
 
     @Override
     public void processRecord(Record record) {
-        // Not data from the current sheet
-        if (ignoreRecord(record)) {
+        XlsRecordHandler handler = recordHandlerMap.get(record.getSid());
+        if ((handler instanceof IgnorableXlsRecordHandler) && xlsReadContext.readWorkbookHolder().getIgnoreRecord03()) {
+            // No need to read the current sheet
             return;
         }
+        handler.processRecord(xlsReadContext, record);
+
         int thisRow = -1;
         int thisColumn = -1;
         CellData cellData = null;
@@ -153,69 +169,52 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
             }
         }
         // If we got something to print out, do so
-        if (cellData != null && analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()
+        if (cellData != null && xlsReadContext.currentReadHolder().globalConfiguration().getAutoTrim()
             && CellDataTypeEnum.STRING == cellData.getType()) {
             cellData.setStringValue(cellData.getStringValue().trim());
-        }
-
-        // Handle new row
-        if (thisRow != -1 && thisRow != lastRowNumber) {
-            lastColumnNumber = -1;
-        }
-
-        // Update column and row count
-        if (thisRow > -1) {
-            lastRowNumber = thisRow;
-        }
-        if (thisColumn > -1) {
-            lastColumnNumber = thisColumn;
         }
 
         processLastCellOfRow(record);
     }
 
     private boolean ignoreRecord(Record record) {
-        return analysisContext.readWorkbookHolder().getIgnoreRecord03() && record.getSid() != BoundSheetRecord.sid
+        return xlsReadContext.readWorkbookHolder().getIgnoreRecord03() && record.getSid() != BoundSheetRecord.sid
             && record.getSid() != BOFRecord.sid;
     }
 
     private void processLastCellOfRow(Record record) {
         // Handle end of row
         if (record instanceof LastCellOfRowDummyRecord) {
+            System.out.println("----" + record.getSid());
             endRow();
         }
     }
 
     private void endRow() {
-        if (lastColumnNumber == -1) {
-            lastColumnNumber = 0;
-        }
-        analysisContext.readRowHolder(
-            new ReadRowHolder(lastRowNumber, analysisContext.readSheetHolder().getGlobalConfiguration()));
-        analysisContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records), analysisContext);
-        this.records = new LinkedHashMap<Integer, CellData>();
-        lastColumnNumber = -1;
+        xlsReadContext
+            .readRowHolder(new ReadRowHolder(lastRowNumber, xlsReadContext.readSheetHolder().getGlobalConfiguration()));
+        xlsReadContext.readSheetHolder().notifyEndOneRow(new EachRowAnalysisFinishEvent(records), xlsReadContext);
     }
 
     private void buildXlsRecordHandlers() {
         if (CollectionUtils.isEmpty(recordHandlers)) {
-            recordHandlers.add(new BlankOrErrorRecordHandler(analysisContext));
+            recordHandlers.add(new BlankOrErrorRecordHandler(xlsReadContext));
             // The table has been counted and there are no duplicate statistics
             if (sheets == null) {
                 sheets = new ArrayList<ReadSheet>();
-                recordHandlers.add(new BofRecordHandler(analysisContext, sheets, false, true));
+                recordHandlers.add(new BofRecordHandler(xlsReadContext, sheets, false, true));
             } else {
-                recordHandlers.add(new BofRecordHandler(analysisContext, sheets, true, true));
+                recordHandlers.add(new BofRecordHandler(xlsReadContext, sheets, true, true));
             }
-            recordHandlers.add(new FormulaRecordHandler(analysisContext, stubWorkbook, formatListener));
-            recordHandlers.add(new LabelRecordHandler(analysisContext));
-            recordHandlers.add(new NoteRecordHandler(analysisContext));
-            recordHandlers.add(new NumberRecordHandler(analysisContext, formatListener));
-            recordHandlers.add(new RkRecordHandler(analysisContext));
-            recordHandlers.add(new SstRecordHandler(analysisContext));
-            recordHandlers.add(new MissingCellDummyRecordHandler(analysisContext));
-            recordHandlers.add(new IndexRecordHandler(analysisContext));
-            recordHandlers.add(new TextObjectRecordHandler(analysisContext));
+            recordHandlers.add(new FormulaRecordHandler(xlsReadContext, stubWorkbook, formatListener));
+            recordHandlers.add(new LabelRecordHandler(xlsReadContext));
+            recordHandlers.add(new NoteRecordHandler(xlsReadContext));
+            recordHandlers.add(new NumberRecordHandler(xlsReadContext, formatListener));
+            recordHandlers.add(new RkRecordHandler(xlsReadContext));
+            recordHandlers.add(new SstRecordHandler(xlsReadContext));
+            recordHandlers.add(new MissingCellDummyRecordHandler(xlsReadContext));
+            recordHandlers.add(new IndexRecordHandler(xlsReadContext));
+            recordHandlers.add(new TextObjectRecordHandler(xlsReadContext));
             Collections.sort(recordHandlers);
         }
 

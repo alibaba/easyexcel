@@ -1,6 +1,6 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import org.apache.poi.hssf.record.LabelRecord;
+import org.apache.poi.hssf.record.BoolErrRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
@@ -13,12 +13,13 @@ import com.alibaba.excel.metadata.CellData;
  *
  * @author Dan Zheng
  */
-public class LabelRecordHandler implements IgnorableXlsRecordHandler {
+public class BoolErrRecordHandler implements IgnorableXlsRecordHandler {
+
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
-        LabelRecord lrec = (LabelRecord)record;
-        xlsReadContext.cellMap().put((int)lrec.getColumn(),
-            CellData.newInstance(lrec.getValue(), lrec.getRow(), (int)lrec.getColumn()));
+        BoolErrRecord ber = (BoolErrRecord)record;
+        xlsReadContext.cellMap().put((int)ber.getColumn(),
+            CellData.newInstance(ber.getBooleanValue(), ber.getRow(), (int)ber.getColumn()));
         xlsReadContext.tempRowType(RowTypeEnum.DATA);
     }
 }
