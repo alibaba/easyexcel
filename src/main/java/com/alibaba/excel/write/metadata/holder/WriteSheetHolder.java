@@ -68,11 +68,7 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         super(writeSheet, writeWorkbookHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
         this.writeSheet = writeSheet;
         this.sheetNo = writeSheet.getSheetNo();
-        if (writeSheet.getSheetName() == null) {
-            this.sheetName = writeSheet.getSheetNo().toString();
-        } else {
-            this.sheetName = writeSheet.getSheetName();
-        }
+        this.sheetName = writeSheet.getSheetName();
         this.parentWriteWorkbookHolder = writeWorkbookHolder;
         this.hasBeenInitializedTable = new HashMap<Integer, WriteTableHolder>();
         if (writeWorkbookHolder.getTempTemplateInputStream() != null) {

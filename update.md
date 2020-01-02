@@ -1,3 +1,7 @@
+# 2.1.5
+* 修复部分xlsx没有行号读取异常
+* 填充时候支持根据`sheetName`定位`sheet`
+
 # 2.1.4
 * 新增参数`useDefaultListener` 可以排除默认对象转换
 
