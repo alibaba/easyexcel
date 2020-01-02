@@ -39,6 +39,10 @@ public class FillDataTest {
     private static File horizontalFillTemplate07;
     private static File fileHorizontal03;
     private static File horizontalFillTemplate03;
+    private static File byName07;
+    private static File byName03;
+    private static File byNameTemplate07;
+    private static File byNameTemplate03;
 
     @BeforeClass
     public static void init() {
@@ -54,6 +58,10 @@ public class FillDataTest {
         horizontalFillTemplate07 = TestFileUtil.readFile("fill" + File.separator + "horizontal.xlsx");
         fileHorizontal03 = TestFileUtil.createNewFile("fillHorizontal03.xls");
         horizontalFillTemplate03 = TestFileUtil.readFile("fill" + File.separator + "horizontal.xls");
+        byName07 = TestFileUtil.createNewFile("byName07.xlsx");
+        byNameTemplate07 = TestFileUtil.readFile("fill" + File.separator + "byName.xlsx");
+        byName03 = TestFileUtil.createNewFile("byName03.xls");
+        byNameTemplate03 = TestFileUtil.readFile("fill" + File.separator + "byName.xls");
     }
 
     @Test
@@ -84,6 +92,23 @@ public class FillDataTest {
     @Test
     public void t06HorizontalFill03() {
         horizontalFill(fileHorizontal03, horizontalFillTemplate03);
+    }
+
+    @Test
+    public void t07ByNameFill07() {
+        byNameFill(byName07, byNameTemplate07);
+    }
+
+    @Test
+    public void t08ByNameFill03() {
+        byNameFill(byName03, byNameTemplate03);
+    }
+
+    private void byNameFill(File file, File template) {
+        FillData fillData = new FillData();
+        fillData.setName("张三");
+        fillData.setNumber(5.2);
+        EasyExcel.write(file, FillData.class).withTemplate(template).sheet("Sheet2").doFill(fillData);
     }
 
     private void horizontalFill(File file, File template) {

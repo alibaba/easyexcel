@@ -106,34 +106,39 @@ public class WriteContextImpl implements WriteContext {
         if (writeSheet == null) {
             throw new IllegalArgumentException("Sheet argument cannot be null");
         }
-        if (writeSheet.getSheetNo() == null || writeSheet.getSheetNo() <= 0) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Sheet number is null");
-            }
-            writeSheet.setSheetNo(0);
-        }
-        if (writeWorkbookHolder.getHasBeenInitializedSheet().containsKey(writeSheet.getSheetNo())) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Sheet:{} is already existed", writeSheet.getSheetNo());
-            }
-            writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheet().get(writeSheet.getSheetNo());
-            writeSheetHolder.setNewInitialization(Boolean.FALSE);
-            writeTableHolder = null;
-            currentWriteHolder = writeSheetHolder;
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("CurrentConfiguration is writeSheetHolder");
-            }
+        if (selectSheetFromCache(writeSheet)) {
             return;
         }
         initCurrentSheetHolder(writeSheet);
-        WriteHandlerUtils.beforeSheetCreate(this);
         // Initialization current sheet
         initSheet(writeType);
     }
 
+    private boolean selectSheetFromCache(WriteSheet writeSheet) {
+        writeSheetHolder = null;
+        if (writeSheet.getSheetNo() != null) {
+            writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheetIndexMap().get(writeSheet.getSheetNo());
+        }
+        if (writeSheetHolder == null && !StringUtils.isEmpty(writeSheet.getSheetName())) {
+            writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheetNameMap().get(writeSheet.getSheetName());
+        }
+        if (writeSheetHolder == null) {
+            return false;
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Sheet:{} is already existed", writeSheet.getSheetNo());
+        }
+        writeSheetHolder.setNewInitialization(Boolean.FALSE);
+        writeTableHolder = null;
+        currentWriteHolder = writeSheetHolder;
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("CurrentConfiguration is writeSheetHolder");
+        }
+        return true;
+    }
+
     private void initCurrentSheetHolder(WriteSheet writeSheet) {
         writeSheetHolder = new WriteSheetHolder(writeSheet, writeWorkbookHolder);
-        writeWorkbookHolder.getHasBeenInitializedSheet().put(writeSheet.getSheetNo(), writeSheetHolder);
         writeTableHolder = null;
         currentWriteHolder = writeSheetHolder;
         if (LOGGER.isDebugEnabled()) {
@@ -142,14 +147,25 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void initSheet(WriteTypeEnum writeType) {
+        WriteHandlerUtils.beforeSheetCreate(this);
         Sheet currentSheet;
         try {
-            currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(writeSheetHolder.getSheetNo());
-            writeSheetHolder
-                .setCachedSheet(writeWorkbookHolder.getCachedWorkbook().getSheetAt(writeSheetHolder.getSheetNo()));
+            if (writeSheetHolder.getSheetNo() != null) {
+                currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(writeSheetHolder.getSheetNo());
+                writeSheetHolder
+                    .setCachedSheet(writeWorkbookHolder.getCachedWorkbook().getSheetAt(writeSheetHolder.getSheetNo()));
+            } else {
+                // sheet name must not null
+                currentSheet = writeWorkbookHolder.getWorkbook().getSheet(writeSheetHolder.getSheetName());
+                writeSheetHolder
+                    .setCachedSheet(writeWorkbookHolder.getCachedWorkbook().getSheet(writeSheetHolder.getSheetName()));
+            }
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Can not find sheet:{} ,now create it", writeSheetHolder.getSheetNo());
+            }
+            if (StringUtils.isEmpty(writeSheetHolder.getSheetName())) {
+                writeSheetHolder.setSheetName(writeSheetHolder.getSheetNo().toString());
             }
             currentSheet = WorkBookUtil.createSheet(writeWorkbookHolder.getWorkbook(), writeSheetHolder.getSheetName());
             writeSheetHolder.setCachedSheet(currentSheet);
@@ -160,6 +176,8 @@ public class WriteContextImpl implements WriteContext {
             // Initialization head
             initHead(writeSheetHolder.excelWriteHeadProperty());
         }
+        writeWorkbookHolder.getHasBeenInitializedSheetIndexMap().put(writeSheetHolder.getSheetNo(), writeSheetHolder);
+        writeWorkbookHolder.getHasBeenInitializedSheetNameMap().put(writeSheetHolder.getSheetName(), writeSheetHolder);
     }
 
     public void initHead(ExcelWriteHeadProperty excelWriteHeadProperty) {

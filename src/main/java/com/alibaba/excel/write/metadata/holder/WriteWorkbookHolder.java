@@ -92,7 +92,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     /**
      * prevent duplicate creation of sheet objects
      */
-    private Map<Integer, WriteSheetHolder> hasBeenInitializedSheet;
+    private Map<Integer, WriteSheetHolder> hasBeenInitializedSheetIndexMap;
+    /**
+     * prevent duplicate creation of sheet objects
+     */
+    private Map<String, WriteSheetHolder> hasBeenInitializedSheetNameMap;
     /**
      * Whether the encryption
      */
@@ -148,7 +152,8 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.mandatoryUseInputStream = writeWorkbook.getMandatoryUseInputStream();
         }
-        this.hasBeenInitializedSheet = new HashMap<Integer, WriteSheetHolder>();
+        this.hasBeenInitializedSheetIndexMap = new HashMap<Integer, WriteSheetHolder>();
+        this.hasBeenInitializedSheetNameMap = new HashMap<String, WriteSheetHolder>();
         this.password = writeWorkbook.getPassword();
         if (writeWorkbook.getInMemory() == null) {
             this.inMemory = Boolean.FALSE;
@@ -197,12 +202,20 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         this.cachedWorkbook = cachedWorkbook;
     }
 
-    public Map<Integer, WriteSheetHolder> getHasBeenInitializedSheet() {
-        return hasBeenInitializedSheet;
+    public Map<Integer, WriteSheetHolder> getHasBeenInitializedSheetIndexMap() {
+        return hasBeenInitializedSheetIndexMap;
     }
 
-    public void setHasBeenInitializedSheet(Map<Integer, WriteSheetHolder> hasBeenInitializedSheet) {
-        this.hasBeenInitializedSheet = hasBeenInitializedSheet;
+    public void setHasBeenInitializedSheetIndexMap(Map<Integer, WriteSheetHolder> hasBeenInitializedSheetIndexMap) {
+        this.hasBeenInitializedSheetIndexMap = hasBeenInitializedSheetIndexMap;
+    }
+
+    public Map<String, WriteSheetHolder> getHasBeenInitializedSheetNameMap() {
+        return hasBeenInitializedSheetNameMap;
+    }
+
+    public void setHasBeenInitializedSheetNameMap(Map<String, WriteSheetHolder> hasBeenInitializedSheetNameMap) {
+        this.hasBeenInitializedSheetNameMap = hasBeenInitializedSheetNameMap;
     }
 
     public WriteWorkbook getWriteWorkbook() {

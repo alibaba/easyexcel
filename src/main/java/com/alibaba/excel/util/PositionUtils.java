@@ -14,6 +14,16 @@ public class PositionUtils {
         }
         return row;
     }
+    public static int getRowByRowTagt(String rowTagt,int before) {
+        int row ;
+        if (rowTagt != null) {
+            row = Integer.parseInt(rowTagt) - 1;
+            return row;
+        }else {
+            return before + 1;
+        }
+
+    }
 
     public static int getRow(String currentCellIndex) {
         int row = 0;
@@ -35,4 +45,19 @@ public class PositionUtils {
         }
         return col - 1;
     }
+
+    public static int getCol(String currentCellIndex,int before) {
+        int col = 0;
+        if (currentCellIndex != null) {
+
+            char[] currentIndex = currentCellIndex.replaceAll("[0-9]", "").toCharArray();
+            for (int i = 0; i < currentIndex.length; i++) {
+                col += (currentIndex[i] - '@') * Math.pow(26, (currentIndex.length - i - 1));
+            }
+            return col - 1;
+        }else {
+            return before +1;
+        }
+    }
+
 }

@@ -20,6 +20,7 @@ import com.alibaba.excel.util.PositionUtils;
 public class ProcessResultCellHandler implements XlsxCellHandler {
     private AnalysisContext analysisContext;
     private XlsxRowResultHolder rowResultHandler;
+    private int currentRow = -1;
 
     public ProcessResultCellHandler(AnalysisContext analysisContext, XlsxRowResultHolder rowResultHandler) {
         this.analysisContext = analysisContext;
@@ -33,9 +34,9 @@ public class ProcessResultCellHandler implements XlsxCellHandler {
 
     @Override
     public void startHandle(String name, Attributes attributes) {
+        currentRow = PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.POSITION),currentRow);
         analysisContext.readRowHolder(
-            new ReadRowHolder(PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.POSITION)),
-                analysisContext.readSheetHolder().getGlobalConfiguration()));
+            new ReadRowHolder(currentRow, analysisContext.readSheetHolder().getGlobalConfiguration()));
     }
 
     @Override

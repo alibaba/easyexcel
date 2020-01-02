@@ -36,7 +36,7 @@ import com.alibaba.excel.util.PositionUtils;
 public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder {
     private final AnalysisContext analysisContext;
     private Deque<String> currentTagDeque = new LinkedList<String>();
-    private int curCol;
+    private int curCol = -1;
     private Map<Integer, CellData> curRowContent = new LinkedHashMap<Integer, CellData>();
     private CellData currentCellData;
     private StringBuilder dataStringBuilder;
@@ -55,6 +55,7 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     @Override
     public void clearResult() {
         curRowContent = new LinkedHashMap<Integer, CellData>();
+        curCol=-1;
     }
 
     @Override
@@ -68,7 +69,8 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
         currentTagDeque.push(name);
         // start a cell
         if (CELL_TAG.equals(name)) {
-            curCol = PositionUtils.getCol(attributes.getValue(ExcelXmlConstants.POSITION));
+            curCol = PositionUtils.getCol(attributes.getValue(ExcelXmlConstants.POSITION),curCol);
+
 
             // t="s" ,it's means String
             // t="str" ,it's means String,but does not need to be read in the 'sharedStrings.xml'
