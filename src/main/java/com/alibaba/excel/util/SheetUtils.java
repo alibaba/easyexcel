@@ -3,7 +3,7 @@ package com.alibaba.excel.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.read.metadata.ReadSheet;
 
 /**

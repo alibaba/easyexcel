@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.parsers.SAXParserFactory;
@@ -20,6 +21,7 @@ import com.alibaba.excel.enums.ExtraReadEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
@@ -87,22 +89,24 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      */
     private String password;
     /**
-     * SAXParserFactory used when reading xlsx.
-     * <p>
-     * The default will automatically find.
-     * <p>
-     * Please pass in the name of a class ,like : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"
-     *
-     * @see SAXParserFactory#newInstance()
-     * @see SAXParserFactory#newInstance(String, ClassLoader)
-     */
-    private String xlsxSAXParserFactoryName;
-    /**
      * Read some additional fields. None are read by default.
      *
      * @see ExtraReadEnum
      */
     private Set<ExtraReadEnum> extraReadSet;
+    /**
+     * Actual sheet data
+     */
+    private List<ReadSheet> actualSheetDataList;
+    /**
+     * Parameter sheet data
+     */
+    private List<ReadSheet> parametersheetDataList;
+    /**
+     * Read all
+     */
+    private Boolean readAll;
+
     /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
@@ -122,14 +126,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      * Prevent repeating sheet
      */
     private Set<Integer> hasReadSheet;
-    /**
-     * Package
-     */
-    private OPCPackage opcPackage;
-    /**
-     * File System
-     */
-    private POIFSFileSystem poifsFileSystem;
 
     public ReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook, null, readWorkbook.getConvertAllFiled());
@@ -184,7 +180,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         } else {
             this.defaultReturnMap = readWorkbook.getDefaultReturnMap();
         }
-        this.xlsxSAXParserFactoryName = readWorkbook.getXlsxSAXParserFactoryName();
         if (readWorkbook.getExtraReadSet() == null) {
             this.extraReadSet = new HashSet<ExtraReadEnum>();
         } else {
@@ -306,22 +301,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.defaultReturnMap = defaultReturnMap;
     }
 
-    public OPCPackage getOpcPackage() {
-        return opcPackage;
-    }
-
-    public void setOpcPackage(OPCPackage opcPackage) {
-        this.opcPackage = opcPackage;
-    }
-
-    public POIFSFileSystem getPoifsFileSystem() {
-        return poifsFileSystem;
-    }
-
-    public void setPoifsFileSystem(POIFSFileSystem poifsFileSystem) {
-        this.poifsFileSystem = poifsFileSystem;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -330,20 +309,36 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.password = password;
     }
 
-    public String getXlsxSAXParserFactoryName() {
-        return xlsxSAXParserFactoryName;
-    }
-
-    public void setXlsxSAXParserFactoryName(String xlsxSAXParserFactoryName) {
-        this.xlsxSAXParserFactoryName = xlsxSAXParserFactoryName;
-    }
-
     public Set<ExtraReadEnum> getExtraReadSet() {
         return extraReadSet;
     }
 
     public void setExtraReadSet(Set<ExtraReadEnum> extraReadSet) {
         this.extraReadSet = extraReadSet;
+    }
+
+    public List<ReadSheet> getActualSheetDataList() {
+        return actualSheetDataList;
+    }
+
+    public void setActualSheetDataList(List<ReadSheet> actualSheetDataList) {
+        this.actualSheetDataList = actualSheetDataList;
+    }
+
+    public List<ReadSheet> getParametersheetDataList() {
+        return parametersheetDataList;
+    }
+
+    public void setParametersheetDataList(List<ReadSheet> parametersheetDataList) {
+        this.parametersheetDataList = parametersheetDataList;
+    }
+
+    public Boolean getReadAll() {
+        return readAll;
+    }
+
+    public void setReadAll(Boolean readAll) {
+        this.readAll = readAll;
     }
 
     @Override

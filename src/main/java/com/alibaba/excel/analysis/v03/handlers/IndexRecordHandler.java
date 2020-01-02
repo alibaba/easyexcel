@@ -4,7 +4,7 @@ import org.apache.poi.hssf.record.IndexRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
 
 /**
  * Record handler

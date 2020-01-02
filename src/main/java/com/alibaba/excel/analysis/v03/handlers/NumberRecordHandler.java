@@ -7,7 +7,7 @@ import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.constant.BuiltinFormats;
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 
@@ -22,12 +22,12 @@ public class NumberRecordHandler implements IgnorableXlsRecordHandler {
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         NumberRecord nr = (NumberRecord)record;
         CellData cellData = CellData.newInstance(BigDecimal.valueOf(nr.getValue()), nr.getRow(), (int)nr.getColumn());
-        Integer dataFormat = xlsReadContext.formatTrackingHSSFListener().getFormatIndex(nr);
+        Integer dataFormat = xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatIndex(nr);
         cellData.setDataFormat(dataFormat);
-        cellData.setDataFormatString(
-            BuiltinFormats.getBuiltinFormat(dataFormat, xlsReadContext.formatTrackingHSSFListener().getFormatString(nr),
-                xlsReadContext.readSheetHolder().getGlobalConfiguration().getLocale()));
-        xlsReadContext.cellMap().put((int)nr.getColumn(), cellData);
-        xlsReadContext.tempRowType(RowTypeEnum.DATA);
+        cellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+            xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatString(nr),
+            xlsReadContext.readSheetHolder().getGlobalConfiguration().getLocale()));
+        xlsReadContext.xlsReadSheetHolder().getCellMap().put((int)nr.getColumn(), cellData);
+        xlsReadContext.xlsReadSheetHolder().setTempRowType(RowTypeEnum.DATA);
     }
 }

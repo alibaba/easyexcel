@@ -6,8 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
 
 /**
  * Record handler
@@ -21,13 +22,14 @@ public class StringRecordHandler implements IgnorableXlsRecordHandler {
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         // String for formula
         StringRecord srec = (StringRecord)record;
-        CellData tempCellData = xlsReadContext.tempCellData();
+        XlsReadSheetHolder xlsReadSheetHolder = xlsReadContext.xlsReadSheetHolder();
+        CellData tempCellData = xlsReadSheetHolder.getTempCellData();
         if (tempCellData == null) {
             LOGGER.warn("String type formula but no value found.");
             return;
         }
         tempCellData.setStringValue(srec.getString());
-        xlsReadContext.cellMap().put(tempCellData.getColumnIndex(), tempCellData);
-        xlsReadContext.tempCellData(null);
+        xlsReadSheetHolder.getCellMap().put(tempCellData.getColumnIndex(), tempCellData);
+        xlsReadSheetHolder.setTempCellData(null);
     }
 }

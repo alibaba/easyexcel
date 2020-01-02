@@ -6,7 +6,7 @@ import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.SubRecord;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
 
 /**
  * Record handler
@@ -21,7 +21,7 @@ public class ObjRecordHandler implements IgnorableXlsRecordHandler {
             if (subRecord instanceof CommonObjectDataSubRecord) {
                 CommonObjectDataSubRecord codsr = (CommonObjectDataSubRecord)subRecord;
                 if (CommonObjectDataSubRecord.OBJECT_TYPE_COMMENT == codsr.getObjectType()) {
-                    xlsReadContext.tempObjectIndex(codsr.getObjectId());
+                    xlsReadContext.xlsReadSheetHolder().setTempObjectIndex(codsr.getObjectId());
                 }
                 break;
             }

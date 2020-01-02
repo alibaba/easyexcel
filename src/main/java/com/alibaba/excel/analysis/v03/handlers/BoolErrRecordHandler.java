@@ -4,7 +4,7 @@ import org.apache.poi.hssf.record.BoolErrRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 
@@ -18,8 +18,8 @@ public class BoolErrRecordHandler implements IgnorableXlsRecordHandler {
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         BoolErrRecord ber = (BoolErrRecord)record;
-        xlsReadContext.cellMap().put((int)ber.getColumn(),
+        xlsReadContext.xlsReadSheetHolder().getCellMap().put((int)ber.getColumn(),
             CellData.newInstance(ber.getBooleanValue(), ber.getRow(), (int)ber.getColumn()));
-        xlsReadContext.tempRowType(RowTypeEnum.DATA);
+        xlsReadContext.xlsReadSheetHolder().setTempRowType(RowTypeEnum.DATA);
     }
 }

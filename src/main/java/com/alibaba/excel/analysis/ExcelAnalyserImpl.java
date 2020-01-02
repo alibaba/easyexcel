@@ -15,13 +15,15 @@ import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.context.AnalysisContextImpl;
-import com.alibaba.excel.context.DefaultXlsReadContext;
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.DefaultXlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
+import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.DateUtils;
@@ -58,7 +60,6 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     private void choiceExcelExecutor(ReadWorkbook readWorkbook) throws Exception {
         ExcelTypeEnum excelType =
             ExcelTypeEnum.valueOf(readWorkbook.getFile(), readWorkbook.getInputStream(), readWorkbook.getExcelType());
-        readWorkbook.setExcelType(excelType);
         switch (excelType) {
             case XLS:
                 POIFSFileSystem poifsFileSystem;
@@ -73,7 +74,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                     try {
                         decryptedStream = DocumentFactoryHelper
                             .getDecryptedStream(poifsFileSystem.getRoot().getFileSystem(), readWorkbook.getPassword());
-                        analysisContext = new AnalysisContextImpl(readWorkbook);
+                        analysisContext = new AnalysisContextImpl(readWorkbook, ExcelTypeEnum.XLSX);
                         excelReadExecutor = new XlsxSaxAnalyser(analysisContext, decryptedStream);
                         return;
                     } finally {
@@ -86,15 +87,17 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                 if (readWorkbook.getPassword() != null) {
                     Biff8EncryptionKey.setCurrentUserPassword(readWorkbook.getPassword());
                 }
-                XlsReadContext xlsReadContext = new DefaultXlsReadContext(readWorkbook);
+                XlsReadContext xlsReadContext = new DefaultXlsReadContext(readWorkbook, ExcelTypeEnum.XLS);
+                xlsReadContext.xlsReadWorkbookHolder().setPoifsFileSystem(poifsFileSystem);
                 analysisContext = xlsReadContext;
-                excelReadExecutor = new XlsSaxAnalyser(xlsReadContext, poifsFileSystem);
+                excelReadExecutor = new XlsSaxAnalyser(xlsReadContext);
                 break;
             case XLSX:
-                analysisContext = new AnalysisContextImpl(readWorkbook);
+                analysisContext = new AnalysisContextImpl(readWorkbook, ExcelTypeEnum.XLSX);
                 excelReadExecutor = new XlsxSaxAnalyser(analysisContext, null);
                 break;
             default:
+                break;
         }
     }
 
@@ -104,17 +107,13 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             if (!readAll && CollectionUtils.isEmpty(readSheetList)) {
                 throw new IllegalArgumentException("Specify at least one read sheet.");
             }
+            analysisContext.readWorkbookHolder().setParametersheetDataList(readSheetList);
+            analysisContext.readWorkbookHolder().setReadAll(readAll);
             try {
-                excelReadExecutor.execute(readSheetList, readAll);
+                excelReadExecutor.execute();
             } catch (ExcelAnalysisStopException e) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Custom stop!");
-                }
-            }
-            // The last sheet is read
-            if (excelReadExecutor instanceof XlsSaxAnalyser) {
-                if (analysisContext.readSheetHolder() != null) {
-                    analysisContext.readSheetHolder().notifyAfterAllAnalysed(analysisContext);
                 }
             }
         } catch (RuntimeException e) {
@@ -147,15 +146,17 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             throwable = t;
         }
         try {
-            if (readWorkbookHolder.getOpcPackage() != null) {
-                readWorkbookHolder.getOpcPackage().revert();
+            if ((readWorkbookHolder instanceof XlsxReadWorkbookHolder)
+                && ((XlsxReadWorkbookHolder)readWorkbookHolder).getOpcPackage() != null) {
+                ((XlsxReadWorkbookHolder)readWorkbookHolder).getOpcPackage().revert();
             }
         } catch (Throwable t) {
             throwable = t;
         }
         try {
-            if (readWorkbookHolder.getPoifsFileSystem() != null) {
-                readWorkbookHolder.getPoifsFileSystem().close();
+            if ((readWorkbookHolder instanceof XlsReadWorkbookHolder)
+                && ((XlsReadWorkbookHolder)readWorkbookHolder).getPoifsFileSystem() != null) {
+                ((XlsReadWorkbookHolder)readWorkbookHolder).getPoifsFileSystem().close();
             }
         } catch (Throwable t) {
             throwable = t;

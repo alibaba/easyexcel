@@ -2,7 +2,7 @@ package com.alibaba.excel.analysis.v03;
 
 import org.apache.poi.hssf.record.Record;
 
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
 
 /**
  * Intercepts handle xls reads.

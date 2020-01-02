@@ -6,7 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
-import com.alibaba.excel.context.XlsReadContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
+import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
 
 /**
  * Record handler
@@ -19,12 +20,13 @@ public class TextObjectRecordHandler implements IgnorableXlsRecordHandler {
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         TextObjectRecord tor = (TextObjectRecord)record;
-        Integer tempObjectIndex = xlsReadContext.tempObjectIndex();
+        XlsReadSheetHolder xlsReadSheetHolder = xlsReadContext.xlsReadSheetHolder();
+        Integer tempObjectIndex = xlsReadSheetHolder.getTempObjectIndex();
         if (tempObjectIndex == null) {
             LOGGER.debug("tempObjectIndex is null.");
             return;
         }
-        xlsReadContext.objectCacheMap().put(tempObjectIndex, tor.getStr().getString());
-        xlsReadContext.tempObjectIndex(null);
+        xlsReadSheetHolder.getObjectCacheMap().put(tempObjectIndex, tor.getStr().getString());
+        xlsReadSheetHolder.setTempObjectIndex(null);
     }
 }
