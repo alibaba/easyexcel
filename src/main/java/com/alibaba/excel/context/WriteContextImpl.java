@@ -103,10 +103,8 @@ public class WriteContextImpl implements WriteContext {
      */
     @Override
     public void currentSheet(WriteSheet writeSheet, WriteTypeEnum writeType) {
-        boolean illegalArgument =
-            writeSheet == null || (writeSheet.getSheetNo() == null && StringUtils.isEmpty(writeSheet.getSheetName()));
-        if (illegalArgument) {
-            throw new IllegalArgumentException("Sheet name and Sheet number can not be empty.");
+        if (writeSheet == null) {
+            throw new IllegalArgumentException("Sheet argument cannot be null");
         }
         if (selectSheetFromCache(writeSheet)) {
             return;
