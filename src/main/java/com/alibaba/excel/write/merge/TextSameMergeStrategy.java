@@ -1,12 +1,15 @@
 package com.alibaba.excel.write.merge;
 
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.MergeTypeEnum;
 import com.alibaba.excel.metadata.CellPoint;
 import com.alibaba.excel.metadata.Head;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,7 +122,7 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
             col.put(sheet.getSheetName()+"C"+cell.getColumnIndex(), new CellPoint());
             cellPoint = col.get(sheet.getSheetName()+"C"+cell.getColumnIndex());
         }
-        if(cellPoint.getText() != null && cellPoint.getText().equals(cell.getStringCellValue())){
+        if(cellPoint.getText() != null && cellPoint.getText().equals(this.getCellText(cell))){
             cellPoint.setEndX(cell.getColumnIndex());
             cellPoint.setEndY(cell.getRowIndex());
             if(index == totalRows-1){
@@ -134,7 +137,7 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
             cellPoint.setEndX(cell.getColumnIndex());
             cellPoint.setEndY(cell.getRowIndex());
         }
-        cellPoint.setText(cell.getStringCellValue());
+        cellPoint.setText(this.getCellText(cell));
     }
 
     /**
@@ -150,5 +153,26 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
                 cellPoint.getStartX(),
                 cellPoint.getEndX());
         sheet.addMergedRegionUnsafe(cellRangeAddress);
+    }
+
+    /**
+     * 获取单元格的内容，转为字符串
+     * Get the contents of a cell and convert it to a string
+     * @param cell
+     * @return
+     */
+    private String getCellText(Cell cell){
+        String text = "";
+        CellType cellType = cell.getCellTypeEnum();
+        if(CellType.BOOLEAN.equals(cellType)){
+            text = Boolean.toString(cell.getBooleanCellValue());
+        }else if(CellType.NUMERIC.equals(cellType)){
+            text = Double.toString(cell.getNumericCellValue());
+        }else if(CellType.STRING.equals(cellType)){
+            text = cell.getStringCellValue();
+        }else if(cell.getCellTypeEnum().equals(Date.class)){
+            text = cell.getDateCellValue().toString();
+        }
+        return text;
     }
 }
