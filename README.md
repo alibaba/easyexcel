@@ -38,7 +38,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         int pageSize = 7;
         // Java 8：
-        EasyExcel.read(fileName, DemoData.class, pageSize, (List<DemoData> pageList) -> {
+        EasyExcel.read(fileName, DemoData.class, pageSize, pageList -> {
             LOGGER.info("读取到数据:{}", pageList); // or demoDataService.save(pageList);
         }).sheet().doRead();
         // Java 7：pathName
