@@ -416,8 +416,8 @@ public class EasyExcelFactory {
      * 
      * @author gmx@yiynx.cn
      */
-    public static <T> ExcelReaderBuilder read(File file, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return read(file, head, new EasyExcelConsumerListener(pageSize, consumer));
+    public static <T> ExcelReaderBuilder read(File file, Class<T> head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
+        return read(file, head, new EasyExcelConsumerListener<T>(pageSize, consumer));
     }
 
     /**
@@ -482,8 +482,8 @@ public class EasyExcelFactory {
      * 
      * @author gmx@yiynx.cn
      */
-    public static <T> ExcelReaderBuilder read(String pathName, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return read(pathName, head, new EasyExcelConsumerListener(pageSize, consumer));
+    public static <T> ExcelReaderBuilder read(String pathName, Class<T> head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
+        return read(pathName, head, new EasyExcelConsumerListener<T>(pageSize, consumer));
     }
 
     /**
@@ -548,8 +548,8 @@ public class EasyExcelFactory {
      * 
      * @author gmx@yiynx.cn
      */
-    public static <T> ExcelReaderBuilder read(InputStream inputStream, Class head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
-        return read(inputStream, head, new EasyExcelConsumerListener(pageSize, consumer));
+    public static <T> ExcelReaderBuilder read(InputStream inputStream, Class<T> head, Integer pageSize, EasyExcelConsumer<List<T>> consumer) {
+        return read(inputStream, head, new EasyExcelConsumerListener<T>(pageSize, consumer));
     }
 
     /**
