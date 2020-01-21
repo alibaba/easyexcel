@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.excel.enums.MergeTypeEnum;
+import com.alibaba.excel.write.merge.TextSameMergeStrategy;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -323,6 +325,24 @@ public class WriteTest {
         LoopMergeStrategy loopMergeStrategy = new LoopMergeStrategy(2, 0);
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).registerWriteHandler(loopMergeStrategy).sheet("模板").doWrite(data());
+    }
+
+    /**
+     * 合并单元格(按照单元格相同内容合并)
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 创建一个merge策略 并注册
+     * <p>
+     * 3. 直接写即可
+     */
+    @Test
+    public void mergeWriteByTextSame() {
+        String fileName = TestFileUtil.getPath() + "mergeWriteByTextSame" + System.currentTimeMillis() + ".xlsx";
+        // 可以按照合并类型，指定是水平合并还是垂直合并，内容相同的会进行合并, 需要传入 行总数 列总数
+        TextSameMergeStrategy textSameMergeStrategy = new TextSameMergeStrategy(4, data().size(), MergeTypeEnum.VERTICAL_MERGE);
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(textSameMergeStrategy).sheet("模板").doWrite(data());
     }
 
     /**
