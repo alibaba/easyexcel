@@ -46,9 +46,11 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         }
         // BeanMap is out of order,so use fieldList
         List<Field> fieldList = new ArrayList<Field>();
-        for (int relativeRowIndex = 0; relativeRowIndex < data.size(); relativeRowIndex++) {
+        int relativeRowIndex=0;
+        for(Object oneRowData : data){
             int n = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(data.get(relativeRowIndex), n, relativeRowIndex, fieldList);
+            addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, fieldList);
+            relativeRowIndex++;
         }
     }
 
