@@ -21,7 +21,7 @@ import com.alibaba.excel.metadata.CellData;
  *
  * @author Dan Zheng
  */
-public class FormulaRecordHandler implements IgnorableXlsRecordHandler {
+public class FormulaRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(FormulaRecordHandler.class);
     private static final String ERROR = "#VALUE!";
 
@@ -35,7 +35,7 @@ public class FormulaRecordHandler implements IgnorableXlsRecordHandler {
         CellType cellType = CellType.forInt(frec.getCachedResultType());
         String formulaValue = null;
         try {
-            formulaValue = HSSFFormulaParser.toFormulaString(xlsReadContext.xlsReadWorkbookHolder().getHsffWorkbook(),
+            formulaValue = HSSFFormulaParser.toFormulaString(xlsReadContext.xlsReadWorkbookHolder().getHssfWorkbook(),
                 frec.getParsedExpression());
         } catch (Exception e) {
             LOGGER.debug("Get formula value error.", e);

@@ -7,6 +7,7 @@ import org.apache.poi.xssf.model.StylesTable;
 
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * Workbook holder
@@ -37,6 +38,7 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
     public XlsxReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);
         this.saxParserFactoryName = readWorkbook.getXlsxSAXParserFactoryName();
+        setExcelType(ExcelTypeEnum.XLSX);
     }
 
     public OPCPackage getOpcPackage() {

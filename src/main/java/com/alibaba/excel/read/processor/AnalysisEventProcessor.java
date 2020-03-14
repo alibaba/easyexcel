@@ -10,6 +10,13 @@ import com.alibaba.excel.context.AnalysisContext;
  */
 public interface AnalysisEventProcessor {
     /**
+     * Read extra information
+     *
+     * @param analysisContext
+     */
+    void extra(AnalysisContext analysisContext);
+
+    /**
      * End row
      *
      * @param analysisContext

@@ -12,7 +12,7 @@ import com.alibaba.excel.context.xls.XlsReadContext;
  *
  * @author Dan Zheng
  */
-public class SstRecordHandler implements IgnorableXlsRecordHandler {
+public class SstRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         xlsReadContext.readWorkbookHolder().setReadCache(new XlsCache((SSTRecord)record));

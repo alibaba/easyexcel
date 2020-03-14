@@ -93,20 +93,6 @@ public interface AnalysisContext {
     void readSheetList(List<ReadSheet> readSheetList);
 
     /**
-     * Read all sheets
-     *
-     * @return
-     */
-    Boolean readAll();
-
-    /**
-     * Read all sheets
-     *
-     * @return
-     */
-    void readAll(Boolean readAll);
-
-    /**
      * get current sheet
      *
      * @return current analysis sheet

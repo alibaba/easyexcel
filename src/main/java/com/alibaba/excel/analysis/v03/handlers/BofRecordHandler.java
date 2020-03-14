@@ -7,11 +7,9 @@ import org.apache.poi.hssf.record.BOFRecord;
 import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
 
-import com.alibaba.excel.analysis.v03.XlsRecordHandler;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.read.metadata.ReadSheet;
-import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.util.SheetUtils;
 
@@ -20,7 +18,7 @@ import com.alibaba.excel.util.SheetUtils;
  *
  * @author Dan Zheng
  */
-public class BofRecordHandler implements XlsRecordHandler {
+public class BofRecordHandler extends AbstractXlsRecordHandler {
 
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
@@ -29,7 +27,6 @@ public class BofRecordHandler implements XlsRecordHandler {
             return;
         }
         XlsReadWorkbookHolder xlsReadWorkbookHolder = xlsReadContext.xlsReadWorkbookHolder();
-        XlsReadSheetHolder XlsReadSheetHolder = xlsReadContext.xlsReadSheetHolder();
         // Init read sheet Data
         initReadSheetDataList(xlsReadWorkbookHolder);
         Integer readSheetIndex = xlsReadWorkbookHolder.getReadSheetIndex();
@@ -43,9 +40,9 @@ public class BofRecordHandler implements XlsRecordHandler {
         readSheet = SheetUtils.match(readSheet, xlsReadContext);
         if (readSheet != null) {
             xlsReadContext.currentSheet(readSheet);
-            XlsReadSheetHolder.setIgnoreRecord(Boolean.FALSE);
+            xlsReadContext.xlsReadSheetHolder().setIgnoreRecord(Boolean.FALSE);
         } else {
-            XlsReadSheetHolder.setIgnoreRecord(Boolean.TRUE);
+            xlsReadContext.xlsReadSheetHolder().setIgnoreRecord(Boolean.TRUE);
         }
         // Go read the next one
         xlsReadWorkbookHolder.setReadSheetIndex(xlsReadWorkbookHolder.getReadSheetIndex() + 1);

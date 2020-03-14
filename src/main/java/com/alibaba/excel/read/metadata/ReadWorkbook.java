@@ -9,7 +9,7 @@ import javax.xml.parsers.SAXParserFactory;
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.enums.ExtraReadEnum;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -88,9 +88,9 @@ public class ReadWorkbook extends ReadBasicParameter {
     /**
      * Read some additional fields. None are read by default.
      *
-     * @see ExtraReadEnum
+     * @see CellExtraTypeEnum
      */
-    private Set<ExtraReadEnum> extraReadSet;
+    private Set<CellExtraTypeEnum> extraReadSet;
     /**
      * The default is all excel objects.Default is true.
      * <p>
@@ -221,11 +221,11 @@ public class ReadWorkbook extends ReadBasicParameter {
         this.useDefaultListener = useDefaultListener;
     }
 
-    public Set<ExtraReadEnum> getExtraReadSet() {
+    public Set<CellExtraTypeEnum> getExtraReadSet() {
         return extraReadSet;
     }
 
-    public void setExtraReadSet(Set<ExtraReadEnum> extraReadSet) {
+    public void setExtraReadSet(Set<CellExtraTypeEnum> extraReadSet) {
         this.extraReadSet = extraReadSet;
     }
 }

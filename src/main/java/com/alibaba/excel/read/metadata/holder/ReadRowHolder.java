@@ -35,10 +35,12 @@ public class ReadRowHolder implements Holder {
      */
     private GlobalConfiguration globalConfiguration;
 
-    public ReadRowHolder(Integer rowIndex, RowTypeEnum rowType, GlobalConfiguration globalConfiguration) {
+    public ReadRowHolder(Integer rowIndex, RowTypeEnum rowType, GlobalConfiguration globalConfiguration,
+        Map<Integer, Cell> cellMap) {
         this.rowIndex = rowIndex;
         this.rowType = rowType;
         this.globalConfiguration = globalConfiguration;
+        this.cellMap = cellMap;
     }
 
     public GlobalConfiguration getGlobalConfiguration() {

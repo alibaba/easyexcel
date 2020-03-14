@@ -12,7 +12,7 @@ import com.alibaba.excel.metadata.CellData;
  *
  * @author Dan Zheng
  */
-public class RkRecordHandler implements IgnorableXlsRecordHandler {
+public class RkRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
 
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {

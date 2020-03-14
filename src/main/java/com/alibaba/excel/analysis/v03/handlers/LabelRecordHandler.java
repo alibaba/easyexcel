@@ -13,7 +13,7 @@ import com.alibaba.excel.metadata.CellData;
  *
  * @author Dan Zheng
  */
-public class LabelRecordHandler implements IgnorableXlsRecordHandler {
+public class LabelRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         LabelRecord lrec = (LabelRecord)record;

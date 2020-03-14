@@ -15,7 +15,10 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.openxml4j.opc.PackagePart;
+import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.CommentsTable;
+import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
@@ -29,7 +32,9 @@ import com.alibaba.excel.analysis.v07.handlers.sax.SharedStringsTableHandler;
 import com.alibaba.excel.analysis.v07.handlers.sax.XlsxRowHandler;
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.metadata.CellExtra;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.util.CollectionUtils;
@@ -45,6 +50,10 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
     private XlsxReadContext xlsxReadContext;
     private List<ReadSheet> sheetList;
     private Map<Integer, InputStream> sheetMap;
+    /**
+     * excel comments key: sheetNo value: CommentsTable
+     */
+    private Map<Integer, CommentsTable> commentsTableMap;
 
     public XlsxSaxAnalyser(XlsxReadContext xlsxReadContext, InputStream decryptedStream) throws Exception {
         this.xlsxReadContext = xlsxReadContext;
@@ -72,7 +81,8 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         xlsxReadWorkbookHolder.setStylesTable(xssfReader.getStylesTable());
         sheetList = new ArrayList<ReadSheet>();
         sheetMap = new HashMap<Integer, InputStream>();
-        XSSFReader.SheetIterator ite = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
+        commentsTableMap = new HashMap<Integer, CommentsTable>();
+        XSSFReader.SheetIterator ite = (XSSFReader.SheetIterator)xssfReader.getSheetsData();
         int index = 0;
         if (!ite.hasNext()) {
             throw new ExcelAnalysisException("Can not find any sheet!");
@@ -81,11 +91,18 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             InputStream inputStream = ite.next();
             sheetList.add(new ReadSheet(index, ite.getSheetName()));
             sheetMap.put(index, inputStream);
+            if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT)) {
+                CommentsTable commentsTable = ite.getSheetComments();
+                if (null != commentsTable) {
+                    commentsTableMap.put(index, commentsTable);
+                }
+            }
             index++;
         }
     }
 
-    private void defaultReadCache(XlsxReadWorkbookHolder xlsxReadWorkbookHolder, PackagePart sharedStringsTablePackagePart) {
+    private void defaultReadCache(XlsxReadWorkbookHolder xlsxReadWorkbookHolder,
+        PackagePart sharedStringsTablePackagePart) {
         ReadCache readCache = xlsxReadWorkbookHolder.getReadCacheSelector().readCache(sharedStringsTablePackagePart);
         xlsxReadWorkbookHolder.setReadCache(readCache);
         readCache.init(xlsxReadContext);
@@ -108,7 +125,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
     }
 
     private void analysisSharedStringsTable(InputStream sharedStringsTableInputStream,
-                                            XlsxReadWorkbookHolder xlsxReadWorkbookHolder) throws Exception {
+        XlsxReadWorkbookHolder xlsxReadWorkbookHolder) throws Exception {
         ContentHandler handler = new SharedStringsTableHandler(xlsxReadWorkbookHolder.getReadCache());
         parseXmlSource(sharedStringsTableInputStream, handler);
         xlsxReadWorkbookHolder.getReadCache().putFinished();
@@ -182,9 +199,28 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             if (readSheet != null) {
                 xlsxReadContext.currentSheet(readSheet);
                 parseXmlSource(sheetMap.get(readSheet.getSheetNo()), new XlsxRowHandler(xlsxReadContext));
+                // Read comments
+                readComments(readSheet);
                 // The last sheet is read
                 xlsxReadContext.analysisEventProcessor().endSheet(xlsxReadContext);
             }
+        }
+    }
+
+    private void readComments(ReadSheet readSheet) {
+        if (!xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT)) {
+            return;
+        }
+        CommentsTable commentsTable = commentsTableMap.get(readSheet.getSheetNo());
+        if (commentsTable == null) {
+            return;
+        }
+        Map<CellAddress, XSSFComment> cellComments = commentsTable.getCellComments();
+        for (XSSFComment xssfComment : cellComments.values()) {
+            CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.COMMENT, xssfComment.getString().toString(),
+                xssfComment.getRow(), xssfComment.getColumn());
+            xlsxReadContext.readSheetHolder().setCellExtra(cellExtra);
+            xlsxReadContext.analysisEventProcessor().extra(xlsxReadContext);
         }
     }
 }

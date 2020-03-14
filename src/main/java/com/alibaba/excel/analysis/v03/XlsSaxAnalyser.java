@@ -18,9 +18,11 @@ import org.apache.poi.hssf.record.BoolErrRecord;
 import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.EOFRecord;
 import org.apache.poi.hssf.record.FormulaRecord;
+import org.apache.poi.hssf.record.HyperlinkRecord;
 import org.apache.poi.hssf.record.IndexRecord;
 import org.apache.poi.hssf.record.LabelRecord;
 import org.apache.poi.hssf.record.LabelSSTRecord;
+import org.apache.poi.hssf.record.MergeCellsRecord;
 import org.apache.poi.hssf.record.NoteRecord;
 import org.apache.poi.hssf.record.NumberRecord;
 import org.apache.poi.hssf.record.ObjRecord;
@@ -40,9 +42,11 @@ import com.alibaba.excel.analysis.v03.handlers.BoundSheetRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.DummyRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.EofRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.HyperlinkRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.IndexRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.LabelRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.LabelSstRecordHandler;
+import com.alibaba.excel.analysis.v03.handlers.MergeCellsRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.NoteRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.NumberRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.ObjRecordHandler;
@@ -84,9 +88,11 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         XLS_RECORD_HANDLER_MAP.put(DUMMY_RECORD_SID, new DummyRecordHandler());
         XLS_RECORD_HANDLER_MAP.put(EOFRecord.sid, new EofRecordHandler());
         XLS_RECORD_HANDLER_MAP.put(FormulaRecord.sid, new FormulaRecordHandler());
+        XLS_RECORD_HANDLER_MAP.put(HyperlinkRecord.sid, new HyperlinkRecordHandler());
         XLS_RECORD_HANDLER_MAP.put(IndexRecord.sid, new IndexRecordHandler());
         XLS_RECORD_HANDLER_MAP.put(LabelRecord.sid, new LabelRecordHandler());
         XLS_RECORD_HANDLER_MAP.put(LabelSSTRecord.sid, new LabelSstRecordHandler());
+        XLS_RECORD_HANDLER_MAP.put(MergeCellsRecord.sid, new MergeCellsRecordHandler());
         XLS_RECORD_HANDLER_MAP.put(NoteRecord.sid, new NoteRecordHandler());
         XLS_RECORD_HANDLER_MAP.put(NumberRecord.sid, new NumberRecordHandler());
         XLS_RECORD_HANDLER_MAP.put(ObjRecord.sid, new ObjRecordHandler());
@@ -117,7 +123,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         EventWorkbookBuilder.SheetRecordCollectingListener workbookBuildingListener =
             new EventWorkbookBuilder.SheetRecordCollectingListener(
                 xlsReadWorkbookHolder.getFormatTrackingHSSFListener());
-        xlsReadWorkbookHolder.setHsffWorkbook(workbookBuildingListener.getStubHSSFWorkbook());
+        xlsReadWorkbookHolder.setHssfWorkbook(workbookBuildingListener.getStubHSSFWorkbook());
         HSSFEventFactory factory = new HSSFEventFactory();
         HSSFRequest request = new HSSFRequest();
         request.addListenerForAllRecords(xlsReadWorkbookHolder.getFormatTrackingHSSFListener());
@@ -139,8 +145,13 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         if (handler == null) {
             return;
         }
-        if ((handler instanceof IgnorableXlsRecordHandler) && xlsReadContext.xlsReadSheetHolder().getIgnoreRecord()) {
+        boolean ignoreRecord = (handler instanceof IgnorableXlsRecordHandler)
+            && xlsReadContext.xlsReadSheetHolder() != null && xlsReadContext.xlsReadSheetHolder().getIgnoreRecord();
+        if (ignoreRecord) {
             // No need to read the current sheet
+            return;
+        }
+        if (!handler.support(xlsReadContext, record)) {
             return;
         }
         handler.processRecord(xlsReadContext, record);

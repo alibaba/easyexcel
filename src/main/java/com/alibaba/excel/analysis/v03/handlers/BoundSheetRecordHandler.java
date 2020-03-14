@@ -11,7 +11,7 @@ import com.alibaba.excel.context.xls.XlsReadContext;
  *
  * @author Dan Zheng
  */
-public class BoundSheetRecordHandler implements IgnorableXlsRecordHandler {
+public class BoundSheetRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
 
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {

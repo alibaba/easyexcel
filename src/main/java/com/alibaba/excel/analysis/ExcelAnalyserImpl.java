@@ -110,7 +110,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
             if (!readAll && CollectionUtils.isEmpty(readSheetList)) {
                 throw new IllegalArgumentException("Specify at least one read sheet.");
             }
-            analysisContext.readWorkbookHolder().setParametersheetDataList(readSheetList);
+            analysisContext.readWorkbookHolder().setParameterSheetDataList(readSheetList);
             analysisContext.readWorkbookHolder().setReadAll(readAll);
             try {
                 excelReadExecutor.execute();
@@ -150,16 +150,16 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
         try {
             if ((readWorkbookHolder instanceof XlsxReadWorkbookHolder)
-                && ((XlsxReadWorkbookHolder) readWorkbookHolder).getOpcPackage() != null) {
-                ((XlsxReadWorkbookHolder) readWorkbookHolder).getOpcPackage().revert();
+                && ((XlsxReadWorkbookHolder)readWorkbookHolder).getOpcPackage() != null) {
+                ((XlsxReadWorkbookHolder)readWorkbookHolder).getOpcPackage().revert();
             }
         } catch (Throwable t) {
             throwable = t;
         }
         try {
             if ((readWorkbookHolder instanceof XlsReadWorkbookHolder)
-                && ((XlsReadWorkbookHolder) readWorkbookHolder).getPoifsFileSystem() != null) {
-                ((XlsReadWorkbookHolder) readWorkbookHolder).getPoifsFileSystem().close();
+                && ((XlsReadWorkbookHolder)readWorkbookHolder).getPoifsFileSystem() != null) {
+                ((XlsReadWorkbookHolder)readWorkbookHolder).getPoifsFileSystem().close();
             }
         } catch (Throwable t) {
             throwable = t;

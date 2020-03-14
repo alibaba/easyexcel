@@ -11,6 +11,14 @@ import com.alibaba.excel.context.xls.XlsReadContext;
  */
 public interface XlsRecordHandler {
     /**
+     * Whether to support
+     *
+     * @param xlsReadContext
+     * @param record
+     */
+    boolean support(XlsReadContext xlsReadContext, Record record);
+
+    /**
      * Processing record
      *
      * @param xlsReadContext

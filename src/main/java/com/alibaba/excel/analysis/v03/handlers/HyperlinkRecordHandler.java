@@ -1,6 +1,6 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import org.apache.poi.hssf.record.NoteRecord;
+import org.apache.poi.hssf.record.HyperlinkRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
@@ -13,18 +13,17 @@ import com.alibaba.excel.metadata.CellExtra;
  *
  * @author Dan Zheng
  */
-public class NoteRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
-
+public class HyperlinkRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     @Override
     public boolean support(XlsReadContext xlsReadContext, Record record) {
-        return xlsReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT);
+        return xlsReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.HYPERLINK);
     }
 
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
-        NoteRecord nr = (NoteRecord)record;
-        String text = xlsReadContext.xlsReadSheetHolder().getObjectCacheMap().get(nr.getShapeId());
-        CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.COMMENT, text, nr.getRow(), nr.getColumn());
+        HyperlinkRecord hr = (HyperlinkRecord)record;
+        CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.HYPERLINK, hr.getAddress(), hr.getFirstRow(),
+            hr.getFirstColumn(), hr.getLastRow(), hr.getLastColumn());
         xlsReadContext.xlsReadSheetHolder().setCellExtra(cellExtra);
         xlsReadContext.analysisEventProcessor().extra(xlsReadContext);
     }

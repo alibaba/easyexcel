@@ -1,5 +1,6 @@
 package com.alibaba.excel.read.metadata.holder.xls;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
@@ -9,6 +10,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * Workbook holder
@@ -27,7 +29,7 @@ public class XlsReadWorkbookHolder extends ReadWorkbookHolder {
     /**
      * HSSFWorkbook
      */
-    private HSSFWorkbook hsffWorkbook;
+    private HSSFWorkbook hssfWorkbook;
     /**
      * Bound sheet record list.
      */
@@ -43,6 +45,12 @@ public class XlsReadWorkbookHolder extends ReadWorkbookHolder {
 
     public XlsReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);
+        this.boundSheetRecordList = new ArrayList<BoundSheetRecord>();
+        this.needReadSheet = Boolean.TRUE;
+        setExcelType(ExcelTypeEnum.XLS);
+        if (getGlobalConfiguration().getUse1904windowing() == null) {
+            getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
+        }
     }
 
     public POIFSFileSystem getPoifsFileSystem() {
@@ -61,12 +69,12 @@ public class XlsReadWorkbookHolder extends ReadWorkbookHolder {
         this.formatTrackingHSSFListener = formatTrackingHSSFListener;
     }
 
-    public HSSFWorkbook getHsffWorkbook() {
-        return hsffWorkbook;
+    public HSSFWorkbook getHssfWorkbook() {
+        return hssfWorkbook;
     }
 
-    public void setHsffWorkbook(HSSFWorkbook hsffWorkbook) {
-        this.hsffWorkbook = hsffWorkbook;
+    public void setHssfWorkbook(HSSFWorkbook hssfWorkbook) {
+        this.hssfWorkbook = hssfWorkbook;
     }
 
     public List<BoundSheetRecord> getBoundSheetRecordList() {

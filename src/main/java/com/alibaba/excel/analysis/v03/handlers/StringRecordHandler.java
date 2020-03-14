@@ -15,7 +15,7 @@ import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
  *
  * @author Dan Zheng
  */
-public class StringRecordHandler implements IgnorableXlsRecordHandler {
+public class StringRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(StringRecordHandler.class);
 
     @Override

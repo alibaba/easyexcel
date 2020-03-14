@@ -22,4 +22,19 @@ public class ExcelXmlConstants {
      */
     public static final String CELL_INLINE_STRING_VALUE_TAG = "t";
 
+    public static final String MERGE_CELL_TAG = "mergeCell";
+    public static final String HYPERLINK_TAG = "hyperlink";
+
+    /**
+     * Cell range split
+     */
+    public static final String CELL_RANGE_SPLIT = ":";
+    /**
+     * ref attribute
+     */
+    public static final String ATTRIBUTE_REF = "ref";
+    /**
+     * location attribute
+     */
+    public static final String ATTRIBUTE_LOCATION = "location";
 }

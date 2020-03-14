@@ -18,7 +18,7 @@ import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
  *
  * @author Dan Zheng
  */
-public class DummyRecordHandler implements IgnorableXlsRecordHandler {
+public class DummyRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         XlsReadSheetHolder xlsReadSheetHolder = xlsReadContext.xlsReadSheetHolder();
@@ -27,7 +27,7 @@ public class DummyRecordHandler implements IgnorableXlsRecordHandler {
             LastCellOfRowDummyRecord lcrdr = (LastCellOfRowDummyRecord)record;
             xlsReadSheetHolder.setRowIndex(lcrdr.getRow());
             xlsReadContext.readRowHolder(new ReadRowHolder(lcrdr.getRow(), xlsReadSheetHolder.getTempRowType(),
-                xlsReadContext.readSheetHolder().getGlobalConfiguration()));
+                xlsReadContext.readSheetHolder().getGlobalConfiguration(), xlsReadSheetHolder.getCellMap()));
             xlsReadContext.analysisEventProcessor().endRow(xlsReadContext);
             xlsReadSheetHolder.setCellMap(new LinkedHashMap<Integer, Cell>());
         } else if (record instanceof MissingCellDummyRecord) {

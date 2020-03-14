@@ -138,16 +138,6 @@ public class AnalysisContextImpl implements AnalysisContext {
     }
 
     @Override
-    public Boolean readAll() {
-        return null;
-    }
-
-    @Override
-    public void readAll(Boolean readAll) {
-
-    }
-
-    @Override
     public Sheet getCurrentSheet() {
         Sheet sheet = new Sheet(readSheetHolder.getSheetNo() + 1);
         sheet.setSheetName(readSheetHolder.getSheetName());

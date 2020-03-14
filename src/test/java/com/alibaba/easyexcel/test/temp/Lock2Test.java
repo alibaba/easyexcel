@@ -3,6 +3,7 @@ package com.alibaba.easyexcel.test.temp;
 import java.io.File;
 import java.util.List;
 
+import org.apache.poi.hssf.util.CellReference;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -29,6 +30,11 @@ public class Lock2Test {
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }
+    }
+
+    @Test
+    public void testc() throws Exception {
+        LOGGER.info("reslut:{}", JSON.toJSONString(new CellReference("B3")));
     }
 
     @Test

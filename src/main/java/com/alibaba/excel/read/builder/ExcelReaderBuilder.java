@@ -2,6 +2,8 @@ package com.alibaba.excel.read.builder;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -9,9 +11,10 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.event.SyncReadListener;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
-import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
@@ -159,6 +162,21 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     }
 
     /**
+     * Read some extra information, not by default
+     *
+     * @param extraType
+     *            extra information type
+     * @return
+     */
+    public ExcelReaderBuilder extraRead(CellExtraTypeEnum extraType) {
+        if (readWorkbook.getExtraReadSet() == null) {
+            readWorkbook.setExtraReadSet(new HashSet<CellExtraTypeEnum>());
+        }
+        readWorkbook.getExtraReadSet().add(extraType);
+        return this;
+    }
+
+    /**
      * Whether to use the default listener, which is used by default.
      * <p>
      * The {@link ModelBuildEventListener} is loaded by default to convert the object.
@@ -175,11 +193,24 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
         return new ExcelReader(readWorkbook);
     }
 
-    public ExcelReader doReadAll() {
+    public void doReadAll() {
         ExcelReader excelReader = build();
         excelReader.readAll();
         excelReader.finish();
-        return excelReader;
+    }
+
+    /**
+     * Synchronous reads return results
+     *
+     * @return
+     */
+    public <T> List<T> doReadAllSync() {
+        ExcelReader excelReader = build();
+        SyncReadListener syncReadListener = new SyncReadListener();
+        registerReadListener(syncReadListener);
+        excelReader.readAll();
+        excelReader.finish();
+        return (List<T>)syncReadListener.getList();
     }
 
     public ExcelReaderSheetBuilder sheet() {

@@ -13,7 +13,7 @@ import com.alibaba.excel.context.xls.XlsReadContext;
  *
  * @author Jiaju Zhuang
  */
-public class ObjRecordHandler implements IgnorableXlsRecordHandler {
+public class ObjRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         ObjRecord or = (ObjRecord)record;

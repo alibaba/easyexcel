@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 
 /**
  * Sheet utils
@@ -14,21 +15,22 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 public class SheetUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(SheetUtils.class);
 
-    private SheetUtils() {
-    }
+    private SheetUtils() {}
 
     /**
      * Match the parameters to the actual sheet
      *
-     * @param readSheet       actual sheet
+     * @param readSheet
+     *            actual sheet
      * @param analysisContext
      * @return
      */
     public static ReadSheet match(ReadSheet readSheet, AnalysisContext analysisContext) {
-        if (analysisContext.readAll()) {
+        ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
+        if (readWorkbookHolder.getReadAll()) {
             return readSheet;
         }
-        for (ReadSheet parameterReadSheet : analysisContext.readSheetList()) {
+        for (ReadSheet parameterReadSheet : readWorkbookHolder.getParameterSheetDataList()) {
             if (parameterReadSheet == null) {
                 continue;
             }
@@ -45,7 +47,7 @@ public class SheetUtils {
                 if (!StringUtils.isEmpty(parameterSheetName)) {
                     boolean autoTrim = (parameterReadSheet.getAutoTrim() != null && parameterReadSheet.getAutoTrim())
                         || (parameterReadSheet.getAutoTrim() == null
-                        && analysisContext.readWorkbookHolder().getGlobalConfiguration().getAutoTrim());
+                            && analysisContext.readWorkbookHolder().getGlobalConfiguration().getAutoTrim());
                     if (autoTrim) {
                         parameterSheetName = parameterSheetName.trim();
                     }

@@ -10,7 +10,7 @@ import com.alibaba.excel.context.xls.XlsReadContext;
  *
  * @author Dan Zheng
  */
-public class EofRecordHandler implements IgnorableXlsRecordHandler {
+public class EofRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
 
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {

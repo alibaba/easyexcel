@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.HeadKindEnum;
+import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.metadata.CellData;
@@ -29,28 +30,21 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAnalysisEventProcessor.class);
 
     @Override
-    public void endRow(AnalysisContext analysisContext) {
-        switch (analysisContext.readRowHolder().getRowType()) {
-            case EMPTY:
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.warn("Empty row!");
-                }
-                if (analysisContext.readWorkbookHolder().getIgnoreEmptyRow()) {
-                    return;
-                }
-                // Need to continue to notify invoke.
-                dealData(analysisContext);
-                break;
-            case DATA:
-                dealData(analysisContext);
-                break;
-            case EXTRA:
-                dealExtra(analysisContext);
-                break;
-            default:
-                throw new ExcelAnalysisException("Wrong row type.");
-        }
+    public void extra(AnalysisContext analysisContext) {
+        dealExtra(analysisContext);
+    }
 
+    @Override
+    public void endRow(AnalysisContext analysisContext) {
+        if (RowTypeEnum.EMPTY.equals(analysisContext.readRowHolder().getRowType())) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.warn("Empty row!");
+            }
+            if (analysisContext.readWorkbookHolder().getIgnoreEmptyRow()) {
+                return;
+            }
+        }
+        dealData(analysisContext);
     }
 
     @Override
@@ -61,13 +55,34 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
     }
 
     private void dealExtra(AnalysisContext analysisContext) {
+        for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
+            try {
+                readListener.extra(analysisContext.readSheetHolder().getCellExtra(), analysisContext);
+            } catch (Exception e) {
+                onException(analysisContext, e);
+                break;
+            }
+            if (!readListener.hasNext(analysisContext)) {
+                throw new ExcelAnalysisStopException();
+            }
+        }
+    }
 
-
+    private void onException(AnalysisContext analysisContext, Exception e) {
+        for (ReadListener readListenerException : analysisContext.currentReadHolder().readListenerList()) {
+            try {
+                readListenerException.onException(e, analysisContext);
+            } catch (RuntimeException re) {
+                throw re;
+            } catch (Exception e1) {
+                throw new ExcelAnalysisException(e1.getMessage(), e1);
+            }
+        }
     }
 
     private void dealData(AnalysisContext analysisContext) {
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
-        Map<Integer, CellData> cellDataMap = (Map) readRowHolder.getCellMap();
+        Map<Integer, CellData> cellDataMap = (Map)readRowHolder.getCellMap();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
         int currentHeadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
@@ -78,7 +93,6 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
         if (!isData && currentHeadRowNumber == rowIndex + 1) {
             buildHead(analysisContext, cellDataMap);
         }
-
         // Now is data
         for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
             try {
@@ -88,15 +102,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
                     readListener.invokeHead(cellDataMap, analysisContext);
                 }
             } catch (Exception e) {
-                for (ReadListener readListenerException : analysisContext.currentReadHolder().readListenerList()) {
-                    try {
-                        readListenerException.onException(e, analysisContext);
-                    } catch (RuntimeException re) {
-                        throw re;
-                    } catch (Exception e1) {
-                        throw new ExcelAnalysisException(e1.getMessage(), e1);
-                    }
-                }
+                onException(analysisContext, e);
                 break;
             }
             if (!readListener.hasNext(analysisContext)) {

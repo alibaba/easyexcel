@@ -11,19 +11,14 @@ import com.alibaba.excel.context.xlsx.XlsxReadContext;
  *
  * @author jipengfei
  */
-public class CountRowCellHandler implements XlsxCellHandler {
-
+public class CountTagHandler extends AbstractXlsxTagHandler {
 
     @Override
-    public void startHandle(XlsxReadContext xlsxReadContext, String name, Attributes attributes) {
+    public void startElement(XlsxReadContext xlsxReadContext, String name, Attributes attributes) {
         String d = attributes.getValue(DIMENSION_REF);
         String totalStr = d.substring(d.indexOf(":") + 1, d.length());
         String c = totalStr.toUpperCase().replaceAll("[A-Z]", "");
         xlsxReadContext.readSheetHolder().setApproximateTotalRowNumber(Integer.parseInt(c));
-    }
-
-    @Override
-    public void endHandle(XlsxReadContext xlsxReadContext, String name) {
     }
 
 }

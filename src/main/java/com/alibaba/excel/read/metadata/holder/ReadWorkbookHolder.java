@@ -7,17 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.EternalReadCacheSelector;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.cache.selector.SimpleReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.enums.ExtraReadEnum;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
@@ -91,9 +86,9 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     /**
      * Read some additional fields. None are read by default.
      *
-     * @see ExtraReadEnum
+     * @see CellExtraTypeEnum
      */
-    private Set<ExtraReadEnum> extraReadSet;
+    private Set<CellExtraTypeEnum> extraReadSet;
     /**
      * Actual sheet data
      */
@@ -101,7 +96,7 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     /**
      * Parameter sheet data
      */
-    private List<ReadSheet> parametersheetDataList;
+    private List<ReadSheet> parameterSheetDataList;
     /**
      * Read all
      */
@@ -152,11 +147,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             this.autoCloseStream = readWorkbook.getAutoCloseStream();
         }
 
-        this.excelType = readWorkbook.getExcelType();
-
-        if (ExcelTypeEnum.XLS == excelType && getGlobalConfiguration().getUse1904windowing() == null) {
-            getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
-        }
         this.customObject = readWorkbook.getCustomObject();
         if (readWorkbook.getIgnoreEmptyRow() == null) {
             this.ignoreEmptyRow = Boolean.TRUE;
@@ -181,7 +171,7 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             this.defaultReturnMap = readWorkbook.getDefaultReturnMap();
         }
         if (readWorkbook.getExtraReadSet() == null) {
-            this.extraReadSet = new HashSet<ExtraReadEnum>();
+            this.extraReadSet = new HashSet<CellExtraTypeEnum>();
         } else {
             this.extraReadSet = readWorkbook.getExtraReadSet();
         }
@@ -309,11 +299,11 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.password = password;
     }
 
-    public Set<ExtraReadEnum> getExtraReadSet() {
+    public Set<CellExtraTypeEnum> getExtraReadSet() {
         return extraReadSet;
     }
 
-    public void setExtraReadSet(Set<ExtraReadEnum> extraReadSet) {
+    public void setExtraReadSet(Set<CellExtraTypeEnum> extraReadSet) {
         this.extraReadSet = extraReadSet;
     }
 
@@ -325,12 +315,12 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.actualSheetDataList = actualSheetDataList;
     }
 
-    public List<ReadSheet> getParametersheetDataList() {
-        return parametersheetDataList;
+    public List<ReadSheet> getParameterSheetDataList() {
+        return parameterSheetDataList;
     }
 
-    public void setParametersheetDataList(List<ReadSheet> parametersheetDataList) {
-        this.parametersheetDataList = parametersheetDataList;
+    public void setParameterSheetDataList(List<ReadSheet> parameterSheetDataList) {
+        this.parameterSheetDataList = parameterSheetDataList;
     }
 
     public Boolean getReadAll() {

@@ -35,6 +35,7 @@ public class XlsListSheetListener implements HSSFListener {
 
     public XlsListSheetListener(XlsReadContext xlsReadContext) {
         this.xlsReadContext = xlsReadContext;
+        xlsReadContext.xlsReadWorkbookHolder().setNeedReadSheet(Boolean.FALSE);
     }
 
     @Override

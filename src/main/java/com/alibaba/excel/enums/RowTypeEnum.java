@@ -11,10 +11,6 @@ public enum RowTypeEnum {
      */
     DATA,
     /**
-     * extra
-     */
-    EXTRA,
-    /**
      * empty
      */
     EMPTY,;
