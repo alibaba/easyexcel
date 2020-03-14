@@ -25,12 +25,11 @@ import com.alibaba.excel.util.StringUtils;
  *
  * @author jipengfei
  */
-public class DefalutAnalysisEventProcessor implements AnalysisEventProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefalutAnalysisEventProcessor.class);
+public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAnalysisEventProcessor.class);
 
     @Override
     public void endRow(AnalysisContext analysisContext) {
-
         switch (analysisContext.readRowHolder().getRowType()) {
             case EMPTY:
                 if (LOGGER.isDebugEnabled()) {
@@ -61,11 +60,14 @@ public class DefalutAnalysisEventProcessor implements AnalysisEventProcessor {
         }
     }
 
-    private void dealExtra(AnalysisContext analysisContext) {}
+    private void dealExtra(AnalysisContext analysisContext) {
+
+
+    }
 
     private void dealData(AnalysisContext analysisContext) {
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
-        Map<Integer, CellData> cellDataMap = (Map)readRowHolder.getCellMap();
+        Map<Integer, CellData> cellDataMap = (Map) readRowHolder.getCellMap();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
         int currentHeadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();

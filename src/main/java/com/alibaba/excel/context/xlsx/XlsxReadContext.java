@@ -1,8 +1,6 @@
 package com.alibaba.excel.context.xlsx;
 
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
-import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 

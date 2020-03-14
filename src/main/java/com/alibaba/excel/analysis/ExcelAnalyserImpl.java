@@ -14,9 +14,10 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.context.AnalysisContextImpl;
 import com.alibaba.excel.context.xls.DefaultXlsReadContext;
 import com.alibaba.excel.context.xls.XlsReadContext;
+import com.alibaba.excel.context.xlsx.DefaultXlsxReadContext;
+import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -74,8 +75,9 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                     try {
                         decryptedStream = DocumentFactoryHelper
                             .getDecryptedStream(poifsFileSystem.getRoot().getFileSystem(), readWorkbook.getPassword());
-                        analysisContext = new AnalysisContextImpl(readWorkbook, ExcelTypeEnum.XLSX);
-                        excelReadExecutor = new XlsxSaxAnalyser(analysisContext, decryptedStream);
+                        XlsxReadContext xlsxReadContext = new DefaultXlsxReadContext(readWorkbook, ExcelTypeEnum.XLSX);
+                        analysisContext = xlsxReadContext;
+                        excelReadExecutor = new XlsxSaxAnalyser(xlsxReadContext, decryptedStream);
                         return;
                     } finally {
                         IOUtils.closeQuietly(decryptedStream);
@@ -93,8 +95,9 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                 excelReadExecutor = new XlsSaxAnalyser(xlsReadContext);
                 break;
             case XLSX:
-                analysisContext = new AnalysisContextImpl(readWorkbook, ExcelTypeEnum.XLSX);
-                excelReadExecutor = new XlsxSaxAnalyser(analysisContext, null);
+                XlsxReadContext xlsxReadContext = new DefaultXlsxReadContext(readWorkbook, ExcelTypeEnum.XLSX);
+                analysisContext = xlsxReadContext;
+                excelReadExecutor = new XlsxSaxAnalyser(xlsxReadContext, null);
                 break;
             default:
                 break;
@@ -147,16 +150,16 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
         try {
             if ((readWorkbookHolder instanceof XlsxReadWorkbookHolder)
-                && ((XlsxReadWorkbookHolder)readWorkbookHolder).getOpcPackage() != null) {
-                ((XlsxReadWorkbookHolder)readWorkbookHolder).getOpcPackage().revert();
+                && ((XlsxReadWorkbookHolder) readWorkbookHolder).getOpcPackage() != null) {
+                ((XlsxReadWorkbookHolder) readWorkbookHolder).getOpcPackage().revert();
             }
         } catch (Throwable t) {
             throwable = t;
         }
         try {
             if ((readWorkbookHolder instanceof XlsReadWorkbookHolder)
-                && ((XlsReadWorkbookHolder)readWorkbookHolder).getPoifsFileSystem() != null) {
-                ((XlsReadWorkbookHolder)readWorkbookHolder).getPoifsFileSystem().close();
+                && ((XlsReadWorkbookHolder) readWorkbookHolder).getPoifsFileSystem() != null) {
+                ((XlsReadWorkbookHolder) readWorkbookHolder).getPoifsFileSystem().close();
             }
         } catch (Throwable t) {
             throwable = t;

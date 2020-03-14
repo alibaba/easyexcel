@@ -13,12 +13,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.Attributes;
 
-import com.alibaba.excel.analysis.v07.XlsxCellHandler;
 import com.alibaba.excel.analysis.v07.XlsxRowResultHolder;
 import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.constant.ExcelXmlConstants;
@@ -41,16 +39,6 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
     private CellData currentCellData;
     private StringBuilder dataStringBuilder;
     private StringBuilder formulaStringBuilder;
-
-    /**
-     * Current style information
-     */
-    private StylesTable stylesTable;
-
-    public DefaultCellHandler(AnalysisContext analysisContext, StylesTable stylesTable) {
-        this.analysisContext = analysisContext;
-        this.stylesTable = stylesTable;
-    }
 
     @Override
     public void clearResult() {
@@ -155,11 +143,6 @@ public class DefaultCellHandler implements XlsxCellHandler, XlsxRowResultHolder 
             currentCellData.checkEmpty();
             curRowContent.put(curCol, currentCellData);
         }
-    }
-
-    @Override
-    public void handleComments(String comment) {
-        // analysisContext.readRowHolder().addComments(curCol, comment);
     }
 
     @Override

@@ -19,7 +19,7 @@ import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.read.processor.AnalysisEventProcessor;
-import com.alibaba.excel.read.processor.DefalutAnalysisEventProcessor;
+import com.alibaba.excel.read.processor.DefaultAnalysisEventProcessor;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -64,7 +64,7 @@ public class AnalysisContextImpl implements AnalysisContext {
                 break;
         }
         currentReadHolder = readWorkbookHolder;
-        analysisEventProcessor = new DefalutAnalysisEventProcessor();
+        analysisEventProcessor = new DefaultAnalysisEventProcessor();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialization 'AnalysisContextImpl' complete");
         }

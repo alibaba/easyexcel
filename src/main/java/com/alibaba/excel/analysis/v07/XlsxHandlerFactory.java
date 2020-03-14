@@ -8,6 +8,7 @@ import org.apache.poi.xssf.model.StylesTable;
 import com.alibaba.excel.analysis.v07.handlers.CountRowCellHandler;
 import com.alibaba.excel.analysis.v07.handlers.DefaultCellHandler;
 import com.alibaba.excel.analysis.v07.handlers.ProcessResultCellHandler;
+import com.alibaba.excel.analysis.v07.handlers.XlsxCellHandler;
 import com.alibaba.excel.context.AnalysisContext;
 
 /**
