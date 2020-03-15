@@ -2,6 +2,7 @@ package com.alibaba.excel.write.merge;
 
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.write.handler.AbstractSheetWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
@@ -37,6 +38,11 @@ public class OnceAbsoluteMergeStrategy extends AbstractSheetWriteHandler {
         this.lastRowIndex = lastRowIndex;
         this.firstColumnIndex = firstColumnIndex;
         this.lastColumnIndex = lastColumnIndex;
+    }
+
+    public OnceAbsoluteMergeStrategy(OnceAbsoluteMergeProperty onceAbsoluteMergeProperty) {
+        this(onceAbsoluteMergeProperty.getFirstRowIndex(), onceAbsoluteMergeProperty.getLastRowIndex(),
+            onceAbsoluteMergeProperty.getFirstColumnIndex(), onceAbsoluteMergeProperty.getLastColumnIndex());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.alibaba.excel.write.metadata.style;
+package com.alibaba.excel.metadata.property;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
@@ -8,16 +8,16 @@ import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
-import com.alibaba.excel.metadata.property.FontProperty;
-import com.alibaba.excel.metadata.property.StyleProperty;
-import com.alibaba.excel.util.StringUtils;
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
 
 /**
- * Cell style when writing
+ * Configuration from annotations
  *
  * @author Jiaju Zhuang
  */
-public class WriteCellStyle {
+public class StyleProperty {
     /**
      * Set the data format (must be a valid format). Built in formats are defined at {@link BuiltinFormats}.
      */
@@ -141,77 +141,62 @@ public class WriteCellStyle {
      */
     private Boolean shrinkToFit;
 
-    public static WriteCellStyle build(StyleProperty styleProperty, FontProperty fontProperty) {
-        if (styleProperty == null && fontProperty == null) {
+    public static StyleProperty build(HeadStyle headStyle) {
+        if (headStyle == null) {
             return null;
         }
-        WriteCellStyle writeCellStyle = new WriteCellStyle();
-        if (styleProperty != null) {
-            if (styleProperty.getDataFormat() >= 0) {
-                writeCellStyle.setDataFormat(styleProperty.getDataFormat());
-            }
-            writeCellStyle.setHidden(styleProperty.getHidden());
-            writeCellStyle.setLocked(styleProperty.getLocked());
-            writeCellStyle.setQuotePrefix(styleProperty.getQuotePrefix());
-            writeCellStyle.setHorizontalAlignment(styleProperty.getHorizontalAlignment());
-            writeCellStyle.setWrapped(styleProperty.getWrapped());
-            writeCellStyle.setVerticalAlignment(styleProperty.getVerticalAlignment());
-            if (styleProperty.getRotation() >= 0) {
-                writeCellStyle.setRotation(styleProperty.getRotation());
-            }
-            if (styleProperty.getIndent() >= 0) {
-                writeCellStyle.setIndent(styleProperty.getIndent());
-            }
-            writeCellStyle.setBorderLeft(styleProperty.getBorderLeft());
-            writeCellStyle.setBorderRight(styleProperty.getBorderRight());
-            writeCellStyle.setBorderTop(styleProperty.getBorderTop());
-            writeCellStyle.setBorderBottom(styleProperty.getBorderBottom());
-            if (styleProperty.getLeftBorderColor() >= 0) {
-                writeCellStyle.setLeftBorderColor(styleProperty.getLeftBorderColor());
-            }
-            if (styleProperty.getRightBorderColor() >= 0) {
-                writeCellStyle.setRightBorderColor(styleProperty.getRightBorderColor());
-            }
-            if (styleProperty.getTopBorderColor() >= 0) {
-                writeCellStyle.setTopBorderColor(styleProperty.getTopBorderColor());
-            }
-            if (styleProperty.getBottomBorderColor() >= 0) {
-                writeCellStyle.setBottomBorderColor(styleProperty.getBottomBorderColor());
-            }
-            writeCellStyle.setFillPatternType(styleProperty.getFillPatternType());
-            if (styleProperty.getFillBackgroundColor() >= 0) {
-                writeCellStyle.setFillBackgroundColor(styleProperty.getFillBackgroundColor());
-            }
-            if (styleProperty.getFillForegroundColor() >= 0) {
-                writeCellStyle.setFillForegroundColor(styleProperty.getFillForegroundColor());
-            }
-            writeCellStyle.setShrinkToFit(styleProperty.getShrinkToFit());
-        }
-        if (fontProperty != null) {
-            WriteFont writeFont = new WriteFont();
-            writeCellStyle.setWriteFont(writeFont);
-            if (!StringUtils.isEmpty(fontProperty.getFontName())) {
-                writeFont.setFontName(fontProperty.getFontName());
-            }
-            writeFont.setFontHeightInPoints(fontProperty.getFontHeightInPoints());
-            writeFont.setItalic(fontProperty.getItalic());
-            writeFont.setStrikeout(fontProperty.getStrikeout());
-            if (fontProperty.getColor() >= 0) {
-                writeFont.setColor(fontProperty.getColor());
-            }
-            if (fontProperty.getTypeOffset() >= 0) {
-                writeFont.setTypeOffset(fontProperty.getTypeOffset());
-            }
-            if (fontProperty.getUnderline() >= 0) {
-                writeFont.setUnderline(fontProperty.getUnderline());
-            }
-            if (fontProperty.getCharset() >= 0) {
-                writeFont.setCharset(fontProperty.getCharset());
-            }
-            writeFont.setBold(fontProperty.getBold());
-        }
+        StyleProperty styleProperty = new StyleProperty();
+        styleProperty.setDataFormat(headStyle.dataFormat());
+        styleProperty.setHidden(headStyle.hidden());
+        styleProperty.setLocked(headStyle.locked());
+        styleProperty.setQuotePrefix(headStyle.quotePrefix());
+        styleProperty.setHorizontalAlignment(headStyle.horizontalAlignment());
+        styleProperty.setWrapped(headStyle.wrapped());
+        styleProperty.setVerticalAlignment(headStyle.verticalAlignment());
+        styleProperty.setRotation(headStyle.rotation());
+        styleProperty.setIndent(headStyle.indent());
+        styleProperty.setBorderLeft(headStyle.borderLeft());
+        styleProperty.setBorderRight(headStyle.borderRight());
+        styleProperty.setBorderTop(headStyle.borderTop());
+        styleProperty.setBorderBottom(headStyle.borderBottom());
+        styleProperty.setLeftBorderColor(headStyle.leftBorderColor());
+        styleProperty.setRightBorderColor(headStyle.rightBorderColor());
+        styleProperty.setTopBorderColor(headStyle.topBorderColor());
+        styleProperty.setBottomBorderColor(headStyle.bottomBorderColor());
+        styleProperty.setFillPatternType(headStyle.fillPatternType());
+        styleProperty.setFillBackgroundColor(headStyle.fillBackgroundColor());
+        styleProperty.setFillForegroundColor(headStyle.fillForegroundColor());
+        styleProperty.setShrinkToFit(headStyle.shrinkToFit());
+        return styleProperty;
+    }
 
-        return writeCellStyle;
+    public static StyleProperty build(ContentStyle contentStyle) {
+        if (contentStyle == null) {
+            return null;
+        }
+        StyleProperty styleProperty = new StyleProperty();
+        styleProperty.setDataFormat(contentStyle.dataFormat());
+        styleProperty.setHidden(contentStyle.hidden());
+        styleProperty.setLocked(contentStyle.locked());
+        styleProperty.setQuotePrefix(contentStyle.quotePrefix());
+        styleProperty.setHorizontalAlignment(contentStyle.horizontalAlignment());
+        styleProperty.setWrapped(contentStyle.wrapped());
+        styleProperty.setVerticalAlignment(contentStyle.verticalAlignment());
+        styleProperty.setRotation(contentStyle.rotation());
+        styleProperty.setIndent(contentStyle.indent());
+        styleProperty.setBorderLeft(contentStyle.borderLeft());
+        styleProperty.setBorderRight(contentStyle.borderRight());
+        styleProperty.setBorderTop(contentStyle.borderTop());
+        styleProperty.setBorderBottom(contentStyle.borderBottom());
+        styleProperty.setLeftBorderColor(contentStyle.leftBorderColor());
+        styleProperty.setRightBorderColor(contentStyle.rightBorderColor());
+        styleProperty.setTopBorderColor(contentStyle.topBorderColor());
+        styleProperty.setBottomBorderColor(contentStyle.bottomBorderColor());
+        styleProperty.setFillPatternType(contentStyle.fillPatternType());
+        styleProperty.setFillBackgroundColor(contentStyle.fillBackgroundColor());
+        styleProperty.setFillForegroundColor(contentStyle.fillForegroundColor());
+        styleProperty.setShrinkToFit(contentStyle.shrinkToFit());
+        return styleProperty;
     }
 
     public Short getDataFormat() {

@@ -16,7 +16,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
  *
  * @author Jiaju Zhuang
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface HeadFontStyle {
@@ -24,12 +24,12 @@ public @interface HeadFontStyle {
     /**
      * The name for the font (i.e. Arial)
      */
-    String fontName();
+    String fontName() default "宋体";
 
     /**
      * Height in the familiar unit of measure - points
      */
-    short fontHeightInPoints() default -1;
+    short fontHeightInPoints() default 14;
 
     /**
      * Whether to use italics or not
@@ -85,5 +85,5 @@ public @interface HeadFontStyle {
     /**
      * Bold
      */
-    boolean bold() default false;
+    boolean bold() default true;
 }

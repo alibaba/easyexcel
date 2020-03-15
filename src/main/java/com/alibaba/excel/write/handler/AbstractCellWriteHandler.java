@@ -30,6 +30,12 @@ public abstract class AbstractCellWriteHandler implements CellWriteHandler {
     }
 
     @Override
+    public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+        CellData cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+
+    }
+
+    @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
         List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
 

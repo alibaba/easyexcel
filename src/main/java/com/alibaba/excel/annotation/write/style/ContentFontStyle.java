@@ -16,7 +16,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
  *
  * @author Jiaju Zhuang
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface ContentFontStyle {
@@ -24,7 +24,7 @@ public @interface ContentFontStyle {
     /**
      * The name for the font (i.e. Arial)
      */
-    String fontName();
+    String fontName() default "";
 
     /**
      * Height in the familiar unit of measure - points

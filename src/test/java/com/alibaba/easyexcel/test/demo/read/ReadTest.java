@@ -16,6 +16,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.converters.DefaultConverterLoader;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.fastjson.JSON;
 
@@ -162,20 +163,28 @@ public class ReadTest {
     }
 
     /**
-     * 读取单元格批注
+     * 额外信息（批注、超链接、合并单元格信息读取）
+     * <p>
+     * 由于是流式读取，没法在读取到单元格数据的时候直接读取到额外信息，所以只能最后通知哪些单元格有哪些额外信息
      *
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * 1. 创建excel对应的实体对象 参照{@link DemoExtraData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExtraListener}
      * <p>
      * 3. 直接读即可
      */
     @Test
-    public void commentsRead() {
-        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+    public void extraRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "extra.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
-        EasyExcel.read(fileName, DemoData.class, new DemoCellCommentsListener()).sheet().doRead();
+        EasyExcel.read(fileName, DemoExtraData.class, new DemoExtraListener())
+            // 需要读取批注 默认不读取
+            .extraRead(CellExtraTypeEnum.COMMENT)
+            // 需要读取超链接 默认不读取
+            .extraRead(CellExtraTypeEnum.HYPERLINK)
+            // 需要读取合并单元格信息 默认不读取
+            .extraRead(CellExtraTypeEnum.MERGE).sheet().doRead();
     }
 
     /**
@@ -233,7 +242,7 @@ public class ReadTest {
     }
 
     /**
-     * 不创建对象的读，不是特别推荐使用，都用String接收对日期的支持不是很好
+     * 不创建对象的读
      */
     @Test
     public void noModleRead() {

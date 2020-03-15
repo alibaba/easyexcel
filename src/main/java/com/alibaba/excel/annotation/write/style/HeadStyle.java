@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
  *
  * @author Jiaju Zhuang
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface HeadStyle {
@@ -36,7 +36,7 @@ public @interface HeadStyle {
     /**
      * Set the cell's using this style to be locked
      */
-    boolean locked() default false;
+    boolean locked() default true;
 
     /**
      * Turn on or off "Quote Prefix" or "123 Prefix" for the style, which is used to tell Excel that the thing which
@@ -48,19 +48,19 @@ public @interface HeadStyle {
     /**
      * Set the type of horizontal alignment for the cell
      */
-    HorizontalAlignment horizontalAlignment();
+    HorizontalAlignment horizontalAlignment() default HorizontalAlignment.CENTER;
 
     /**
      * Set whether the text should be wrapped. Setting this flag to <code>true</code> make all content visible within a
      * cell by displaying it on multiple lines
      *
      */
-    boolean wrapped() default false;
+    boolean wrapped() default true;
 
     /**
      * Set the type of vertical alignment for the cell
      */
-    VerticalAlignment verticalAlignment();
+    VerticalAlignment verticalAlignment() default VerticalAlignment.CENTER;
 
     /**
      * Set the degree of rotation for the text in the cell.
@@ -80,22 +80,22 @@ public @interface HeadStyle {
     /**
      * Set the type of border to use for the left border of the cell
      */
-    BorderStyle borderLeft();
+    BorderStyle borderLeft() default BorderStyle.THIN;
 
     /**
      * Set the type of border to use for the right border of the cell
      */
-    BorderStyle borderRight();
+    BorderStyle borderRight() default BorderStyle.THIN;
 
     /**
      * Set the type of border to use for the top border of the cell
      */
-    BorderStyle borderTop();
+    BorderStyle borderTop() default BorderStyle.THIN;
 
     /**
      * Set the type of border to use for the bottom border of the cell
      */
-    BorderStyle borderBottom();
+    BorderStyle borderBottom() default BorderStyle.THIN;
 
     /**
      * Set the color to use for the left border
@@ -133,7 +133,7 @@ public @interface HeadStyle {
      *
      * @see FillPatternType#SOLID_FOREGROUND
      */
-    FillPatternType fillPatternType();
+    FillPatternType fillPatternType() default FillPatternType.SOLID_FOREGROUND;
 
     /**
      * Set the background fill color.

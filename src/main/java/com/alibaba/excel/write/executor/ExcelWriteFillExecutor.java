@@ -162,7 +162,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 }
                 Object value = dataMap.get(variable);
                 CellData cellData = converterAndSet(writeSheetHolder, value == null ? null : value.getClass(), cell,
-                    value, fieldNameContentPropertyMap.get(variable));
+                    value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();

@@ -123,6 +123,21 @@ public class WriteHandlerUtils {
         }
     }
 
+    public static void afterCellDataConverted(WriteContext writeContext, CellData cellData, Cell cell, Head head,
+        Integer relativeRowIndex, Boolean isHead) {
+        List<WriteHandler> handlerList =
+            writeContext.currentWriteHolder().writeHandlerMap().get(CellWriteHandler.class);
+        if (handlerList == null || handlerList.isEmpty()) {
+            return;
+        }
+        for (WriteHandler writeHandler : handlerList) {
+            if (writeHandler instanceof CellWriteHandler) {
+                ((CellWriteHandler)writeHandler).afterCellDataConverted(writeContext.writeSheetHolder(),
+                    writeContext.writeTableHolder(), cellData, cell, head, relativeRowIndex, isHead);
+            }
+        }
+    }
+
     public static void afterCellDispose(WriteContext writeContext, CellData cellData, Cell cell, Head head,
         Integer relativeRowIndex, Boolean isHead) {
         List<CellData> cellDataList = new ArrayList<CellData>();

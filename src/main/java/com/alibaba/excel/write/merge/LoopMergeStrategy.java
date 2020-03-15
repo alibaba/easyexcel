@@ -3,6 +3,7 @@ package com.alibaba.excel.write.merge;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.write.handler.AbstractRowWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
@@ -46,6 +47,10 @@ public class LoopMergeStrategy extends AbstractRowWriteHandler {
         this.eachRow = eachRow;
         this.columnExtend = columnExtend;
         this.columnIndex = columnIndex;
+    }
+
+    public LoopMergeStrategy(LoopMergeProperty loopMergeProperty, Integer columnIndex) {
+        this(loopMergeProperty.getEachRow(), loopMergeProperty.getColumnExtend(), columnIndex);
     }
 
     @Override
