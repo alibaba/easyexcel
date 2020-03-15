@@ -1,6 +1,5 @@
 package com.alibaba.excel.read.metadata.holder;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -126,16 +125,9 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         super(readWorkbook, null, readWorkbook.getConvertAllFiled());
         this.readWorkbook = readWorkbook;
         if (readWorkbook.getInputStream() != null) {
-            if (readWorkbook.getInputStream().markSupported()) {
-                this.inputStream = readWorkbook.getInputStream();
-            } else {
-                this.inputStream = new BufferedInputStream(readWorkbook.getInputStream());
-            }
+            this.inputStream = readWorkbook.getInputStream();
         }
         this.file = readWorkbook.getFile();
-        if (file == null && inputStream == null) {
-            throw new ExcelAnalysisException("File and inputStream must be a non-null.");
-        }
         if (readWorkbook.getMandatoryUseInputStream() == null) {
             this.mandatoryUseInputStream = Boolean.FALSE;
         } else {

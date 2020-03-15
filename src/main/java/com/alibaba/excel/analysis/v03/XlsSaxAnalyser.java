@@ -56,6 +56,7 @@ import com.alibaba.excel.analysis.v03.handlers.StringRecordHandler;
 import com.alibaba.excel.analysis.v03.handlers.TextObjectRecordHandler;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 
@@ -108,9 +109,14 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
 
     @Override
     public List<ReadSheet> sheetList() {
-        if (xlsReadContext.readWorkbookHolder().getActualSheetDataList() == null) {
-            LOGGER.warn("Getting the 'sheetList' before reading will cause the file to be read twice.");
-            new XlsListSheetListener(xlsReadContext).execute();
+        try {
+            if (xlsReadContext.readWorkbookHolder().getActualSheetDataList() == null) {
+                new XlsListSheetListener(xlsReadContext).execute();
+            }
+        } catch (ExcelAnalysisStopException e) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Custom stop!");
+            }
         }
         return xlsReadContext.readWorkbookHolder().getActualSheetDataList();
     }

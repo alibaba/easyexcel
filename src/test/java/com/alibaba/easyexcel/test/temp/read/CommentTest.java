@@ -24,10 +24,10 @@ public class CommentTest {
 
     @Test
     public void comment() throws Exception {
-        File file = new File("D:\\test\\comment.xls");
+        File file = new File("D:\\test\\listHead07.xlsx");
         List<Map<Integer, CellData>> datas = EasyExcel.read(file).doReadAllSync();
         for (Map<Integer, CellData> data : datas) {
-            LOGGER.info("数据:{}", JSON.toJSONString(data.get(0)));
+            LOGGER.info("数据:{}", JSON.toJSONString(data));
         }
     }
 

@@ -8,6 +8,7 @@ import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.context.xls.XlsReadContext;
+import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
@@ -30,6 +31,7 @@ public class DummyRecordHandler extends AbstractXlsRecordHandler implements Igno
                 xlsReadContext.readSheetHolder().getGlobalConfiguration(), xlsReadSheetHolder.getCellMap()));
             xlsReadContext.analysisEventProcessor().endRow(xlsReadContext);
             xlsReadSheetHolder.setCellMap(new LinkedHashMap<Integer, Cell>());
+            xlsReadSheetHolder.setTempRowType(RowTypeEnum.EMPTY);
         } else if (record instanceof MissingCellDummyRecord) {
             MissingCellDummyRecord mcdr = (MissingCellDummyRecord)record;
             xlsReadSheetHolder.getCellMap().put(mcdr.getColumn(),

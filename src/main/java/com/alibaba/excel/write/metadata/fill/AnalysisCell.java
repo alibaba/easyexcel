@@ -16,7 +16,8 @@ public class AnalysisCell {
     private List<String> prepareDataList;
     private Boolean onlyOneVariable;
     private WriteTemplateAnalysisCellTypeEnum cellType;
-    private Boolean firstColumn;
+    private String prefix;
+    private Boolean firstRow;
 
     public int getColumnIndex() {
         return columnIndex;
@@ -58,6 +59,14 @@ public class AnalysisCell {
         this.onlyOneVariable = onlyOneVariable;
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
     public WriteTemplateAnalysisCellTypeEnum getCellType() {
         return cellType;
     }
@@ -66,12 +75,12 @@ public class AnalysisCell {
         this.cellType = cellType;
     }
 
-    public Boolean getFirstColumn() {
-        return firstColumn;
+    public Boolean getFirstRow() {
+        return firstRow;
     }
 
-    public void setFirstColumn(Boolean firstColumn) {
-        this.firstColumn = firstColumn;
+    public void setFirstRow(Boolean firstRow) {
+        this.firstRow = firstRow;
     }
 
     @Override

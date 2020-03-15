@@ -13,7 +13,7 @@
 * 兼容部分比较特殊的excel
 * 同时传入了`List<List<String>>`和`class`的head,会通过index去匹配注解
 * 修复读取转换器的并发问题
-* 
+* 填充支持多个List对象
 
 # 2.1.4
 * 新增参数`useDefaultListener` 可以排除默认对象转换

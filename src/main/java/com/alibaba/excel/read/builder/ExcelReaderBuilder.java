@@ -205,9 +205,9 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
      * @return
      */
     public <T> List<T> doReadAllSync() {
-        ExcelReader excelReader = build();
         SyncReadListener syncReadListener = new SyncReadListener();
         registerReadListener(syncReadListener);
+        ExcelReader excelReader = build();
         excelReader.readAll();
         excelReader.finish();
         return (List<T>)syncReadListener.getList();

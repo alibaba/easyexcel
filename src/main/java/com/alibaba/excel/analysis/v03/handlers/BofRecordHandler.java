@@ -23,10 +23,14 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         BOFRecord br = (BOFRecord)record;
+        XlsReadWorkbookHolder xlsReadWorkbookHolder = xlsReadContext.xlsReadWorkbookHolder();
+        if (br.getType() == BOFRecord.TYPE_WORKBOOK) {
+            xlsReadWorkbookHolder.setReadSheetIndex(null);
+            return;
+        }
         if (br.getType() != BOFRecord.TYPE_WORKSHEET) {
             return;
         }
-        XlsReadWorkbookHolder xlsReadWorkbookHolder = xlsReadContext.xlsReadWorkbookHolder();
         // Init read sheet Data
         initReadSheetDataList(xlsReadWorkbookHolder);
         Integer readSheetIndex = xlsReadWorkbookHolder.getReadSheetIndex();

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSON;
 
 /**
  *
@@ -44,9 +45,10 @@ public class DateFormatTest {
     private void readCn(File file) {
         List<DateFormatData> list =
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
+        System.out.println(JSON.toJSONString(list));
         for (DateFormatData data : list) {
-            Assert.assertEquals(data.getDate(), data.getDateStringCn());
-            Assert.assertEquals(data.getNumber(), data.getNumberStringCn());
+            Assert.assertEquals(data.getDateStringCn(), data.getDate());
+            Assert.assertEquals(data.getNumberStringCn(), data.getNumber());
         }
     }
 
@@ -54,8 +56,8 @@ public class DateFormatTest {
         List<DateFormatData> list =
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.US).sheet().doReadSync();
         for (DateFormatData data : list) {
-            Assert.assertEquals(data.getDate(), data.getDateStringUs());
-            Assert.assertEquals(data.getNumber(), data.getNumberStringUs());
+            Assert.assertEquals(data.getDateStringUs(), data.getDate());
+            Assert.assertEquals(data.getNumberStringUs(), data.getNumber());
         }
     }
 }

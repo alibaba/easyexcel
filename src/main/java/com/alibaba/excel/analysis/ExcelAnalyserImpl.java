@@ -59,8 +59,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     }
 
     private void choiceExcelExecutor(ReadWorkbook readWorkbook) throws Exception {
-        ExcelTypeEnum excelType =
-            ExcelTypeEnum.valueOf(readWorkbook.getFile(), readWorkbook.getInputStream(), readWorkbook.getExcelType());
+        ExcelTypeEnum excelType = ExcelTypeEnum.valueOf(readWorkbook);
         switch (excelType) {
             case XLS:
                 POIFSFileSystem poifsFileSystem;

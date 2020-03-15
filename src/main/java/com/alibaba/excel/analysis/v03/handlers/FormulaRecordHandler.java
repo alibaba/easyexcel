@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
+import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.Cell;
@@ -52,6 +53,12 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
             case NUMERIC:
                 tempCellData.setType(CellDataTypeEnum.NUMBER);
                 tempCellData.setNumberValue(BigDecimal.valueOf(frec.getValue()));
+                Integer dataFormat =
+                    xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatIndex(frec);
+                tempCellData.setDataFormat(dataFormat);
+                tempCellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+                    xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatString(frec),
+                    xlsReadContext.readSheetHolder().getGlobalConfiguration().getLocale()));
                 cellMap.put((int)frec.getColumn(), tempCellData);
                 break;
             case ERROR:
