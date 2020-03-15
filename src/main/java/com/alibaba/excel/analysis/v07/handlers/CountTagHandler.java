@@ -1,9 +1,8 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
-import static com.alibaba.excel.constant.ExcelXmlConstants.DIMENSION_REF;
-
 import org.xml.sax.Attributes;
 
+import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 
 /**
@@ -15,7 +14,7 @@ public class CountTagHandler extends AbstractXlsxTagHandler {
 
     @Override
     public void startElement(XlsxReadContext xlsxReadContext, String name, Attributes attributes) {
-        String d = attributes.getValue(DIMENSION_REF);
+        String d = attributes.getValue(ExcelXmlConstants.ATTRIBUTE_REF);
         String totalStr = d.substring(d.indexOf(":") + 1, d.length());
         String c = totalStr.toUpperCase().replaceAll("[A-Z]", "");
         xlsxReadContext.readSheetHolder().setApproximateTotalRowNumber(Integer.parseInt(c));

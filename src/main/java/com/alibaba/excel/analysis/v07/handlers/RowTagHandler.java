@@ -21,7 +21,7 @@ public class RowTagHandler extends AbstractXlsxTagHandler {
     @Override
     public void startElement(XlsxReadContext xlsxReadContext, String name, Attributes attributes) {
         xlsxReadContext.readRowHolder(
-            new ReadRowHolder(PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.POSITION)),
+            new ReadRowHolder(PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_R)),
                 RowTypeEnum.DATA, xlsxReadContext.readSheetHolder().getGlobalConfiguration(), null));
     }
 

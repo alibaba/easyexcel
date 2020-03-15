@@ -24,13 +24,13 @@ public class CellExtra extends AbstractCell {
      */
     private Integer firstRowIndex;
     /**
-     * First column index,if this object is an interval
-     */
-    private Integer firstColumnIndex;
-    /**
      * Last row index,if this object is an interval
      */
     private Integer lastRowIndex;
+    /**
+     * First column index,if this object is an interval
+     */
+    private Integer firstColumnIndex;
     /**
      * Last column index,if this object is an interval
      */
@@ -55,11 +55,11 @@ public class CellExtra extends AbstractCell {
     }
 
     public CellExtra(CellExtraTypeEnum type, String text, Integer rowIndex, Integer columnIndex) {
-        this(type, text, rowIndex, columnIndex, rowIndex, columnIndex);
+        this(type, text, rowIndex, rowIndex, columnIndex, columnIndex);
     }
 
-    public CellExtra(CellExtraTypeEnum type, String text, Integer firstRowIndex, Integer firstColumnIndex,
-        Integer lastRowIndex, Integer lastColumnIndex) {
+    public CellExtra(CellExtraTypeEnum type, String text, Integer firstRowIndex, Integer lastRowIndex,
+        Integer firstColumnIndex, Integer lastColumnIndex) {
         super();
         setRowIndex(firstRowIndex);
         setColumnIndex(firstColumnIndex);

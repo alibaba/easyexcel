@@ -23,7 +23,7 @@ public class HyperlinkRecordHandler extends AbstractXlsRecordHandler implements 
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         HyperlinkRecord hr = (HyperlinkRecord)record;
         CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.HYPERLINK, hr.getAddress(), hr.getFirstRow(),
-            hr.getFirstColumn(), hr.getLastRow(), hr.getLastColumn());
+            hr.getLastRow(), hr.getFirstColumn(), hr.getLastColumn());
         xlsReadContext.xlsReadSheetHolder().setCellExtra(cellExtra);
         xlsReadContext.analysisEventProcessor().extra(xlsReadContext);
     }

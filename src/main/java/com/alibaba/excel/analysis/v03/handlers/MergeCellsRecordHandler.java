@@ -27,7 +27,7 @@ public class MergeCellsRecordHandler extends AbstractXlsRecordHandler implements
         for (int i = 0; i < mcr.getNumAreas(); i++) {
             CellRangeAddress cellRangeAddress = mcr.getAreaAt(i);
             CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.MERGE, null, cellRangeAddress.getFirstRow(),
-                cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastRow(), cellRangeAddress.getLastColumn());
+                cellRangeAddress.getLastRow(), cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
             xlsReadContext.xlsReadSheetHolder().setCellExtra(cellExtra);
             xlsReadContext.analysisEventProcessor().extra(xlsReadContext);
         }
