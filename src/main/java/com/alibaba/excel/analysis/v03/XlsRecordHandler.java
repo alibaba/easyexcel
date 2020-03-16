@@ -15,6 +15,7 @@ public interface XlsRecordHandler {
      *
      * @param xlsReadContext
      * @param record
+     * @return
      */
     boolean support(XlsReadContext xlsReadContext, Record record);
 
