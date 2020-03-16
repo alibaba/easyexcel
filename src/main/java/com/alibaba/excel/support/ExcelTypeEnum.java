@@ -10,6 +10,7 @@ import org.apache.poi.poifs.filesystem.FileMagic;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * @author jipengfei
@@ -45,17 +46,29 @@ public enum ExcelTypeEnum {
                 if (!file.exists()) {
                     throw new ExcelAnalysisException("File " + file.getAbsolutePath() + " not exists.");
                 }
+                // If there is a password, use the FileMagic first
+                if (!StringUtils.isEmpty(readWorkbook.getPassword())) {
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
+                    try {
+                        return recognitionExcelType(bufferedInputStream);
+                    } finally {
+                        bufferedInputStream.close();
+                    }
+                }
+                // Use the name to determine the type
                 String fileName = file.getName();
                 if (fileName.endsWith(XLSX.getValue())) {
                     return XLSX;
                 } else if (fileName.endsWith(XLS.getValue())) {
                     return XLS;
                 }
-                BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-                try {
-                    return recognitionExcelType(bufferedInputStream);
-                } finally {
-                    bufferedInputStream.close();
+                if (StringUtils.isEmpty(readWorkbook.getPassword())) {
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
+                    try {
+                        return recognitionExcelType(bufferedInputStream);
+                    } finally {
+                        bufferedInputStream.close();
+                    }
                 }
             }
             if (!inputStream.markSupported()) {

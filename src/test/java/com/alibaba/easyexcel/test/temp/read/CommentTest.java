@@ -24,7 +24,7 @@ public class CommentTest {
 
     @Test
     public void comment() throws Exception {
-        File file = new File("D:\\test\\listHead07.xlsx");
+        File file = new File("D:\\test\\d1.xlsx");
         List<Map<Integer, CellData>> datas = EasyExcel.read(file).doReadAllSync();
         for (Map<Integer, CellData> data : datas) {
             LOGGER.info("数据:{}", JSON.toJSONString(data));

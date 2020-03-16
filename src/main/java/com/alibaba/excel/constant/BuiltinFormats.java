@@ -64,8 +64,8 @@ public class BuiltinFormats {
         // 21
         "h:mm:ss",
         // 22
-        // The official documentation shows "m/d/yy h:mm", but the actual test is "yyyy/m/d h:mm".
-        "yyyy/m/d h:mm",
+        // The official documentation shows "m/d/yy h:mm", but the actual test is "yyyy-m-d h:mm".
+        "yyyy-m-d h:mm",
         // 23-26 No specific correspondence found in the official documentation.
         // 23
         null,
@@ -236,8 +236,8 @@ public class BuiltinFormats {
         // 21
         "h:mm:ss",
         // 22
-        // The official documentation shows "m/d/yy h:mm", but the actual test is "yyyy/m/d h:mm".
-        "yyyy/m/d h:mm",
+        // The official documentation shows "m/d/yy h:mm", but the actual test is "yyyy-m-d h:mm".
+        "yyyy-m-d h:mm",
         // 23-26 No specific correspondence found in the official documentation.
         // 23
         null,

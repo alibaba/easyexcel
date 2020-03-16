@@ -10,6 +10,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.PositionUtils;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * Cell Handler
@@ -17,6 +18,8 @@ import com.alibaba.excel.util.PositionUtils;
  * @author jipengfei
  */
 public class CellTagHandler extends AbstractXlsxTagHandler {
+
+    private static final int DEFAULT_FORMAT_INDEX = 0;
 
     @Override
     public void startElement(XlsxReadContext xlsxReadContext, String name, Attributes attributes) {
@@ -36,15 +39,18 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
 
         // Put in data transformation information
         String dateFormatIndex = attributes.getValue(ExcelXmlConstants.ATTRIBUTE_S);
-        if (dateFormatIndex != null) {
-            int dateFormatIndexInteger = Integer.parseInt(dateFormatIndex);
-            XSSFCellStyle xssfCellStyle =
-                xlsxReadContext.xlsxReadWorkbookHolder().getStylesTable().getStyleAt(dateFormatIndexInteger);
-            int dataFormat = xssfCellStyle.getDataFormat();
-            xlsxReadSheetHolder.getTempCellData().setDataFormat(dataFormat);
-            xlsxReadSheetHolder.getTempCellData().setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
-                xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));
+        Integer dateFormatIndexInteger;
+        if (StringUtils.isEmpty(dateFormatIndex)) {
+            dateFormatIndexInteger = DEFAULT_FORMAT_INDEX;
+        } else {
+            dateFormatIndexInteger = Integer.parseInt(dateFormatIndex);
         }
+        XSSFCellStyle xssfCellStyle =
+            xlsxReadContext.xlsxReadWorkbookHolder().getStylesTable().getStyleAt(dateFormatIndexInteger);
+        int dataFormat = xssfCellStyle.getDataFormat();
+        xlsxReadSheetHolder.getTempCellData().setDataFormat(dataFormat);
+        xlsxReadSheetHolder.getTempCellData().setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+            xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));
     }
 
 }
