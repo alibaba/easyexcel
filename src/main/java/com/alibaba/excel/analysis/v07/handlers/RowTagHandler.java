@@ -9,6 +9,7 @@ import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
+import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.PositionUtils;
 
 /**
@@ -20,27 +21,31 @@ public class RowTagHandler extends AbstractXlsxTagHandler {
 
     @Override
     public void startElement(XlsxReadContext xlsxReadContext, String name, Attributes attributes) {
-        int rowIndex = PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_R));
-        Integer lastIndex = xlsxReadContext.readSheetHolder().getRowIndex();
-        if (lastIndex != null) {
-            while (lastIndex + 1 < rowIndex) {
-                xlsxReadContext.readRowHolder(new ReadRowHolder(lastIndex + 1, RowTypeEnum.EMPTY,
-                    xlsxReadContext.readSheetHolder().getGlobalConfiguration(), new LinkedHashMap<Integer, Cell>()));
+        XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
+        int rowIndex = PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_R),
+            xlsxReadSheetHolder.getRowIndex());
+        Integer lastRowIndex = xlsxReadContext.readSheetHolder().getRowIndex();
+        if (lastRowIndex != null) {
+            while (lastRowIndex + 1 < rowIndex) {
+                xlsxReadContext.readRowHolder(new ReadRowHolder(lastRowIndex + 1, RowTypeEnum.EMPTY,
+                    xlsxReadSheetHolder.getGlobalConfiguration(), new LinkedHashMap<Integer, Cell>()));
                 xlsxReadContext.analysisEventProcessor().endRow(xlsxReadContext);
-                xlsxReadContext.xlsxReadSheetHolder().setCellMap(new LinkedHashMap<Integer, Cell>());
-                lastIndex++;
+                xlsxReadSheetHolder.setColumnIndex(null);
+                xlsxReadSheetHolder.setCellMap(new LinkedHashMap<Integer, Cell>());
+                lastRowIndex++;
             }
         }
-        xlsxReadContext.readSheetHolder().setRowIndex(rowIndex);
+        xlsxReadSheetHolder.setRowIndex(rowIndex);
     }
 
     @Override
     public void endElement(XlsxReadContext xlsxReadContext, String name) {
-        xlsxReadContext.readRowHolder(new ReadRowHolder(xlsxReadContext.readSheetHolder().getRowIndex(),
-            RowTypeEnum.DATA, xlsxReadContext.readSheetHolder().getGlobalConfiguration(),
-            xlsxReadContext.xlsxReadSheetHolder().getCellMap()));
+        XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
+        xlsxReadContext.readRowHolder(new ReadRowHolder(xlsxReadSheetHolder.getRowIndex(), RowTypeEnum.DATA,
+            xlsxReadSheetHolder.getGlobalConfiguration(), xlsxReadSheetHolder.getCellMap()));
         xlsxReadContext.analysisEventProcessor().endRow(xlsxReadContext);
-        xlsxReadContext.xlsxReadSheetHolder().setCellMap(new LinkedHashMap<Integer, Cell>());
+        xlsxReadSheetHolder.setColumnIndex(null);
+        xlsxReadSheetHolder.setCellMap(new LinkedHashMap<Integer, Cell>());
     }
 
 }

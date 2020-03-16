@@ -24,7 +24,8 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
     @Override
     public void startElement(XlsxReadContext xlsxReadContext, String name, Attributes attributes) {
         XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
-        xlsxReadSheetHolder.setColumnIndex(PositionUtils.getCol(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_R)));
+        xlsxReadSheetHolder.setColumnIndex(PositionUtils.getCol(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_R),
+            xlsxReadSheetHolder.getColumnIndex()));
 
         // t="s" ,it's means String
         // t="str" ,it's means String,but does not need to be read in the 'sharedStrings.xml'
