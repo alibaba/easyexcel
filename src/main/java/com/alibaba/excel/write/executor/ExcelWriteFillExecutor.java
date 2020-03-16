@@ -85,7 +85,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
     public void fill(Object data, FillConfig fillConfig) {
         if (data == null) {
-            data = new HashMap<String,Object>(16);
+            data = new HashMap<String, Object>(16);
         }
         if (fillConfig == null) {
             fillConfig = FillConfig.builder().build(true);
@@ -101,7 +101,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             realData = data;
             currentDataPrefix = null;
         }
-        currentUniqueDataFlag = uniqueDataFlag(writeContext.writeSheetHolder().getSheetNo(), currentDataPrefix);
+        currentUniqueDataFlag = uniqueDataFlag(writeContext.writeSheetHolder(), currentDataPrefix);
 
         // processing data
         if (realData instanceof Collection) {
@@ -444,7 +444,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
     private String dealAnalysisCell(AnalysisCell analysisCell, String value, int rowIndex, int lastPrepareDataIndex,
         int length, Map<String, Set<Integer>> firstRowCache, StringBuilder preparedData) {
-        Integer sheetNo = writeContext.writeSheetHolder().getSheetNo();
         if (analysisCell != null) {
             if (lastPrepareDataIndex == length) {
                 analysisCell.getPrepareDataList().add(StringUtils.EMPTY);
@@ -452,7 +451,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 analysisCell.getPrepareDataList().add(convertPrepareData(value.substring(lastPrepareDataIndex)));
                 analysisCell.setOnlyOneVariable(Boolean.FALSE);
             }
-            String uniqueDataFlag = uniqueDataFlag(sheetNo, analysisCell.getPrefix());
+            String uniqueDataFlag = uniqueDataFlag(writeContext.writeSheetHolder(), analysisCell.getPrefix());
             if (WriteTemplateAnalysisCellTypeEnum.COMMON.equals(analysisCell.getCellType())) {
                 List<AnalysisCell> analysisCellList = templateAnalysisCache.get(uniqueDataFlag);
                 if (analysisCellList == null) {
@@ -503,11 +502,17 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         return prepareData;
     }
 
-    private String uniqueDataFlag(Integer sheetNo, String wrapperName) {
-        if (StringUtils.isEmpty(wrapperName)) {
-            return sheetNo.toString() + "-";
+    private String uniqueDataFlag(WriteSheetHolder writeSheetHolder, String wrapperName) {
+        String prefix;
+        if (writeSheetHolder.getSheetNo() != null) {
+            prefix = writeSheetHolder.getSheetNo().toString();
+        } else {
+            prefix = writeSheetHolder.getSheetName().toString();
         }
-        return sheetNo + "-" + wrapperName;
+        if (StringUtils.isEmpty(wrapperName)) {
+            return prefix + "-";
+        }
+        return prefix + "-" + wrapperName;
     }
 
 }
