@@ -37,7 +37,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
 
     public void add(List data) {
         if (CollectionUtils.isEmpty(data)) {
-            return;
+            data = new ArrayList();
         }
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();

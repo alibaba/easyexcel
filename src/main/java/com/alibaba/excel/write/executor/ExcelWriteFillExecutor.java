@@ -84,6 +84,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     public void fill(Object data, FillConfig fillConfig) {
+        if (data == null) {
+            data = new HashMap<String,Object>(16);
+        }
         if (fillConfig == null) {
             fillConfig = FillConfig.builder().build(true);
         }
