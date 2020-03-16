@@ -37,7 +37,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
 
     public void add(List data) {
         if (CollectionUtils.isEmpty(data)) {
-            return;
+            data = new ArrayList();
         }
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
@@ -105,7 +105,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
         Object value = oneRowData.get(dataIndex);
         CellData cellData = converterAndSet(writeContext.currentWriteHolder(), value == null ? null : value.getClass(),
-            cell, value, null);
+            cell, value, null, head, relativeRowIndex);
         WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
     }
 
@@ -135,7 +135,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
                 Object value = beanMap.get(name);
                 CellData cellData = converterAndSet(currentWriteHolder, excelContentProperty.getField().getType(), cell,
-                    value, excelContentProperty);
+                    value, excelContentProperty, head, relativeRowIndex);
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
                 beanMapHandledSet.add(name);
             }
@@ -160,8 +160,8 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             WriteHandlerUtils.beforeCellCreate(writeContext, row, null, cellIndex, relativeRowIndex, Boolean.FALSE);
             Cell cell = WorkBookUtil.createCell(row, cellIndex++);
             WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
-            CellData cellData =
-                converterAndSet(currentWriteHolder, value == null ? null : value.getClass(), cell, value, null);
+            CellData cellData = converterAndSet(currentWriteHolder, value == null ? null : value.getClass(), cell,
+                value, null, null, relativeRowIndex);
             WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
         }
     }

@@ -1,13 +1,9 @@
 package com.alibaba.excel.write.builder;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 
@@ -16,7 +12,7 @@ import com.alibaba.excel.write.metadata.fill.FillConfig;
  *
  * @author Jiaju Zhuang
  */
-public class ExcelWriterSheetBuilder {
+public class ExcelWriterSheetBuilder extends AbstractExcelWriterParameterBuilder<ExcelWriterSheetBuilder, WriteSheet> {
     private ExcelWriter excelWriter;
     /**
      * Sheet
@@ -30,99 +26,6 @@ public class ExcelWriterSheetBuilder {
     public ExcelWriterSheetBuilder(ExcelWriter excelWriter) {
         this.writeSheet = new WriteSheet();
         this.excelWriter = excelWriter;
-    }
-
-    /**
-     * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
-     *
-     * @param relativeHeadRowIndex
-     * @return
-     */
-    public ExcelWriterSheetBuilder relativeHeadRowIndex(Integer relativeHeadRowIndex) {
-        writeSheet.setRelativeHeadRowIndex(relativeHeadRowIndex);
-        return this;
-    }
-
-    /**
-     * You can only choose one of the {@link ExcelWriterSheetBuilder#head(List)} and
-     * {@link ExcelWriterSheetBuilder#head(Class)}
-     *
-     * @param head
-     * @return
-     */
-    public ExcelWriterSheetBuilder head(List<List<String>> head) {
-        writeSheet.setHead(head);
-        return this;
-    }
-
-    /**
-     * You can only choose one of the {@link ExcelWriterSheetBuilder#head(List)} and
-     * {@link ExcelWriterSheetBuilder#head(Class)}
-     *
-     * @param clazz
-     * @return
-     */
-    public ExcelWriterSheetBuilder head(Class clazz) {
-        writeSheet.setClazz(clazz);
-        return this;
-    }
-
-    /**
-     * Need Head
-     */
-    public ExcelWriterSheetBuilder needHead(Boolean needHead) {
-        writeSheet.setNeedHead(needHead);
-        return this;
-    }
-
-    /**
-     * Use the default style.Default is true.
-     *
-     * @param useDefaultStyle
-     * @return
-     */
-    public ExcelWriterSheetBuilder useDefaultStyle(Boolean useDefaultStyle) {
-        writeSheet.setUseDefaultStyle(useDefaultStyle);
-        return this;
-    }
-
-    /**
-     * Whether to automatically merge headers.Default is true.
-     *
-     * @param automaticMergeHead
-     * @return
-     */
-    public ExcelWriterSheetBuilder automaticMergeHead(Boolean automaticMergeHead) {
-        writeSheet.setAutomaticMergeHead(automaticMergeHead);
-        return this;
-    }
-
-    /**
-     * Custom type conversions override the default.
-     *
-     * @param converter
-     * @return
-     */
-    public ExcelWriterSheetBuilder registerConverter(Converter converter) {
-        if (writeSheet.getCustomConverterList() == null) {
-            writeSheet.setCustomConverterList(new ArrayList<Converter>());
-        }
-        writeSheet.getCustomConverterList().add(converter);
-        return this;
-    }
-
-    /**
-     * Custom write handler
-     *
-     * @param writeHandler
-     * @return
-     */
-    public ExcelWriterSheetBuilder registerWriteHandler(WriteHandler writeHandler) {
-        if (writeSheet.getCustomWriteHandlerList() == null) {
-            writeSheet.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
-        }
-        writeSheet.getCustomWriteHandlerList().add(writeHandler);
-        return this;
     }
 
     /**
@@ -144,38 +47,6 @@ public class ExcelWriterSheetBuilder {
      */
     public ExcelWriterSheetBuilder sheetName(String sheetName) {
         writeSheet.setSheetName(sheetName);
-        return this;
-    }
-
-    /**
-     * Ignore the custom columns.
-     */
-    public ExcelWriterSheetBuilder excludeColumnIndexes(Collection<Integer> excludeColumnIndexes) {
-        writeSheet.setExcludeColumnIndexes(excludeColumnIndexes);
-        return this;
-    }
-
-    /**
-     * Ignore the custom columns.
-     */
-    public ExcelWriterSheetBuilder excludeColumnFiledNames(Collection<String> excludeColumnFiledNames) {
-        writeSheet.setExcludeColumnFiledNames(excludeColumnFiledNames);
-        return this;
-    }
-
-    /**
-     * Only output the custom columns.
-     */
-    public ExcelWriterSheetBuilder includeColumnIndexes(Collection<Integer> includeColumnIndexes) {
-        writeSheet.setIncludeColumnIndexes(includeColumnIndexes);
-        return this;
-    }
-
-    /**
-     * Only output the custom columns.
-     */
-    public ExcelWriterSheetBuilder includeColumnFiledNames(Collection<String> includeColumnFiledNames) {
-        writeSheet.setIncludeColumnFiledNames(includeColumnFiledNames);
         return this;
     }
 
@@ -213,6 +84,11 @@ public class ExcelWriterSheetBuilder {
             excelWriterTableBuilder.tableNo(tableNo);
         }
         return excelWriterTableBuilder;
+    }
+
+    @Override
+    protected WriteSheet parameter() {
+        return writeSheet;
     }
 
 }

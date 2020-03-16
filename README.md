@@ -20,6 +20,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 * [快速使用](https://alibaba-easyexcel.github.io/)
 * [关于软件](/abouteasyexcel.md)
 * [更新记事](/update.md)
+* [贡献代码](https://alibaba-easyexcel.github.io/support/contribute.html)
 
 ## 维护者
 玉霄、庄家钜、怀宇
@@ -31,7 +32,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
     /**
      * 最简单的读
      * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * <p>2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <p>3. 直接读即可
      */
     @Test
@@ -82,7 +83,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
     /**
      * 文件上传
      * <p>1. 创建excel对应的实体对象 参照{@link UploadData}
-     * <p>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
+     * <p>2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
      * <p>3. 直接读即可
      */
     @PostMapping("upload")

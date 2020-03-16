@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.excel.metadata.property.ColumnWidthProperty;
+import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.LoopMergeProperty;
+import com.alibaba.excel.metadata.property.StyleProperty;
 
 /**
  * excel head
@@ -35,6 +38,26 @@ public class Head {
      * column with
      */
     private ColumnWidthProperty columnWidthProperty;
+    /**
+     * Loop merge
+     */
+    private LoopMergeProperty loopMergeProperty;
+    /**
+     * Head style
+     */
+    private StyleProperty headStyleProperty;
+    /**
+     * Content style
+     */
+    private StyleProperty contentStyleProperty;
+    /**
+     * Head font
+     */
+    private FontProperty headFontProperty;
+    /**
+     * Content font
+     */
+    private FontProperty contentFontProperty;
 
     public Head(Integer columnIndex, String fieldName, List<String> headNameList, Boolean forceIndex,
         Boolean forceName) {
@@ -94,5 +117,45 @@ public class Head {
 
     public void setForceName(Boolean forceName) {
         this.forceName = forceName;
+    }
+
+    public LoopMergeProperty getLoopMergeProperty() {
+        return loopMergeProperty;
+    }
+
+    public void setLoopMergeProperty(LoopMergeProperty loopMergeProperty) {
+        this.loopMergeProperty = loopMergeProperty;
+    }
+
+    public StyleProperty getHeadStyleProperty() {
+        return headStyleProperty;
+    }
+
+    public void setHeadStyleProperty(StyleProperty headStyleProperty) {
+        this.headStyleProperty = headStyleProperty;
+    }
+
+    public StyleProperty getContentStyleProperty() {
+        return contentStyleProperty;
+    }
+
+    public void setContentStyleProperty(StyleProperty contentStyleProperty) {
+        this.contentStyleProperty = contentStyleProperty;
+    }
+
+    public FontProperty getHeadFontProperty() {
+        return headFontProperty;
+    }
+
+    public void setHeadFontProperty(FontProperty headFontProperty) {
+        this.headFontProperty = headFontProperty;
+    }
+
+    public FontProperty getContentFontProperty() {
+        return contentFontProperty;
+    }
+
+    public void setContentFontProperty(FontProperty contentFontProperty) {
+        this.contentFontProperty = contentFontProperty;
     }
 }

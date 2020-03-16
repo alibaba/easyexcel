@@ -22,6 +22,8 @@ import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.TableStyle;
+import com.alibaba.excel.metadata.property.LoopMergeProperty;
+import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;
@@ -30,12 +32,15 @@ import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.merge.LoopMergeStrategy;
+import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteBasicParameter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
+import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
@@ -279,19 +284,63 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             return;
         }
         Map<Integer, Head> headMap = getExcelWriteHeadProperty().getHeadMap();
-
         boolean hasColumnWidth = false;
-        for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
-            if (entry.getValue().getColumnWidthProperty() != null) {
+        boolean hasStyle = false;
+
+        for (Head head : headMap.values()) {
+            if (head.getColumnWidthProperty() != null) {
                 hasColumnWidth = true;
-                break;
             }
+            if (head.getHeadStyleProperty() != null || head.getHeadFontProperty() != null
+                || head.getContentStyleProperty() != null || head.getContentFontProperty() != null) {
+                hasStyle = true;
+            }
+            dealLoopMerge(handlerList, head);
         }
 
         if (hasColumnWidth) {
             dealColumnWidth(handlerList);
         }
+
+        if (hasStyle) {
+            dealStyle(handlerList);
+        }
+
         dealRowHigh(handlerList);
+        dealOnceAbsoluteMerge(handlerList);
+
+    }
+
+    private void dealStyle(List<WriteHandler> handlerList) {
+        WriteHandler styleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            protected WriteCellStyle headCellStyle(Head head) {
+                return WriteCellStyle.build(head.getHeadStyleProperty(), head.getHeadFontProperty());
+            }
+
+            @Override
+            protected WriteCellStyle contentCellStyle(Head head) {
+                return WriteCellStyle.build(head.getContentStyleProperty(), head.getContentFontProperty());
+            }
+        };
+        handlerList.add(styleStrategy);
+    }
+
+    private void dealLoopMerge(List<WriteHandler> handlerList, Head head) {
+        LoopMergeProperty loopMergeProperty = head.getLoopMergeProperty();
+        if (loopMergeProperty == null) {
+            return;
+        }
+        handlerList.add(new LoopMergeStrategy(loopMergeProperty, head.getColumnIndex()));
+    }
+
+    private void dealOnceAbsoluteMerge(List<WriteHandler> handlerList) {
+        OnceAbsoluteMergeProperty onceAbsoluteMergeProperty =
+            getExcelWriteHeadProperty().getOnceAbsoluteMergeProperty();
+        if (onceAbsoluteMergeProperty == null) {
+            return;
+        }
+        handlerList.add(new OnceAbsoluteMergeStrategy(onceAbsoluteMergeProperty));
     }
 
     private void dealRowHigh(List<WriteHandler> handlerList) {

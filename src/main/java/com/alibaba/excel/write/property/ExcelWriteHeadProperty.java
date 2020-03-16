@@ -9,8 +9,14 @@ import java.util.Set;
 
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentFontStyle;
+import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
+import com.alibaba.excel.annotation.write.style.OnceAbsoluteMerge;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -21,7 +27,11 @@ import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.metadata.property.ColumnWidthProperty;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
+import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.LoopMergeProperty;
+import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
+import com.alibaba.excel.metadata.property.StyleProperty;
 
 /**
  * Define the header attribute of excel
@@ -31,6 +41,7 @@ import com.alibaba.excel.metadata.property.RowHeightProperty;
 public class ExcelWriteHeadProperty extends ExcelHeadProperty {
     private RowHeightProperty headRowHeightProperty;
     private RowHeightProperty contentRowHeightProperty;
+    private OnceAbsoluteMergeProperty onceAbsoluteMergeProperty;
 
     public ExcelWriteHeadProperty(Holder holder, Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
         super(holder, headClazz, head, convertAllFiled);
@@ -41,8 +52,15 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             RowHeightProperty.build((HeadRowHeight)headClazz.getAnnotation(HeadRowHeight.class));
         this.contentRowHeightProperty =
             RowHeightProperty.build((ContentRowHeight)headClazz.getAnnotation(ContentRowHeight.class));
+        this.onceAbsoluteMergeProperty =
+            OnceAbsoluteMergeProperty.build((OnceAbsoluteMerge)headClazz.getAnnotation(OnceAbsoluteMerge.class));
 
         ColumnWidth parentColumnWidth = (ColumnWidth)headClazz.getAnnotation(ColumnWidth.class);
+        HeadStyle parentHeadStyle = (HeadStyle)headClazz.getAnnotation(HeadStyle.class);
+        HeadFontStyle parentHeadFontStyle = (HeadFontStyle)headClazz.getAnnotation(HeadFontStyle.class);
+        ContentStyle parentContentStyle = (ContentStyle)headClazz.getAnnotation(ContentStyle.class);
+        ContentFontStyle parentContentFontStyle = (ContentFontStyle)headClazz.getAnnotation(ContentFontStyle.class);
+
         for (Map.Entry<Integer, ExcelContentProperty> entry : getContentPropertyMap().entrySet()) {
             Integer index = entry.getKey();
             ExcelContentProperty excelContentPropertyData = entry.getValue();
@@ -54,6 +72,31 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             }
             headData.setColumnWidthProperty(ColumnWidthProperty.build(columnWidth));
 
+            HeadStyle headStyle = field.getAnnotation(HeadStyle.class);
+            if (headStyle == null) {
+                headStyle = parentHeadStyle;
+            }
+            headData.setHeadStyleProperty(StyleProperty.build(headStyle));
+
+            HeadFontStyle headFontStyle = field.getAnnotation(HeadFontStyle.class);
+            if (headFontStyle == null) {
+                headFontStyle = parentHeadFontStyle;
+            }
+            headData.setHeadFontProperty(FontProperty.build(headFontStyle));
+
+            ContentStyle contentStyle = field.getAnnotation(ContentStyle.class);
+            if (contentStyle == null) {
+                contentStyle = parentContentStyle;
+            }
+            headData.setContentStyleProperty(StyleProperty.build(contentStyle));
+
+            ContentFontStyle contentFontStyle = field.getAnnotation(ContentFontStyle.class);
+            if (contentFontStyle == null) {
+                contentFontStyle = parentContentFontStyle;
+            }
+            headData.setContentFontProperty(FontProperty.build(contentFontStyle));
+
+            headData.setLoopMergeProperty(LoopMergeProperty.build(field.getAnnotation(ContentLoopMerge.class)));
             // If have @NumberFormat, 'NumberStringConverter' is specified by default
             if (excelContentPropertyData.getConverter() == null) {
                 NumberFormat numberFormat = field.getAnnotation(NumberFormat.class);
@@ -79,6 +122,14 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
 
     public void setContentRowHeightProperty(RowHeightProperty contentRowHeightProperty) {
         this.contentRowHeightProperty = contentRowHeightProperty;
+    }
+
+    public OnceAbsoluteMergeProperty getOnceAbsoluteMergeProperty() {
+        return onceAbsoluteMergeProperty;
+    }
+
+    public void setOnceAbsoluteMergeProperty(OnceAbsoluteMergeProperty onceAbsoluteMergeProperty) {
+        this.onceAbsoluteMergeProperty = onceAbsoluteMergeProperty;
     }
 
     /**

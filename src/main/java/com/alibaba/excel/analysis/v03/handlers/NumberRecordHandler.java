@@ -2,11 +2,13 @@ package com.alibaba.excel.analysis.v03.handlers;
 
 import java.math.BigDecimal;
 
-import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.record.NumberRecord;
 import org.apache.poi.hssf.record.Record;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
+import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.context.xls.XlsReadContext;
+import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 
 /**
@@ -14,35 +16,18 @@ import com.alibaba.excel.metadata.CellData;
  *
  * @author Dan Zheng
  */
-public class NumberRecordHandler extends AbstractXlsRecordHandler {
-    private FormatTrackingHSSFListener formatListener;
-
-    public NumberRecordHandler(FormatTrackingHSSFListener formatListener) {
-        this.formatListener = formatListener;
-    }
+public class NumberRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
 
     @Override
-    public boolean support(Record record) {
-        return NumberRecord.sid == record.getSid();
-    }
-
-    @Override
-    public void processRecord(Record record) {
-        NumberRecord numrec = (NumberRecord)record;
-        this.row = numrec.getRow();
-        this.column = numrec.getColumn();
-        this.cellData = new CellData(BigDecimal.valueOf(numrec.getValue()));
-        this.cellData.setDataFormat(formatListener.getFormatIndex(numrec));
-        this.cellData.setDataFormatString(formatListener.getFormatString(numrec));
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public int getOrder() {
-        return 0;
+    public void processRecord(XlsReadContext xlsReadContext, Record record) {
+        NumberRecord nr = (NumberRecord)record;
+        CellData cellData = CellData.newInstance(BigDecimal.valueOf(nr.getValue()), nr.getRow(), (int)nr.getColumn());
+        Integer dataFormat = xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatIndex(nr);
+        cellData.setDataFormat(dataFormat);
+        cellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+            xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatString(nr),
+            xlsReadContext.readSheetHolder().getGlobalConfiguration().getLocale()));
+        xlsReadContext.xlsReadSheetHolder().getCellMap().put((int)nr.getColumn(), cellData);
+        xlsReadContext.xlsReadSheetHolder().setTempRowType(RowTypeEnum.DATA);
     }
 }

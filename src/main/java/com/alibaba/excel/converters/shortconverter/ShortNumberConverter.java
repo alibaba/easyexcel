@@ -34,7 +34,7 @@ public class ShortNumberConverter implements Converter<Short> {
     @Override
     public CellData convertToExcelData(Short value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(BigDecimal.valueOf(value));
+        return new CellData(new BigDecimal(Short.toString(value)));
     }
 
 }

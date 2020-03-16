@@ -34,7 +34,7 @@ public class ByteNumberConverter implements Converter<Byte> {
     @Override
     public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(BigDecimal.valueOf(value));
+        return new CellData(new BigDecimal(Byte.toString(value)));
     }
 
 }

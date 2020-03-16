@@ -62,6 +62,11 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                     (String)ConverterUtils.convertToJavaObject(cellData, null, null, currentReadHolder.converterMap(),
                         currentReadHolder.globalConfiguration(), context.readRowHolder().getRowIndex(), key));
             }
+            int headSize = currentReadHolder.excelReadHeadProperty().getHeadMap().size();
+            while (index < headSize) {
+                map.put(index, null);
+                index++;
+            }
             return map;
         } else {
             // Compatible with the old code the old code returns a list
@@ -81,6 +86,11 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                 list.add(
                     (String)ConverterUtils.convertToJavaObject(cellData, null, null, currentReadHolder.converterMap(),
                         currentReadHolder.globalConfiguration(), context.readRowHolder().getRowIndex(), key));
+            }
+            int headSize = currentReadHolder.excelReadHeadProperty().getHeadMap().size();
+            while (index < headSize) {
+                list.add(null);
+                index++;
             }
             return list;
         }

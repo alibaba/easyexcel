@@ -27,7 +27,9 @@ import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
@@ -307,7 +309,6 @@ public class WriteContextImpl implements WriteContext {
                 throwable = t;
             }
         }
-
         if (!isOutputStreamEncrypt) {
             try {
                 if (writeExcel) {
@@ -318,7 +319,6 @@ public class WriteContextImpl implements WriteContext {
                 throwable = t;
             }
         }
-
         try {
             Workbook workbook = writeWorkbookHolder.getWorkbook();
             if (workbook instanceof SXSSFWorkbook) {
@@ -327,7 +327,6 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwable = t;
         }
-
         try {
             if (writeWorkbookHolder.getAutoCloseStream() && writeWorkbookHolder.getOutputStream() != null) {
                 writeWorkbookHolder.getOutputStream().close();
@@ -335,7 +334,6 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwable = t;
         }
-
         if (writeExcel && !isOutputStreamEncrypt) {
             try {
                 doFileEncrypt07();
@@ -343,7 +341,6 @@ public class WriteContextImpl implements WriteContext {
                 throwable = t;
             }
         }
-
         try {
             if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
                 writeWorkbookHolder.getTempTemplateInputStream().close();
@@ -351,16 +348,19 @@ public class WriteContextImpl implements WriteContext {
         } catch (Throwable t) {
             throwable = t;
         }
-
         clearEncrypt03();
-
+        removeThreadLocalCache();
         if (throwable != null) {
             throw new ExcelGenerateException("Can not close IO.", throwable);
         }
-
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Finished write.");
         }
+    }
+
+    private void removeThreadLocalCache() {
+        NumberDataFormatterUtils.removeThreadLocalCache();
+        DateUtils.removeThreadLocalCache();
     }
 
     @Override

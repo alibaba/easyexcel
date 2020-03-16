@@ -270,7 +270,21 @@ public class WriteTest {
     }
 
     /**
-     * 自定义样式
+     * 注解形式自定义样式
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoStyleData}
+     * <p>
+     * 3. 直接写即可
+     */
+    @Test
+    public void annotationStyleWrite() {
+        String fileName = TestFileUtil.getPath() + "annotationStyleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoStyleData.class).sheet("模板").doWrite(data());
+    }
+
+    /**
+     * 拦截器形式自定义样式
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
@@ -279,8 +293,8 @@ public class WriteTest {
      * 3. 直接写即可
      */
     @Test
-    public void styleWrite() {
-        String fileName = TestFileUtil.getPath() + "styleWrite" + System.currentTimeMillis() + ".xlsx";
+    public void handlerStyleWrite() {
+        String fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
         // 头的策略
         WriteCellStyle headWriteCellStyle = new WriteCellStyle();
         // 背景设置为红色
@@ -310,7 +324,7 @@ public class WriteTest {
     /**
      * 合并单元格
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * 1. 创建excel对应的实体对象 参照{@link DemoData} {@link DemoMergeData}
      * <p>
      * 2. 创建一个merge策略 并注册
      * <p>
@@ -318,7 +332,14 @@ public class WriteTest {
      */
     @Test
     public void mergeWrite() {
+        // 方法1 注解
         String fileName = TestFileUtil.getPath() + "mergeWrite" + System.currentTimeMillis() + ".xlsx";
+        // 在DemoStyleData里面加上ContentLoopMerge注解
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoMergeData.class).sheet("模板").doWrite(data());
+
+        // 方法2 自定义合并单元格策略
+        fileName = TestFileUtil.getPath() + "mergeWrite" + System.currentTimeMillis() + ".xlsx";
         // 每隔2行会合并 把eachColumn 设置成 3 也就是我们数据的长度，所以就第一列会合并。当然其他合并策略也可以自己写
         LoopMergeStrategy loopMergeStrategy = new LoopMergeStrategy(2, 0);
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
@@ -415,6 +436,23 @@ public class WriteTest {
     }
 
     /**
+     * 可变标题处理(包括标题国际化等)
+     * <p>
+     * 简单的说用List<List<String>>的标题 但是还支持注解
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link ConverterData}
+     * <p>
+     * 2. 直接写即可
+     */
+    @Test
+    public void variableTitleWrite() {
+        // 写法1
+        String fileName = TestFileUtil.getPath() + "variableTitleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, ConverterData.class).head(variableTitleHead()).sheet("模板").doWrite(data());
+    }
+
+    /**
      * 不创建对象的写
      */
     @Test
@@ -434,6 +472,20 @@ public class WriteTest {
             data.setDoubleData(1000000000000.0);
             list.add(data);
         }
+        return list;
+    }
+
+    private List<List<String>> variableTitleHead() {
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> head0 = new ArrayList<String>();
+        head0.add("string" + System.currentTimeMillis());
+        List<String> head1 = new ArrayList<String>();
+        head1.add("number" + System.currentTimeMillis());
+        List<String> head2 = new ArrayList<String>();
+        head2.add("date" + System.currentTimeMillis());
+        list.add(head0);
+        list.add(head1);
+        list.add(head2);
         return list;
     }
 
