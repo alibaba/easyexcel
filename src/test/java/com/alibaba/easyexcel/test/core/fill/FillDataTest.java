@@ -113,21 +113,21 @@ public class FillDataTest {
         byNameFill(byName03, byNameTemplate03);
     }
 
+    @Test
+    public void t09CompositeFill07() {
+        compositeFill(fileComposite07, compositeFillTemplate07);
+    }
+
+    @Test
+    public void t10CompositeFill03() {
+        compositeFill(fileComposite03, compositeFillTemplate03);
+    }
+
     private void byNameFill(File file, File template) {
         FillData fillData = new FillData();
         fillData.setName("张三");
         fillData.setNumber(5.2);
         EasyExcel.write(file, FillData.class).withTemplate(template).sheet("Sheet2").doFill(fillData);
-    }
-
-    @Test
-    public void t07CompositeFill07() {
-        compositeFill(fileComposite07, compositeFillTemplate07);
-    }
-
-    @Test
-    public void t08CompositeFill03() {
-        compositeFill(fileComposite03, compositeFillTemplate03);
     }
 
     private void compositeFill(File file, File template) {
