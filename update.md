@@ -1,4 +1,7 @@
 # 2.2.0-beta1
+* 修复最长匹配策略不同表格会有影响的bug [Issue #1010](https://github.com/alibaba/easyexcel/issues/1010)
+
+# 2.2.0-beta1
 * 重写主流程，代码更加优雅
 * 修复用String接收日期、数字和excel显示不一致的bug(不是完美修复，但是大部分情况已经兼容)
 * 降低Ehcache版本 3.7.1(jkd7) -> 3.4.0(jdk6)
