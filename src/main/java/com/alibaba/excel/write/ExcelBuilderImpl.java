@@ -68,9 +68,6 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void fill(Object data, FillConfig fillConfig, WriteSheet writeSheet) {
         try {
-            if (data == null) {
-                return;
-            }
             if (context.writeWorkbookHolder().getTempTemplateInputStream() == null) {
                 throw new ExcelGenerateException("Calling the 'fill' method must use a template.");
             }
@@ -96,24 +93,6 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     public void finish(boolean onException) {
         if (context != null) {
             context.finish(onException);
-        }
-    }
-
-    @Override
-    public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable, String password) {
-        try {
-            context.currentSheet(writeSheet, WriteTypeEnum.ADD);
-            context.currentTable(writeTable);
-            if (excelWriteAddExecutor == null) {
-                excelWriteAddExecutor = new ExcelWriteAddExecutor(context);
-            }
-            excelWriteAddExecutor.add(data);
-        } catch (RuntimeException e) {
-            finishOnException();
-            throw e;
-        } catch (Throwable e) {
-            finishOnException();
-            throw new ExcelGenerateException(e);
         }
     }
 
