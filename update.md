@@ -1,3 +1,34 @@
+# 2.2.0-beta1
+* 修复最长匹配策略不同表格会有影响的bug [Issue #1010](https://github.com/alibaba/easyexcel/issues/1010)
+* `LinkedList`写入的性能问题 #1121
+
+# 2.2.0-beta1
+* 重写主流程，代码更加优雅
+* 修复用String接收日期、数字和excel显示不一致的bug(不是完美修复，但是大部分情况已经兼容)
+* 降低Ehcache版本 3.7.1(jkd7) -> 3.4.0(jdk6)
+* 修复xls 用Map接收时多次接收会是同一个对象的bug
+* 修复浮点型数据导入到excel 会丢失精度的bug
+* 新增支持读取批注、超链接、合并单元格
+* 如果是`RuntimeException`则不再封装对象
+* 新增`CellData`可以获取行列号
+* 新增样式注解
+* 新增合并单元格注解
+* 提升合并策略效率
+* 兼容部分比较特殊的excel
+* 同时传入了`List<List<String>>`和`class`的head,会通过index去匹配注解
+* 修复读取转换器的并发问题
+* 填充支持多个List对象
+
+# 2.1.6
+* 修复写入只有`sheetName`会抛异常
+
+# 2.1.5
+* 修复部分xlsx没有行号读取异常
+* 填充时候支持根据`sheetName`定位`sheet`
+
+# 2.1.4
+* 新增参数`useDefaultListener` 可以排除默认对象转换
+
 # 2.1.3
 * 每个java进程单独创建一个缓存目录 [Issue #813](https://github.com/alibaba/easyexcel/issues/813)
 * 统一修改合并为unsafe，提高大量数据导出的合并的效率

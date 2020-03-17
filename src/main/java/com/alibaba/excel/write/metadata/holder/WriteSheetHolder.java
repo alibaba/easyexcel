@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.enums.WriteLastRowTypeEnum;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
 /**
@@ -67,12 +68,12 @@ public class WriteSheetHolder extends AbstractWriteHolder {
     public WriteSheetHolder(WriteSheet writeSheet, WriteWorkbookHolder writeWorkbookHolder) {
         super(writeSheet, writeWorkbookHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
         this.writeSheet = writeSheet;
-        this.sheetNo = writeSheet.getSheetNo();
-        if (writeSheet.getSheetName() == null) {
-            this.sheetName = writeSheet.getSheetNo().toString();
+        if (writeSheet.getSheetNo() == null && StringUtils.isEmpty(writeSheet.getSheetName())) {
+            this.sheetNo = 0;
         } else {
-            this.sheetName = writeSheet.getSheetName();
+            this.sheetNo = writeSheet.getSheetNo();
         }
+        this.sheetName = writeSheet.getSheetName();
         this.parentWriteWorkbookHolder = writeWorkbookHolder;
         this.hasBeenInitializedTable = new HashMap<Integer, WriteTableHolder>();
         if (writeWorkbookHolder.getTempTemplateInputStream() != null) {

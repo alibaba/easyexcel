@@ -1,58 +1,69 @@
 package com.alibaba.excel.write.merge;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 
-import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.property.LoopMergeProperty;
+import com.alibaba.excel.write.handler.AbstractRowWriteHandler;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
 /**
  * The regions of the loop merge
  *
  * @author Jiaju Zhuang
  */
-public class LoopMergeStrategy extends AbstractMergeStrategy {
+public class LoopMergeStrategy extends AbstractRowWriteHandler {
+    /**
+     * Each row
+     */
     private int eachRow;
-    private int columnCount;
+    /**
+     * Extend column
+     */
+    private int columnExtend;
+    /**
+     * The number of the current column
+     */
     private int columnIndex;
 
     public LoopMergeStrategy(int eachRow, int columnIndex) {
         this(eachRow, 1, columnIndex);
     }
 
-    public LoopMergeStrategy(int eachRow, int columnCount, int columnIndex) {
+    public LoopMergeStrategy(int eachRow, int columnExtend, int columnIndex) {
         if (eachRow < 1) {
             throw new IllegalArgumentException("EachRows must be greater than 1");
         }
-        if (columnCount < 1) {
-            throw new IllegalArgumentException("ColumnCount must be greater than 1");
+        if (columnExtend < 1) {
+            throw new IllegalArgumentException("ColumnExtend must be greater than 1");
         }
-        if (columnCount == 1 && eachRow == 1) {
-            throw new IllegalArgumentException("ColumnCount or eachRows must be greater than 1");
+        if (columnExtend == 1 && eachRow == 1) {
+            throw new IllegalArgumentException("ColumnExtend or eachRows must be greater than 1");
         }
         if (columnIndex < 0) {
             throw new IllegalArgumentException("ColumnIndex must be greater than 0");
         }
         this.eachRow = eachRow;
-        this.columnCount = columnCount;
+        this.columnExtend = columnExtend;
         this.columnIndex = columnIndex;
     }
 
+    public LoopMergeStrategy(LoopMergeProperty loopMergeProperty, Integer columnIndex) {
+        this(loopMergeProperty.getEachRow(), loopMergeProperty.getColumnExtend(), columnIndex);
+    }
+
     @Override
-    protected void merge(Sheet sheet, Cell cell, Head head, Integer relativeRowIndex) {
-        if (relativeRowIndex == null) {
+    public void afterRowDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
+        Integer relativeRowIndex, Boolean isHead) {
+        if (isHead) {
             return;
         }
-        Integer currentColumnIndex;
-        if (head != null) {
-            currentColumnIndex = head.getColumnIndex();
-        } else {
-            currentColumnIndex = cell.getColumnIndex();
-        }
-        if (currentColumnIndex == columnIndex && relativeRowIndex % eachRow == 0) {
-            CellRangeAddress cellRangeAddress = new CellRangeAddress(cell.getRowIndex(),
-                cell.getRowIndex() + eachRow - 1, cell.getColumnIndex(), cell.getColumnIndex() + columnCount - 1);
-            sheet.addMergedRegionUnsafe(cellRangeAddress);
+        if (relativeRowIndex % eachRow == 0) {
+            CellRangeAddress cellRangeAddress = new CellRangeAddress(row.getRowNum(), row.getRowNum() + eachRow - 1,
+                columnIndex, columnIndex + columnExtend - 1);
+            writeSheetHolder.getSheet().addMergedRegionUnsafe(cellRangeAddress);
         }
     }
+
 }

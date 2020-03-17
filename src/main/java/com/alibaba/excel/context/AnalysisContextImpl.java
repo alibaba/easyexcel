@@ -1,6 +1,7 @@
 package com.alibaba.excel.context;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,12 @@ import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
+import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
+import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
+import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
+import com.alibaba.excel.read.processor.AnalysisEventProcessor;
+import com.alibaba.excel.read.processor.DefaultAnalysisEventProcessor;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
@@ -37,13 +44,27 @@ public class AnalysisContextImpl implements AnalysisContext {
      * Configuration of currently operated cell
      */
     private ReadHolder currentReadHolder;
+    /**
+     * Event processor
+     */
+    private AnalysisEventProcessor analysisEventProcessor;
 
-    public AnalysisContextImpl(ReadWorkbook readWorkbook) {
+    public AnalysisContextImpl(ReadWorkbook readWorkbook, ExcelTypeEnum actualExcelType) {
         if (readWorkbook == null) {
             throw new IllegalArgumentException("Workbook argument cannot be null");
         }
-        readWorkbookHolder = new ReadWorkbookHolder(readWorkbook);
+        switch (actualExcelType) {
+            case XLS:
+                readWorkbookHolder = new XlsReadWorkbookHolder(readWorkbook);
+                break;
+            case XLSX:
+                readWorkbookHolder = new XlsxReadWorkbookHolder(readWorkbook);
+                break;
+            default:
+                break;
+        }
         currentReadHolder = readWorkbookHolder;
+        analysisEventProcessor = new DefaultAnalysisEventProcessor();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialization 'AnalysisContextImpl' complete");
         }
@@ -51,7 +72,16 @@ public class AnalysisContextImpl implements AnalysisContext {
 
     @Override
     public void currentSheet(ReadSheet readSheet) {
-        readSheetHolder = new ReadSheetHolder(readSheet, readWorkbookHolder);
+        switch (readWorkbookHolder.getExcelType()) {
+            case XLS:
+                readSheetHolder = new XlsReadSheetHolder(readSheet, readWorkbookHolder);
+                break;
+            case XLSX:
+                readSheetHolder = new XlsxReadSheetHolder(readSheet, readWorkbookHolder);
+                break;
+            default:
+                break;
+        }
         currentReadHolder = readSheetHolder;
         if (readWorkbookHolder.getHasReadSheet().contains(readSheetHolder.getSheetNo())) {
             throw new ExcelAnalysisException("Cannot read sheet repeatedly.");
@@ -90,6 +120,21 @@ public class AnalysisContextImpl implements AnalysisContext {
     @Override
     public Object getCustom() {
         return readWorkbookHolder.getCustomObject();
+    }
+
+    @Override
+    public AnalysisEventProcessor analysisEventProcessor() {
+        return analysisEventProcessor;
+    }
+
+    @Override
+    public List<ReadSheet> readSheetList() {
+        return null;
+    }
+
+    @Override
+    public void readSheetList(List<ReadSheet> readSheetList) {
+
     }
 
     @Override

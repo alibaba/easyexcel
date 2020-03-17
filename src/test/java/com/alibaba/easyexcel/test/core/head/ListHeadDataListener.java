@@ -29,10 +29,10 @@ public class ListHeadDataListener extends AnalysisEventListener<Map<Integer, Str
     public void doAfterAllAnalysed(AnalysisContext context) {
         Assert.assertEquals(list.size(), 1);
         Map<Integer, String> data = list.get(0);
-        Assert.assertEquals(data.get(0), "字符串0");
-        Assert.assertEquals(data.get(1), "1.0");
-        Assert.assertEquals(data.get(2), "2020-01-01 01:01:01");
-        Assert.assertEquals(data.get(3), "额外数据");
+        Assert.assertEquals("字符串0", data.get(0));
+        Assert.assertEquals("1", data.get(1));
+        Assert.assertEquals("2020-01-01 01:01:01", data.get(2));
+        Assert.assertEquals("额外数据", data.get(3));
         LOGGER.debug("First row:{}", JSON.toJSONString(list.get(0)));
     }
 }

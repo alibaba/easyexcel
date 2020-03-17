@@ -7,6 +7,7 @@ easyexcel
 [QQ群: 662022184](//shang.qq.com/wpa/qunwpa?idkey=53d9d821b0833e3c14670f007488a61e300f00ff4f1b81fd950590d90dd80f80)
 [钉钉群: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)
 [官方网站: https://alibaba-easyexcel.github.io/](https://alibaba-easyexcel.github.io/)
+#### 因为公司不方便用QQ，所以建议加钉钉群
 
 # JAVA解析Excel工具easyexcel
 Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都存在一个严重的问题就是非常的耗内存，poi有一套SAX模式的API可以一定程度的解决一些内存溢出的问题，但POI还是有一些缺陷，比如07版Excel解压缩以及解压后存储都是在内存中完成的，内存消耗依然很大。easyexcel重写了poi对07版Excel的解析，能够原本一个3M的excel用POI sax依然需要100M左右内存降低到几M，并且再大的excel不会出现内存溢出，03版依赖POI的sax模式。在上层做了模型转换的封装，让使用者更加简单方便
@@ -19,6 +20,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 * [快速使用](https://alibaba-easyexcel.github.io/)
 * [关于软件](/abouteasyexcel.md)
 * [更新记事](/update.md)
+* [贡献代码](https://alibaba-easyexcel.github.io/support/contribute.html)
 
 ## 维护者
 玉霄、庄家钜、怀宇
@@ -30,7 +32,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
     /**
      * 最简单的读
      * <p>1. 创建excel对应的实体对象 参照{@link DemoData}
-     * <p>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * <p>2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <p>3. 直接读即可
      */
     @Test
@@ -81,7 +83,7 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
     /**
      * 文件上传
      * <p>1. 创建excel对应的实体对象 参照{@link UploadData}
-     * <p>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
+     * <p>2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link UploadDataListener}
      * <p>3. 直接读即可
      */
     @PostMapping("upload")

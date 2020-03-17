@@ -1,24 +1,21 @@
 package com.alibaba.excel.read.metadata.holder;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.EternalReadCacheSelector;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.cache.selector.SimpleReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
@@ -86,16 +83,24 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      */
     private String password;
     /**
-     * SAXParserFactory used when reading xlsx.
-     * <p>
-     * The default will automatically find.
-     * <p>
-     * Please pass in the name of a class ,like : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"
+     * Read some additional fields. None are read by default.
      *
-     * @see SAXParserFactory#newInstance()
-     * @see SAXParserFactory#newInstance(String, ClassLoader)
+     * @see CellExtraTypeEnum
      */
-    private String xlsxSAXParserFactoryName;
+    private Set<CellExtraTypeEnum> extraReadSet;
+    /**
+     * Actual sheet data
+     */
+    private List<ReadSheet> actualSheetDataList;
+    /**
+     * Parameter sheet data
+     */
+    private List<ReadSheet> parameterSheetDataList;
+    /**
+     * Read all
+     */
+    private Boolean readAll;
+
     /**
      * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
      * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
@@ -115,35 +120,14 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      * Prevent repeating sheet
      */
     private Set<Integer> hasReadSheet;
-    /**
-     * Package
-     */
-    private OPCPackage opcPackage;
-    /**
-     * File System
-     */
-    private POIFSFileSystem poifsFileSystem;
-
-    /**
-     * Excel 2003 cannot read specific sheet. It can only read sheet by sheet.So when you specify one sheet, you ignore
-     * the others.
-     */
-    private Boolean ignoreRecord03;
 
     public ReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook, null, readWorkbook.getConvertAllFiled());
         this.readWorkbook = readWorkbook;
         if (readWorkbook.getInputStream() != null) {
-            if (readWorkbook.getInputStream().markSupported()) {
-                this.inputStream = readWorkbook.getInputStream();
-            } else {
-                this.inputStream = new BufferedInputStream(readWorkbook.getInputStream());
-            }
+            this.inputStream = readWorkbook.getInputStream();
         }
         this.file = readWorkbook.getFile();
-        if (file == null && inputStream == null) {
-            throw new ExcelAnalysisException("File and inputStream must be a non-null.");
-        }
         if (readWorkbook.getMandatoryUseInputStream() == null) {
             this.mandatoryUseInputStream = Boolean.FALSE;
         } else {
@@ -155,13 +139,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             this.autoCloseStream = readWorkbook.getAutoCloseStream();
         }
 
-        // The type of excel is read according to the judgment.Because encrypted XLSX needs to be specified as XLS to
-        // properly parse.
-        this.excelType = ExcelTypeEnum.valueOf(file, inputStream, readWorkbook.getExcelType());
-
-        if (ExcelTypeEnum.XLS == excelType && getGlobalConfiguration().getUse1904windowing() == null) {
-            getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
-        }
         this.customObject = readWorkbook.getCustomObject();
         if (readWorkbook.getIgnoreEmptyRow() == null) {
             this.ignoreEmptyRow = Boolean.TRUE;
@@ -185,9 +162,12 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         } else {
             this.defaultReturnMap = readWorkbook.getDefaultReturnMap();
         }
-        this.xlsxSAXParserFactoryName = readWorkbook.getXlsxSAXParserFactoryName();
+        if (readWorkbook.getExtraReadSet() == null) {
+            this.extraReadSet = new HashSet<CellExtraTypeEnum>();
+        } else {
+            this.extraReadSet = readWorkbook.getExtraReadSet();
+        }
         this.hasReadSheet = new HashSet<Integer>();
-        this.ignoreRecord03 = Boolean.FALSE;
         this.password = readWorkbook.getPassword();
     }
 
@@ -303,30 +283,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.defaultReturnMap = defaultReturnMap;
     }
 
-    public OPCPackage getOpcPackage() {
-        return opcPackage;
-    }
-
-    public void setOpcPackage(OPCPackage opcPackage) {
-        this.opcPackage = opcPackage;
-    }
-
-    public POIFSFileSystem getPoifsFileSystem() {
-        return poifsFileSystem;
-    }
-
-    public void setPoifsFileSystem(POIFSFileSystem poifsFileSystem) {
-        this.poifsFileSystem = poifsFileSystem;
-    }
-
-    public Boolean getIgnoreRecord03() {
-        return ignoreRecord03;
-    }
-
-    public void setIgnoreRecord03(Boolean ignoreRecord03) {
-        this.ignoreRecord03 = ignoreRecord03;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -335,12 +291,36 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.password = password;
     }
 
-    public String getXlsxSAXParserFactoryName() {
-        return xlsxSAXParserFactoryName;
+    public Set<CellExtraTypeEnum> getExtraReadSet() {
+        return extraReadSet;
     }
 
-    public void setXlsxSAXParserFactoryName(String xlsxSAXParserFactoryName) {
-        this.xlsxSAXParserFactoryName = xlsxSAXParserFactoryName;
+    public void setExtraReadSet(Set<CellExtraTypeEnum> extraReadSet) {
+        this.extraReadSet = extraReadSet;
+    }
+
+    public List<ReadSheet> getActualSheetDataList() {
+        return actualSheetDataList;
+    }
+
+    public void setActualSheetDataList(List<ReadSheet> actualSheetDataList) {
+        this.actualSheetDataList = actualSheetDataList;
+    }
+
+    public List<ReadSheet> getParameterSheetDataList() {
+        return parameterSheetDataList;
+    }
+
+    public void setParameterSheetDataList(List<ReadSheet> parameterSheetDataList) {
+        this.parameterSheetDataList = parameterSheetDataList;
+    }
+
+    public Boolean getReadAll() {
+        return readAll;
+    }
+
+    public void setReadAll(Boolean readAll) {
+        this.readAll = readAll;
     }
 
     @Override
