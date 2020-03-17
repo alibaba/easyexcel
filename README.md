@@ -6,7 +6,10 @@ easyexcel
 
 [QQ群: 662022184](//shang.qq.com/wpa/qunwpa?idkey=53d9d821b0833e3c14670f007488a61e300f00ff4f1b81fd950590d90dd80f80)
 [钉钉群: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)
-[官方网站: https://alibaba-easyexcel.github.io/](https://alibaba-easyexcel.github.io/)
+
+[官方网站: https://yuque.com/easyexcel](https://www.yuque.com/easyexcel/doc/easyexcel)
+
+[常见问题](https://www.yuque.com/easyexcel/faq)
 #### 因为公司不方便用QQ，所以建议加钉钉群
 
 # JAVA解析Excel工具easyexcel
@@ -17,10 +20,10 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 ![img](img/readme/large.png)
 
 ## 相关文档
-* [快速使用](https://alibaba-easyexcel.github.io/)
+* [快速开始](https://www.yuque.com/easyexcel/doc/easyexcel)
 * [关于软件](/abouteasyexcel.md)
 * [更新记事](/update.md)
-* [贡献代码](https://alibaba-easyexcel.github.io/support/contribute.html)
+* [贡献代码](https://www.yuque.com/easyexcel/doc/contribute)
 
 ## 维护者
 玉霄、庄家钜、怀宇
