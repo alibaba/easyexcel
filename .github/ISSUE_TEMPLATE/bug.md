@@ -1,6 +1,6 @@
 ---
 name: bug
-about: 发现一个新的Bug [常见问题](https://www.yuque.com/easyexcel/faq)
+about: 发现一个新的Bug
 title: ''
 labels: bug
 assignees: zhuangjiaju
