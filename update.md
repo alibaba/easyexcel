@@ -1,5 +1,6 @@
 # 2.2.0-beta1
 * 修复最长匹配策略不同表格会有影响的bug [Issue #1010](https://github.com/alibaba/easyexcel/issues/1010)
+* `LinkedList`写入的性能问题 #1121
 
 # 2.2.0-beta1
 * 重写主流程，代码更加优雅
