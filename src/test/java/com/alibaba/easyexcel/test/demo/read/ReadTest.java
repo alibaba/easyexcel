@@ -249,9 +249,9 @@ public class ReadTest {
      * 不创建对象的读
      */
     @Test
-    public void noModleRead() {
+    public void noModelRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
-        EasyExcel.read(fileName, new NoModleDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
     }
 }

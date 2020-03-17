@@ -16,8 +16,8 @@ import com.alibaba.fastjson.JSON;
  *
  * @author Jiaju Zhuang
  */
-public class NoModleDataListener extends AnalysisEventListener<Map<Integer, String>> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NoModleDataListener.class);
+public class NoModelDataListener extends AnalysisEventListener<Map<Integer, String>> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NoModelDataListener.class);
     /**
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
