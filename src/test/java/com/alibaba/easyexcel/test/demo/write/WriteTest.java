@@ -275,6 +275,8 @@ public class WriteTest {
      * 1. 创建excel对应的实体对象 参照{@link DemoStyleData}
      * <p>
      * 3. 直接写即可
+     *
+     * @since 2.2.0-beta1
      */
     @Test
     public void annotationStyleWrite() {
@@ -329,6 +331,8 @@ public class WriteTest {
      * 2. 创建一个merge策略 并注册
      * <p>
      * 3. 直接写即可
+     *
+     * @since 2.2.0-beta1
      */
     @Test
     public void mergeWrite() {
