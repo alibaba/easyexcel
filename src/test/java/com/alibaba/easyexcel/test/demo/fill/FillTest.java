@@ -183,7 +183,7 @@ public class FillTest {
     /**
      * 多列表组合填充填充
      *
-     * @since 2.2.0
+     * @since 2.2.0-beta1
      */
     @Test
     public void compositeFill() {
