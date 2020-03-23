@@ -274,7 +274,9 @@ public class ExcelReader {
      * Complete the entire read file.Release the cache and close stream.
      */
     public void finish() {
-        excelAnalyser.finish();
+        if (excelAnalyser != null) {
+            excelAnalyser.finish();
+        }
     }
 
     /**
