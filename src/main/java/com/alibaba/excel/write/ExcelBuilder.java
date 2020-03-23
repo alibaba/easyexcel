@@ -76,13 +76,4 @@ public interface ExcelBuilder {
      */
     void finish(boolean onException);
 
-    /**
-     * add password
-     *
-     * @param data
-     * @param writeSheet
-     * @param writeTable
-     * @param password
-     */
-    void addContent(List data, WriteSheet writeSheet, WriteTable writeTable, String password);
 }

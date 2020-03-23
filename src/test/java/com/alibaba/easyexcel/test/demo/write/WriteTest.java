@@ -275,6 +275,8 @@ public class WriteTest {
      * 1. 创建excel对应的实体对象 参照{@link DemoStyleData}
      * <p>
      * 3. 直接写即可
+     *
+     * @since 2.2.0-beta1
      */
     @Test
     public void annotationStyleWrite() {
@@ -329,6 +331,8 @@ public class WriteTest {
      * 2. 创建一个merge策略 并注册
      * <p>
      * 3. 直接写即可
+     *
+     * @since 2.2.0-beta1
      */
     @Test
     public void mergeWrite() {
@@ -436,6 +440,24 @@ public class WriteTest {
     }
 
     /**
+     * 插入批注
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 注册拦截器 {@link CommentWriteHandler}
+     * <p>
+     * 2. 直接写即可
+     */
+    @Test
+    public void commentWrite() {
+        String fileName = TestFileUtil.getPath() + "commentWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里要注意inMemory 要设置为true，才能支持批注。目前没有好的办法解决 不在内存处理批注。这个需要自己选择。
+        EasyExcel.write(fileName, DemoData.class).inMemory(Boolean.TRUE).registerWriteHandler(new CommentWriteHandler())
+            .sheet("模板").doWrite(data());
+    }
+
+    /**
      * 可变标题处理(包括标题国际化等)
      * <p>
      * 简单的说用List<List<String>>的标题 但是还支持注解
@@ -456,9 +478,9 @@ public class WriteTest {
      * 不创建对象的写
      */
     @Test
-    public void noModleWrite() {
+    public void noModelWrite() {
         // 写法1
-        String fileName = TestFileUtil.getPath() + "noModleWrite" + System.currentTimeMillis() + ".xlsx";
+        String fileName = TestFileUtil.getPath() + "noModelWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }

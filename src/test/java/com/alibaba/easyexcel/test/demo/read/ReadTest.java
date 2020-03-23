@@ -173,6 +173,8 @@ public class ReadTest {
      * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExtraListener}
      * <p>
      * 3. 直接读即可
+     *
+     * @since 2.2.0-beat1
      */
     @Test
     public void extraRead() {
@@ -191,11 +193,13 @@ public class ReadTest {
      * 读取公式和单元格类型
      *
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * 1. 创建excel对应的实体对象 参照{@link CellDataReadDemoData}
      * <p>
      * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
      * <p>
      * 3. 直接读即可
+     *
+     * @since 2.2.0-beat1
      */
     @Test
     public void cellDataRead() {
@@ -245,9 +249,9 @@ public class ReadTest {
      * 不创建对象的读
      */
     @Test
-    public void noModleRead() {
+    public void noModelRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
-        EasyExcel.read(fileName, new NoModleDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
     }
 }
