@@ -23,6 +23,8 @@ import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.WorkbookDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -46,7 +48,7 @@ import com.alibaba.excel.util.StringUtils;
  * @author jipengfei
  */
 public class XlsxSaxAnalyser implements ExcelReadExecutor {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(XlsxSaxAnalyser.class);
     private XlsxReadContext xlsxReadContext;
     private List<ReadSheet> sheetList;
     private Map<Integer, InputStream> sheetMap;
@@ -198,7 +200,11 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             readSheet = SheetUtils.match(readSheet, xlsxReadContext);
             if (readSheet != null) {
                 xlsxReadContext.currentSheet(readSheet);
-                parseXmlSource(sheetMap.get(readSheet.getSheetNo()), new XlsxRowHandler(xlsxReadContext));
+                try {
+                    parseXmlSource(sheetMap.get(readSheet.getSheetNo()), new XlsxRowHandler(xlsxReadContext));
+                }catch (Exception e){
+                    LOGGER.error("抛出异常：{}",e);
+                }
                 // Read comments
                 readComments(readSheet);
                 // The last sheet is read
