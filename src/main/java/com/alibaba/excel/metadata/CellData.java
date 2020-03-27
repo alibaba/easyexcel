@@ -1,8 +1,9 @@
 package com.alibaba.excel.metadata;
 
 import java.math.BigDecimal;
-
+import com.alibaba.excel.annotation.write.style.ImagePosition;
 import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.property.ImagePositionProperty;
 import com.alibaba.excel.util.StringUtils;
 
 /**
@@ -29,6 +30,16 @@ public class CellData<T> extends AbstractCell {
     private Boolean formula;
     private String formulaValue;
     private byte[] imageValue;
+
+    /**
+     * Keep the information of image position in annotation.
+     */
+    private ImagePositionProperty imagePositionProperty;
+
+    /**
+     * It will be set true when using annotation to set the image's position.
+     */
+    private Boolean useImagePositionProperty = false;
     /**
      * The number formatting.Currently only supported when reading
      */
@@ -50,6 +61,8 @@ public class CellData<T> extends AbstractCell {
         this.formula = other.formula;
         this.formulaValue = other.formulaValue;
         this.imageValue = other.imageValue;
+        this.imagePositionProperty = other.imagePositionProperty;
+        this.useImagePositionProperty = other.useImagePositionProperty;
         this.dataFormat = other.dataFormat;
         this.dataFormatString = other.dataFormatString;
         this.data = other.data;
@@ -98,6 +111,20 @@ public class CellData<T> extends AbstractCell {
         }
         this.type = CellDataTypeEnum.IMAGE;
         this.imageValue = imageValue;
+        this.formula = Boolean.FALSE;
+    }
+
+    public CellData(byte[] imageValue, ImagePosition imagePosition) {
+        if (imageValue == null) {
+            throw new IllegalArgumentException("ImageValue can not be null");
+        }
+        if (imagePosition == null) {
+            throw new IllegalArgumentException("ImagePosition can not be null");
+        }
+        this.type = CellDataTypeEnum.IMAGE;
+        this.imageValue = imageValue;
+        this.imagePositionProperty = ImagePositionProperty.build(imagePosition);
+        this.useImagePositionProperty = true;
         this.formula = Boolean.FALSE;
     }
 
@@ -172,6 +199,22 @@ public class CellData<T> extends AbstractCell {
 
     public void setImageValue(byte[] imageValue) {
         this.imageValue = imageValue;
+    }
+
+    public ImagePositionProperty getImagePositionProperty() {
+        return imagePositionProperty;
+    }
+
+    public void setImagePositionProperty(ImagePositionProperty imagePositionProperty) {
+        this.imagePositionProperty = imagePositionProperty;
+    }
+
+    public Boolean getUseImagePositionProperty() {
+        return useImagePositionProperty;
+    }
+
+    public void setUseImagePositionProperty(Boolean useImagePositionProperty) {
+        this.useImagePositionProperty = useImagePositionProperty;
     }
 
     public Integer getDataFormat() {

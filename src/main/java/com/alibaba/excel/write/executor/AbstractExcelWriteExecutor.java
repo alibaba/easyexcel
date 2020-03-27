@@ -136,15 +136,27 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         }
         CreationHelper helper = sheet.getWorkbook().getCreationHelper();
         ClientAnchor anchor = helper.createClientAnchor();
-        anchor.setDx1(0);
-        anchor.setDx2(0);
-        anchor.setDy1(0);
-        anchor.setDy2(0);
-        anchor.setCol1(cell.getColumnIndex());
-        anchor.setCol2(cell.getColumnIndex() + 1);
-        anchor.setRow1(cell.getRowIndex());
-        anchor.setRow2(cell.getRowIndex() + 1);
-        anchor.setAnchorType(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
+        if(cellData.getUseImagePositionProperty()) {
+            anchor.setDx1(cellData.getImagePositionProperty().getDx1());
+            anchor.setDx2(cellData.getImagePositionProperty().getDx2());
+            anchor.setDy1(cellData.getImagePositionProperty().getDy1());
+            anchor.setDy2(cellData.getImagePositionProperty().getDy2());
+            anchor.setCol1(cellData.getImagePositionProperty().getCol1());
+            anchor.setCol2(cellData.getImagePositionProperty().getCol2());
+            anchor.setRow1(cellData.getImagePositionProperty().getRow1());
+            anchor.setRow2(cellData.getImagePositionProperty().getRow2());
+            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
+        } else {
+            anchor.setDx1(0);
+            anchor.setDx2(0);
+            anchor.setDy1(0);
+            anchor.setDy2(0);
+            anchor.setCol1(cell.getColumnIndex());
+            anchor.setCol2(cell.getColumnIndex() + 1);
+            anchor.setRow1(cell.getRowIndex());
+            anchor.setRow2(cell.getRowIndex() + 1);
+            anchor.setAnchorType(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
+        }
         drawing.createPicture(anchor, index);
     }
 }

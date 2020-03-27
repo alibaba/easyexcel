@@ -2,7 +2,7 @@ package com.alibaba.excel.converters.file;
 
 import java.io.File;
 import java.io.IOException;
-
+import com.alibaba.excel.annotation.write.style.ImagePosition;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -35,7 +35,11 @@ public class FileImageConverter implements Converter<File> {
     @Override
     public CellData convertToExcelData(File value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws IOException {
-        return new CellData(FileUtils.readFileToByteArray(value));
+        ImagePosition imagePosition = contentProperty.getField().getAnnotation(ImagePosition.class);
+        if (imagePosition != null) {
+            return new CellData(FileUtils.readFileToByteArray(value), imagePosition);
+        } else {
+            return new CellData(FileUtils.readFileToByteArray(value));
+        }
     }
-
 }

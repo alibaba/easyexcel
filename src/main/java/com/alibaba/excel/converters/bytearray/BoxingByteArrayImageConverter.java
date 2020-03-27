@@ -1,5 +1,8 @@
 package com.alibaba.excel.converters.bytearray;
 
+import java.lang.annotation.Annotation;
+
+import com.alibaba.excel.annotation.write.style.ImagePosition;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -35,7 +38,12 @@ public class BoxingByteArrayImageConverter implements Converter<Byte[]> {
         for (int i = 0; i < value.length; i++) {
             byteValue[i] = value[i];
         }
-        return new CellData(byteValue);
+        ImagePosition imagePosition = contentProperty.getField().getAnnotation(ImagePosition.class);
+        if (imagePosition != null) {
+            return new CellData(byteValue, imagePosition);
+        } else {
+            return new CellData(byteValue);
+        }
     }
 
 }
