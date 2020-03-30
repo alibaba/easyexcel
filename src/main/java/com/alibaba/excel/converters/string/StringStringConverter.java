@@ -24,13 +24,23 @@ public class StringStringConverter implements Converter<String> {
 
     @Override
     public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
+                                    GlobalConfiguration globalConfiguration) {
         return cellData.getStringValue();
     }
 
     @Override
     public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
+                                       GlobalConfiguration globalConfiguration) {
+        // Prevent CSV injection.
+        char firstChar = value.charAt(0);
+        switch (firstChar) {
+            case '=':
+            case '+':
+            case '-':
+            case '@':
+                value = "\t" + value;
+                break;
+        }
         return new CellData(value);
     }
 
