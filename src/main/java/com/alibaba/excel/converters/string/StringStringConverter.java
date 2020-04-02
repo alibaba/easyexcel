@@ -40,6 +40,7 @@ public class StringStringConverter implements Converter<String> {
             case '@':
                 value = "\t" + value;
                 break;
+            default:
         }
         return new CellData(value);
     }
