@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.temp.read;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -8,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.cache.Ehcache;
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 /**
  * 临时测试
@@ -18,6 +21,13 @@ import com.alibaba.excel.cache.Ehcache;
 @Ignore
 public class HeadReadTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeadReadTest.class);
+    @Test
+    public void testread() throws Exception {
+        FileInputStream fileInputStream = new FileInputStream("D://test/t1.xlsx");
+
+        ExcelReader excelReader = new ExcelReader(fileInputStream, ExcelTypeEnum.XLSX, null, new TestListener());
+        excelReader.read();
+    }
 
     @Test
     public void test() throws Exception {
