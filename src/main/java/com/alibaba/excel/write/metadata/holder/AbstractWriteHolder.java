@@ -82,7 +82,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     /**
      * Ignore the custom columns.
      */
-    private Collection<String> excludeColumnFiledNames;
+    private Collection<String> excludeColumnFieldNames;
     /**
      * Only output the custom columns.
      */
@@ -90,10 +90,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     /**
      * Only output the custom columns.
      */
-    private Collection<String> includeColumnFiledNames;
+    private Collection<String> includeColumnFieldNames;
 
     public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder,
-        Boolean convertAllFiled) {
+        Boolean convertAllField) {
         super(writeBasicParameter, parentAbstractWriteHolder);
         if (writeBasicParameter.getUse1904windowing() == null) {
             if (parentAbstractWriteHolder == null) {
@@ -146,20 +146,20 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             this.automaticMergeHead = writeBasicParameter.getAutomaticMergeHead();
         }
 
-        if (writeBasicParameter.getExcludeColumnFiledNames() == null && parentAbstractWriteHolder != null) {
-            this.excludeColumnFiledNames = parentAbstractWriteHolder.getExcludeColumnFiledNames();
+        if (writeBasicParameter.getExcludeColumnFieldNames() == null && parentAbstractWriteHolder != null) {
+            this.excludeColumnFieldNames = parentAbstractWriteHolder.getExcludeColumnFieldNames();
         } else {
-            this.excludeColumnFiledNames = writeBasicParameter.getExcludeColumnFiledNames();
+            this.excludeColumnFieldNames = writeBasicParameter.getExcludeColumnFieldNames();
         }
         if (writeBasicParameter.getExcludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
             this.excludeColumnIndexes = parentAbstractWriteHolder.getExcludeColumnIndexes();
         } else {
             this.excludeColumnIndexes = writeBasicParameter.getExcludeColumnIndexes();
         }
-        if (writeBasicParameter.getIncludeColumnFiledNames() == null && parentAbstractWriteHolder != null) {
-            this.includeColumnFiledNames = parentAbstractWriteHolder.getIncludeColumnFiledNames();
+        if (writeBasicParameter.getIncludeColumnFieldNames() == null && parentAbstractWriteHolder != null) {
+            this.includeColumnFieldNames = parentAbstractWriteHolder.getIncludeColumnFieldNames();
         } else {
-            this.includeColumnFiledNames = writeBasicParameter.getIncludeColumnFiledNames();
+            this.includeColumnFieldNames = writeBasicParameter.getIncludeColumnFieldNames();
         }
         if (writeBasicParameter.getIncludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
             this.includeColumnIndexes = parentAbstractWriteHolder.getIncludeColumnIndexes();
@@ -168,7 +168,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
 
         // Initialization property
-        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllFiled);
+        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllField);
 
         // Compatible with old code
         compatibleOldCode(writeBasicParameter);
@@ -446,10 +446,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     @Override
     public boolean ignore(String fieldName, Integer columnIndex) {
         if (fieldName != null) {
-            if (includeColumnFiledNames != null && !includeColumnFiledNames.contains(fieldName)) {
+            if (includeColumnFieldNames != null && !includeColumnFieldNames.contains(fieldName)) {
                 return true;
             }
-            if (excludeColumnFiledNames != null && excludeColumnFiledNames.contains(fieldName)) {
+            if (excludeColumnFieldNames != null && excludeColumnFieldNames.contains(fieldName)) {
                 return true;
             }
         }
@@ -520,12 +520,12 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         this.excludeColumnIndexes = excludeColumnIndexes;
     }
 
-    public Collection<String> getExcludeColumnFiledNames() {
-        return excludeColumnFiledNames;
+    public Collection<String> getExcludeColumnFieldNames() {
+        return excludeColumnFieldNames;
     }
 
-    public void setExcludeColumnFiledNames(Collection<String> excludeColumnFiledNames) {
-        this.excludeColumnFiledNames = excludeColumnFiledNames;
+    public void setExcludeColumnFieldNames(Collection<String> excludeColumnFieldNames) {
+        this.excludeColumnFieldNames = excludeColumnFieldNames;
     }
 
     public Collection<Integer> getIncludeColumnIndexes() {
@@ -536,12 +536,12 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         this.includeColumnIndexes = includeColumnIndexes;
     }
 
-    public Collection<String> getIncludeColumnFiledNames() {
-        return includeColumnFiledNames;
+    public Collection<String> getIncludeColumnFieldNames() {
+        return includeColumnFieldNames;
     }
 
-    public void setIncludeColumnFiledNames(Collection<String> includeColumnFiledNames) {
-        this.includeColumnFiledNames = includeColumnFiledNames;
+    public void setIncludeColumnFieldNames(Collection<String> includeColumnFieldNames) {
+        this.includeColumnFieldNames = includeColumnFieldNames;
     }
 
     @Override
