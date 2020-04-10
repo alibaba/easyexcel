@@ -40,7 +40,7 @@ public class WriteBasicParameter extends BasicParameter {
     /**
      * Ignore the custom columns.
      */
-    private Collection<String> excludeColumnFiledNames;
+    private Collection<String> excludeColumnFieldNames;
     /**
      * Only output the custom columns.
      */
@@ -48,7 +48,7 @@ public class WriteBasicParameter extends BasicParameter {
     /**
      * Only output the custom columns.
      */
-    private Collection<String> includeColumnFiledNames;
+    private Collection<String> includeColumnFieldNames;
 
     public Integer getRelativeHeadRowIndex() {
         return relativeHeadRowIndex;
@@ -98,12 +98,12 @@ public class WriteBasicParameter extends BasicParameter {
         this.excludeColumnIndexes = excludeColumnIndexes;
     }
 
-    public Collection<String> getExcludeColumnFiledNames() {
-        return excludeColumnFiledNames;
+    public Collection<String> getExcludeColumnFieldNames() {
+        return excludeColumnFieldNames;
     }
 
-    public void setExcludeColumnFiledNames(Collection<String> excludeColumnFiledNames) {
-        this.excludeColumnFiledNames = excludeColumnFiledNames;
+    public void setExcludeColumnFieldNames(Collection<String> excludeColumnFieldNames) {
+        this.excludeColumnFieldNames = excludeColumnFieldNames;
     }
 
     public Collection<Integer> getIncludeColumnIndexes() {
@@ -114,12 +114,12 @@ public class WriteBasicParameter extends BasicParameter {
         this.includeColumnIndexes = includeColumnIndexes;
     }
 
-    public Collection<String> getIncludeColumnFiledNames() {
-        return includeColumnFiledNames;
+    public Collection<String> getIncludeColumnFieldNames() {
+        return includeColumnFieldNames;
     }
 
-    public void setIncludeColumnFiledNames(Collection<String> includeColumnFiledNames) {
-        this.includeColumnFiledNames = includeColumnFiledNames;
+    public void setIncludeColumnFieldNames(Collection<String> includeColumnFieldNames) {
+        this.includeColumnFieldNames = includeColumnFieldNames;
     }
 
 }
