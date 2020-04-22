@@ -109,11 +109,12 @@ public class ClassUtils {
                     + "' and '" + field.getName() + "' must be inconsistent");
             }
             customFiledMap.put(excelProperty.index(), field);
-            allFieldList.add(field);
         }
 
+        List<Field> allWriteFieldList = new ArrayList<Field>(customFiledMap.values());
+        allWriteFieldList.addAll(allFieldList);
         FIELD_CACHE.put(clazz,
-            new SoftReference<FieldCache>(new FieldCache(defaultFieldList, customFiledMap, allFieldList, ignoreMap)));
+            new SoftReference<FieldCache>(new FieldCache(defaultFieldList, customFiledMap, allWriteFieldList, ignoreMap)));
     }
 
     private static class FieldCache {
