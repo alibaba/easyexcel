@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSON;
  *
  * @author Jiaju Zhuang
  */
-public class HeadListener extends AnalysisEventListener<Map<Integer,String>> {
+public class HeadListener extends AnalysisEventListener<HeadReadData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeadListener.class);
     /**
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
@@ -29,7 +29,7 @@ public class HeadListener extends AnalysisEventListener<Map<Integer,String>> {
     }
 
     @Override
-    public void invoke(Map<Integer,String> data, AnalysisContext context) {
+    public void invoke(HeadReadData data, AnalysisContext context) {
         LOGGER.info("index:{}", context.readRowHolder().getRowIndex());
         LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
     }

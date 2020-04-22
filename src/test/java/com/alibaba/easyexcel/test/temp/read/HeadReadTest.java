@@ -32,8 +32,8 @@ public class HeadReadTest {
 
     @Test
     public void test() throws Exception {
-        File file = TestFileUtil.readUserHomeFile("test/t1.xlsx");
-        EasyExcel.read(file, null, new HeadListener()).ignoreEmptyRow(false).sheet(0).doRead();
+        File file = TestFileUtil.readUserHomeFile("test/t2.xlsx");
+        EasyExcel.read(file, HeadReadData.class, new HeadListener()).ignoreEmptyRow(false).sheet(0).doRead();
 
     }
 
