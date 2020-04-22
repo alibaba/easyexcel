@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.cache.Ehcache;
 
@@ -21,8 +22,8 @@ public class HeadReadTest {
 
     @Test
     public void test() throws Exception {
-        File file = new File("D:\\test\\headt1.xls");
-        EasyExcel.read(file, HeadReadData.class, new HDListener()).sheet(0).doRead();
+        File file = TestFileUtil.readUserHomeFile("test/t1.xlsx");
+        EasyExcel.read(file, null, new HeadListener()).ignoreEmptyRow(false).sheet(0).doRead();
 
     }
 

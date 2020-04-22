@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 public class TestFileUtil {
 
+
     public static InputStream getResourcesFileInputStream(String fileName) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream("" + fileName);
     }
@@ -29,4 +30,7 @@ public class TestFileUtil {
         return new File(getPath() + pathName);
     }
 
+    public static File readUserHomeFile(String pathName) {
+        return new File(System.getProperty("user.home") + File.separator + pathName);
+    }
 }
