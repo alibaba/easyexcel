@@ -48,28 +48,28 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     /**
      * Fields to replace in the template
      */
-    private Map<String, List<AnalysisCell>> templateAnalysisCache = new HashMap<String, List<AnalysisCell>>(8);
+    private final Map<String, List<AnalysisCell>> templateAnalysisCache = new HashMap<String, List<AnalysisCell>>(8);
     /**
      * Collection fields to replace in the template
      */
-    private Map<String, List<AnalysisCell>> templateCollectionAnalysisCache =
+    private final Map<String, List<AnalysisCell>> templateCollectionAnalysisCache =
         new HashMap<String, List<AnalysisCell>>(8);
     /**
      * Style cache for collection fields
      */
-    private Map<String, Map<AnalysisCell, CellStyle>> collectionFieldStyleCache =
+    private final Map<String, Map<AnalysisCell, CellStyle>> collectionFieldStyleCache =
         new HashMap<String, Map<AnalysisCell, CellStyle>>(8);
     /**
      * Row height cache for collection
      */
-    private Map<String, Short> collectionRowHeightCache = new HashMap<String, Short>(8);
+    private final Map<String, Short> collectionRowHeightCache = new HashMap<String, Short>(8);
     /**
      * Last index cache for collection fields
      */
-    private Map<String, Map<AnalysisCell, Integer>> collectionLastIndexCache =
+    private final Map<String, Map<AnalysisCell, Integer>> collectionLastIndexCache =
         new HashMap<String, Map<AnalysisCell, Integer>>(8);
 
-    private Map<String, Integer> relativeRowIndexMap = new HashMap<String, Integer>(8);
+    private final Map<String, Integer> relativeRowIndexMap = new HashMap<String, Integer>(8);
     /**
      * The data prefix that is populated this time
      */
@@ -94,7 +94,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
         Object realData;
         if (data instanceof FillWrapper) {
-            FillWrapper fillWrapper = (FillWrapper)data;
+            FillWrapper fillWrapper = (FillWrapper) data;
             currentDataPrefix = fillWrapper.getName();
             realData = fillWrapper.getCollectionData();
         } else {
@@ -106,7 +106,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         // processing data
         if (realData instanceof Collection) {
             List<AnalysisCell> analysisCellList = readTemplateData(templateCollectionAnalysisCache);
-            Collection collectionData = (Collection)realData;
+            Collection collectionData = (Collection) realData;
             if (CollectionUtils.isEmpty(collectionData)) {
                 return;
             }
@@ -156,9 +156,23 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             return;
         }
         sheet.shiftRows(maxRowIndex + 1, lastRowIndex, number, true, false);
-        for (AnalysisCell analysisCell : templateAnalysisCache.get(currentUniqueDataFlag)) {
-            if (analysisCell.getRowIndex() > maxRowIndex) {
-                analysisCell.setRowIndex(analysisCell.getRowIndex() + number);
+
+        // The current data is greater than unity rowindex increase
+        String tablePrefix = tablePrefix(currentUniqueDataFlag);
+        increaseRowIndex(templateAnalysisCache, number, maxRowIndex, tablePrefix);
+        increaseRowIndex(templateCollectionAnalysisCache, number, maxRowIndex, tablePrefix);
+    }
+
+    private void increaseRowIndex(Map<String, List<AnalysisCell>> templateAnalysisCache, int number, int maxRowIndex,
+        String tablePrefix) {
+        for (Map.Entry<String, List<AnalysisCell>> entry : templateAnalysisCache.entrySet()) {
+            if (!tablePrefix.equals(tablePrefix(entry.getKey()))) {
+                continue;
+            }
+            for (AnalysisCell analysisCell : entry.getValue()) {
+                if (analysisCell.getRowIndex() > maxRowIndex) {
+                    analysisCell.setRowIndex(analysisCell.getRowIndex() + number);
+                }
             }
         }
     }
@@ -167,7 +181,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         Integer relativeRowIndex) {
         Map dataMap;
         if (oneRowData instanceof Map) {
-            dataMap = (Map)oneRowData;
+            dataMap = (Map) oneRowData;
         } else {
             dataMap = BeanMap.create(oneRowData);
         }
@@ -384,8 +398,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         int startIndex = 0;
         int length = value.length();
         int lastPrepareDataIndex = 0;
-        out:
-        while (startIndex < length) {
+        out: while (startIndex < length) {
             int prefixIndex = value.indexOf(FILL_PREFIX, startIndex);
             if (prefixIndex < 0) {
                 break out;
@@ -513,6 +526,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             return prefix + "-";
         }
         return prefix + "-" + wrapperName;
+    }
+
+    private String tablePrefix(String uniqueDataFlag) {
+        return uniqueDataFlag.substring(0, uniqueDataFlag.indexOf("-") + 1);
     }
 
 }

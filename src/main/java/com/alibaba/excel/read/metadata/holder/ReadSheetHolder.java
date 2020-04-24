@@ -15,6 +15,7 @@ import com.alibaba.excel.read.metadata.ReadSheet;
  * @author Jiaju Zhuang
  */
 public class ReadSheetHolder extends AbstractReadHolder {
+
     /**
      * current param
      */
@@ -59,6 +60,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.sheetNo = readSheet.getSheetNo();
         this.sheetName = readSheet.getSheetName();
         this.cellMap = new LinkedHashMap<Integer, Cell>();
+        this.rowIndex = -1;
     }
 
     public ReadSheet getReadSheet() {

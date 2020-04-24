@@ -1,3 +1,12 @@
+# 2.2.1
+* 发布正式版
+* 修复第一行为空不会调用`invokeHeadMap`的bug [Issue #993](https://github.com/alibaba/easyexcel/issues/993)
+* 当类的属性没有按照ExcelProperty的属性index顺序排序的时候，写数据出现错乱 [Issue #1046](https://github.com/alibaba/easyexcel/issues/1046)
+* 新增支持自定义转换器 入参可以为空 实现`NullableObjectConverter` 即可  [Issue #1084](https://github.com/alibaba/easyexcel/issues/1084)
+* 修复xls丢失结束标记的情况下 会漏读最后一行
+* 修复填充的时候 多次`forceNewRow` 空指针的bug [Issue #1201](https://github.com/alibaba/easyexcel/issues/1201)
+* 修复`table`、`sheet`中创建的拦截器不执行`workbook`事件的bug [Issue #1202](https://github.com/alibaba/easyexcel/issues/1202)
+
 # 2.2.0-beta2
 * 修复最长匹配策略不同表格会有影响的bug [Issue #1010](https://github.com/alibaba/easyexcel/issues/1010)
 * `LinkedList`写入的性能问题 #1121
@@ -19,6 +28,9 @@
 * 同时传入了`List<List<String>>`和`class`的head,会通过index去匹配注解
 * 修复读取转换器的并发问题
 * 填充支持多个List对象
+
+# 2.1.7
+* 修复使用1+版本的写法，第1条开始读修改为第0条开始读
 
 # 2.1.6
 * 修复写入只有`sheetName`会抛异常

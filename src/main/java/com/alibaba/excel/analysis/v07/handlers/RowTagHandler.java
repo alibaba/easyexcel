@@ -25,15 +25,13 @@ public class RowTagHandler extends AbstractXlsxTagHandler {
         int rowIndex = PositionUtils.getRowByRowTagt(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_R),
             xlsxReadSheetHolder.getRowIndex());
         Integer lastRowIndex = xlsxReadContext.readSheetHolder().getRowIndex();
-        if (lastRowIndex != null) {
-            while (lastRowIndex + 1 < rowIndex) {
-                xlsxReadContext.readRowHolder(new ReadRowHolder(lastRowIndex + 1, RowTypeEnum.EMPTY,
-                    xlsxReadSheetHolder.getGlobalConfiguration(), new LinkedHashMap<Integer, Cell>()));
-                xlsxReadContext.analysisEventProcessor().endRow(xlsxReadContext);
-                xlsxReadSheetHolder.setColumnIndex(null);
-                xlsxReadSheetHolder.setCellMap(new LinkedHashMap<Integer, Cell>());
-                lastRowIndex++;
-            }
+        while (lastRowIndex + 1 < rowIndex) {
+            xlsxReadContext.readRowHolder(new ReadRowHolder(lastRowIndex + 1, RowTypeEnum.EMPTY,
+                xlsxReadSheetHolder.getGlobalConfiguration(), new LinkedHashMap<Integer, Cell>()));
+            xlsxReadContext.analysisEventProcessor().endRow(xlsxReadContext);
+            xlsxReadSheetHolder.setColumnIndex(null);
+            xlsxReadSheetHolder.setCellMap(new LinkedHashMap<Integer, Cell>());
+            lastRowIndex++;
         }
         xlsxReadSheetHolder.setRowIndex(rowIndex);
     }

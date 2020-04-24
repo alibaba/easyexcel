@@ -111,7 +111,14 @@ public class WriteContextImpl implements WriteContext {
         if (selectSheetFromCache(writeSheet)) {
             return;
         }
+
+
         initCurrentSheetHolder(writeSheet);
+
+        // Workbook handler need to supplementary execution
+        WriteHandlerUtils.beforeWorkbookCreate(this, true);
+        WriteHandlerUtils.afterWorkbookCreate(this, true);
+
         // Initialization current sheet
         initSheet(writeType);
     }
@@ -201,8 +208,8 @@ public class WriteContextImpl implements WriteContext {
         if (currentWriteHolder.automaticMergeHead()) {
             addMergedRegionToCurrentSheet(excelWriteHeadProperty, newRowIndex);
         }
-        for (int relativeRowIndex = 0, i = newRowIndex; i < excelWriteHeadProperty.getHeadRowNumber() + newRowIndex;
-            i++, relativeRowIndex++) {
+        for (int relativeRowIndex = 0, i = newRowIndex; i < excelWriteHeadProperty.getHeadRowNumber()
+            + newRowIndex; i++, relativeRowIndex++) {
             WriteHandlerUtils.beforeRowCreate(this, newRowIndex, relativeRowIndex, Boolean.TRUE);
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
@@ -227,7 +234,7 @@ public class WriteContextImpl implements WriteContext {
             Cell cell = row.createCell(columnIndex);
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
             cell.setCellValue(head.getHeadNameList().get(relativeRowIndex));
-            WriteHandlerUtils.afterCellDispose(this, (CellData)null, cell, head, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.afterCellDispose(this, (CellData) null, cell, head, relativeRowIndex, Boolean.TRUE);
         }
     }
 
@@ -251,7 +258,15 @@ public class WriteContextImpl implements WriteContext {
             }
             return;
         }
+
         initCurrentTableHolder(writeTable);
+
+        // Workbook and sheet handler need to supplementary execution
+        WriteHandlerUtils.beforeWorkbookCreate(this, true);
+        WriteHandlerUtils.afterWorkbookCreate(this, true);
+        WriteHandlerUtils.beforeSheetCreate(this, true);
+        WriteHandlerUtils.afterSheetCreate(this, true);
+
         initHead(writeTableHolder.excelWriteHeadProperty());
     }
 
@@ -322,7 +337,7 @@ public class WriteContextImpl implements WriteContext {
         try {
             Workbook workbook = writeWorkbookHolder.getWorkbook();
             if (workbook instanceof SXSSFWorkbook) {
-                ((SXSSFWorkbook)workbook).dispose();
+                ((SXSSFWorkbook) workbook).dispose();
             }
         } catch (Throwable t) {
             throwable = t;

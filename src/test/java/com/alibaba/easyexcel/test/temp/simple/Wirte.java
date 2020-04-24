@@ -14,6 +14,9 @@ import com.alibaba.easyexcel.test.core.large.LargeData;
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.fastjson.JSON;
 
 import net.sf.cglib.beans.BeanMap;
@@ -53,7 +56,7 @@ public class Wirte {
         String fileName = TestFileUtil.getPath() + "t22" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
-        EasyExcel.write(fileName, WriteData.class).sheet("模板").doWrite(data1());
+        EasyExcel.write(fileName, WriteData.class).sheet("模板").registerWriteHandler(new WriteHandler()).doWrite(data1());
     }
 
     @Test
@@ -73,6 +76,23 @@ public class Wirte {
         JsonData jsonData = JSON.parseObject(json, JsonData.class);
         System.out.println(JSON.toJSONString(jsonData));
 
+    }
+
+    @Test
+    public void tableWrite() {
+        String fileName = TestFileUtil.getPath() + "tableWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里直接写多个table的案例了，如果只有一个 也可以直一行代码搞定，参照其他案例
+        // 这里 需要指定写用哪个class去写
+        ExcelWriter excelWriter = EasyExcel.write(fileName).build();
+        // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+        WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+        // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
+        WriteTable writeTable0 = EasyExcel.writerTable(0).head(DemoData1.class).build();
+        // 第一次写入会创建头
+        excelWriter.write(data(), writeSheet, writeTable0);
+        // 第二次写如也会创建头，然后在第一次的后面写入数据
+        /// 千万别忘记finish 会帮忙关闭流
+        excelWriter.finish();
     }
 
     private List<List<String>> head() {

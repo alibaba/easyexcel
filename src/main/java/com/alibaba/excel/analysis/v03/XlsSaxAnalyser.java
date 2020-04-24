@@ -138,11 +138,6 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         } catch (IOException e) {
             throw new ExcelAnalysisException(e);
         }
-        // Sometimes tables lack the end record of the last column
-        if (!xlsReadContext.xlsReadSheetHolder().getCellMap().isEmpty()) {
-            // Forge a termination data
-            processRecord(new LastCellOfRowDummyRecord(xlsReadContext.xlsReadSheetHolder().getRowIndex() + 1, -1));
-        }
     }
 
     @Override
