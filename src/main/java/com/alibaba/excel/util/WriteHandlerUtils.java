@@ -234,6 +234,6 @@ public class WriteHandlerUtils {
         } else {
             writeHandlerMap = writeContext.currentWriteHolder().writeHandlerMap();
         }
-        return writeHandlerMap.get(WorkbookWriteHandler.class);
+        return writeHandlerMap.get(clazz);
     }
 }
