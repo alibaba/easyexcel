@@ -48,28 +48,28 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     /**
      * Fields to replace in the template
      */
-    private Map<String, List<AnalysisCell>> templateAnalysisCache = new HashMap<String, List<AnalysisCell>>(8);
+    private final Map<String, List<AnalysisCell>> templateAnalysisCache = new HashMap<String, List<AnalysisCell>>(8);
     /**
      * Collection fields to replace in the template
      */
-    private Map<String, List<AnalysisCell>> templateCollectionAnalysisCache =
+    private final Map<String, List<AnalysisCell>> templateCollectionAnalysisCache =
         new HashMap<String, List<AnalysisCell>>(8);
     /**
      * Style cache for collection fields
      */
-    private Map<String, Map<AnalysisCell, CellStyle>> collectionFieldStyleCache =
+    private final Map<String, Map<AnalysisCell, CellStyle>> collectionFieldStyleCache =
         new HashMap<String, Map<AnalysisCell, CellStyle>>(8);
     /**
      * Row height cache for collection
      */
-    private Map<String, Short> collectionRowHeightCache = new HashMap<String, Short>(8);
+    private final Map<String, Short> collectionRowHeightCache = new HashMap<String, Short>(8);
     /**
      * Last index cache for collection fields
      */
-    private Map<String, Map<AnalysisCell, Integer>> collectionLastIndexCache =
+    private final Map<String, Map<AnalysisCell, Integer>> collectionLastIndexCache =
         new HashMap<String, Map<AnalysisCell, Integer>>(8);
 
-    private Map<String, Integer> relativeRowIndexMap = new HashMap<String, Integer>(8);
+    private final Map<String, Integer> relativeRowIndexMap = new HashMap<String, Integer>(8);
     /**
      * The data prefix that is populated this time
      */
