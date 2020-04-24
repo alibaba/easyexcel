@@ -1,3 +1,6 @@
+# 2.2.2
+* 修改`sheet`事件未调用的bug
+
 # 2.2.1
 * 发布正式版
 * 修复第一行为空不会调用`invokeHeadMap`的bug [Issue #993](https://github.com/alibaba/easyexcel/issues/993)
