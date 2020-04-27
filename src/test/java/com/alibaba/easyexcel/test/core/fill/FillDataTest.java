@@ -147,11 +147,11 @@ public class FillDataTest {
         excelWriter.finish();
 
         List<Object> list = EasyExcel.read(file).ignoreEmptyRow(false).sheet().headRowNumber(0).doReadSync();
-        Map<String, String> map0 = (Map<String, String>)list.get(0);
+        Map<String, String> map0 = (Map<String, String>) list.get(0);
         Assert.assertEquals("张三", map0.get(21));
-        Map<String, String> map27 = (Map<String, String>)list.get(27);
+        Map<String, String> map27 = (Map<String, String>) list.get(27);
         Assert.assertEquals("张三", map27.get(0));
-        Map<String, String> map29 = (Map<String, String>)list.get(29);
+        Map<String, String> map29 = (Map<String, String>) list.get(29);
         Assert.assertEquals("张三", map29.get(3));
     }
 
@@ -168,7 +168,7 @@ public class FillDataTest {
 
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(0).doReadSync();
         Assert.assertEquals(list.size(), 5L);
-        Map<String, String> map0 = (Map<String, String>)list.get(0);
+        Map<String, String> map0 = (Map<String, String>) list.get(0);
         Assert.assertEquals("张三", map0.get(2));
     }
 
@@ -185,7 +185,7 @@ public class FillDataTest {
         excelWriter.finish();
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(3).doReadSync();
         Assert.assertEquals(list.size(), 21L);
-        Map<String, String> map19 = (Map<String, String>)list.get(19);
+        Map<String, String> map19 = (Map<String, String>) list.get(19);
         Assert.assertEquals("张三", map19.get(0));
     }
 
@@ -203,6 +203,9 @@ public class FillDataTest {
             list.add(fillData);
             fillData.setName("张三");
             fillData.setNumber(5.2);
+            if (i == 5) {
+                fillData.setName(null);
+            }
         }
         return list;
     }
