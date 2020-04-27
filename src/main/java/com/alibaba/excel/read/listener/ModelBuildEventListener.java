@@ -30,6 +30,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
     @Override
     public void invokeHead(Map<Integer, CellData> cellDataMap, AnalysisContext context) {}
 
+    //解析完一行后调用这个调用函数
     @Override
     public void invoke(Map<Integer, CellData> cellDataMap, AnalysisContext context) {
         ReadHolder currentReadHolder = context.currentReadHolder();
@@ -40,7 +41,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
         }
         context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(cellDataMap, currentReadHolder, context));
     }
-
+    //将解析出来的数据转换成用户要接受的list<string>
     private Object buildStringList(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder,
         AnalysisContext context) {
         int index = 0;
@@ -95,7 +96,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
             return list;
         }
     }
-
+    //将一个map数据转换成用户定义的bean
     private Object buildUserModel(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder,
         AnalysisContext context) {
         ExcelReadHeadProperty excelReadHeadProperty = currentReadHolder.excelReadHeadProperty();
