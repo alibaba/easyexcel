@@ -17,7 +17,11 @@ import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -36,11 +40,12 @@ public class StyleDataTest {
 
     private static File file07;
     private static File file03;
-
+    private static File file02_07;
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("style07.xlsx");
         file03 = TestFileUtil.createNewFile("style03.xls");
+        file02_07 = TestFileUtil.createNewFile("style02_07.xlsx");
     }
 
     @Test
@@ -110,7 +115,45 @@ public class StyleDataTest {
         EasyExcel.write(file07, StyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
             .doWrite(data());
     }
+    @Test
+    public void t03AbstractVerticalCellStyleStrategy02() {
+        final StyleProperty styleProperty = StyleProperty.build(StyleData.class.getAnnotation(HeadStyle.class));
+        final FontProperty fontProperty = FontProperty.build(StyleData.class.getAnnotation(HeadFontStyle.class));
+        AbstractVerticalCellStyleStrategy verticalCellStyleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            protected WriteCellStyle headCellStyle(Head head) {
+                WriteCellStyle writeCellStyle = WriteCellStyle.build(styleProperty, fontProperty);
 
+                if (head.getColumnIndex() == 0) {
+                    writeCellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+                    WriteFont writeFont = new WriteFont();
+                    writeFont.setItalic(true);
+                    writeFont.setStrikeout(true);
+                    writeFont.setTypeOffset(Font.SS_NONE);
+                    writeFont.setUnderline(Font.U_DOUBLE);
+                    writeFont.setBold(true);
+                    writeFont.setCharset((int)Font.DEFAULT_CHARSET);
+                } else {
+                    writeCellStyle.setFillForegroundColor(IndexedColors.BLUE.getIndex());
+                }
+                return writeCellStyle;
+            }
+
+            @Override
+            protected WriteCellStyle contentCellStyle(Head head) {
+                WriteCellStyle writeCellStyle = new WriteCellStyle();
+                writeCellStyle.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
+                if (head.getColumnIndex() == 0) {
+                    writeCellStyle.setFillForegroundColor(IndexedColors.DARK_GREEN.getIndex());
+                } else {
+                    writeCellStyle.setFillForegroundColor(IndexedColors.PINK.getIndex());
+                }
+                return writeCellStyle;
+            }
+        };
+        EasyExcel.write(file02_07, StyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
+            .doWrite(data());
+    }
     @Test
     public void t04LoopMergeStrategy() {
         EasyExcel.write(file07, StyleData.class).sheet().registerWriteHandler(new LoopMergeStrategy(2, 1))
