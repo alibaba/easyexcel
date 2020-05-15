@@ -1,27 +1,26 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
-import com.alibaba.excel.context.xlsx.XlsxReadContext;
+import java.util.List;
+import com.alibaba.excel.metadata.ImageData;
+import com.alibaba.excel.read.listener.ImageDataReadListener;
+
+import org.apache.poi.openxml4j.opc.PackagePart;
 import org.xml.sax.Attributes;
 
-public class ImageAnchorFromTagHandler extends XlsxTagHandler {
+/**
+ * Handle image anchor "xdr:from" tag
+ */
+public class ImageAnchorFromTagHandler extends AbstractXlsxImageTagHandler {
 
     @Override
-    public boolean support(XlsxReadContext xlsxReadContext) {
-        return false;
+    public void startElement(ImageDataReadListener imageDataListener, PackagePart packagePart, String name,
+        Attributes attributes) {
+        ImageData imageData = new ImageData();
+        imageData.setRelatedSheetName(imageDataListener.getRelatedSheetName());
+        imageData.setRelatedSheetNo(imageDataListener.getRelatedSheetNo());
+        imageData.setAnchorFromTag(true);
+        List<ImageData> imageDataList = imageDataListener.getImageDataList();
+        imageDataList.add(imageData);
     }
 
-    @Override
-    public void startElement(XlsxReadContext xlsxReadContext, String name, Attributes attributes) {
-
-    }
-
-    @Override
-    public void endElement(XlsxReadContext xlsxReadContext, String name) {
-
-    }
-
-    @Override
-    public void characters(XlsxReadContext xlsxReadContext, char[] ch, int start, int length) {
-
-    }
 }

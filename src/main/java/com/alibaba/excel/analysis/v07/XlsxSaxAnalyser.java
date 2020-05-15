@@ -54,7 +54,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
      * excel comments key: sheetNo value: CommentsTable
      */
     private Map<Integer, CommentsTable> commentsTableMap;
-    //解析excel的核心部分
+
     public XlsxSaxAnalyser(XlsxReadContext xlsxReadContext, InputStream decryptedStream) throws Exception {
         this.xlsxReadContext = xlsxReadContext;
         // Initialize cache

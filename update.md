@@ -1,7 +1,3 @@
-# 2.2.3
-* 修改填充数据空数据的bug  [Issue #1274](https://github.com/alibaba/easyexcel/issues/1274)
-* 回退自定义转换器入参为空
-
 # 2.2.2
 * 修改`sheet`事件未调用的bug
 
