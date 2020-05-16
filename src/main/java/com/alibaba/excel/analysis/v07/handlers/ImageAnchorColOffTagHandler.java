@@ -7,6 +7,8 @@ import com.alibaba.excel.read.listener.ImageDataReadListener;
 
 /**
  * Handle image anchor "xdr:colOff" tag
+ *
+ * @author Pengliang Zhao
  */
 public class ImageAnchorColOffTagHandler extends AbstractXlsxImageTagHandler {
 

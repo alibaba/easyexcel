@@ -11,8 +11,10 @@ import com.alibaba.excel.constant.ExcelXmlConstants;
 
 /**
  * Handler of workbook XML file
+ *
+ * @author Pengliang Zhao
  */
-public class WorkBookXMLHandler extends DefaultHandler {
+public class WorkBookXmlHandler extends DefaultHandler {
 
     /**
      * Keeps worksheet name and it's relationship ID with workbook.

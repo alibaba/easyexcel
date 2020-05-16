@@ -23,8 +23,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import com.alibaba.excel.analysis.v07.handlers.DrawingXMLHandler;
-import com.alibaba.excel.analysis.v07.handlers.WorkBookXMLHandler;
+import com.alibaba.excel.analysis.v07.handlers.DrawingXmlHandler;
+import com.alibaba.excel.analysis.v07.handlers.WorkBookXmlHandler;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.event.WriteHandler;
@@ -735,7 +735,7 @@ public class EasyExcelFactory {
      *            A listener to receive and process image data.
      */
     private static void readImage(OPCPackage pkg, ImageDataReadListener imageDataReadListener) {
-        WorkBookXMLHandler workBookXMLHandler = new WorkBookXMLHandler();
+        WorkBookXmlHandler workBookXMLHandler = new WorkBookXmlHandler();
         handleWorkBookXml(pkg, workBookXMLHandler);
         Map<String, String> sheetNameMap = workBookXMLHandler.getSheetNameMap();
         Map<Integer, String> sheetNoMap = workBookXMLHandler.getSheetNoMap();
@@ -797,7 +797,7 @@ public class EasyExcelFactory {
             saxFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxFactory.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
-            xmlReader.setContentHandler(new DrawingXMLHandler(packagePart, imageDataReadListener));
+            xmlReader.setContentHandler(new DrawingXmlHandler(packagePart, imageDataReadListener));
             xmlReader.parse(inputSource);
             in.close();
         } catch (SAXException e) {
@@ -824,7 +824,7 @@ public class EasyExcelFactory {
      */
     private static PackagePart getImagePkgPart(Integer sheetNo, String sheetName, OPCPackage pkg,
         ImageDataReadListener imageDataReadListener) {
-        WorkBookXMLHandler workBookXMLHandler = new WorkBookXMLHandler();
+        WorkBookXmlHandler workBookXMLHandler = new WorkBookXmlHandler();
         handleWorkBookXml(pkg, workBookXMLHandler);
         Map<Integer, String> sheetNoMap = workBookXMLHandler.getSheetNoMap();
         Map<String, String> sheetNameMap = workBookXMLHandler.getSheetNameMap();
@@ -882,7 +882,7 @@ public class EasyExcelFactory {
      * @param workBookXMLHandler
      *            A handler to process the XML file and save result.
      */
-    private static void handleWorkBookXml(OPCPackage pkg, WorkBookXMLHandler workBookXMLHandler) {
+    private static void handleWorkBookXml(OPCPackage pkg, WorkBookXmlHandler workBookXMLHandler) {
         try {
             ArrayList<PackagePart> workBookPkgList = pkg.getPartsByContentType(XSSFRelation.WORKBOOK.getContentType());
             PackagePart workBookPkg = workBookPkgList.get(0);

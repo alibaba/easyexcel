@@ -9,6 +9,8 @@ import com.alibaba.excel.metadata.ImageData;
  * A listener, keeps the image data you want to read. When a complete piece of image data was read, the processData()
  * method will be invoked. So if you want to save image data regularly, you can crate a new class which implements this
  * class and overwrite the processData() method.
+ *
+ * @author Pengliang Zhao
  */
 public class ImageDataReadListener implements Listener {
     private List<ImageData> imageDataList;

@@ -14,8 +14,10 @@ import java.util.Map;
 
 /**
  * Handle drawingX.xml file. The character 'X' represents a number. e.g. drawing1.xml
+ *
+ * @author Pengliang Zhao
  */
-public class DrawingXMLHandler extends DefaultHandler {
+public class DrawingXmlHandler extends DefaultHandler {
     private ImageDataReadListener imageDataListener;
     private static final Map<String, XlsxImageTagHandler> XLSX_IMAGE_HANDLER_MAP =
         new HashMap<String, XlsxImageTagHandler>(32);
@@ -46,7 +48,7 @@ public class DrawingXMLHandler extends DefaultHandler {
 
     }
 
-    public DrawingXMLHandler(PackagePart packagePart, ImageDataReadListener imageDataListener) {
+    public DrawingXmlHandler(PackagePart packagePart, ImageDataReadListener imageDataListener) {
         this.packagePart = packagePart;
         this.imageDataListener = imageDataListener;
     }

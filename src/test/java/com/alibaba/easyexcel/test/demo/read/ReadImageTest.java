@@ -18,6 +18,8 @@ public class ReadImageTest {
 
     /**
      * 使用文件名读图片信息，默认读所有sheet中的图片，图片数据放在imageDataList中
+     *
+     * @author Pengliang Zhao
      */
     @Test
     public void readImageWithFileNameTest() throws IOException {

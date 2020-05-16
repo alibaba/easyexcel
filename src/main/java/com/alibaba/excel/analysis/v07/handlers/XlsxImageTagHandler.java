@@ -7,6 +7,8 @@ import com.alibaba.excel.read.listener.ImageDataReadListener;
 
 /**
  * Handler of image related tags in XML file
+ *
+ * @author Pengliang Zhao
  */
 public interface XlsxImageTagHandler {
 
@@ -15,6 +17,8 @@ public interface XlsxImageTagHandler {
      *
      * @param imageDataReadListener
      *            A listener to receive and process image data.
+     * @param packagePart
+     *            Parent packagePart
      * @param name
      *            Tag name
      * @param attributes

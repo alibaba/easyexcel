@@ -10,18 +10,21 @@ import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.openxml4j.opc.PackageRelationship;
 import org.xml.sax.Attributes;
 
+import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.metadata.ImageData;
 import com.alibaba.excel.read.listener.ImageDataReadListener;
 
 /**
  * Handle image reference ID "a:blip" tag
+ *
+ * @author Pengliang Zhao
  */
 public class ImageRefIdTagHandler extends AbstractXlsxImageTagHandler {
     @Override
     public void startElement(ImageDataReadListener imageDataListener, PackagePart packagePart, String name,
         Attributes attributes) {
-        PackageRelationship imagePackageRelationship = packagePart.getRelationship(attributes.getValue("r:embed"));
+        PackageRelationship imagePackageRelationship = packagePart.getRelationship(attributes.getValue(ExcelXmlConstants.IMAGE_EMBED_TAG));
         try {
             PackagePart imagePackage = packagePart.getRelatedPart(imagePackageRelationship);
             InputStream in = imagePackage.getInputStream();

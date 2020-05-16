@@ -9,6 +9,8 @@ import org.xml.sax.Attributes;
 
 /**
  * Handle image anchor "xdr:from" tag
+ *
+ * @author Pengliang Zhao
  */
 public class ImageAnchorFromTagHandler extends AbstractXlsxImageTagHandler {
 

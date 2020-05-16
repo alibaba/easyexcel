@@ -7,6 +7,7 @@ import com.alibaba.excel.read.listener.ImageDataReadListener;
 /**
  * Abstract class for handling image related tags in a XML file
  *
+ * @author Pengliang Zhao
  */
 public abstract class AbstractXlsxImageTagHandler implements XlsxImageTagHandler {
     @Override

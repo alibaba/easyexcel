@@ -6,6 +6,8 @@ import com.alibaba.excel.read.listener.ImageDataReadListener;
 
 /**
  * Handle image anchor "xdr:col" tag
+ *
+ * @author Pengliang Zhao
  */
 public class ImageAnchorColTagHandler extends AbstractXlsxImageTagHandler {
 

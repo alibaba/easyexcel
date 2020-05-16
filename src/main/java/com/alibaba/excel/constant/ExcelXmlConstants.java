@@ -71,4 +71,6 @@ public class ExcelXmlConstants {
 
     public static final String SHEET_TAG = "sheet";
 
+    public static final String IMAGE_EMBED_TAG ="r:embed";
+
 }
