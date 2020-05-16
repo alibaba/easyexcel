@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata.property;
 
 import java.lang.reflect.Field;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -124,16 +125,16 @@ public class ExcelHeadProperty {
         Map<Integer, Field> customFieldMap = new TreeMap<Integer, Field>();
         ClassUtils.declaredFields(headClazz, defaultFieldList, customFieldMap, ignoreMap, convertAllField);
 
-        List<Pair<Field, Boolean>> exportFieldBoolPairsList = new ArrayList<Pair<Field, Boolean>>();
+        List<Map.Entry<Field, Boolean>> exportFieldBoolPairsList = new ArrayList<Map.Entry<Field, Boolean>>();
         int index = 0;
         while (customFieldMap.containsKey(index)) {
             Field field = customFieldMap.get(index);
-            Pair<Field, Boolean> fieldBooleanPair = new Pair<Field, Boolean>(field, Boolean.TRUE);
+            Map.Entry<Field, Boolean> fieldBooleanPair = new AbstractMap.SimpleEntry<Field, Boolean>(field, Boolean.TRUE);
             exportFieldBoolPairsList.add(fieldBooleanPair);
             index++;
         }
         for (Field field : defaultFieldList) {
-            Pair<Field, Boolean> fieldBoolPair = new Pair<Field, Boolean>(field, Boolean.FALSE);
+            Map.Entry<Field, Boolean> fieldBoolPair = new AbstractMap.SimpleEntry<Field, Boolean>(field, Boolean.FALSE);
             exportFieldBoolPairsList.add(fieldBoolPair);
         }
 
@@ -155,13 +156,13 @@ public class ExcelHeadProperty {
      * @param exportFieldBoolPairList Keep all the fields and the flag(which indicate whether the field order is specified)
      *                                of the head class except the ignored. It will be modified after this function is called.
      */
-    private void sortExportColumnFields(Holder holder, List<Pair<Field, Boolean>> exportFieldBoolPairList) {
+    private void sortExportColumnFields(Holder holder, List<Map.Entry<Field, Boolean>> exportFieldBoolPairList) {
         if (holder instanceof AbstractWriteHolder) {
             Collection<String> includeColumnFieldNames = ((AbstractWriteHolder) holder).getIncludeColumnFieldNames();
             if (includeColumnFieldNames != null) {
-                Map<String, Pair<Field, Boolean>> exportFieldMap = new TreeMap<String, Pair<Field, Boolean>>();
+                Map<String, Map.Entry<Field, Boolean>> exportFieldMap = new TreeMap<String, Map.Entry<Field, Boolean>>();
                 List<String> includeColumnFieldNameList = new ArrayList<String>(includeColumnFieldNames);
-                for (Pair<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
+                for (Map.Entry<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
                     if (includeColumnFieldNameList.contains(fieldBoolPair.getKey().getName())) {
                         exportFieldMap.put(fieldBoolPair.getKey().getName(), fieldBoolPair);
                     }
@@ -175,7 +176,7 @@ public class ExcelHeadProperty {
 
             Collection<Integer> includeColumnIndexes = ((AbstractWriteHolder) holder).getIncludeColumnIndexes();
             if (includeColumnIndexes != null) {
-                List<Pair<Field, Boolean>> tempFieldsList = new ArrayList<Pair<Field, Boolean>>();
+                List<Map.Entry<Field, Boolean>> tempFieldsList = new ArrayList<Map.Entry<Field, Boolean>>();
                 for (Integer includeColumnIndex : includeColumnIndexes) {
                     tempFieldsList.add(exportFieldBoolPairList.get(includeColumnIndex));
                 }
@@ -185,7 +186,7 @@ public class ExcelHeadProperty {
             }
 
             int index = 0;
-            for (Pair<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
+            for (Map.Entry<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
                 if (((AbstractWriteHolder) holder).ignore(fieldBoolPair.getKey().getName(), index)) {
                     exportFieldBoolPairList.remove(fieldBoolPair);
                 }
@@ -201,9 +202,9 @@ public class ExcelHeadProperty {
      * @param exportFieldBoolPairList Keep the fields which will be exported to excel and the flag which indicate whether
      *                                the field order in excel is specified.
      */
-    private void initColumnProperties(Holder holder, List<Pair<Field, Boolean>> exportFieldBoolPairList) {
+    private void initColumnProperties(Holder holder, List<Map.Entry<Field, Boolean>> exportFieldBoolPairList) {
         int index = 0;
-        for (Pair<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
+        for (Map.Entry<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
             initOneColumnProperty(holder, index, fieldBoolPair.getKey(), fieldBoolPair.getValue());
             index++;
         }
