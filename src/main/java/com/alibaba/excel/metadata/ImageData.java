@@ -4,6 +4,8 @@ import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 
 /**
  * Image data
+ *
+ * @author Pengliang Zhao
  */
 public class ImageData {
 
