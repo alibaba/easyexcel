@@ -739,28 +739,36 @@ public class EasyExcelFactory {
         handleWorkBookXml(pkg, workBookXMLHandler);
         Map<String, String> sheetNameMap = workBookXMLHandler.getSheetNameMap();
         Map<Integer, String> sheetNoMap = workBookXMLHandler.getSheetNoMap();
+        PackagePart workBookPkg;
+        PackagePart workSheetPkg;
+        PackageRelationshipCollection packageRelationshipCollection;
+        List<PackagePart> drawingPkgList;
+        PackagePart tempDrawingPkg;
+        PackagePart drawingPkg;
+        String sheetName = null;
+        String tempRId;
         try {
             for (Integer sheetNo : sheetNoMap.keySet()) {
                 String rId = sheetNoMap.get(sheetNo);
-                PackagePart workBookPkg = workBookXMLHandler.getWorkBookPkg();
-                PackagePart workSheetPkg = workBookPkg.getRelatedPart(workBookPkg.getRelationship(rId));
-                PackageRelationshipCollection packageRelationshipCollection =
+                workBookPkg = workBookXMLHandler.getWorkBookPkg();
+                workSheetPkg = workBookPkg.getRelatedPart(workBookPkg.getRelationship(rId));
+                packageRelationshipCollection =
                     workSheetPkg.getRelationshipsByType(XSSFRelation.DRAWINGS.getRelation());
                 if (packageRelationshipCollection.size() == 0) {
                     continue;
                 }
-                List<PackagePart> drawingPkgList = new ArrayList<PackagePart>();
-                PackagePart tempDrawingPkg;
+                drawingPkgList = new ArrayList<PackagePart>();
+
                 for (PackageRelationship packageRelationship : packageRelationshipCollection) {
                     tempDrawingPkg = workSheetPkg.getRelatedPart(packageRelationship);
                     if (tempDrawingPkg.getContentType().equals(XSSFRelation.DRAWINGS.getContentType())) {
                         drawingPkgList.add(tempDrawingPkg);
                     }
                 }
-                PackagePart drawingPkg = drawingPkgList.get(0);
-                String sheetName = null;
+                drawingPkg = drawingPkgList.get(0);
+
                 for (String it : sheetNameMap.keySet()) {
-                    String tempRId = sheetNameMap.get(it);
+                    tempRId = sheetNameMap.get(it);
                     if (tempRId.equals(rId)) {
                         sheetName = it;
                         break;
@@ -790,9 +798,10 @@ public class EasyExcelFactory {
             return;
         }
 
+        InputStream in = null;
         try {
-            InputStream in = packagePart.getInputStream();
-            InputSource inputSource = new InputSource(packagePart.getInputStream());
+            in = packagePart.getInputStream();
+            InputSource inputSource = new InputSource(in);
             SAXParserFactory saxFactory;
             saxFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxFactory.newSAXParser();
@@ -806,6 +815,14 @@ public class EasyExcelFactory {
             throw new ExcelAnalysisException(e);
         } catch (IOException e) {
             throw new ExcelAnalysisException(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    throw new ExcelAnalysisException("Can't close 'inputStream'!");
+                }
+            }
         }
     }
 
@@ -829,13 +846,14 @@ public class EasyExcelFactory {
         Map<Integer, String> sheetNoMap = workBookXMLHandler.getSheetNoMap();
         Map<String, String> sheetNameMap = workBookXMLHandler.getSheetNameMap();
         String rId = null;
+        String tempRId = null;
         if (sheetNo != null) {
             rId = sheetNoMap.get(sheetNo);
             if (rId == null) {
                 throw new ExcelAnalysisException("The sheetNo parameter is not correct!");
             }
             for (String it : sheetNameMap.keySet()) {
-                String tempRId = sheetNameMap.get(it);
+                tempRId = sheetNameMap.get(it);
                 if (tempRId.equals(rId)) {
                     sheetName = it;
                     break;
@@ -847,7 +865,7 @@ public class EasyExcelFactory {
                 throw new ExcelAnalysisException("The sheetName parameter is not correct!");
             }
             for (Integer it : sheetNoMap.keySet()) {
-                String tempRId = sheetNoMap.get(it);
+                tempRId = sheetNoMap.get(it);
                 if (tempRId.equals(rId)) {
                     sheetNo = it;
                     break;
@@ -883,12 +901,13 @@ public class EasyExcelFactory {
      *            A handler to process the XML file and save result.
      */
     private static void handleWorkBookXml(OPCPackage pkg, WorkBookXmlHandler workBookXMLHandler) {
+        InputStream in = null;
         try {
             ArrayList<PackagePart> workBookPkgList = pkg.getPartsByContentType(XSSFRelation.WORKBOOK.getContentType());
             PackagePart workBookPkg = workBookPkgList.get(0);
             workBookXMLHandler.setWorkBookPkg(workBookPkg);
 
-            InputStream in = workBookPkg.getInputStream();
+            in = workBookPkg.getInputStream();
             InputSource inputSource = new InputSource(in);
             SAXParserFactory saxFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxFactory.newSAXParser();
@@ -903,6 +922,14 @@ public class EasyExcelFactory {
             throw new ExcelAnalysisException(e);
         } catch (IOException e) {
             throw new ExcelAnalysisException(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    throw new ExcelAnalysisException("Can't close 'inputStream'!");
+                }
+            }
         }
     }
 

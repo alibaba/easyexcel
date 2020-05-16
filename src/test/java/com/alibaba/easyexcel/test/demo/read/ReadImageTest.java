@@ -39,7 +39,7 @@ public class ReadImageTest {
         ImageDataReadListener imageDataReadListener = new ImageDataReadListener(imageDataList);
         File imageFile = new File(fileName);
         InputStream in = new FileInputStream(imageFile);
-        EasyExcel.readImage(in, 1, imageDataReadListener);
+        EasyExcel.readImage(in, imageDataReadListener);
         in.close();
     }
 
