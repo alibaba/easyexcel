@@ -26,8 +26,6 @@ import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 
-import javafx.util.Pair;
-
 /**
  * Define the header attribute of excel
  *
@@ -77,7 +75,7 @@ public class ExcelHeadProperty {
             int headIndex = 0;
             for (int i = 0; i < head.size(); i++) {
                 if (holder instanceof AbstractWriteHolder) {
-                    if (((AbstractWriteHolder) holder).ignore(null, i)) {
+                    if (((AbstractWriteHolder)holder).ignore(null, i)) {
                         continue;
                     }
                 }
@@ -129,7 +127,8 @@ public class ExcelHeadProperty {
         int index = 0;
         while (customFieldMap.containsKey(index)) {
             Field field = customFieldMap.get(index);
-            Map.Entry<Field, Boolean> fieldBooleanPair = new AbstractMap.SimpleEntry<Field, Boolean>(field, Boolean.TRUE);
+            Map.Entry<Field, Boolean> fieldBooleanPair =
+                new AbstractMap.SimpleEntry<Field, Boolean>(field, Boolean.TRUE);
             exportFieldBoolPairsList.add(fieldBooleanPair);
             index++;
         }
@@ -148,19 +147,22 @@ public class ExcelHeadProperty {
     }
 
     /**
-     * Give the field and flag pair list and arrange them in the specified order according to the user's settings.
-     * The field is what the user want to export to excel, the flag indicates whether the order of the field in excel is
+     * Give the field and flag pair list and arrange them in the specified order according to the user's settings. The
+     * field is what the user want to export to excel, the flag indicates whether the order of the field in excel is
      * specified.
      *
-     * @param holder                  Write holder which keeps the parameters of a sheet.
-     * @param exportFieldBoolPairList Keep all the fields and the flag(which indicate whether the field order is specified)
-     *                                of the head class except the ignored. It will be modified after this function is called.
+     * @param holder
+     *            Write holder which keeps the parameters of a sheet.
+     * @param exportFieldBoolPairList
+     *            Keep all the fields and the flag(which indicate whether the field order is specified) of the head
+     *            class except the ignored. It will be modified after this function is called.
      */
     private void sortExportColumnFields(Holder holder, List<Map.Entry<Field, Boolean>> exportFieldBoolPairList) {
         if (holder instanceof AbstractWriteHolder) {
-            Collection<String> includeColumnFieldNames = ((AbstractWriteHolder) holder).getIncludeColumnFieldNames();
+            Collection<String> includeColumnFieldNames = ((AbstractWriteHolder)holder).getIncludeColumnFieldNames();
             if (includeColumnFieldNames != null) {
-                Map<String, Map.Entry<Field, Boolean>> exportFieldMap = new TreeMap<String, Map.Entry<Field, Boolean>>();
+                Map<String, Map.Entry<Field, Boolean>> exportFieldMap =
+                    new TreeMap<String, Map.Entry<Field, Boolean>>();
                 List<String> includeColumnFieldNameList = new ArrayList<String>(includeColumnFieldNames);
                 for (Map.Entry<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
                     if (includeColumnFieldNameList.contains(fieldBoolPair.getKey().getName())) {
@@ -174,7 +176,7 @@ public class ExcelHeadProperty {
                 return;
             }
 
-            Collection<Integer> includeColumnIndexes = ((AbstractWriteHolder) holder).getIncludeColumnIndexes();
+            Collection<Integer> includeColumnIndexes = ((AbstractWriteHolder)holder).getIncludeColumnIndexes();
             if (includeColumnIndexes != null) {
                 List<Map.Entry<Field, Boolean>> tempFieldsList = new ArrayList<Map.Entry<Field, Boolean>>();
                 for (Integer includeColumnIndex : includeColumnIndexes) {
@@ -187,7 +189,7 @@ public class ExcelHeadProperty {
 
             int index = 0;
             for (Map.Entry<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
-                if (((AbstractWriteHolder) holder).ignore(fieldBoolPair.getKey().getName(), index)) {
+                if (((AbstractWriteHolder)holder).ignore(fieldBoolPair.getKey().getName(), index)) {
                     exportFieldBoolPairList.remove(fieldBoolPair);
                 }
                 index++;
@@ -198,9 +200,11 @@ public class ExcelHeadProperty {
     /**
      * Initialize column properties.
      *
-     * @param holder                  Write holder which keeps the parameters of a sheet.
-     * @param exportFieldBoolPairList Keep the fields which will be exported to excel and the flag which indicate whether
-     *                                the field order in excel is specified.
+     * @param holder
+     *            Write holder which keeps the parameters of a sheet.
+     * @param exportFieldBoolPairList
+     *            Keep the fields which will be exported to excel and the flag which indicate whether the field order in
+     *            excel is specified.
      */
     private void initColumnProperties(Holder holder, List<Map.Entry<Field, Boolean>> exportFieldBoolPairList) {
         int index = 0;
@@ -221,7 +225,7 @@ public class ExcelHeadProperty {
      */
     private boolean initOneColumnProperty(Holder holder, int index, Field field, Boolean forceIndex) {
         if (holder instanceof AbstractWriteHolder) {
-            if (((AbstractWriteHolder) holder).ignore(field.getName(), index)) {
+            if (((AbstractWriteHolder)holder).ignore(field.getName(), index)) {
                 return true;
             }
         }
