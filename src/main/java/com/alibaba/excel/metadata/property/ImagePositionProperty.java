@@ -3,7 +3,9 @@ package com.alibaba.excel.metadata.property;
 import com.alibaba.excel.annotation.write.style.ImagePosition;
 
 /**
- * Keep the information of image position from an annotation.
+ * Keep the image position information from an annotation.
+ *
+ * @author Pengliang Zhao
  */
 public class ImagePositionProperty {
 
@@ -52,7 +54,8 @@ public class ImagePositionProperty {
             return null;
         }
         return new ImagePositionProperty(imagePosition.dx1(), imagePosition.dy1(), imagePosition.dx2(),
-            imagePosition.dy2(), imagePosition.col1(), imagePosition.row1(), imagePosition.col2(), imagePosition.row2());
+            imagePosition.dy2(), imagePosition.col1(), imagePosition.row1(), imagePosition.col2(),
+            imagePosition.row2());
     }
 
     public ImagePositionProperty(int dx1, int dy1, int dx2, int dy2, short col1, int row1, short col2, int row2) {
