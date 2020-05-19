@@ -3,6 +3,7 @@ package com.alibaba.excel.analysis.v03.handlers;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.alibaba.excel.enums.RowTypeEnum;
 import org.apache.poi.hssf.model.HSSFFormulaParser;
 import org.apache.poi.hssf.record.FormulaRecord;
 import org.apache.poi.hssf.record.Record;
@@ -76,5 +77,6 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
                 cellMap.put((int)frec.getColumn(), tempCellData);
                 break;
         }
+        xlsReadContext.xlsReadSheetHolder().setTempRowType(RowTypeEnum.DATA);
     }
 }
