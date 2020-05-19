@@ -17,13 +17,13 @@ import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
  * @author Pengliang Zhao
  */
 public class SimpleVerticalCellStyleStrategy extends AbstractVerticalCellStyleStrategy {
-    private StyleProperty styleProperty = StyleProperty.build(StyleOtherData.class.getAnnotation(ContentStyle.class));
-    private FontProperty fontProperty = FontProperty.build(StyleOtherData.class.getAnnotation(ContentFontStyle.class));
+    private StyleProperty styleProperty = StyleProperty.build(AnnotationStyleData.class.getAnnotation(ContentStyle.class));
+    private FontProperty fontProperty = FontProperty.build(AnnotationStyleData.class.getAnnotation(ContentFontStyle.class));
 
     @Override
     protected WriteCellStyle headCellStyle(Head head) {
         WriteCellStyle writeCellStyle = WriteCellStyle.build(styleProperty, fontProperty);
-        if(head.getColumnIndex() == 0) {
+        if (head.getColumnIndex() == 0) {
             writeCellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
             WriteFont writeFont = new WriteFont();
             writeFont.setItalic(true);

@@ -132,23 +132,22 @@ public class StyleDataTest {
     @Test
     public void t05AbstractVerticalCellStyleStrategy03() {
         AbstractVerticalCellStyleStrategy verticalCellStyleStrategy = new SimpleVerticalCellStyleStrategy();
-        EasyExcel.write(file04, StyleOtherData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
+        EasyExcel.write(file04, AnnotationStyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
             .doWrite(data1());
     }
 
     @Test
-    public void  t06longestMatchColumnWidthStyleStrategy() {
-        EasyExcel.write(file05, StyleData.class)
-            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet("模板").doWrite(data());
+    public void t06longestMatchColumnWidthStyleStrategy() {
+        EasyExcel.write(file05, StyleData.class).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+            .sheet("模板").doWrite(data());
     }
 
     @Test
     public void t07loopMergeStrategy() {
-        LoopMergeProperty loopMergeProperty = new LoopMergeProperty(1,2);
+        LoopMergeProperty loopMergeProperty = new LoopMergeProperty(1, 2);
         loopMergeProperty.setEachRow(2);
         loopMergeProperty.setColumnExtend(1);
-        EasyExcel.write(file06, LoopMergeData.class)
-            .registerWriteHandler(new LoopMergeStrategy(loopMergeProperty, 1))
+        EasyExcel.write(file06, LoopMergeData.class).registerWriteHandler(new LoopMergeStrategy(loopMergeProperty, 1))
             .sheet("模板").doWrite(data2());
     }
 
@@ -157,9 +156,10 @@ public class StyleDataTest {
         OnceAbsoluteMerge onceAbsoluteMerge = OnceAbsoluteMergeData.class.getAnnotation(OnceAbsoluteMerge.class);
         OnceAbsoluteMergeProperty onceAbsoluteMergeProperty = OnceAbsoluteMergeProperty.build(onceAbsoluteMerge);
         OnceAbsoluteMergeStrategy onceAbsoluteMergeStrategy = new OnceAbsoluteMergeStrategy(onceAbsoluteMergeProperty);
-        EasyExcel.write(file08, OnceAbsoluteMergeData.class)
-            .registerWriteHandler(onceAbsoluteMergeStrategy).sheet("模板").doWrite(data3());
+        EasyExcel.write(file08, OnceAbsoluteMergeData.class).registerWriteHandler(onceAbsoluteMergeStrategy).sheet("模板")
+            .doWrite(data3());
     }
+
     private void readAndWrite(File file) {
         SimpleColumnWidthStyleStrategy simpleColumnWidthStyleStrategy = new SimpleColumnWidthStyleStrategy(50);
         SimpleRowHeightStyleStrategy simpleRowHeightStyleStrategy =
@@ -199,12 +199,12 @@ public class StyleDataTest {
         return list;
     }
 
-    private List<StyleOtherData> data1() {
-        List<StyleOtherData> list = new ArrayList<StyleOtherData>();
-        StyleOtherData data = new StyleOtherData();
+    private List<AnnotationStyleData> data1() {
+        List<AnnotationStyleData> list = new ArrayList<AnnotationStyleData>();
+        AnnotationStyleData data = new AnnotationStyleData();
         data.setString("字符串0");
         data.setString1("字符串01");
-        StyleOtherData data1 = new StyleOtherData();
+        AnnotationStyleData data1 = new AnnotationStyleData();
         data1.setString("字符串1");
         data1.setString1("字符串11");
         list.add(data);
@@ -218,7 +218,7 @@ public class StyleDataTest {
             LoopMergeData loopMergeData = new LoopMergeData();
             loopMergeData.setCategory("洗漱用品");
             loopMergeData.setTowel("毛巾");
-            loopMergeData.setSize("10" + 1 + "#");
+            loopMergeData.setSize("10" + i + "#");
             list.add(loopMergeData);
         }
         return list;
@@ -230,7 +230,7 @@ public class StyleDataTest {
             OnceAbsoluteMergeData onceAbsoluteMergeData = new OnceAbsoluteMergeData();
             onceAbsoluteMergeData.setCategory("洗漱用品");
             onceAbsoluteMergeData.setTowel("毛巾");
-            onceAbsoluteMergeData.setSize("10" + 1 + "#");
+            onceAbsoluteMergeData.setSize("10" + i + "#");
             list.add(onceAbsoluteMergeData);
         }
         return list;
