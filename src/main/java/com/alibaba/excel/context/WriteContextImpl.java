@@ -163,14 +163,14 @@ public class WriteContextImpl implements WriteContext {
         Sheet currentSheet;
         try {
             if (writeSheetHolder.getSheetNo() != null) {
-                int realSheetNo = writeSheetHolder.getSheetNo();
                 // When the add default sort order of appearance
                 if (WriteTypeEnum.ADD.equals(writeType)) {
                     currentSheet = createSheet();
                 } else {
-                    currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(realSheetNo);
+                    currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(writeSheetHolder.getSheetNo());
                     writeSheetHolder
-                        .setCachedSheet(writeWorkbookHolder.getCachedWorkbook().getSheetAt(realSheetNo));
+                        .setCachedSheet(
+                            writeWorkbookHolder.getCachedWorkbook().getSheetAt(writeSheetHolder.getSheetNo()));
                 }
             } else {
                 // sheet name must not null
