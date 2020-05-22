@@ -1,7 +1,7 @@
 # 2.2.4
 * 撤销删除`AbstractMergeStrategy`
 * 修改默认用String读取数字不使用科学计数法 通过`useScientificFormat`修改
-
+* 修复07版仅有样式的空行 默认不忽略的bug
 
 # 2.2.3
 * 修改填充数据空数据的bug  [Issue #1274](https://github.com/alibaba/easyexcel/issues/1274)

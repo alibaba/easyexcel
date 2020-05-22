@@ -10,6 +10,7 @@ import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
+import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.PositionUtils;
 
 /**
@@ -39,7 +40,9 @@ public class RowTagHandler extends AbstractXlsxTagHandler {
     @Override
     public void endElement(XlsxReadContext xlsxReadContext, String name) {
         XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
-        xlsxReadContext.readRowHolder(new ReadRowHolder(xlsxReadSheetHolder.getRowIndex(), RowTypeEnum.DATA,
+        RowTypeEnum rowType =
+            CollectionUtils.isEmpty(xlsxReadSheetHolder.getCellMap()) ? RowTypeEnum.EMPTY : RowTypeEnum.DATA;
+        xlsxReadContext.readRowHolder(new ReadRowHolder(xlsxReadSheetHolder.getRowIndex(), rowType,
             xlsxReadSheetHolder.getGlobalConfiguration(), xlsxReadSheetHolder.getCellMap()));
         xlsxReadContext.analysisEventProcessor().endRow(xlsxReadContext);
         xlsxReadSheetHolder.setColumnIndex(null);
