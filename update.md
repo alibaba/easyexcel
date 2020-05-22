@@ -3,7 +3,7 @@
 * 修改默认用String读取数字不使用科学计数法 通过`useScientificFormat`修改
 * 修复07版仅有样式的空行 默认不忽略的bug
 * 写入`sheet`不设置`index`和`name`默认不为0的问题
-* 修复多个`sheet`不按照顺序写入 会错误的bug [Issue #1332](https://github.com/alibaba/easyexcel/issues/1332)
+* 修复多个`sheet`不按照顺序写入 会乱序的bug [Issue #1332](https://github.com/alibaba/easyexcel/issues/1332)
 
 
 # 2.2.3
