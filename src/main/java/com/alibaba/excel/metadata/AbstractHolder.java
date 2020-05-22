@@ -68,6 +68,7 @@ public abstract class AbstractHolder implements ConfigurationHolder {
         } else {
             globalConfiguration.setLocale(basicParameter.getLocale());
         }
+
     }
 
     public Boolean getNewInitialization() {

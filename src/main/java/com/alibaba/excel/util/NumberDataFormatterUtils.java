@@ -1,6 +1,6 @@
 package com.alibaba.excel.util;
 
-import com.alibaba.excel.metadata.DataFormatter;
+import com.alibaba.excel.metadata.format.DataFormatter;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 
 /**
@@ -9,6 +9,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
  * @author Jiaju Zhuang
  **/
 public class NumberDataFormatterUtils {
+
     /**
      * Cache DataFormatter.
      */
@@ -18,8 +19,7 @@ public class NumberDataFormatterUtils {
      * Format number data.
      *
      * @param data
-     * @param dataFormat
-     *            Not null.
+     * @param dataFormat          Not null.
      * @param dataFormatString
      * @param globalConfiguration
      * @return
@@ -28,12 +28,7 @@ public class NumberDataFormatterUtils {
         GlobalConfiguration globalConfiguration) {
         DataFormatter dataFormatter = DATA_FORMATTER_THREAD_LOCAL.get();
         if (dataFormatter == null) {
-            if (globalConfiguration != null) {
-                dataFormatter =
-                    new DataFormatter(globalConfiguration.getLocale(), globalConfiguration.getUse1904windowing());
-            } else {
-                dataFormatter = new DataFormatter();
-            }
+            dataFormatter = new DataFormatter(globalConfiguration);
             DATA_FORMATTER_THREAD_LOCAL.set(dataFormatter);
         }
         return dataFormatter.format(data, dataFormat, dataFormatString);

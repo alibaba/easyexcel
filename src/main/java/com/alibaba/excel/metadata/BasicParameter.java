@@ -41,6 +41,13 @@ public class BasicParameter {
      */
     private Locale locale;
 
+    /**
+     * Whether to use scientific Format.
+     *
+     * default is false
+     */
+    private Boolean useScientificFormat;
+
     public List<List<String>> getHead() {
         return head;
     }
@@ -87,5 +94,13 @@ public class BasicParameter {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public Boolean getUseScientificFormat() {
+        return useScientificFormat;
+    }
+
+    public void setUseScientificFormat(Boolean useScientificFormat) {
+        this.useScientificFormat = useScientificFormat;
     }
 }

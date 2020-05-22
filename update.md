@@ -1,5 +1,6 @@
 # 2.2.4
 * 撤销删除`AbstractMergeStrategy`
+* 修改默认用String读取数字不使用科学计数法 通过`useScientificFormat`修改
 
 
 # 2.2.3
