@@ -112,6 +112,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private Boolean writeExcelOnException;
 
+
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
         this.writeWorkbook = writeWorkbook;

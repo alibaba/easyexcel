@@ -32,7 +32,7 @@ public class Lock2Test {
 
     @Test
     public void test() throws Exception {
-        File file = TestFileUtil.readUserHomeFile("test/test2style.xls");
+        File file = TestFileUtil.readUserHomeFile("test/test.xlsx");
 
         List<Object> list = EasyExcel.read(file).ignoreEmptyRow(true).sheet().headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
