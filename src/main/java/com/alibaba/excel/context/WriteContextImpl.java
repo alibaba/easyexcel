@@ -129,7 +129,7 @@ public class WriteContextImpl implements WriteContext {
             sheetNo = 0;
         }
         if (sheetNo != null) {
-            writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheetIndexMap().get(writeSheet.getSheetNo());
+            writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheetIndexMap().get(sheetNo);
         }
         if (writeSheetHolder == null && !StringUtils.isEmpty(writeSheet.getSheetName())) {
             writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheetNameMap().get(writeSheet.getSheetName());
