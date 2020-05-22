@@ -1,3 +1,7 @@
+# 2.2.4
+* 撤销删除`AbstractMergeStrategy`
+
+
 # 2.2.3
 * 修改填充数据空数据的bug  [Issue #1274](https://github.com/alibaba/easyexcel/issues/1274)
 * 回退自定义转换器入参为空
