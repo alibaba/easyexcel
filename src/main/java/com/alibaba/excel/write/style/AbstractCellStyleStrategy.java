@@ -50,7 +50,7 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
     @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
         List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        if (isHead == null || head == null) {
+        if (isHead == null) {
             return;
         }
         if (isHead) {

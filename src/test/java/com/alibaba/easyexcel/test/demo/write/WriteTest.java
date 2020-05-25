@@ -297,6 +297,14 @@ public class WriteTest {
     @Test
     public void handlerStyleWrite() {
         String fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = newHorizontalCellStyleStrategy();
+
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(horizontalCellStyleStrategy).sheet("模板")
+            .doWrite(data());
+    }
+
+    private HorizontalCellStyleStrategy newHorizontalCellStyleStrategy() {
         // 头的策略
         WriteCellStyle headWriteCellStyle = new WriteCellStyle();
         // 背景设置为红色
@@ -315,12 +323,7 @@ public class WriteTest {
         contentWriteFont.setFontHeightInPoints((short)20);
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
-        HorizontalCellStyleStrategy horizontalCellStyleStrategy =
-            new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
-
-        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(horizontalCellStyleStrategy).sheet("模板")
-            .doWrite(data());
+        return new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
     }
 
     /**
@@ -392,6 +395,7 @@ public class WriteTest {
         EasyExcel.write(fileName)
             // 这里放入动态头
             .head(head()).sheet("模板")
+            .registerWriteHandler(newHorizontalCellStyleStrategy())
             // 当然这里数据也可以用 List<List<String>> 去传入
             .doWrite(data());
     }
