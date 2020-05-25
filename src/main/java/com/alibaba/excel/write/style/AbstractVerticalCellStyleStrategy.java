@@ -12,7 +12,6 @@ import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 /**
- *
  * Use the same style for the column
  *
  * @author Jiaju Zhuang
@@ -30,6 +29,9 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
 
     @Override
     protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        if (head == null) {
+            return;
+        }
         int columnIndex = head.getColumnIndex();
         if (headCellStyleCache.containsKey(columnIndex)) {
             CellStyle cellStyle = headCellStyleCache.get(columnIndex);
@@ -50,6 +52,9 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
 
     @Override
     protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        if (head == null) {
+            return;
+        }
         int columnIndex = head.getColumnIndex();
         if (contentCellStyleCache.containsKey(columnIndex)) {
             CellStyle cellStyle = contentCellStyleCache.get(columnIndex);
@@ -71,8 +76,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
     /**
      * Returns the column width corresponding to each column head
      *
-     * @param head
-     *            Nullable
+     * @param head Nullable
      * @return
      */
     protected abstract WriteCellStyle headCellStyle(Head head);
@@ -80,8 +84,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
     /**
      * Returns the column width corresponding to each column head
      *
-     * @param head
-     *            Nullable
+     * @param head Nullable
      * @return
      */
     protected abstract WriteCellStyle contentCellStyle(Head head);

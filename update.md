@@ -4,6 +4,7 @@
 * 修复07版仅有样式的空行 默认不忽略的bug
 * 写入`sheet`不设置`index`和`name`默认不为0的问题
 * 修复多个`sheet`不按照顺序写入 会乱序的bug [Issue #1332](https://github.com/alibaba/easyexcel/issues/1332)
+* 修改head是List时，内容单元格的样式不生效 [Issue #1339](https://github.com/alibaba/easyexcel/issues/1339)
 
 
 # 2.2.3

@@ -22,6 +22,7 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
  * @author Jiaju Zhuang
  */
 public abstract class AbstractCellStyleStrategy implements CellWriteHandler, WorkbookWriteHandler, NotRepeatExecutor {
+
     boolean hasInitialized = false;
 
     @Override
@@ -50,7 +51,7 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
     @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
         List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        if (isHead == null || head == null) {
+        if (isHead == null) {
             return;
         }
         if (isHead) {
