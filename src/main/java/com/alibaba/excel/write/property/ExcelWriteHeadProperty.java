@@ -66,7 +66,8 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             Integer index = entry.getKey();
             ExcelContentProperty excelContentPropertyData = entry.getValue();
             if (excelContentPropertyData == null) {
-                throw new IllegalArgumentException("Passing in the class and list the head, the two must be the same size.");
+                throw new IllegalArgumentException(
+                    "Passing in the class and list the head, the two must be the same size.");
             }
             Field field = excelContentPropertyData.getField();
             Head headData = getHeadMap().get(index);
@@ -180,7 +181,8 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 if (j == lastRow && i == lastCol) {
                     continue;
                 }
-                cellRangeList.add(new CellRange(j, lastRow, i, lastCol));
+                cellRangeList
+                    .add(new CellRange(j, lastRow, head.getColumnIndex(), headList.get(lastCol).getColumnIndex()));
             }
         }
         return cellRangeList;

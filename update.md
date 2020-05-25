@@ -6,6 +6,7 @@
 * 修复多个`sheet`不按照顺序写入 会乱序的bug [Issue #1332](https://github.com/alibaba/easyexcel/issues/1332)
 * 修改head是List时，内容单元格的样式不生效 [Issue #1339](https://github.com/alibaba/easyexcel/issues/1339)
 * 新增写入`class`和`list`同时传入 `field`数量不一致报错 [Issue #1333](https://github.com/alibaba/easyexcel/issues/1333)
+* 修复复杂表头不是`index=0`开始 合并异常的bug [Issue #1322](https://github.com/alibaba/easyexcel/issues/1322)
 
 
 # 2.2.3
