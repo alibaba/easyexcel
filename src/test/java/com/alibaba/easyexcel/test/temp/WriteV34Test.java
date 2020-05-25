@@ -54,7 +54,7 @@ public class WriteV34Test {
             new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
 
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName).head(head()).registerWriteHandler(horizontalCellStyleStrategy).sheet("模板")
+        EasyExcel.write(fileName,DemoData.class).head(head()).registerWriteHandler(horizontalCellStyleStrategy).sheet("模板")
             .doWrite(data(1));
     }
 
@@ -63,13 +63,18 @@ public class WriteV34Test {
         List<List<String>> list = new ArrayList<List<String>>();
         List<String> head0 = new ArrayList<String>();
         head0.add("字符串" + System.currentTimeMillis());
+        head0.add("再找找");
         List<String> head1 = new ArrayList<String>();
         head1.add("数字" + System.currentTimeMillis());
         List<String> head2 = new ArrayList<String>();
         head2.add("日期" + System.currentTimeMillis());
+        List<String> head3 = new ArrayList<String>();
+        head3.add("日期" + System.currentTimeMillis());
         list.add(head0);
         list.add(head1);
-        list.add(head2);
+        list.add(head2);        list.add(head3);
+
+
         return list;
     }
 
