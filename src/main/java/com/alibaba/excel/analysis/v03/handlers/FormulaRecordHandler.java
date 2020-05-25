@@ -14,6 +14,7 @@ import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.metadata.CellData;
 
@@ -43,6 +44,7 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
         }
         tempCellData.setFormula(Boolean.TRUE);
         tempCellData.setFormulaValue(formulaValue);
+        xlsReadContext.xlsReadSheetHolder().setTempRowType(RowTypeEnum.DATA);
         switch (cellType) {
             case STRING:
                 // Formula result is a string
