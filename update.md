@@ -7,7 +7,7 @@
 * 修改head是List时，内容单元格的样式不生效 [Issue #1339](https://github.com/alibaba/easyexcel/issues/1339)
 * 修复xls仅公式行 不读取的bug [Issue #1324](https://github.com/alibaba/easyexcel/issues/1324)
 * 修复xls直接读取第2页 `NPE` 的bug [Issue #1280](https://github.com/alibaba/easyexcel/issues/1280)
-
+* 修复填充的时候，最后一行中间有空行会创建失败的bug
 
 # 2.2.3
 * 修改填充数据空数据的bug  [Issue #1274](https://github.com/alibaba/easyexcel/issues/1274)
