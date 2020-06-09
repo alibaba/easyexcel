@@ -303,7 +303,13 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (fillConfig.getForceNewRow()) {
                     row = cachedSheet.createRow(lastRowIndex);
                 } else {
-                    row = sheet.createRow(lastRowIndex);
+                    // The last row of the middle disk inside empty rows, resulting in cachedSheet can not get inside.
+                    // Will throw Attempting to write a row[" + rownum + "] " + "in the range [0," + this._sh.getLastRowNum() + "] that is already written to disk.
+                    try{
+                        row = sheet.createRow(lastRowIndex);
+                    }catch (IllegalArgumentException ignore){
+                        row = cachedSheet.createRow(lastRowIndex);
+                    }
                 }
                 checkRowHeight(analysisCell, fillConfig, isOriginalCell, row);
                 WriteHandlerUtils.afterRowCreate(writeContext, row, null, Boolean.FALSE);
