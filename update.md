@@ -8,6 +8,7 @@
 * 修复xls仅公式行 不读取的bug [Issue #1324](https://github.com/alibaba/easyexcel/issues/1324)
 * 修复xls直接读取第2页 `NPE` 的bug [Issue #1280](https://github.com/alibaba/easyexcel/issues/1280)
 * 修复填充的时候，最后一行中间有空行会创建失败的bug
+* 修复`includeColumnIndexes`不包含第列 会无法导出数据的bug [Issue #1346](https://github.com/alibaba/easyexcel/issues/1346)
 
 # 2.2.3
 * 修改填充数据空数据的bug  [Issue #1274](https://github.com/alibaba/easyexcel/issues/1274)

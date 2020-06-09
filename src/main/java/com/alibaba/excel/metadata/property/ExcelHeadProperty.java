@@ -73,7 +73,7 @@ public class ExcelHeadProperty {
             int headIndex = 0;
             for (int i = 0; i < head.size(); i++) {
                 if (holder instanceof AbstractWriteHolder) {
-                    if (((AbstractWriteHolder)holder).ignore(null, i)) {
+                    if (((AbstractWriteHolder) holder).ignore(null, i)) {
                         continue;
                     }
                 }
@@ -130,9 +130,8 @@ public class ExcelHeadProperty {
                     index++;
                 }
             }
-            if (!initOneColumnProperty(holder, index, field, Boolean.FALSE)) {
-                index++;
-            }
+            initOneColumnProperty(holder, index, field, Boolean.FALSE);
+            index++;
         }
         for (Map.Entry<Integer, Field> entry : customFiledMap.entrySet()) {
             initOneColumnProperty(holder, entry.getKey(), entry.getValue(), Boolean.TRUE);
@@ -151,7 +150,7 @@ public class ExcelHeadProperty {
      */
     private boolean initOneColumnProperty(Holder holder, int index, Field field, Boolean forceIndex) {
         if (holder instanceof AbstractWriteHolder) {
-            if (((AbstractWriteHolder)holder).ignore(field.getName(), index)) {
+            if (((AbstractWriteHolder) holder).ignore(field.getName(), index)) {
                 return true;
             }
         }
