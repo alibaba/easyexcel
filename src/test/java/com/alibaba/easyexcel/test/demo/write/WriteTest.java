@@ -387,7 +387,7 @@ public class WriteTest {
         // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = null;
         try {
-            excelWriter=EasyExcel.write(fileName, DemoData.class).build();
+            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
             // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
             WriteSheet writeSheet = EasyExcel.writerSheet("模板").needHead(Boolean.FALSE).build();
             // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
