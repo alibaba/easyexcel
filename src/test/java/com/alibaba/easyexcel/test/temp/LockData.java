@@ -1,5 +1,7 @@
 package com.alibaba.easyexcel.test.temp;
 
+import com.alibaba.excel.annotation.format.NumberFormat;
+
 import lombok.Data;
 
 /**
@@ -9,7 +11,8 @@ import lombok.Data;
  **/
 @Data
 public class LockData {
-    private String string0;
+    @NumberFormat("#.##%")
+    private Double string0;
     private String string1;
     private String string2;
     private String string3;

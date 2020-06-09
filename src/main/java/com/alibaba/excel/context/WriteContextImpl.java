@@ -124,8 +124,8 @@ public class WriteContextImpl implements WriteContext {
 
     private boolean selectSheetFromCache(WriteSheet writeSheet) {
         writeSheetHolder = null;
-        Integer sheetNo = null;
-        if (writeSheet.getSheetNo() == null && StringUtils.isEmpty(writeSheet.getSheetName())) {
+        Integer sheetNo = writeSheet.getSheetNo();
+        if (sheetNo == null && StringUtils.isEmpty(writeSheet.getSheetName())) {
             sheetNo = 0;
         }
         if (sheetNo != null) {

@@ -18,16 +18,16 @@ import com.alibaba.fastjson.JSON;
  *
  * @author Jiaju Zhuang
  */
-public class LockDataListener extends AnalysisEventListener<Map<Integer, CellData>> {
+public class LockDataListener extends AnalysisEventListener<LockData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoDataListener.class);
     /**
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 5;
-    List<Map<Integer, CellData>> list = new ArrayList<Map<Integer, CellData>>();
+    List<LockData> list = new ArrayList<LockData>();
 
     @Override
-    public void invoke(Map<Integer, CellData> data, AnalysisContext context) {
+    public void invoke(LockData data, AnalysisContext context) {
         LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
         list.add(data);
         if (list.size() >= BATCH_COUNT) {

@@ -17,6 +17,7 @@ import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
@@ -37,8 +38,10 @@ public class WriteV33Test {
     public void test() throws Exception {
         // 方法2 如果写到不同的sheet 同一个对象
         String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        OnceAbsoluteMergeStrategy onceAbsoluteMergeStrategy = new OnceAbsoluteMergeStrategy(2, 2, 0, 1);
+
         // 这里 指定文件
-        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).registerWriteHandler(onceAbsoluteMergeStrategy).build();
         WriteSheet writeSheet1 = EasyExcel.writerSheet(1, "模板1").build();
         WriteSheet writeSheet2 = EasyExcel.writerSheet(2, "模板2").build();
         WriteSheet writeSheet3 = EasyExcel.writerSheet(3, "模板3").build();
