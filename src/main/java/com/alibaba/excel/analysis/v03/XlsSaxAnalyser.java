@@ -147,7 +147,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
             return;
         }
         boolean ignoreRecord = (handler instanceof IgnorableXlsRecordHandler)
-            && xlsReadContext.xlsReadSheetHolder() != null && xlsReadContext.xlsReadSheetHolder().getIgnoreRecord();
+            && xlsReadContext.xlsReadSheetHolder() != null && xlsReadContext.xlsReadWorkbookHolder().getIgnoreRecord();
         if (ignoreRecord) {
             // No need to read the current sheet
             return;

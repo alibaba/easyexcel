@@ -26,6 +26,7 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
         XlsReadWorkbookHolder xlsReadWorkbookHolder = xlsReadContext.xlsReadWorkbookHolder();
         if (br.getType() == BOFRecord.TYPE_WORKBOOK) {
             xlsReadWorkbookHolder.setReadSheetIndex(null);
+            xlsReadWorkbookHolder.setIgnoreRecord(Boolean.FALSE);
             return;
         }
         if (br.getType() != BOFRecord.TYPE_WORKSHEET) {
@@ -44,10 +45,9 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
         ReadSheet readSheet = SheetUtils.match(actualReadSheet, xlsReadContext);
         if (readSheet != null) {
             xlsReadContext.currentSheet(readSheet);
-            xlsReadContext.xlsReadSheetHolder().setIgnoreRecord(Boolean.FALSE);
+            xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.FALSE);
         } else {
-            xlsReadContext.currentSheet(actualReadSheet);
-            xlsReadContext.xlsReadSheetHolder().setIgnoreRecord(Boolean.TRUE);
+            xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.TRUE);
         }
         // Go read the next one
         xlsReadWorkbookHolder.setReadSheetIndex(xlsReadWorkbookHolder.getReadSheetIndex() + 1);
