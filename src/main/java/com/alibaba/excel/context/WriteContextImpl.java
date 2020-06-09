@@ -164,7 +164,7 @@ public class WriteContextImpl implements WriteContext {
         try {
             if (writeSheetHolder.getSheetNo() != null) {
                 // When the add default sort order of appearance
-                if (WriteTypeEnum.ADD.equals(writeType)) {
+                if (WriteTypeEnum.ADD.equals(writeType) && writeWorkbookHolder.getTempTemplateInputStream() == null) {
                     currentSheet = createSheet();
                 } else {
                     currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(writeSheetHolder.getSheetNo());
