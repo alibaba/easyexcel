@@ -79,6 +79,5 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
                 cellMap.put((int)frec.getColumn(), tempCellData);
                 break;
         }
-        xlsReadContext.xlsReadSheetHolder().setTempRowType(RowTypeEnum.DATA);
     }
 }
