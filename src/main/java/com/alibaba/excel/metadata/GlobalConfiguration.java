@@ -25,6 +25,12 @@ public class GlobalConfiguration {
      * used when formatting dates and numbers.
      */
     private Locale locale;
+    /**
+     * Whether to use scientific Format.
+     *
+     * default is false
+     */
+    private Boolean useScientificFormat;
 
     public Boolean getUse1904windowing() {
         return use1904windowing;
@@ -48,5 +54,13 @@ public class GlobalConfiguration {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public Boolean getUseScientificFormat() {
+        return useScientificFormat;
+    }
+
+    public void setUseScientificFormat(Boolean useScientificFormat) {
+        this.useScientificFormat = useScientificFormat;
     }
 }

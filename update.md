@@ -1,9 +1,23 @@
+# 2.2.4
+* 撤销删除`AbstractMergeStrategy`
+* 修改默认用String读取数字不使用科学计数法 通过`useScientificFormat`修改
+* 修复07版仅有样式的空行 默认不忽略的bug
+* 写入`sheet`不设置`index`和`name`默认不为0的问题
+* 修复多个`sheet`不按照顺序写入 会乱序的bug [Issue #1332](https://github.com/alibaba/easyexcel/issues/1332)
+* 修改head是List时，内容单元格的样式不生效 [Issue #1339](https://github.com/alibaba/easyexcel/issues/1339)
+* 修复xls仅公式行 不读取的bug [Issue #1324](https://github.com/alibaba/easyexcel/issues/1324)
+* 修复xls直接读取第2页 `NPE` 的bug [Issue #1280](https://github.com/alibaba/easyexcel/issues/1280)
+* 修复填充的时候，最后一行中间有空行会创建失败的bug
+* 修复`includeColumnIndexes`不包含第列 会无法导出数据的bug [Issue #1346](https://github.com/alibaba/easyexcel/issues/1346)
+* 修复`@NumberFormat`注解转换double时可能会丢失精度 [Issue #1306](https://github.com/alibaba/easyexcel/issues/1306)
+
 # 2.2.3
 * 修改填充数据空数据的bug  [Issue #1274](https://github.com/alibaba/easyexcel/issues/1274)
 * 回退自定义转换器入参为空
 
 # 2.2.2
 * 修改`sheet`事件未调用的bug
+* 修复复杂表头不是`index=0`开始 合并异常的bug [Issue #1322](https://github.com/alibaba/easyexcel/issues/1322)
 
 # 2.2.1
 * 发布正式版

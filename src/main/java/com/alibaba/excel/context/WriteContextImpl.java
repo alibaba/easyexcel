@@ -112,7 +112,6 @@ public class WriteContextImpl implements WriteContext {
             return;
         }
 
-
         initCurrentSheetHolder(writeSheet);
 
         // Workbook handler need to supplementary execution
@@ -125,8 +124,12 @@ public class WriteContextImpl implements WriteContext {
 
     private boolean selectSheetFromCache(WriteSheet writeSheet) {
         writeSheetHolder = null;
-        if (writeSheet.getSheetNo() != null) {
-            writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheetIndexMap().get(writeSheet.getSheetNo());
+        Integer sheetNo = writeSheet.getSheetNo();
+        if (sheetNo == null && StringUtils.isEmpty(writeSheet.getSheetName())) {
+            sheetNo = 0;
+        }
+        if (sheetNo != null) {
+            writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheetIndexMap().get(sheetNo);
         }
         if (writeSheetHolder == null && !StringUtils.isEmpty(writeSheet.getSheetName())) {
             writeSheetHolder = writeWorkbookHolder.getHasBeenInitializedSheetNameMap().get(writeSheet.getSheetName());
@@ -160,9 +163,15 @@ public class WriteContextImpl implements WriteContext {
         Sheet currentSheet;
         try {
             if (writeSheetHolder.getSheetNo() != null) {
-                currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(writeSheetHolder.getSheetNo());
-                writeSheetHolder
-                    .setCachedSheet(writeWorkbookHolder.getCachedWorkbook().getSheetAt(writeSheetHolder.getSheetNo()));
+                // When the add default sort order of appearance
+                if (WriteTypeEnum.ADD.equals(writeType) && writeWorkbookHolder.getTempTemplateInputStream() == null) {
+                    currentSheet = createSheet();
+                } else {
+                    currentSheet = writeWorkbookHolder.getWorkbook().getSheetAt(writeSheetHolder.getSheetNo());
+                    writeSheetHolder
+                        .setCachedSheet(
+                            writeWorkbookHolder.getCachedWorkbook().getSheetAt(writeSheetHolder.getSheetNo()));
+                }
             } else {
                 // sheet name must not null
                 currentSheet = writeWorkbookHolder.getWorkbook().getSheet(writeSheetHolder.getSheetName());

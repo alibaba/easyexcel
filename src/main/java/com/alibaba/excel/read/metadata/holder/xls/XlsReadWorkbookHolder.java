@@ -42,6 +42,10 @@ public class XlsReadWorkbookHolder extends ReadWorkbookHolder {
      * Sheet Index
      */
     private Integer readSheetIndex;
+    /**
+     * Ignore record.
+     */
+    private Boolean ignoreRecord;
 
     public XlsReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);
@@ -51,6 +55,7 @@ public class XlsReadWorkbookHolder extends ReadWorkbookHolder {
         if (getGlobalConfiguration().getUse1904windowing() == null) {
             getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
         }
+        ignoreRecord = Boolean.FALSE;
     }
 
     public POIFSFileSystem getPoifsFileSystem() {
@@ -99,5 +104,13 @@ public class XlsReadWorkbookHolder extends ReadWorkbookHolder {
 
     public void setReadSheetIndex(Integer readSheetIndex) {
         this.readSheetIndex = readSheetIndex;
+    }
+
+    public Boolean getIgnoreRecord() {
+        return ignoreRecord;
+    }
+
+    public void setIgnoreRecord(Boolean ignoreRecord) {
+        this.ignoreRecord = ignoreRecord;
     }
 }

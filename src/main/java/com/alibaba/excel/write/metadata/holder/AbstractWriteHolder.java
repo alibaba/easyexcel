@@ -111,6 +111,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             getGlobalConfiguration().setUse1904windowing(writeBasicParameter.getUse1904windowing());
         }
 
+        if (writeBasicParameter.getUseScientificFormat() != null) {
+            throw new UnsupportedOperationException("Currently does not support setting useScientificFormat.");
+        }
+
         if (writeBasicParameter.getNeedHead() == null) {
             if (parentAbstractWriteHolder == null) {
                 this.needHead = Boolean.TRUE;

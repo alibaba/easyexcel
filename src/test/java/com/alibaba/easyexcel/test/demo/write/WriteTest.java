@@ -40,6 +40,7 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
  */
 @Ignore
 public class WriteTest {
+
     /**
      * 最简单的写
      * <p>
@@ -58,11 +59,17 @@ public class WriteTest {
         // 写法2
         fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写
-        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
-        excelWriter.write(data(), writeSheet);
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
+        ExcelWriter excelWriter = null;
+        try {
+            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+            excelWriter.write(data(), writeSheet);
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
+        }
     }
 
     /**
@@ -141,48 +148,64 @@ public class WriteTest {
     public void repeatedWrite() {
         // 方法1 如果写到同一个sheet
         String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去写
-        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-        // 这里注意 如果同一个sheet只要创建一次
-        WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
-        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
-        for (int i = 0; i < 5; i++) {
-            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
-            List<DemoData> data = data();
-            excelWriter.write(data, writeSheet);
+        ExcelWriter excelWriter = null;
+        try {
+            // 这里 需要指定写用哪个class去写
+            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+            // 这里注意 如果同一个sheet只要创建一次
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
+            for (int i = 0; i < 5; i++) {
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                excelWriter.write(data, writeSheet);
+            }
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
         }
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
 
         // 方法2 如果写到不同的sheet 同一个对象
         fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 指定文件
-        excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
-        for (int i = 0; i < 5; i++) {
-            // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
-            writeSheet = EasyExcel.writerSheet(i, "模板" + i).build();
-            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
-            List<DemoData> data = data();
-            excelWriter.write(data, writeSheet);
+        try {
+            // 这里 指定文件
+            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+            for (int i = 0; i < 5; i++) {
+                // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
+                WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).build();
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                excelWriter.write(data, writeSheet);
+            }
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
         }
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
 
         // 方法3 如果写到不同的sheet 不同的对象
         fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 指定文件
-        excelWriter = EasyExcel.write(fileName).build();
-        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
-        for (int i = 0; i < 5; i++) {
-            // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样。这里注意DemoData.class 可以每次都变，我这里为了方便 所以用的同一个class 实际上可以一直变
-            writeSheet = EasyExcel.writerSheet(i, "模板" + i).head(DemoData.class).build();
-            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
-            List<DemoData> data = data();
-            excelWriter.write(data, writeSheet);
+        try {
+            // 这里 指定文件
+            excelWriter = EasyExcel.write(fileName).build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+            for (int i = 0; i < 5; i++) {
+                // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样。这里注意DemoData.class 可以每次都变，我这里为了方便 所以用的同一个class 实际上可以一直变
+                WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).head(DemoData.class).build();
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                excelWriter.write(data, writeSheet);
+            }
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
         }
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
     }
 
     /**
@@ -302,7 +325,7 @@ public class WriteTest {
         // 背景设置为红色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)20);
+        headWriteFont.setFontHeightInPoints((short) 20);
         headWriteCellStyle.setWriteFont(headWriteFont);
         // 内容的策略
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
@@ -312,7 +335,7 @@ public class WriteTest {
         contentWriteCellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
         WriteFont contentWriteFont = new WriteFont();
         // 字体大小
-        contentWriteFont.setFontHeightInPoints((short)20);
+        contentWriteFont.setFontHeightInPoints((short) 20);
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
@@ -362,18 +385,24 @@ public class WriteTest {
         String fileName = TestFileUtil.getPath() + "tableWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里直接写多个table的案例了，如果只有一个 也可以直一行代码搞定，参照其他案例
         // 这里 需要指定写用哪个class去写
-        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-        // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
-        WriteSheet writeSheet = EasyExcel.writerSheet("模板").needHead(Boolean.FALSE).build();
-        // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
-        WriteTable writeTable0 = EasyExcel.writerTable(0).needHead(Boolean.TRUE).build();
-        WriteTable writeTable1 = EasyExcel.writerTable(1).needHead(Boolean.TRUE).build();
-        // 第一次写入会创建头
-        excelWriter.write(data(), writeSheet, writeTable0);
-        // 第二次写如也会创建头，然后在第一次的后面写入数据
-        excelWriter.write(data(), writeSheet, writeTable1);
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
+        ExcelWriter excelWriter = null;
+        try {
+            EasyExcel.write(fileName, DemoData.class).build();
+            // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").needHead(Boolean.FALSE).build();
+            // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
+            WriteTable writeTable0 = EasyExcel.writerTable(0).needHead(Boolean.TRUE).build();
+            WriteTable writeTable1 = EasyExcel.writerTable(1).needHead(Boolean.TRUE).build();
+            // 第一次写入会创建头
+            excelWriter.write(data(), writeSheet, writeTable0);
+            // 第二次写如也会创建头，然后在第一次的后面写入数据
+            excelWriter.write(data(), writeSheet, writeTable1);
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
+        }
     }
 
     /**
@@ -399,8 +428,7 @@ public class WriteTest {
     /**
      * 自动列宽(不太精确)
      * <p>
-     * 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照
-     * {@link LongestMatchColumnWidthStyleStrategy}重新实现.
+     * 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照 {@link LongestMatchColumnWidthStyleStrategy}重新实现.
      * <p>
      * poi 自带{@link SXSSFSheet#autoSizeColumn(int)} 对中文支持也不太好。目前没找到很好的算法。 有的话可以推荐下。
      *

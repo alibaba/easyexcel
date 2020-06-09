@@ -11,6 +11,8 @@ import lombok.Data;
  **/
 @Data
 public class WriteData {
-    @ContentStyle(locked = true)
+//    @ContentStyle(locked = true)
     private float f;
+//    @ContentStyle(locked = false)
+    private float f1;
 }

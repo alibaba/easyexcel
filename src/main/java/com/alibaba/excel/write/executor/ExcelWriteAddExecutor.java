@@ -156,6 +156,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             boolean uselessData = !beanMap.containsKey(filedName) || beanMapHandledSet.contains(filedName)
                 || ignoreMap.containsKey(filedName) || writeContext.currentWriteHolder().ignore(filedName, cellIndex);
             if (uselessData) {
+                cellIndex++;
                 continue;
             }
             Object value = beanMap.get(filedName);

@@ -56,6 +56,17 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             getGlobalConfiguration().setUse1904windowing(readBasicParameter.getUse1904windowing());
         }
 
+        if (readBasicParameter.getUseScientificFormat() == null) {
+            if (parentAbstractReadHolder == null) {
+                getGlobalConfiguration().setUseScientificFormat(Boolean.FALSE);
+            } else {
+                getGlobalConfiguration()
+                    .setUseScientificFormat(parentAbstractReadHolder.getGlobalConfiguration().getUseScientificFormat());
+            }
+        } else {
+            getGlobalConfiguration().setUseScientificFormat(readBasicParameter.getUseScientificFormat());
+        }
+
         // Initialization property
         this.excelReadHeadProperty = new ExcelReadHeadProperty(this, getClazz(), getHead(), convertAllFiled);
         if (readBasicParameter.getHeadRowNumber() == null) {

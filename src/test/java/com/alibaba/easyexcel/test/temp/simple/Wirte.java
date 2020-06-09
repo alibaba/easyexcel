@@ -126,6 +126,7 @@ public class Wirte {
         for (int i = 0; i < 10; i++) {
             WriteData data = new WriteData();
             data.setF(300.35f);
+            data.setF1(33f);
             list.add(data);
         }
         return list;

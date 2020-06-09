@@ -39,6 +39,7 @@ import com.alibaba.excel.metadata.property.StyleProperty;
  * @author jipengfei
  */
 public class ExcelWriteHeadProperty extends ExcelHeadProperty {
+
     private RowHeightProperty headRowHeightProperty;
     private RowHeightProperty contentRowHeightProperty;
     private OnceAbsoluteMergeProperty onceAbsoluteMergeProperty;
@@ -49,21 +50,25 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             return;
         }
         this.headRowHeightProperty =
-            RowHeightProperty.build((HeadRowHeight)headClazz.getAnnotation(HeadRowHeight.class));
+            RowHeightProperty.build((HeadRowHeight) headClazz.getAnnotation(HeadRowHeight.class));
         this.contentRowHeightProperty =
-            RowHeightProperty.build((ContentRowHeight)headClazz.getAnnotation(ContentRowHeight.class));
+            RowHeightProperty.build((ContentRowHeight) headClazz.getAnnotation(ContentRowHeight.class));
         this.onceAbsoluteMergeProperty =
-            OnceAbsoluteMergeProperty.build((OnceAbsoluteMerge)headClazz.getAnnotation(OnceAbsoluteMerge.class));
+            OnceAbsoluteMergeProperty.build((OnceAbsoluteMerge) headClazz.getAnnotation(OnceAbsoluteMerge.class));
 
-        ColumnWidth parentColumnWidth = (ColumnWidth)headClazz.getAnnotation(ColumnWidth.class);
-        HeadStyle parentHeadStyle = (HeadStyle)headClazz.getAnnotation(HeadStyle.class);
-        HeadFontStyle parentHeadFontStyle = (HeadFontStyle)headClazz.getAnnotation(HeadFontStyle.class);
-        ContentStyle parentContentStyle = (ContentStyle)headClazz.getAnnotation(ContentStyle.class);
-        ContentFontStyle parentContentFontStyle = (ContentFontStyle)headClazz.getAnnotation(ContentFontStyle.class);
+        ColumnWidth parentColumnWidth = (ColumnWidth) headClazz.getAnnotation(ColumnWidth.class);
+        HeadStyle parentHeadStyle = (HeadStyle) headClazz.getAnnotation(HeadStyle.class);
+        HeadFontStyle parentHeadFontStyle = (HeadFontStyle) headClazz.getAnnotation(HeadFontStyle.class);
+        ContentStyle parentContentStyle = (ContentStyle) headClazz.getAnnotation(ContentStyle.class);
+        ContentFontStyle parentContentFontStyle = (ContentFontStyle) headClazz.getAnnotation(ContentFontStyle.class);
 
         for (Map.Entry<Integer, ExcelContentProperty> entry : getContentPropertyMap().entrySet()) {
             Integer index = entry.getKey();
             ExcelContentProperty excelContentPropertyData = entry.getValue();
+            if (excelContentPropertyData == null) {
+                throw new IllegalArgumentException(
+                    "Passing in the class and list the head, the two must be the same size.");
+            }
             Field field = excelContentPropertyData.getField();
             Head headData = getHeadMap().get(index);
             ColumnWidth columnWidth = field.getAnnotation(ColumnWidth.class);
@@ -176,7 +181,8 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 if (j == lastRow && i == lastCol) {
                     continue;
                 }
-                cellRangeList.add(new CellRange(j, lastRow, i, lastCol));
+                cellRangeList
+                    .add(new CellRange(j, lastRow, head.getColumnIndex(), headList.get(lastCol).getColumnIndex()));
             }
         }
         return cellRangeList;

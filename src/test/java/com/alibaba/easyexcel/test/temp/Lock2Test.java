@@ -28,17 +28,27 @@ import com.alibaba.fastjson.JSON;
  **/
 @Ignore
 public class Lock2Test {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Lock2Test.class);
 
     @Test
     public void test() throws Exception {
-        File file = TestFileUtil.readUserHomeFile("test/t3.xls");
+        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
 
-        List<Object> list = EasyExcel.read(file).sheet().headRowNumber(0).doReadSync();
+        List<Object> list = EasyExcel.read(file).sheet(1).headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }
+    }
+
+    @Test
+    public void test33() throws Exception {
+        File file = TestFileUtil.readUserHomeFile("test/test6.xlsx");
+
+        EasyExcel.read(file, LockData.class, new LockDataListener()).sheet(0).headRowNumber(0)
+            .doRead();
+
     }
 
     @Test
@@ -49,7 +59,7 @@ public class Lock2Test {
         // 背景设置为红色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)20);
+        headWriteFont.setFontHeightInPoints((short) 20);
         headWriteCellStyle.setWriteFont(headWriteFont);
         // 内容的策略
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
@@ -59,7 +69,7 @@ public class Lock2Test {
         contentWriteCellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
         WriteFont contentWriteFont = new WriteFont();
         // 字体大小
-        contentWriteFont.setFontHeightInPoints((short)20);
+        contentWriteFont.setFontHeightInPoints((short) 20);
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =

@@ -15,7 +15,7 @@
  * can be found in svn at location root/projects/3rd-party/src
  * ====================================================================
  */
-package com.alibaba.excel.metadata;
+package com.alibaba.excel.metadata.format;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,12 +35,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.ExcelGeneralNumberFormat;
 import org.apache.poi.ss.usermodel.ExcelStyleDateFormatter;
 import org.apache.poi.ss.usermodel.FractionFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.util.DateUtils;
 
 /**
@@ -138,21 +138,32 @@ public class DataFormatter {
      * @return
      */
     private Boolean use1904windowing;
-
     /**
-     * Creates a formatter using the {@link Locale#getDefault() default locale}.
+     * Whether to use scientific Format.
+     *
+     * default is false
      */
-    public DataFormatter() {
-        this(null, null);
-    }
+    private Boolean useScientificFormat;
 
     /**
      * Creates a formatter using the given locale.
      *
      */
-    public DataFormatter(Locale locale, Boolean use1904windowing) {
-        this.use1904windowing = use1904windowing != null ? use1904windowing : Boolean.FALSE;
-        this.locale = locale != null ? locale : Locale.getDefault();
+    public DataFormatter(GlobalConfiguration globalConfiguration) {
+        if (globalConfiguration == null) {
+            this.use1904windowing = Boolean.FALSE;
+            this.locale = Locale.getDefault();
+            this.useScientificFormat = Boolean.FALSE;
+        } else {
+            this.use1904windowing =
+                globalConfiguration.getUse1904windowing() != null ? globalConfiguration.getUse1904windowing()
+                    : Boolean.FALSE;
+            this.locale =
+                globalConfiguration.getLocale() != null ? globalConfiguration.getLocale() : Locale.getDefault();
+            this.useScientificFormat =
+                globalConfiguration.getUseScientificFormat() != null ? globalConfiguration.getUseScientificFormat()
+                    : Boolean.FALSE;
+        }
         this.dateSymbols = DateFormatSymbols.getInstance(this.locale);
         this.decimalSymbols = DecimalFormatSymbols.getInstance(this.locale);
     }
@@ -532,7 +543,7 @@ public class DataFormatter {
             return defaultNumFormat;
             // otherwise use general format
         }
-        defaultNumFormat = new ExcelGeneralNumberFormat(locale);
+        defaultNumFormat = new ExcelGeneralNumberFormat(locale, useScientificFormat);
         return defaultNumFormat;
     }
 

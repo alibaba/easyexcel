@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>2.2.3</version>
+    <version>2.2.4</version>
     <packaging>jar</packaging>
     <name>easyexcel</name>
 
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.58</version>
+            <version>1.2.68</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -162,6 +162,8 @@
                         <exclude>com/alibaba/excel/event/AnalysisEventListener.java</exclude>
                         <exclude>com/alibaba/excel/metadata/DataFormatter.java</exclude>
                         <exclude>com/alibaba/excel/util/DateUtils.java</exclude>
+                        <exclude>com/alibaba/excel/metadata/format/DataFormatter.java</exclude>
+                        <exclude>com/alibaba/excel/metadata/format/ExcelGeneralNumberFormat.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>
