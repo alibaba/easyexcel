@@ -192,9 +192,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             Cell cell = getOneCell(analysisCell, fillConfig);
             if (analysisCell.getOnlyOneVariable()) {
                 String variable = analysisCell.getVariableList().get(0);
-                if (writeContext.currentWriteHolder().ignore(variable, analysisCell.getColumnIndex())) {
-                    continue;
-                }
                 if (!dataMap.containsKey(variable)) {
                     continue;
                 }
@@ -208,9 +205,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 List<CellData> cellDataList = new ArrayList<CellData>();
                 for (String variable : analysisCell.getVariableList()) {
                     cellValueBuild.append(analysisCell.getPrepareDataList().get(index++));
-                    if (writeContext.currentWriteHolder().ignore(variable, analysisCell.getColumnIndex())) {
-                        continue;
-                    }
                     if (!dataMap.containsKey(variable)) {
                         continue;
                     }
