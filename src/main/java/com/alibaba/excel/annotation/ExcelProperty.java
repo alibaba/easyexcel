@@ -34,7 +34,7 @@ public @interface ExcelProperty {
      *
      * Read or write it on the index of column,If it's equal to -1, it's sorted by Java class.
      *
-     * priority: index > order > default sort
+     * priority: index &gt; order &gt; default sort
      *
      * @return Index of column
      */
@@ -43,7 +43,7 @@ public @interface ExcelProperty {
     /**
      * Defines the sort order for an column.
      *
-     * priority: index > order > default sort
+     * priority: index &gt; order &gt; default sort
      *
      * @return Order of column
      */
