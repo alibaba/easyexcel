@@ -21,6 +21,7 @@ import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.util.ClassUtils;
+import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 
@@ -117,24 +118,19 @@ public class ExcelHeadProperty {
             return;
         }
         // Declared fields
-        List<Field> defaultFieldList = new ArrayList<Field>();
-        Map<Integer, Field> customFiledMap = new TreeMap<Integer, Field>();
-        ClassUtils.declaredFields(headClazz, defaultFieldList, customFiledMap, ignoreMap, convertAllFiled);
+        Map<Integer, Field> sortedAllFiledMap = new TreeMap<Integer, Field>();
+        Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
 
-        int index = 0;
-        for (Field field : defaultFieldList) {
-            while (customFiledMap.containsKey(index)) {
-                Field customFiled = customFiledMap.get(index);
-                customFiledMap.remove(index);
-                if (!initOneColumnProperty(holder, index, customFiled, Boolean.TRUE)) {
-                    index++;
-                }
-            }
-            initOneColumnProperty(holder, index, field, Boolean.FALSE);
-            index++;
-        }
-        for (Map.Entry<Integer, Field> entry : customFiledMap.entrySet()) {
-            initOneColumnProperty(holder, entry.getKey(), entry.getValue(), Boolean.TRUE);
+        boolean needIgnore = (holder instanceof AbstractWriteHolder) && (
+            !CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getExcludeColumnFiledNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getExcludeColumnIndexes()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnFiledNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnIndexes()));
+        ClassUtils.declaredFields(headClazz, sortedAllFiledMap, indexFiledMap, ignoreMap, convertAllFiled, needIgnore,
+            holder);
+
+        for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {
+            initOneColumnProperty(entry.getKey(), entry.getValue(), indexFiledMap.containsKey(entry.getKey()));
         }
         headKind = HeadKindEnum.CLASS;
     }
@@ -142,18 +138,12 @@ public class ExcelHeadProperty {
     /**
      * Initialization column property
      *
-     * @param holder
      * @param index
      * @param field
      * @param forceIndex
      * @return Ignore current field
      */
-    private boolean initOneColumnProperty(Holder holder, int index, Field field, Boolean forceIndex) {
-        if (holder instanceof AbstractWriteHolder) {
-            if (((AbstractWriteHolder) holder).ignore(field.getName(), index)) {
-                return true;
-            }
-        }
+    private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         List<String> tmpHeadList = new ArrayList<String>();
         boolean notForceName = excelProperty == null || excelProperty.value().length <= 0
@@ -189,7 +179,6 @@ public class ExcelHeadProperty {
         headMap.put(index, head);
         contentPropertyMap.put(index, excelContentProperty);
         fieldNameContentPropertyMap.put(field.getName(), excelContentProperty);
-        return false;
     }
 
     public Class getHeadClazz() {

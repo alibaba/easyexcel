@@ -1,3 +1,7 @@
+# 2.2.5
+* `ExcelProperty`新增`order` 用于排序
+*  修复导出指定`index`会导致空行的bug
+
 # 2.2.4
 * 撤销删除`AbstractMergeStrategy`
 * 修改默认用String读取数字不使用科学计数法 通过`useScientificFormat`修改
