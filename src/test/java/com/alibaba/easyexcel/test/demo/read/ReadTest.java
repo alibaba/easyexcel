@@ -1,9 +1,14 @@
 package com.alibaba.easyexcel.test.demo.read;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -267,5 +272,29 @@ public class ReadTest {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
+    }
+
+    /**
+     * issue#1484
+     * 如果文件的InputStream已经被使用，需要进行友好提示
+     */
+    @Test
+    public void readUsedInputStream() throws IOException {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+
+        // 模拟使用当前文件的InputStream
+        InputStream inputStream = new FileInputStream(new File(fileName));
+        byte[] readArray = new byte[inputStream.available()];
+        inputStream.read(readArray);
+
+        String comparedMsg = "InputStream of File had been used.";
+        String msg = "";
+        try {
+            // 进行文件读取
+            EasyExcel.read(inputStream).sheet().doRead();
+        } catch (ExcelAnalysisException e) {
+            msg = e.getMessage();
+        }
+        Assert.assertEquals(comparedMsg, msg);
     }
 }
