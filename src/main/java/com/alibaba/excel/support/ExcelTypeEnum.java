@@ -1,9 +1,6 @@
 package com.alibaba.excel.support;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 
 import org.apache.poi.poifs.filesystem.FileMagic;
 
@@ -40,6 +37,13 @@ public enum ExcelTypeEnum {
         InputStream inputStream = readWorkbook.getInputStream();
         if (file == null && inputStream == null) {
             throw new ExcelAnalysisException("File and inputStream must be a non-null.");
+        }
+        try {
+            if (inputStream != null && inputStream.available() == 0) {
+                throw new ExcelAnalysisException("InputStream of File had been used.");
+            }
+        } catch (IOException e) {
+            throw new ExcelAnalysisException("InputStream of File can't be available.");
         }
         try {
             if (file != null) {
