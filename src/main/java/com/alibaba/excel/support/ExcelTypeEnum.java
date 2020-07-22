@@ -39,7 +39,7 @@ public enum ExcelTypeEnum {
             throw new ExcelAnalysisException("File and inputStream must be a non-null.");
         }
         try {
-            if (inputStream.available() == 0) {
+            if (inputStream != null && inputStream.available() == 0) {
                 throw new ExcelAnalysisException("InputStream of File had been used.");
             }
         } catch (IOException e) {
