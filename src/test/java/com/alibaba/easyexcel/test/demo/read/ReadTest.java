@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -286,8 +288,15 @@ public class ReadTest {
         byte[] readArray = new byte[inputStream.available()];
         inputStream.read(readArray);
 
-        // 进行文件读取
-        EasyExcel.read(inputStream).sheet().doRead();
+        String targetMsg = "InputStream of file had been used.";
+        String realMsg = "";
+        try {
+            // 进行文件读取
+            EasyExcel.read(inputStream).sheet().doRead();
+        } catch (ExcelAnalysisException e) {
+            realMsg = e.getMessage();
+        }
+        Assert.assertEquals(targetMsg, realMsg);
     }
 
 }

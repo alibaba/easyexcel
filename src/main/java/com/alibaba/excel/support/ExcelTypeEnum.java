@@ -40,10 +40,10 @@ public enum ExcelTypeEnum {
         }
         try {
             if (inputStream != null && inputStream.available() == 0) {
-                throw new ExcelAnalysisException("InputStream of File had been used.");
+                throw new ExcelAnalysisException("InputStream of file had been used.");
             }
         } catch (IOException e) {
-            throw new ExcelAnalysisException("InputStream of File can't be available.");
+            throw new ExcelAnalysisException("InputStream of file can't be available.");
         }
         try {
             if (file != null) {
