@@ -1,9 +1,11 @@
 package com.alibaba.easyexcel.test.demo.read;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.excel.read.listener.ReadListener;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -268,4 +270,15 @@ public class ReadTest {
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
     }
+
+    @Test
+    public void testMultiListenerRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        // 这里 只要，然后读取第一个sheet 同步读取会自动finish
+        List<ReadListener> readListeners = new ArrayList<ReadListener>();
+        readListeners.add(new NoModelDataListener());
+        readListeners.add(new NoModelDataListener());
+        EasyExcel.read(fileName, readListeners).sheet().doRead();
+    }
+
 }

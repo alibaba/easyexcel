@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import com.alibaba.excel.read.listener.ReadListener;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -169,7 +170,7 @@ public class DataFormatTest {
     @Test
     public void tests1() throws IOException, InvalidFormatException {
         String file = "D://test/dataformat1.xlsx";
-        List<DateFormatData> list = EasyExcel.read(file, DateFormatData.class, null).sheet().doReadSync();
+        List<DateFormatData> list = EasyExcel.read(file, DateFormatData.class, new ArrayList<ReadListener>()).sheet().doReadSync();
         for (DateFormatData data : list) {
             LOGGER.info("返回:{}", JSON.toJSONString(data));
         }

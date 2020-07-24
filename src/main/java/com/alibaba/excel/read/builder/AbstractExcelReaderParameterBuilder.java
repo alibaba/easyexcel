@@ -1,6 +1,7 @@
 package com.alibaba.excel.read.builder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.alibaba.excel.metadata.AbstractParameterBuilder;
 import com.alibaba.excel.read.listener.ReadListener;
@@ -55,6 +56,20 @@ public abstract class AbstractExcelReaderParameterBuilder<T extends AbstractExce
             parameter().setCustomReadListenerList(new ArrayList<ReadListener>());
         }
         parameter().getCustomReadListenerList().add(readListener);
+        return self();
+    }
+
+    /**
+     * Custom type listener run after default
+     *
+     * @param readListeners
+     * @return
+     */
+    public T registerReadListeners(List<ReadListener> readListeners) {
+        if (parameter().getCustomReadListenerList() == null) {
+            parameter().setCustomReadListenerList(new ArrayList<ReadListener>(readListeners));
+        }
+        parameter().getCustomReadListenerList().addAll(readListeners);
         return self();
     }
 }

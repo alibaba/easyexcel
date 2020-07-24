@@ -14,6 +14,7 @@ import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterTableBuilder;
@@ -407,7 +408,7 @@ public class EasyExcelFactory {
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(String pathName) {
-        return read(pathName, null, null);
+        return read(pathName, null, new ArrayList<ReadListener>());
     }
 
     /**
@@ -421,6 +422,19 @@ public class EasyExcelFactory {
      */
     public static ExcelReaderBuilder read(String pathName, ReadListener readListener) {
         return read(pathName, null, readListener);
+    }
+
+    /**
+     * Build excel the read
+     *
+     * @param pathName
+     *            File path to read.
+     * @param readListeners
+     *            a list of Read listeners.
+     * @return Excel reader builder.
+     */
+    public static ExcelReaderBuilder read(String pathName, List<ReadListener> readListeners) {
+        return read(pathName, null, readListeners);
     }
 
     /**
@@ -442,6 +456,29 @@ public class EasyExcelFactory {
         }
         if (readListener != null) {
             excelReaderBuilder.registerReadListener(readListener);
+        }
+        return excelReaderBuilder;
+    }
+
+    /**
+     * Build excel the read
+     *
+     * @param pathName
+     *            File path to read.
+     * @param head
+     *            Annotate the class for configuration information.
+     * @param readListeners
+     *            a list of Read listener.
+     * @return Excel reader builder.
+     */
+    public static ExcelReaderBuilder read(String pathName, Class head, List<ReadListener> readListeners) {
+        ExcelReaderBuilder excelReaderBuilder = new ExcelReaderBuilder();
+        excelReaderBuilder.file(pathName);
+        if (head != null) {
+            excelReaderBuilder.head(head);
+        }
+        if (!CollectionUtils.isEmpty(readListeners)) {
+            excelReaderBuilder.registerReadListeners(readListeners);
         }
         return excelReaderBuilder;
     }
