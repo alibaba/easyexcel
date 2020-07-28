@@ -20,11 +20,6 @@ public interface ExcelReadExecutor {
 
     /**
      * Read the sheet.
-     *
-     * @param readSheetList
-     *            Which sheets you need to read.
-     * @param readAll
-     *            The <code>readSheetList</code> parameter is ignored, and all sheets are read.
      */
-    void execute(List<ReadSheet> readSheetList, Boolean readAll);
+    void execute();
 }

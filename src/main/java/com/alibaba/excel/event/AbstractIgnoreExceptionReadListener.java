@@ -1,6 +1,7 @@
 package com.alibaba.excel.event;
 
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.metadata.CellExtra;
 import com.alibaba.excel.read.listener.ReadListener;
 
 /**
@@ -19,6 +20,17 @@ public abstract class AbstractIgnoreExceptionReadListener<T> implements ReadList
      */
     @Override
     public void onException(Exception exception, AnalysisContext context) {}
+
+    /**
+     * The current method is called when extra information is returned
+     *
+     * @param extra
+     *            extra information
+     * @param context
+     *            analysis context
+     */
+    @Override
+    public void extra(CellExtra extra, AnalysisContext context) {}
 
     @Override
     public boolean hasNext(AnalysisContext context) {

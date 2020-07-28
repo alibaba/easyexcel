@@ -12,7 +12,7 @@ import com.alibaba.excel.util.StringUtils;
  *
  * @author Jiaju Zhuang
  */
-public class CellData<T> {
+public class CellData<T> extends AbstractCell {
     private CellDataTypeEnum type;
     /**
      * {@link CellDataTypeEnum#NUMBER}
@@ -224,6 +224,42 @@ public class CellData<T> {
                 return;
             default:
         }
+    }
+
+    public static CellData newEmptyInstance() {
+        return newEmptyInstance(null, null);
+    }
+
+    public static CellData newEmptyInstance(Integer rowIndex, Integer columnIndex) {
+        CellData cellData = new CellData(CellDataTypeEnum.EMPTY);
+        cellData.setRowIndex(rowIndex);
+        cellData.setColumnIndex(columnIndex);
+        return cellData;
+    }
+
+    public static CellData newInstance(Boolean booleanValue) {
+        return newInstance(booleanValue, null, null);
+    }
+
+    public static CellData newInstance(Boolean booleanValue, Integer rowIndex, Integer columnIndex) {
+        CellData cellData = new CellData(booleanValue);
+        cellData.setRowIndex(rowIndex);
+        cellData.setColumnIndex(columnIndex);
+        return cellData;
+    }
+
+    public static CellData newInstance(String stringValue, Integer rowIndex, Integer columnIndex) {
+        CellData cellData = new CellData(stringValue);
+        cellData.setRowIndex(rowIndex);
+        cellData.setColumnIndex(columnIndex);
+        return cellData;
+    }
+
+    public static CellData newInstance(BigDecimal numberValue, Integer rowIndex, Integer columnIndex) {
+        CellData cellData = new CellData(numberValue);
+        cellData.setRowIndex(rowIndex);
+        cellData.setColumnIndex(columnIndex);
+        return cellData;
     }
 
     @Override

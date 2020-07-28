@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
@@ -27,7 +28,6 @@ public abstract class AbstractHolder implements ConfigurationHolder {
      * Some global variables
      */
     private GlobalConfiguration globalConfiguration;
-
     /**
      * <p>
      * Read key:
@@ -58,6 +58,17 @@ public abstract class AbstractHolder implements ConfigurationHolder {
         } else {
             globalConfiguration.setAutoTrim(basicParameter.getAutoTrim());
         }
+
+        if (basicParameter.getLocale() == null) {
+            if (prentAbstractHolder == null) {
+                globalConfiguration.setLocale(Locale.getDefault());
+            } else {
+                globalConfiguration.setLocale(prentAbstractHolder.getGlobalConfiguration().getLocale());
+            }
+        } else {
+            globalConfiguration.setLocale(basicParameter.getLocale());
+        }
+
     }
 
     public Boolean getNewInitialization() {

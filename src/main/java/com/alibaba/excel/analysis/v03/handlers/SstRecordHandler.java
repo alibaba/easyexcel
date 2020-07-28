@@ -1,49 +1,20 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
-import org.apache.poi.hssf.record.LabelSSTRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.hssf.record.SSTRecord;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
-import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
+import com.alibaba.excel.cache.XlsCache;
+import com.alibaba.excel.context.xls.XlsReadContext;
 
 /**
  * Record handler
  *
  * @author Dan Zheng
  */
-public class SstRecordHandler extends AbstractXlsRecordHandler {
-    private SSTRecord sstRecord;
-
+public class SstRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     @Override
-    public boolean support(Record record) {
-        return SSTRecord.sid == record.getSid() || LabelSSTRecord.sid == record.getSid();
-    }
-
-    @Override
-    public void processRecord(Record record) {
-        if (record.getSid() == SSTRecord.sid) {
-            sstRecord = (SSTRecord)record;
-        } else if (record.getSid() == LabelSSTRecord.sid) {
-            LabelSSTRecord lsrec = (LabelSSTRecord)record;
-            this.row = lsrec.getRow();
-            this.column = lsrec.getColumn();
-            if (sstRecord == null) {
-                this.cellData = new CellData(CellDataTypeEnum.EMPTY);
-            } else {
-                this.cellData = new CellData(sstRecord.getString(lsrec.getSSTIndex()).toString());
-            }
-        }
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public int getOrder() {
-        return 0;
+    public void processRecord(XlsReadContext xlsReadContext, Record record) {
+        xlsReadContext.readWorkbookHolder().setReadCache(new XlsCache((SSTRecord)record));
     }
 }

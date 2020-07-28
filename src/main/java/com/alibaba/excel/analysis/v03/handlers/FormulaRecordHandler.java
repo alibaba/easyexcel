@@ -1,19 +1,22 @@
 package com.alibaba.excel.analysis.v03.handlers;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
-import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
+import com.alibaba.excel.enums.RowTypeEnum;
 import org.apache.poi.hssf.model.HSSFFormulaParser;
 import org.apache.poi.hssf.record.FormulaRecord;
 import org.apache.poi.hssf.record.Record;
-import org.apache.poi.hssf.record.StringRecord;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
+import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
+import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.enums.RowTypeEnum;
+import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.metadata.CellData;
 
 /**
@@ -21,96 +24,60 @@ import com.alibaba.excel.metadata.CellData;
  *
  * @author Dan Zheng
  */
-public class FormulaRecordHandler extends AbstractXlsRecordHandler {
+public class FormulaRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(FormulaRecordHandler.class);
-
     private static final String ERROR = "#VALUE!";
-    private int nextRow;
-    private int nextColumn;
-    private boolean outputNextStringRecord;
-    private CellData tempCellData;
-    private FormatTrackingHSSFListener formatListener;
-    private HSSFWorkbook stubWorkbook;
-
-    public FormulaRecordHandler(HSSFWorkbook stubWorkbook, FormatTrackingHSSFListener formatListener) {
-        this.stubWorkbook = stubWorkbook;
-        this.formatListener = formatListener;
-    }
 
     @Override
-    public boolean support(Record record) {
-        return FormulaRecord.sid == record.getSid() || StringRecord.sid == record.getSid();
-    }
-
-    @Override
-    public void processRecord(Record record) {
-        if (record.getSid() == FormulaRecord.sid) {
-            FormulaRecord frec = (FormulaRecord)record;
-
-            this.row = frec.getRow();
-            this.column = frec.getColumn();
-            CellType cellType = CellType.forInt(frec.getCachedResultType());
-            String formulaValue = null;
-            try {
-                formulaValue = HSSFFormulaParser.toFormulaString(stubWorkbook, frec.getParsedExpression());
-            } catch (Exception e) {
-                LOGGER.warn("Get formula value error.{}", e.getMessage());
-            }
-            switch (cellType) {
-                case STRING:
-                    // Formula result is a string
-                    // This is stored in the next record
-                    outputNextStringRecord = true;
-                    nextRow = frec.getRow();
-                    nextColumn = frec.getColumn();
-                    tempCellData = new CellData(CellDataTypeEnum.STRING);
-                    tempCellData.setFormula(Boolean.TRUE);
-                    tempCellData.setFormulaValue(formulaValue);
-                    break;
-                case NUMERIC:
-                    this.cellData = new CellData(BigDecimal.valueOf(frec.getValue()));
-                    this.cellData.setFormula(Boolean.TRUE);
-                    this.cellData.setFormulaValue(formulaValue);
-                    break;
-                case ERROR:
-                    this.cellData = new CellData(CellDataTypeEnum.ERROR);
-                    this.cellData.setStringValue(ERROR);
-                    this.cellData.setFormula(Boolean.TRUE);
-                    this.cellData.setFormulaValue(formulaValue);
-                    break;
-                case BOOLEAN:
-                    this.cellData = new CellData(frec.getCachedBooleanValue());
-                    this.cellData.setFormula(Boolean.TRUE);
-                    this.cellData.setFormulaValue(formulaValue);
-                    break;
-                default:
-                    this.cellData = new CellData(CellDataTypeEnum.EMPTY);
-                    this.cellData.setFormula(Boolean.TRUE);
-                    this.cellData.setFormulaValue(formulaValue);
-                    break;
-            }
-        } else if (record.getSid() == StringRecord.sid) {
-            if (outputNextStringRecord) {
-                // String for formula
-                StringRecord srec = (StringRecord)record;
-                this.cellData = tempCellData;
-                this.cellData.setStringValue(srec.getString());
-                this.row = nextRow;
-                this.column = nextColumn;
-                outputNextStringRecord = false;
-                tempCellData = null;
-            }
+    public void processRecord(XlsReadContext xlsReadContext, Record record) {
+        FormulaRecord frec = (FormulaRecord)record;
+        Map<Integer, Cell> cellMap = xlsReadContext.xlsReadSheetHolder().getCellMap();
+        CellData tempCellData = new CellData();
+        tempCellData.setRowIndex(frec.getRow());
+        tempCellData.setColumnIndex((int)frec.getColumn());
+        CellType cellType = CellType.forInt(frec.getCachedResultType());
+        String formulaValue = null;
+        try {
+            formulaValue = HSSFFormulaParser.toFormulaString(xlsReadContext.xlsReadWorkbookHolder().getHssfWorkbook(),
+                frec.getParsedExpression());
+        } catch (Exception e) {
+            LOGGER.debug("Get formula value error.", e);
         }
-    }
-
-    @Override
-    public void init() {
-        this.nextRow = 0;
-        this.nextColumn = 0;
-    }
-
-    @Override
-    public int getOrder() {
-        return 0;
+        tempCellData.setFormula(Boolean.TRUE);
+        tempCellData.setFormulaValue(formulaValue);
+        xlsReadContext.xlsReadSheetHolder().setTempRowType(RowTypeEnum.DATA);
+        switch (cellType) {
+            case STRING:
+                // Formula result is a string
+                // This is stored in the next record
+                tempCellData.setType(CellDataTypeEnum.STRING);
+                xlsReadContext.xlsReadSheetHolder().setTempCellData(tempCellData);
+                break;
+            case NUMERIC:
+                tempCellData.setType(CellDataTypeEnum.NUMBER);
+                tempCellData.setNumberValue(BigDecimal.valueOf(frec.getValue()));
+                Integer dataFormat =
+                    xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatIndex(frec);
+                tempCellData.setDataFormat(dataFormat);
+                tempCellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+                    xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatString(frec),
+                    xlsReadContext.readSheetHolder().getGlobalConfiguration().getLocale()));
+                cellMap.put((int)frec.getColumn(), tempCellData);
+                break;
+            case ERROR:
+                tempCellData.setType(CellDataTypeEnum.ERROR);
+                tempCellData.setStringValue(ERROR);
+                cellMap.put((int)frec.getColumn(), tempCellData);
+                break;
+            case BOOLEAN:
+                tempCellData.setType(CellDataTypeEnum.BOOLEAN);
+                tempCellData.setBooleanValue(frec.getCachedBooleanValue());
+                cellMap.put((int)frec.getColumn(), tempCellData);
+                break;
+            default:
+                tempCellData.setType(CellDataTypeEnum.EMPTY);
+                cellMap.put((int)frec.getColumn(), tempCellData);
+                break;
+        }
     }
 }

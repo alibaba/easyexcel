@@ -34,7 +34,7 @@ public class FloatNumberConverter implements Converter<Float> {
     @Override
     public CellData convertToExcelData(Float value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(BigDecimal.valueOf(value));
+        return new CellData(new BigDecimal(Float.toString(value)));
     }
 
 }

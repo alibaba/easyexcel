@@ -2,7 +2,7 @@ package com.alibaba.excel.read.builder;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.xml.parsers.SAXParserFactory;
@@ -11,10 +11,10 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.event.SyncReadListener;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
-import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
@@ -23,7 +23,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
  *
  * @author Jiaju Zhuang
  */
-public class ExcelReaderBuilder {
+public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<ExcelReaderBuilder, ReadWorkbook> {
     /**
      * Workbook
      */
@@ -134,98 +134,6 @@ public class ExcelReaderBuilder {
     }
 
     /**
-     * Count the number of added heads when read sheet.
-     *
-     * <p>
-     * 0 - This Sheet has no head ,since the first row are the data
-     * <p>
-     * 1 - This Sheet has one row head , this is the default
-     * <p>
-     * 2 - This Sheet has two row head ,since the third row is the data
-     *
-     * @param headRowNumber
-     * @return
-     */
-    public ExcelReaderBuilder headRowNumber(Integer headRowNumber) {
-        readWorkbook.setHeadRowNumber(headRowNumber);
-        return this;
-    }
-
-    /**
-     * You can only choose one of the {@link ExcelReaderBuilder#head(List)} and {@link ExcelReaderBuilder#head(Class)}
-     *
-     * @param head
-     * @return
-     */
-    public ExcelReaderBuilder head(List<List<String>> head) {
-        readWorkbook.setHead(head);
-        return this;
-    }
-
-    /**
-     * You can only choose one of the {@link ExcelReaderBuilder#head(List)} and {@link ExcelReaderBuilder#head(Class)}
-     *
-     * @param clazz
-     * @return
-     */
-    public ExcelReaderBuilder head(Class clazz) {
-        readWorkbook.setClazz(clazz);
-        return this;
-    }
-
-    /**
-     * Custom type conversions override the default.
-     *
-     * @param converter
-     * @return
-     */
-    public ExcelReaderBuilder registerConverter(Converter converter) {
-        if (readWorkbook.getCustomConverterList() == null) {
-            readWorkbook.setCustomConverterList(new ArrayList<Converter>());
-        }
-        readWorkbook.getCustomConverterList().add(converter);
-        return this;
-    }
-
-    /**
-     * Custom type listener run after default
-     *
-     * @param readListener
-     * @return
-     */
-    public ExcelReaderBuilder registerReadListener(ReadListener readListener) {
-        if (readWorkbook.getCustomReadListenerList() == null) {
-            readWorkbook.setCustomReadListenerList(new ArrayList<ReadListener>());
-        }
-        readWorkbook.getCustomReadListenerList().add(readListener);
-        return this;
-    }
-
-    /**
-     * true if date uses 1904 windowing, or false if using 1900 date windowing.
-     *
-     * default is false
-     *
-     * @param use1904windowing
-     * @return
-     */
-    public ExcelReaderBuilder use1904windowing(Boolean use1904windowing) {
-        readWorkbook.setUse1904windowing(use1904windowing);
-        return this;
-    }
-
-    /**
-     * Automatic trim includes sheet name and content
-     *
-     * @param autoTrim
-     * @return
-     */
-    public ExcelReaderBuilder autoTrim(Boolean autoTrim) {
-        readWorkbook.setAutoTrim(autoTrim);
-        return this;
-    }
-
-    /**
      * Whether the encryption
      *
      * @param password
@@ -254,6 +162,21 @@ public class ExcelReaderBuilder {
     }
 
     /**
+     * Read some extra information, not by default
+     *
+     * @param extraType
+     *            extra information type
+     * @return
+     */
+    public ExcelReaderBuilder extraRead(CellExtraTypeEnum extraType) {
+        if (readWorkbook.getExtraReadSet() == null) {
+            readWorkbook.setExtraReadSet(new HashSet<CellExtraTypeEnum>());
+        }
+        readWorkbook.getExtraReadSet().add(extraType);
+        return this;
+    }
+
+    /**
      * Whether to use the default listener, which is used by default.
      * <p>
      * The {@link ModelBuildEventListener} is loaded by default to convert the object.
@@ -270,11 +193,24 @@ public class ExcelReaderBuilder {
         return new ExcelReader(readWorkbook);
     }
 
-    public ExcelReader doReadAll() {
+    public void doReadAll() {
         ExcelReader excelReader = build();
         excelReader.readAll();
         excelReader.finish();
-        return excelReader;
+    }
+
+    /**
+     * Synchronous reads return results
+     *
+     * @return
+     */
+    public <T> List<T> doReadAllSync() {
+        SyncReadListener syncReadListener = new SyncReadListener();
+        registerReadListener(syncReadListener);
+        ExcelReader excelReader = build();
+        excelReader.readAll();
+        excelReader.finish();
+        return (List<T>)syncReadListener.getList();
     }
 
     public ExcelReaderSheetBuilder sheet() {
@@ -298,5 +234,10 @@ public class ExcelReaderBuilder {
             excelReaderSheetBuilder.sheetName(sheetName);
         }
         return excelReaderSheetBuilder;
+    }
+
+    @Override
+    protected ReadWorkbook parameter() {
+        return readWorkbook;
     }
 }

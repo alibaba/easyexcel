@@ -1,12 +1,11 @@
 package com.alibaba.excel.util;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 
 /**
  * Sheet utils
@@ -23,17 +22,15 @@ public class SheetUtils {
      *
      * @param readSheet
      *            actual sheet
-     * @param parameterReadSheetList
-     *            parameters
-     * @param readAll
+     * @param analysisContext
      * @return
      */
-    public static ReadSheet match(ReadSheet readSheet, List<ReadSheet> parameterReadSheetList, Boolean readAll,
-        GlobalConfiguration globalConfiguration) {
-        if (readAll) {
+    public static ReadSheet match(ReadSheet readSheet, AnalysisContext analysisContext) {
+        ReadWorkbookHolder readWorkbookHolder = analysisContext.readWorkbookHolder();
+        if (readWorkbookHolder.getReadAll()) {
             return readSheet;
         }
-        for (ReadSheet parameterReadSheet : parameterReadSheetList) {
+        for (ReadSheet parameterReadSheet : readWorkbookHolder.getParameterSheetDataList()) {
             if (parameterReadSheet == null) {
                 continue;
             }
@@ -49,7 +46,8 @@ public class SheetUtils {
                 String parameterSheetName = parameterReadSheet.getSheetName();
                 if (!StringUtils.isEmpty(parameterSheetName)) {
                     boolean autoTrim = (parameterReadSheet.getAutoTrim() != null && parameterReadSheet.getAutoTrim())
-                        || (parameterReadSheet.getAutoTrim() == null && globalConfiguration.getAutoTrim());
+                        || (parameterReadSheet.getAutoTrim() == null
+                            && analysisContext.readWorkbookHolder().getGlobalConfiguration().getAutoTrim());
                     if (autoTrim) {
                         parameterSheetName = parameterSheetName.trim();
                     }

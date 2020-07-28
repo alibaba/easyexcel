@@ -34,7 +34,7 @@ public class IntegerNumberConverter implements Converter<Integer> {
     @Override
     public CellData convertToExcelData(Integer value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(BigDecimal.valueOf(value));
+        return new CellData(new BigDecimal(Integer.toString(value)));
     }
 
 }

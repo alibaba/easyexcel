@@ -1,3 +1,65 @@
+# 2.2.6
+* 修改跳着读取03版本空指针bug
+
+# 2.2.5
+* `ExcelProperty`新增`order` 用于排序
+*  修复导出指定`index`会导致空行的bug
+
+# 2.2.4
+* 撤销删除`AbstractMergeStrategy`
+* 修改默认用String读取数字不使用科学计数法 通过`useScientificFormat`修改
+* 修复07版仅有样式的空行 默认不忽略的bug
+* 写入`sheet`不设置`index`和`name`默认不为0的问题
+* 修复多个`sheet`不按照顺序写入 会乱序的bug [Issue #1332](https://github.com/alibaba/easyexcel/issues/1332)
+* 修改head是List时，内容单元格的样式不生效 [Issue #1339](https://github.com/alibaba/easyexcel/issues/1339)
+* 修复xls仅公式行 不读取的bug [Issue #1324](https://github.com/alibaba/easyexcel/issues/1324)
+* 修复xls直接读取第2页 `NPE` 的bug [Issue #1280](https://github.com/alibaba/easyexcel/issues/1280)
+* 修复填充的时候，最后一行中间有空行会创建失败的bug
+* 修复`includeColumnIndexes`不包含第列 会无法导出数据的bug [Issue #1346](https://github.com/alibaba/easyexcel/issues/1346)
+* 修复`@NumberFormat`注解转换double时可能会丢失精度 [Issue #1306](https://github.com/alibaba/easyexcel/issues/1306)
+
+# 2.2.3
+* 修改填充数据空数据的bug  [Issue #1274](https://github.com/alibaba/easyexcel/issues/1274)
+* 回退自定义转换器入参为空
+
+# 2.2.2
+* 修改`sheet`事件未调用的bug
+* 修复复杂表头不是`index=0`开始 合并异常的bug [Issue #1322](https://github.com/alibaba/easyexcel/issues/1322)
+
+# 2.2.1
+* 发布正式版
+* 修复第一行为空不会调用`invokeHeadMap`的bug [Issue #993](https://github.com/alibaba/easyexcel/issues/993)
+* 当类的属性没有按照ExcelProperty的属性index顺序排序的时候，写数据出现错乱 [Issue #1046](https://github.com/alibaba/easyexcel/issues/1046)
+* 新增支持自定义转换器 入参可以为空 实现`NullableObjectConverter` 即可  [Issue #1084](https://github.com/alibaba/easyexcel/issues/1084)
+* 修复xls丢失结束标记的情况下 会漏读最后一行
+* 修复填充的时候 多次`forceNewRow` 空指针的bug [Issue #1201](https://github.com/alibaba/easyexcel/issues/1201)
+* 修复`table`、`sheet`中创建的拦截器不执行`workbook`事件的bug [Issue #1202](https://github.com/alibaba/easyexcel/issues/1202)
+
+# 2.2.0-beta2
+* 修复最长匹配策略不同表格会有影响的bug [Issue #1010](https://github.com/alibaba/easyexcel/issues/1010)
+* `LinkedList`写入的性能问题 #1121
+* 修复在某些情况下可能出现不必要的`warn`日志
+
+# 2.2.0-beta1
+* 重写主流程，代码更加优雅
+* 修复用String接收日期、数字和excel显示不一致的bug(不是完美修复，但是大部分情况已经兼容)
+* 降低Ehcache版本 3.7.1(jkd7) -> 3.4.0(jdk6)
+* 修复xls 用Map接收时多次接收会是同一个对象的bug
+* 修复浮点型数据导入到excel 会丢失精度的bug
+* 新增支持读取批注、超链接、合并单元格
+* 如果是`RuntimeException`则不再封装对象
+* 新增`CellData`可以获取行列号
+* 新增样式注解
+* 新增合并单元格注解
+* 提升合并策略效率
+* 兼容部分比较特殊的excel
+* 同时传入了`List<List<String>>`和`class`的head,会通过index去匹配注解
+* 修复读取转换器的并发问题
+* 填充支持多个List对象
+
+# 2.1.7
+* 修复使用1+版本的写法，第1条开始读修改为第0条开始读
+
 # 2.1.6
 * 修复写入只有`sheetName`会抛异常
 

@@ -2,12 +2,9 @@ package com.alibaba.easyexcel.test.temp.poi;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -17,10 +14,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.fastjson.JSON;
-
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * 测试poi
@@ -42,7 +36,18 @@ public class PoiWriteTest {
         cell1.setCellValue(999999999999999L);
         SXSSFCell cell2 = row.createCell(1);
         cell2.setCellValue(1000000000000001L);
+        SXSSFCell cell32 = row.createCell(2);
+        cell32.setCellValue(300.35f);
         sxxsFWorkbook.write(fileOutputStream);
+    }
+
+    @Test
+    public void write01() throws IOException {
+        float ff = 300.35f;
+        BigDecimal bd = new BigDecimal(Float.toString(ff));
+        System.out.println(bd.doubleValue());
+        System.out.println(bd.floatValue());
+
     }
 
     @Test
@@ -96,60 +101,6 @@ public class PoiWriteTest {
         LOGGER.info("test:{}", FILL_PATTERN.matcher("我是测试呀").find());
         LOGGER.info("test:{}", FILL_PATTERN.matcher("测试u").matches());
         LOGGER.info("test:{}", FILL_PATTERN.matcher("我是测试").matches());
-
-    }
-
-    @Test
-    public void test() throws Exception {
-        Class<TestCell> clazz = TestCell.class;
-
-        Field field = clazz.getDeclaredField("c2");
-        // 通过getDeclaredField可以获得成员变量，但是对于Map来说，仅仅可以知道它是个Map，无法知道键值对各自的数据类型
-
-        Type gType = field.getGenericType();
-        // 获得field的泛型类型
-
-        // 如果gType是ParameterizedType对象（参数化）
-        if (gType instanceof ParameterizedType) {
-
-            ParameterizedType pType = (ParameterizedType)gType;
-            // 就把它转换成ParameterizedType对象
-
-            Type[] tArgs = pType.getActualTypeArguments();
-            // 获得泛型类型的泛型参数（实际类型参数)
-            ParameterizedTypeImpl c = (ParameterizedTypeImpl)pType.getActualTypeArguments()[0];
-            Class ttt = c.getRawType();
-            System.out.println(ttt);
-        } else {
-            System.out.println("出错！！！");
-        }
-
-    }
-
-    @Test
-    public void test2() throws Exception {
-        Class<TestCell> clazz = TestCell.class;
-
-        Field field = clazz.getDeclaredField("c2");
-        // 通过getDeclaredField可以获得成员变量，但是对于Map来说，仅仅可以知道它是个Map，无法知道键值对各自的数据类型
-
-        Type gType = field.getGenericType();
-        // 获得field的泛型类型
-
-        // 如果gType是ParameterizedType对象（参数化）
-        if (gType instanceof ParameterizedType) {
-
-            ParameterizedType pType = (ParameterizedType)gType;
-            // 就把它转换成ParameterizedType对象
-
-            Type[] tArgs = pType.getActualTypeArguments();
-            // 获得泛型类型的泛型参数（实际类型参数)
-            ParameterizedTypeImpl c = (ParameterizedTypeImpl)pType.getActualTypeArguments()[0];
-            Class ttt = c.getRawType();
-            System.out.println(ttt);
-        } else {
-            System.out.println("出错！！！");
-        }
 
     }
 

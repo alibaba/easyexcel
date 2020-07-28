@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>2.1.6</version>
+    <version>2.2.6</version>
     <packaging>jar</packaging>
     <name>easyexcel</name>
 
@@ -15,9 +15,10 @@
 
 
     <properties>
-        <!--<gpg.skip>true</gpg.skip>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.7</jdk.version>
+        <jdk.version>1.6</jdk.version>
+        <gpg.skip>true</gpg.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
     <scm>
@@ -67,6 +68,11 @@
             <version>3.17</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>3.1</version>
@@ -79,7 +85,7 @@
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-            <version>3.7.1</version>
+            <version>3.4.0</version>
         </dependency>
         <!--test-->
         <dependency>
@@ -91,7 +97,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.58</version>
+            <version>1.2.71</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -154,6 +160,10 @@
                     </rulesets>
                     <excludes>
                         <exclude>com/alibaba/excel/event/AnalysisEventListener.java</exclude>
+                        <exclude>com/alibaba/excel/metadata/DataFormatter.java</exclude>
+                        <exclude>com/alibaba/excel/util/DateUtils.java</exclude>
+                        <exclude>com/alibaba/excel/metadata/format/DataFormatter.java</exclude>
+                        <exclude>com/alibaba/excel/metadata/format/ExcelGeneralNumberFormat.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -196,7 +206,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>

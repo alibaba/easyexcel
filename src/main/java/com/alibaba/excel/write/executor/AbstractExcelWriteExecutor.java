@@ -13,7 +13,9 @@ import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
@@ -29,7 +31,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     }
 
     protected CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
-        ExcelContentProperty excelContentProperty) {
+        ExcelContentProperty excelContentProperty, Head head, Integer relativeRowIndex) {
         if (value == null) {
             return new CellData(CellDataTypeEnum.EMPTY);
         }
@@ -43,6 +45,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         if (cellData.getType() == null) {
             cellData.setType(CellDataTypeEnum.EMPTY);
         }
+        WriteHandlerUtils.afterCellDataConverted(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
         switch (cellData.getType()) {
             case STRING:
                 cell.setCellValue(cellData.getStringValue());

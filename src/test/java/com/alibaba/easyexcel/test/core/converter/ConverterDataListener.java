@@ -32,7 +32,7 @@ public class ConverterDataListener extends AnalysisEventListener<ConverterData> 
         Assert.assertEquals(list.size(), 1);
         ConverterData data = list.get(0);
         try {
-            Assert.assertEquals(data.getDate(), DateUtils.parseDate("2020-01-01 01:01:01"));
+            Assert.assertEquals(DateUtils.parseDate("2020-01-01 01:01:01"), data.getDate());
         } catch (ParseException e) {
             throw new ExcelCommonException("Test Exception", e);
         }

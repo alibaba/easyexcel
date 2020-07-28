@@ -2,60 +2,28 @@ package com.alibaba.excel.analysis.v03;
 
 import org.apache.poi.hssf.record.Record;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.context.xls.XlsReadContext;
 
 /**
  * Intercepts handle xls reads.
  *
  * @author Dan Zheng
  */
-public interface XlsRecordHandler extends Comparable<XlsRecordHandler> {
+public interface XlsRecordHandler {
     /**
-     * Which tags are supported
+     * Whether to support
      *
+     * @param xlsReadContext
      * @param record
-     *            Excel analysis record
-     * @return Which tags are supported
+     * @return
      */
-    boolean support(Record record);
-
-    /**
-     * Initialize
-     */
-    void init();
+    boolean support(XlsReadContext xlsReadContext, Record record);
 
     /**
      * Processing record
      *
+     * @param xlsReadContext
      * @param record
      */
-    void processRecord(Record record);
-
-    /**
-     * Get row
-     *
-     * @return Row index
-     */
-    int getRow();
-
-    /**
-     * Get column
-     *
-     * @return Column index
-     */
-    int getColumn();
-
-    /**
-     * Get value
-     *
-     * @return Excel internal cell data
-     */
-    CellData getCellData();
-
-    /**
-     * Get order
-     *
-     * @return Order
-     */
-    int getOrder();
+    void processRecord(XlsReadContext xlsReadContext, Record record);
 }

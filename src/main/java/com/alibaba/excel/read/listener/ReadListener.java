@@ -5,6 +5,7 @@ import java.util.Map;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.Listener;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.CellExtra;
 
 /**
  * Interface to listen for read results
@@ -39,6 +40,16 @@ public interface ReadListener<T> extends Listener {
      *            analysis context
      */
     void invoke(T data, AnalysisContext context);
+
+    /**
+     * The current method is called when extra information is returned
+     *
+     * @param extra
+     *            extra information
+     * @param context
+     *            analysis context
+     */
+    void extra(CellExtra extra, AnalysisContext context);
 
     /**
      * if have something to do after all analysis

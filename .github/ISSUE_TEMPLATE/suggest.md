@@ -7,4 +7,6 @@ assignees: ''
 
 ---
 
+**建议先去看文档**
+[快速开始](https://www.yuque.com/easyexcel/doc/easyexcel) 、[常见问题](https://www.yuque.com/easyexcel/faq)
 **建议描述**
