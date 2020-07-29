@@ -10,7 +10,9 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.DateUtils;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.NumberUtils;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * String and number converter
@@ -44,13 +46,9 @@ public class StringNumberConverter implements Converter<String> {
             return NumberUtils.format(cellData.getNumberValue(), contentProperty);
         }
         // Excel defines formatting
-        if (cellData.getDataFormat() != null) {
-            if (DateUtil.isADateFormat(cellData.getDataFormat(), cellData.getDataFormatString())) {
-                return DateUtils.format(DateUtil.getJavaDate(cellData.getNumberValue().doubleValue(),
-                    globalConfiguration.getUse1904windowing(), null));
-            } else {
-                return NumberUtils.format(cellData.getNumberValue(), contentProperty);
-            }
+        if (cellData.getDataFormat() != null && !StringUtils.isEmpty(cellData.getDataFormatString())) {
+            return NumberDataFormatterUtils.format(cellData.getNumberValue().doubleValue(), cellData.getDataFormat(),
+                cellData.getDataFormatString(), globalConfiguration);
         }
         // Default conversion number
         return NumberUtils.format(cellData.getNumberValue(), contentProperty);

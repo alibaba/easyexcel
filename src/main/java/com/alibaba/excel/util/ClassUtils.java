@@ -14,8 +14,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.event.Handler;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Class utils
@@ -23,24 +27,52 @@ import com.alibaba.excel.metadata.BaseRowModel;
  * @author Jiaju Zhuang
  **/
 public class ClassUtils {
+
     private static final Map<Class, SoftReference<FieldCache>> FIELD_CACHE =
         new ConcurrentHashMap<Class, SoftReference<FieldCache>>();
 
-    public static void declaredFields(Class clazz, List<Field> defaultFieldList, Map<Integer, Field> customFiledMap,
-        Map<String, Field> ignoreMap, Boolean convertAllFiled) {
+    public static void declaredFields(Class clazz, Map<Integer, Field> sortedAllFiledMap,
+        Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, Boolean convertAllFiled,
+        Boolean needIgnore, Holder holder) {
         FieldCache fieldCache = getFieldCache(clazz, convertAllFiled);
-        if (fieldCache != null) {
-            defaultFieldList.addAll(fieldCache.getDefaultFieldList());
-            customFiledMap.putAll(fieldCache.getCustomFiledMap());
+        if (fieldCache == null) {
+            return;
+        }
+        if (ignoreMap != null) {
             ignoreMap.putAll(fieldCache.getIgnoreMap());
+        }
+        Map<Integer, Field> tempIndexFildMap = indexFiledMap;
+        if (tempIndexFildMap == null) {
+            tempIndexFildMap = new TreeMap<Integer, Field>();
+        }
+        tempIndexFildMap.putAll(fieldCache.getIndexFiledMap());
+
+        if (!needIgnore) {
+            sortedAllFiledMap.putAll(fieldCache.getSortedAllFiledMap());
+            return;
+        }
+
+        int index = 0;
+        for (Map.Entry<Integer, Field> entry : fieldCache.getSortedAllFiledMap().entrySet()) {
+            Field field = entry.getValue();
+            if (((WriteHolder) holder).ignore(entry.getValue().getName(), entry.getKey())) {
+                if (ignoreMap != null) {
+                    ignoreMap.put(field.getName(), field);
+                }
+                while (tempIndexFildMap.containsKey(index)) {
+                    tempIndexFildMap.remove(index);
+                    index++;
+                }
+            } else {
+                sortedAllFiledMap.put(index, field);
+                index++;
+            }
         }
     }
 
-    public static void declaredFields(Class clazz, List<Field> fieldList, Boolean convertAllFiled) {
-        FieldCache fieldCache = getFieldCache(clazz, convertAllFiled);
-        if (fieldCache != null) {
-            fieldList.addAll(fieldCache.getAllFieldList());
-        }
+    public static void declaredFields(Class clazz, Map<Integer, Field> sortedAllFiledMap, Boolean convertAllFiled,
+        Boolean needIgnore, WriteHolder writeHolder) {
+        declaredFields(clazz, sortedAllFiledMap, null, null, convertAllFiled, needIgnore, writeHolder);
     }
 
     private static FieldCache getFieldCache(Class clazz, Boolean convertAllFiled) {
@@ -72,79 +104,108 @@ public class ClassUtils {
             tempClass = tempClass.getSuperclass();
         }
         // Screening of field
-        List<Field> defaultFieldList = new ArrayList<Field>();
-        Map<Integer, Field> customFiledMap = new TreeMap<Integer, Field>();
-        List<Field> allFieldList = new ArrayList<Field>();
+        Map<Integer, List<Field>> orderFiledMap = new TreeMap<Integer, List<Field>>();
+        Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
         Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
 
         ExcelIgnoreUnannotated excelIgnoreUnannotated =
-            (ExcelIgnoreUnannotated)clazz.getAnnotation(ExcelIgnoreUnannotated.class);
+            (ExcelIgnoreUnannotated) clazz.getAnnotation(ExcelIgnoreUnannotated.class);
         for (Field field : tempFieldList) {
-            ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
-            if (excelIgnore != null) {
-                ignoreMap.put(field.getName(), field);
-                continue;
+            declaredOneField(field, orderFiledMap, indexFiledMap, ignoreMap, excelIgnoreUnannotated, convertAllFiled);
+        }
+        FIELD_CACHE.put(clazz, new SoftReference<FieldCache>(
+            new FieldCache(buildSortedAllFiledMap(orderFiledMap, indexFiledMap), indexFiledMap, ignoreMap)));
+    }
+
+    private static Map<Integer, Field> buildSortedAllFiledMap(Map<Integer, List<Field>> orderFiledMap,
+        Map<Integer, Field> indexFiledMap) {
+
+        Map<Integer, Field> sortedAllFiledMap = new HashMap<Integer, Field>(
+            (orderFiledMap.size() + indexFiledMap.size()) * 4 / 3 + 1);
+
+        Map<Integer, Field> tempIndexFiledMap = new HashMap<Integer, Field>(indexFiledMap);
+        int index = 0;
+        for (List<Field> fieldList : orderFiledMap.values()) {
+            for (Field field : fieldList) {
+                while (tempIndexFiledMap.containsKey(index)) {
+                    sortedAllFiledMap.put(index, tempIndexFiledMap.get(index));
+                    tempIndexFiledMap.remove(index);
+                    index++;
+                }
+                sortedAllFiledMap.put(index, field);
+                index++;
             }
-            ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-            boolean noExcelProperty = excelProperty == null
-                && ((convertAllFiled != null && !convertAllFiled) || excelIgnoreUnannotated != null);
-            if (noExcelProperty) {
-                ignoreMap.put(field.getName(), field);
-                continue;
-            }
-            boolean isStaticFinalOrTransient =
-                (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()))
-                    || Modifier.isTransient(field.getModifiers());
-            if (excelProperty == null && isStaticFinalOrTransient) {
-                ignoreMap.put(field.getName(), field);
-                continue;
-            }
-            if (excelProperty == null || excelProperty.index() < 0) {
-                defaultFieldList.add(field);
-                allFieldList.add(field);
-                continue;
-            }
-            if (customFiledMap.containsKey(excelProperty.index())) {
-                throw new ExcelCommonException("The index of '" + customFiledMap.get(excelProperty.index()).getName()
+        }
+        sortedAllFiledMap.putAll(tempIndexFiledMap);
+        return sortedAllFiledMap;
+    }
+
+    private static void declaredOneField(Field field, Map<Integer, List<Field>> orderFiledMap,
+        Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, ExcelIgnoreUnannotated excelIgnoreUnannotated,
+        Boolean convertAllFiled) {
+        ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
+        if (excelIgnore != null) {
+            ignoreMap.put(field.getName(), field);
+            return;
+        }
+        ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+        boolean noExcelProperty = excelProperty == null
+            && ((convertAllFiled != null && !convertAllFiled) || excelIgnoreUnannotated != null);
+        if (noExcelProperty) {
+            ignoreMap.put(field.getName(), field);
+            return;
+        }
+        boolean isStaticFinalOrTransient =
+            (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()))
+                || Modifier.isTransient(field.getModifiers());
+        if (excelProperty == null && isStaticFinalOrTransient) {
+            ignoreMap.put(field.getName(), field);
+            return;
+        }
+        if (excelProperty != null && excelProperty.index() >= 0) {
+            if (indexFiledMap.containsKey(excelProperty.index())) {
+                throw new ExcelCommonException("The index of '" + indexFiledMap.get(excelProperty.index()).getName()
                     + "' and '" + field.getName() + "' must be inconsistent");
             }
-            customFiledMap.put(excelProperty.index(), field);
-            allFieldList.add(field);
+            indexFiledMap.put(excelProperty.index(), field);
+            return;
         }
 
-        FIELD_CACHE.put(clazz,
-            new SoftReference<FieldCache>(new FieldCache(defaultFieldList, customFiledMap, allFieldList, ignoreMap)));
+        int order = Integer.MAX_VALUE;
+        if (excelProperty != null) {
+            order = excelProperty.order();
+        }
+        List<Field> orderFiledList = orderFiledMap.get(order);
+        if (orderFiledList == null) {
+            orderFiledList = new ArrayList<Field>();
+            orderFiledMap.put(order, orderFiledList);
+        }
+        orderFiledList.add(field);
     }
 
     private static class FieldCache {
-        private List<Field> defaultFieldList;
-        private Map<Integer, Field> customFiledMap;
-        private List<Field> allFieldList;
+
+        private Map<Integer, Field> sortedAllFiledMap;
+        private Map<Integer, Field> indexFiledMap;
         private Map<String, Field> ignoreMap;
 
-        public FieldCache(List<Field> defaultFieldList, Map<Integer, Field> customFiledMap, List<Field> allFieldList,
+        public FieldCache(Map<Integer, Field> sortedAllFiledMap, Map<Integer, Field> indexFiledMap,
             Map<String, Field> ignoreMap) {
-            this.defaultFieldList = defaultFieldList;
-            this.customFiledMap = customFiledMap;
-            this.allFieldList = allFieldList;
+            this.sortedAllFiledMap = sortedAllFiledMap;
+            this.indexFiledMap = indexFiledMap;
             this.ignoreMap = ignoreMap;
         }
 
-        public List<Field> getDefaultFieldList() {
-            return defaultFieldList;
+        public Map<Integer, Field> getSortedAllFiledMap() {
+            return sortedAllFiledMap;
         }
 
-        public Map<Integer, Field> getCustomFiledMap() {
-            return customFiledMap;
-        }
-
-        public List<Field> getAllFieldList() {
-            return allFieldList;
+        public Map<Integer, Field> getIndexFiledMap() {
+            return indexFiledMap;
         }
 
         public Map<String, Field> getIgnoreMap() {
             return ignoreMap;
         }
-
     }
 }

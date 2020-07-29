@@ -7,9 +7,10 @@ import org.apache.poi.hssf.record.BOFRecord;
 import org.apache.poi.hssf.record.BoundSheetRecord;
 import org.apache.poi.hssf.record.Record;
 
-import com.alibaba.excel.analysis.v03.AbstractXlsRecordHandler;
-import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.context.xls.XlsReadContext;
+import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.util.SheetUtils;
 
 /**
@@ -18,91 +19,56 @@ import com.alibaba.excel.util.SheetUtils;
  * @author Dan Zheng
  */
 public class BofRecordHandler extends AbstractXlsRecordHandler {
-    private List<BoundSheetRecord> boundSheetRecords = new ArrayList<BoundSheetRecord>();
-    private BoundSheetRecord[] orderedBsrs;
-    private int sheetIndex;
-    private List<ReadSheet> sheets;
-    private Boolean readAll;
-    private List<ReadSheet> readSheetList;
-    private AnalysisContext context;
-    private boolean alreadyInit;
-    private boolean needInitSheet;
-
-    public BofRecordHandler(AnalysisContext context, List<ReadSheet> sheets, boolean alreadyInit,
-        boolean needInitSheet) {
-        this.context = context;
-        this.sheets = sheets;
-        this.alreadyInit = alreadyInit;
-        this.needInitSheet = needInitSheet;
-    }
 
     @Override
-    public boolean support(Record record) {
-        return BoundSheetRecord.sid == record.getSid() || BOFRecord.sid == record.getSid();
-    }
-
-    @Override
-    public void processRecord(Record record) {
-        if (record.getSid() == BoundSheetRecord.sid) {
-            boundSheetRecords.add((BoundSheetRecord)record);
-        } else if (record.getSid() == BOFRecord.sid) {
-            BOFRecord br = (BOFRecord)record;
-            if (br.getType() == BOFRecord.TYPE_WORKSHEET) {
-                if (orderedBsrs == null) {
-                    orderedBsrs = BoundSheetRecord.orderByBofPosition(boundSheetRecords);
-                }
-                String sheetName = orderedBsrs[sheetIndex].getSheetname();
-                // Find the currently read sheet
-                ReadSheet readSheet = null;
-                if (!alreadyInit) {
-                    readSheet = new ReadSheet(sheetIndex, sheetName);
-                    sheets.add(readSheet);
-                }
-                if (needInitSheet) {
-                    if (readSheet == null) {
-                        for (ReadSheet sheet : sheets) {
-                            if (sheet.getSheetNo() == sheetIndex) {
-                                readSheet = sheet;
-                                break;
-                            }
-                        }
-                    }
-                    assert readSheet != null : "Can't find the sheet.";
-                    context.readWorkbookHolder().setIgnoreRecord03(Boolean.TRUE);
-                    // Copy the parameter to the current sheet
-                    readSheet = SheetUtils.match(readSheet, readSheetList, readAll,
-                        context.readWorkbookHolder().getGlobalConfiguration());
-                    if (readSheet != null) {
-                        if (readSheet.getSheetNo() != 0 && context.readSheetHolder() != null) {
-                            // Prompt for the end of the previous form read
-                            context.readSheetHolder().notifyAfterAllAnalysed(context);
-                        }
-                        context.currentSheet(readSheet);
-                        context.readWorkbookHolder().setIgnoreRecord03(Boolean.FALSE);
-                    }
-                }
-                sheetIndex++;
-            }
+    public void processRecord(XlsReadContext xlsReadContext, Record record) {
+        BOFRecord br = (BOFRecord) record;
+        XlsReadWorkbookHolder xlsReadWorkbookHolder = xlsReadContext.xlsReadWorkbookHolder();
+        if (br.getType() == BOFRecord.TYPE_WORKBOOK) {
+            xlsReadWorkbookHolder.setReadSheetIndex(null);
+            xlsReadWorkbookHolder.setIgnoreRecord(Boolean.FALSE);
+            return;
         }
-    }
-
-    @Override
-    public void init() {
-        sheetIndex = 0;
-        orderedBsrs = null;
-        boundSheetRecords.clear();
-        if (!alreadyInit) {
-            sheets.clear();
+        if (br.getType() != BOFRecord.TYPE_WORKSHEET) {
+            return;
         }
+        // Init read sheet Data
+        initReadSheetDataList(xlsReadWorkbookHolder);
+        Integer readSheetIndex = xlsReadWorkbookHolder.getReadSheetIndex();
+        if (readSheetIndex == null) {
+            readSheetIndex = 0;
+            xlsReadWorkbookHolder.setReadSheetIndex(readSheetIndex);
+        }
+        ReadSheet actualReadSheet = xlsReadWorkbookHolder.getActualSheetDataList().get(readSheetIndex);
+        assert actualReadSheet != null : "Can't find the sheet.";
+        // Copy the parameter to the current sheet
+        ReadSheet readSheet = SheetUtils.match(actualReadSheet, xlsReadContext);
+        if (readSheet != null) {
+            xlsReadContext.currentSheet(readSheet);
+            xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.FALSE);
+        } else {
+            xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.TRUE);
+        }
+        // Go read the next one
+        xlsReadWorkbookHolder.setReadSheetIndex(xlsReadWorkbookHolder.getReadSheetIndex() + 1);
     }
 
-    public void init(List<ReadSheet> readSheetList, Boolean readAll) {
-        this.readSheetList = readSheetList;
-        this.readAll = readAll;
-    }
-
-    @Override
-    public int getOrder() {
-        return 0;
+    private void initReadSheetDataList(XlsReadWorkbookHolder xlsReadWorkbookHolder) {
+        if (xlsReadWorkbookHolder.getActualSheetDataList() != null) {
+            return;
+        }
+        BoundSheetRecord[] boundSheetRecords =
+            BoundSheetRecord.orderByBofPosition(xlsReadWorkbookHolder.getBoundSheetRecordList());
+        List<ReadSheet> readSheetDataList = new ArrayList<ReadSheet>();
+        for (int i = 0; i < boundSheetRecords.length; i++) {
+            BoundSheetRecord boundSheetRecord = boundSheetRecords[i];
+            ReadSheet readSheet = new ReadSheet(i, boundSheetRecord.getSheetname());
+            readSheetDataList.add(readSheet);
+        }
+        xlsReadWorkbookHolder.setActualSheetDataList(readSheetDataList);
+        // Just need to get the list of sheets
+        if (!xlsReadWorkbookHolder.getNeedReadSheet()) {
+            throw new ExcelAnalysisStopException("Just need to get the list of sheets.");
+        }
     }
 }

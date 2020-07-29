@@ -136,6 +136,8 @@ public class ExcelReader {
         readWorkbook.setReadCache(new MapCache());
         readWorkbook.setConvertAllFiled(Boolean.FALSE);
         readWorkbook.setDefaultReturnMap(Boolean.FALSE);
+        // The previous logic was that Article 0 started reading
+        readWorkbook.setHeadRowNumber(0);
         excelAnalyser = new ExcelAnalyserImpl(readWorkbook);
     }
 
@@ -274,7 +276,9 @@ public class ExcelReader {
      * Complete the entire read file.Release the cache and close stream.
      */
     public void finish() {
-        excelAnalyser.finish();
+        if (excelAnalyser != null) {
+            excelAnalyser.finish();
+        }
     }
 
     /**

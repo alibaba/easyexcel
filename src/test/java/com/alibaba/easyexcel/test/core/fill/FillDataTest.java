@@ -19,6 +19,7 @@ import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
+import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
 /**
  *
@@ -43,6 +44,10 @@ public class FillDataTest {
     private static File byName03;
     private static File byNameTemplate07;
     private static File byNameTemplate03;
+    private static File fileComposite07;
+    private static File compositeFillTemplate07;
+    private static File fileComposite03;
+    private static File compositeFillTemplate03;
 
     @BeforeClass
     public static void init() {
@@ -62,6 +67,10 @@ public class FillDataTest {
         byNameTemplate07 = TestFileUtil.readFile("fill" + File.separator + "byName.xlsx");
         byName03 = TestFileUtil.createNewFile("byName03.xls");
         byNameTemplate03 = TestFileUtil.readFile("fill" + File.separator + "byName.xls");
+        fileComposite07 = TestFileUtil.createNewFile("fileComposite07.xlsx");
+        compositeFillTemplate07 = TestFileUtil.readFile("fill" + File.separator + "composite.xlsx");
+        fileComposite03 = TestFileUtil.createNewFile("fileComposite03.xls");
+        compositeFillTemplate03 = TestFileUtil.readFile("fill" + File.separator + "composite.xls");
     }
 
     @Test
@@ -104,11 +113,46 @@ public class FillDataTest {
         byNameFill(byName03, byNameTemplate03);
     }
 
+    @Test
+    public void t09CompositeFill07() {
+        compositeFill(fileComposite07, compositeFillTemplate07);
+    }
+
+    @Test
+    public void t10CompositeFill03() {
+        compositeFill(fileComposite03, compositeFillTemplate03);
+    }
+
     private void byNameFill(File file, File template) {
         FillData fillData = new FillData();
         fillData.setName("张三");
         fillData.setNumber(5.2);
         EasyExcel.write(file, FillData.class).withTemplate(template).sheet("Sheet2").doFill(fillData);
+    }
+
+    private void compositeFill(File file, File template) {
+        ExcelWriter excelWriter = EasyExcel.write(file).withTemplate(template).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet().build();
+
+        FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+        excelWriter.fill(new FillWrapper("data1", data()), fillConfig, writeSheet);
+        excelWriter.fill(new FillWrapper("data1", data()), fillConfig, writeSheet);
+        excelWriter.fill(new FillWrapper("data2", data()), writeSheet);
+        excelWriter.fill(new FillWrapper("data2", data()), writeSheet);
+        excelWriter.fill(new FillWrapper("data3", data()), writeSheet);
+        excelWriter.fill(new FillWrapper("data3", data()), writeSheet);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("date", "2019年10月9日13:28:28");
+        excelWriter.fill(map, writeSheet);
+        excelWriter.finish();
+
+        List<Object> list = EasyExcel.read(file).ignoreEmptyRow(false).sheet().headRowNumber(0).doReadSync();
+        Map<String, String> map0 = (Map<String, String>) list.get(0);
+        Assert.assertEquals("张三", map0.get(21));
+        Map<String, String> map27 = (Map<String, String>) list.get(27);
+        Assert.assertEquals("张三", map27.get(0));
+        Map<String, String> map29 = (Map<String, String>) list.get(29);
+        Assert.assertEquals("张三", map29.get(3));
     }
 
     private void horizontalFill(File file, File template) {
@@ -124,7 +168,7 @@ public class FillDataTest {
 
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(0).doReadSync();
         Assert.assertEquals(list.size(), 5L);
-        Map<String, String> map0 = (Map<String, String>)list.get(0);
+        Map<String, String> map0 = (Map<String, String>) list.get(0);
         Assert.assertEquals("张三", map0.get(2));
     }
 
@@ -141,7 +185,7 @@ public class FillDataTest {
         excelWriter.finish();
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(3).doReadSync();
         Assert.assertEquals(list.size(), 21L);
-        Map<String, String> map19 = (Map<String, String>)list.get(19);
+        Map<String, String> map19 = (Map<String, String>) list.get(19);
         Assert.assertEquals("张三", map19.get(0));
     }
 
@@ -159,6 +203,9 @@ public class FillDataTest {
             list.add(fillData);
             fillData.setName("张三");
             fillData.setNumber(5.2);
+            if (i == 5) {
+                fillData.setName(null);
+            }
         }
         return list;
     }

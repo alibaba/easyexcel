@@ -1,5 +1,7 @@
 package com.alibaba.excel.metadata;
 
+import java.util.Locale;
+
 /**
  * Global configuration
  *
@@ -18,6 +20,17 @@ public class GlobalConfiguration {
      * @return
      */
     private Boolean use1904windowing;
+    /**
+     * A <code>Locale</code> object represents a specific geographical, political, or cultural region. This parameter is
+     * used when formatting dates and numbers.
+     */
+    private Locale locale;
+    /**
+     * Whether to use scientific Format.
+     *
+     * default is false
+     */
+    private Boolean useScientificFormat;
 
     public Boolean getUse1904windowing() {
         return use1904windowing;
@@ -33,5 +46,21 @@ public class GlobalConfiguration {
 
     public void setAutoTrim(Boolean autoTrim) {
         this.autoTrim = autoTrim;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    public Boolean getUseScientificFormat() {
+        return useScientificFormat;
+    }
+
+    public void setUseScientificFormat(Boolean useScientificFormat) {
+        this.useScientificFormat = useScientificFormat;
     }
 }

@@ -8,6 +8,10 @@ import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
+import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.StyleProperty;
+import com.alibaba.excel.util.StringUtils;
+
 /**
  * Cell style when writing
  *
@@ -136,6 +140,79 @@ public class WriteCellStyle {
      * Controls if the Cell should be auto-sized to shrink to fit if the text is too long
      */
     private Boolean shrinkToFit;
+
+    public static WriteCellStyle build(StyleProperty styleProperty, FontProperty fontProperty) {
+        if (styleProperty == null && fontProperty == null) {
+            return null;
+        }
+        WriteCellStyle writeCellStyle = new WriteCellStyle();
+        if (styleProperty != null) {
+            if (styleProperty.getDataFormat() >= 0) {
+                writeCellStyle.setDataFormat(styleProperty.getDataFormat());
+            }
+            writeCellStyle.setHidden(styleProperty.getHidden());
+            writeCellStyle.setLocked(styleProperty.getLocked());
+            writeCellStyle.setQuotePrefix(styleProperty.getQuotePrefix());
+            writeCellStyle.setHorizontalAlignment(styleProperty.getHorizontalAlignment());
+            writeCellStyle.setWrapped(styleProperty.getWrapped());
+            writeCellStyle.setVerticalAlignment(styleProperty.getVerticalAlignment());
+            if (styleProperty.getRotation() >= 0) {
+                writeCellStyle.setRotation(styleProperty.getRotation());
+            }
+            if (styleProperty.getIndent() >= 0) {
+                writeCellStyle.setIndent(styleProperty.getIndent());
+            }
+            writeCellStyle.setBorderLeft(styleProperty.getBorderLeft());
+            writeCellStyle.setBorderRight(styleProperty.getBorderRight());
+            writeCellStyle.setBorderTop(styleProperty.getBorderTop());
+            writeCellStyle.setBorderBottom(styleProperty.getBorderBottom());
+            if (styleProperty.getLeftBorderColor() >= 0) {
+                writeCellStyle.setLeftBorderColor(styleProperty.getLeftBorderColor());
+            }
+            if (styleProperty.getRightBorderColor() >= 0) {
+                writeCellStyle.setRightBorderColor(styleProperty.getRightBorderColor());
+            }
+            if (styleProperty.getTopBorderColor() >= 0) {
+                writeCellStyle.setTopBorderColor(styleProperty.getTopBorderColor());
+            }
+            if (styleProperty.getBottomBorderColor() >= 0) {
+                writeCellStyle.setBottomBorderColor(styleProperty.getBottomBorderColor());
+            }
+            writeCellStyle.setFillPatternType(styleProperty.getFillPatternType());
+            if (styleProperty.getFillBackgroundColor() >= 0) {
+                writeCellStyle.setFillBackgroundColor(styleProperty.getFillBackgroundColor());
+            }
+            if (styleProperty.getFillForegroundColor() >= 0) {
+                writeCellStyle.setFillForegroundColor(styleProperty.getFillForegroundColor());
+            }
+            writeCellStyle.setShrinkToFit(styleProperty.getShrinkToFit());
+        }
+        if (fontProperty != null) {
+            WriteFont writeFont = new WriteFont();
+            writeCellStyle.setWriteFont(writeFont);
+            if (!StringUtils.isEmpty(fontProperty.getFontName())) {
+                writeFont.setFontName(fontProperty.getFontName());
+            }
+            writeFont.setFontHeightInPoints(fontProperty.getFontHeightInPoints());
+            writeFont.setItalic(fontProperty.getItalic());
+            writeFont.setStrikeout(fontProperty.getStrikeout());
+            if (fontProperty.getColor() >= 0) {
+                writeFont.setColor(fontProperty.getColor());
+            }
+            if (fontProperty.getTypeOffset() >= 0) {
+                writeFont.setTypeOffset(fontProperty.getTypeOffset());
+            }
+            if (fontProperty.getUnderline() >= 0) {
+                writeFont.setUnderline(fontProperty.getUnderline());
+            }
+            if (fontProperty.getCharset() >= 0) {
+                writeFont.setCharset(fontProperty.getCharset());
+            }
+            writeFont.setBold(fontProperty.getBold());
+        }
+
+        return writeCellStyle;
+    }
 
     public Short getDataFormat() {
         return dataFormat;

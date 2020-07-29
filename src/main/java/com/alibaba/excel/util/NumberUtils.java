@@ -167,6 +167,7 @@ public class NumberUtils {
         RoundingMode roundingMode = contentProperty.getNumberFormatProperty().getRoundingMode();
         DecimalFormat decimalFormat = new DecimalFormat(format);
         decimalFormat.setRoundingMode(roundingMode);
+        decimalFormat.setParseBigDecimal(true);
         return decimalFormat.parse(string);
     }
 }

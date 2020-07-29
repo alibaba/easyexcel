@@ -9,7 +9,7 @@ package com.alibaba.excel.enums;
  * Merge vertically
  * 3 先水平，然后垂直方向合并
  * Merge first horizontally, then vertically
- * @author Lucas
+ * @author Lucas xie
  * @date 2020-1-17
  * @since 1.0.0L
  */

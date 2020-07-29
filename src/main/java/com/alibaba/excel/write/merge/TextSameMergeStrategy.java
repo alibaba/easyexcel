@@ -1,18 +1,23 @@
 package com.alibaba.excel.write.merge;
 
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.MergeTypeEnum;
 import com.alibaba.excel.metadata.CellPoint;
 import com.alibaba.excel.metadata.Head;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 文本相同单元格合并，支持行合并和列合并, 行列同事合并
- * @author Lucas
+ * Text same cell merge, <p>
+ *     support row and column merge, row and column colleagues merge
+ * @author Lucas xie
  * @date 2020-1-17
  * @since 1.0.0L
  */
@@ -20,16 +25,19 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
 
     /**
      * 临时列存储
+     * Temporary col storage
      */
     Map<String, CellPoint> col = new HashMap<String, CellPoint>();
 
     /**
      * 临时行存储
+     * Temporary row storage
      */
     Map<String, CellPoint> row = new HashMap<String, CellPoint>();
 
     /**
      * 总列数
+     * Total number of rows
      */
     private int totalCols;
     /**
@@ -41,6 +49,7 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
 
     /**
      * 构造方法传入 总行数、总列数
+     * The constructor passes in the total number of rows and columns
      * @param totalCols
      * @param totalRows
      * @param mergeType
@@ -70,6 +79,10 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
 
     /**
      * 水平合并 行合并
+     * Horizontal merge row merge
+     * @param cell
+     * @param index
+     * @param sheet
      */
     private void horizontalMerge(Cell cell, Integer index, Sheet sheet){
         String key = sheet.getSheetName()+"R"+index;
@@ -97,6 +110,11 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
 
     /**
      * 垂直合并 列合并
+     * Vertical merge column merge
+     * @param cell 单元格
+     * @param head 表头
+     * @param index 行索引
+     * @param sheet sheet
      */
     public void verticalMerge(Cell cell, Head head, Integer index, Sheet sheet){
         CellPoint cellPoint = col.get(sheet.getSheetName()+"C"+cell.getColumnIndex());
@@ -104,7 +122,7 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
             col.put(sheet.getSheetName()+"C"+cell.getColumnIndex(), new CellPoint());
             cellPoint = col.get(sheet.getSheetName()+"C"+cell.getColumnIndex());
         }
-        if(cellPoint.getText() != null && cellPoint.getText().equals(cell.getStringCellValue())){
+        if(cellPoint.getText() != null && cellPoint.getText().equals(this.getCellText(cell))){
             cellPoint.setEndX(cell.getColumnIndex());
             cellPoint.setEndY(cell.getRowIndex());
             if(index == totalRows-1){
@@ -119,11 +137,12 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
             cellPoint.setEndX(cell.getColumnIndex());
             cellPoint.setEndY(cell.getRowIndex());
         }
-        cellPoint.setText(cell.getStringCellValue());
+        cellPoint.setText(this.getCellText(cell));
     }
 
     /**
      * 执行合并
+     * Perform merge
      * @param sheet sheet的对象
      * @param cellPoint 单元格坐标对象
      */
@@ -134,5 +153,26 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
                 cellPoint.getStartX(),
                 cellPoint.getEndX());
         sheet.addMergedRegionUnsafe(cellRangeAddress);
+    }
+
+    /**
+     * 获取单元格的内容，转为字符串
+     * Get the contents of a cell and convert it to a string
+     * @param cell
+     * @return
+     */
+    private String getCellText(Cell cell){
+        String text = "";
+        CellType cellType = cell.getCellTypeEnum();
+        if(CellType.BOOLEAN.equals(cellType)){
+            text = Boolean.toString(cell.getBooleanCellValue());
+        }else if(CellType.NUMERIC.equals(cellType)){
+            text = Double.toString(cell.getNumericCellValue());
+        }else if(CellType.STRING.equals(cellType)){
+            text = cell.getStringCellValue();
+        }else if(cell.getCellTypeEnum().equals(Date.class)){
+            text = cell.getDateCellValue().toString();
+        }
+        return text;
     }
 }

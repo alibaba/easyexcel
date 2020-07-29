@@ -6,13 +6,12 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.handler.AbstractCellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
@@ -21,21 +20,9 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
  *
  * @author Jiaju Zhuang
  */
-public class CustomCellWriteHandler implements CellWriteHandler {
+public class CustomCellWriteHandler extends AbstractCellWriteHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomCellWriteHandler.class);
-
-    @Override
-    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
-        Head head, Integer relativeRowIndex, Boolean isHead) {
-
-    }
 
     @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,

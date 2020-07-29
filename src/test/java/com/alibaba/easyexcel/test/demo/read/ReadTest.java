@@ -16,6 +16,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.converters.DefaultConverterLoader;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.fastjson.JSON;
 
@@ -26,6 +27,7 @@ import com.alibaba.fastjson.JSON;
  */
 @Ignore
 public class ReadTest {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ReadTest.class);
 
     /**
@@ -33,7 +35,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -47,11 +49,17 @@ public class ReadTest {
 
         // 写法2：
         fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        ExcelReader excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
-        ReadSheet readSheet = EasyExcel.readSheet(0).build();
-        excelReader.read(readSheet);
-        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
-        excelReader.finish();
+        ExcelReader excelReader = null;
+        try {
+            excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
+            ReadSheet readSheet = EasyExcel.readSheet(0).build();
+            excelReader.read(readSheet);
+        } finally {
+            if (excelReader != null) {
+                // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
+                excelReader.finish();
+            }
+        }
     }
 
     /**
@@ -60,7 +68,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象,并使用{@link ExcelProperty}注解. 参照{@link IndexOrNameData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link IndexOrNameDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link IndexOrNameDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -76,7 +84,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -89,16 +97,23 @@ public class ReadTest {
 
         // 读取部分sheet
         fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
-        ExcelReader excelReader = EasyExcel.read(fileName).build();
-        // 这里为了简单 所以注册了 同样的head 和Listener 自己使用功能必须不同的Listener
-        ReadSheet readSheet1 =
-            EasyExcel.readSheet(0).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
-        ReadSheet readSheet2 =
-            EasyExcel.readSheet(1).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
-        // 这里注意 一定要把sheet1 sheet2 一起传进去，不然有个问题就是03版的excel 会读取多次，浪费性能
-        excelReader.read(readSheet1, readSheet2);
-        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
-        excelReader.finish();
+        ExcelReader excelReader = null;
+        try {
+            excelReader = EasyExcel.read(fileName).build();
+
+            // 这里为了简单 所以注册了 同样的head 和Listener 自己使用功能必须不同的Listener
+            ReadSheet readSheet1 =
+                EasyExcel.readSheet(0).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
+            ReadSheet readSheet2 =
+                EasyExcel.readSheet(1).head(DemoData.class).registerReadListener(new DemoDataListener()).build();
+            // 这里注意 一定要把sheet1 sheet2 一起传进去，不然有个问题就是03版的excel 会读取多次，浪费性能
+            excelReader.read(readSheet1, readSheet2);
+        } finally {
+            if (excelReader != null) {
+                // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
+                excelReader.finish();
+            }
+        }
     }
 
     /**
@@ -108,7 +123,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link ConverterData}.里面可以使用注解{@link DateTimeFormat}、{@link NumberFormat}或者自定义注解
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link ConverterDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link ConverterDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -130,7 +145,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoDataListener}
      * <p>
      * 3. 设置headRowNumber参数，然后读。 这里要注意headRowNumber如果不指定， 会根据你传入的class的{@link ExcelProperty#value()}里面的表头的数量来决定行数，
      * 如果不传入class则默认为1.当然你指定了headRowNumber不管是否传入class都是以你传入的为准。
@@ -150,7 +165,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
      * <p>
      * 3. 直接读即可
      */
@@ -162,14 +177,43 @@ public class ReadTest {
     }
 
     /**
+     * 额外信息（批注、超链接、合并单元格信息读取）
+     * <p>
+     * 由于是流式读取，没法在读取到单元格数据的时候直接读取到额外信息，所以只能最后通知哪些单元格有哪些额外信息
+     *
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoExtraData}
+     * <p>
+     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExtraListener}
+     * <p>
+     * 3. 直接读即可
+     *
+     * @since 2.2.0-beat1
+     */
+    @Test
+    public void extraRead() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "extra.xlsx";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet
+        EasyExcel.read(fileName, DemoExtraData.class, new DemoExtraListener())
+            // 需要读取批注 默认不读取
+            .extraRead(CellExtraTypeEnum.COMMENT)
+            // 需要读取超链接 默认不读取
+            .extraRead(CellExtraTypeEnum.HYPERLINK)
+            // 需要读取合并单元格信息 默认不读取
+            .extraRead(CellExtraTypeEnum.MERGE).sheet().doRead();
+    }
+
+    /**
      * 读取公式和单元格类型
      *
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * 1. 创建excel对应的实体对象 参照{@link CellDataReadDemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoHeadDataListener}
      * <p>
      * 3. 直接读即可
+     *
+     * @since 2.2.0-beat1
      */
     @Test
     public void cellDataRead() {
@@ -184,7 +228,7 @@ public class ReadTest {
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link ExceptionDemoData}
      * <p>
-     * 2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExceptionListener}
+     * 2. 由于默认一行行的读取excel，所以需要创建excel一行一行的回调监听器，参照{@link DemoExceptionListener}
      * <p>
      * 3. 直接读即可
      */
@@ -216,12 +260,12 @@ public class ReadTest {
     }
 
     /**
-     * 不创建对象的读，不是特别推荐使用，都用String接收对日期的支持不是很好
+     * 不创建对象的读
      */
     @Test
-    public void noModleRead() {
+    public void noModelRead() {
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
-        EasyExcel.read(fileName, new NoModleDataListener()).sheet().doRead();
+        EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
     }
 }

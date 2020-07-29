@@ -325,7 +325,9 @@ public class ExcelWriter {
      * Close IO
      */
     public void finish() {
-        excelBuilder.finish(false);
+        if (excelBuilder != null) {
+            excelBuilder.finish(false);
+        }
     }
 
     /**

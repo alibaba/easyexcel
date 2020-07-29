@@ -1,6 +1,12 @@
 package com.alibaba.excel.read.metadata.holder;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.alibaba.excel.enums.HolderEnum;
+import com.alibaba.excel.metadata.Cell;
+import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.CellExtra;
 import com.alibaba.excel.read.metadata.ReadSheet;
 
 /**
@@ -9,6 +15,7 @@ import com.alibaba.excel.read.metadata.ReadSheet;
  * @author Jiaju Zhuang
  */
 public class ReadSheetHolder extends AbstractReadHolder {
+
     /**
      * current param
      */
@@ -29,6 +36,22 @@ public class ReadSheetHolder extends AbstractReadHolder {
      * Gets the total number of rows , data may be inaccurate
      */
     private Integer approximateTotalRowNumber;
+    /**
+     * Data storage of the current row.
+     */
+    private Map<Integer, Cell> cellMap;
+    /**
+     * Data storage of the current extra cell.
+     */
+    private CellExtra cellExtra;
+    /**
+     * Index of the current row.
+     */
+    private Integer rowIndex;
+    /**
+     * Current CellData
+     */
+    private CellData tempCellData;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
         super(readSheet, readWorkbookHolder, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
@@ -36,6 +59,8 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.parentReadWorkbookHolder = readWorkbookHolder;
         this.sheetNo = readSheet.getSheetNo();
         this.sheetName = readSheet.getSheetName();
+        this.cellMap = new LinkedHashMap<Integer, Cell>();
+        this.rowIndex = -1;
     }
 
     public ReadSheet getReadSheet() {
@@ -71,7 +96,6 @@ public class ReadSheetHolder extends AbstractReadHolder {
     }
 
     /**
-     *
      * Approximate total number of rows
      *
      * @return
@@ -93,6 +117,38 @@ public class ReadSheetHolder extends AbstractReadHolder {
 
     public void setApproximateTotalRowNumber(Integer approximateTotalRowNumber) {
         this.approximateTotalRowNumber = approximateTotalRowNumber;
+    }
+
+    public Map<Integer, Cell> getCellMap() {
+        return cellMap;
+    }
+
+    public void setCellMap(Map<Integer, Cell> cellMap) {
+        this.cellMap = cellMap;
+    }
+
+    public Integer getRowIndex() {
+        return rowIndex;
+    }
+
+    public void setRowIndex(Integer rowIndex) {
+        this.rowIndex = rowIndex;
+    }
+
+    public CellData getTempCellData() {
+        return tempCellData;
+    }
+
+    public void setTempCellData(CellData tempCellData) {
+        this.tempCellData = tempCellData;
+    }
+
+    public CellExtra getCellExtra() {
+        return cellExtra;
+    }
+
+    public void setCellExtra(CellExtra cellExtra) {
+        this.cellExtra = cellExtra;
     }
 
     @Override

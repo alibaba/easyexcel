@@ -11,6 +11,7 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
+import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
@@ -20,7 +21,8 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
  *
  * @author Jiaju Zhuang
  */
-public abstract class AbstractCellStyleStrategy implements CellWriteHandler, SheetWriteHandler, NotRepeatExecutor {
+public abstract class AbstractCellStyleStrategy implements CellWriteHandler, WorkbookWriteHandler, NotRepeatExecutor {
+
     boolean hasInitialized = false;
 
     @Override
@@ -41,9 +43,15 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
     }
 
     @Override
+    public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+        CellData cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+
+    }
+
+    @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
         List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        if (isHead == null || head == null) {
+        if (isHead == null) {
             return;
         }
         if (isHead) {
@@ -54,14 +62,19 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
     }
 
     @Override
-    public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+    public void beforeWorkbookCreate() {
 
     }
 
     @Override
-    public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+    public void afterWorkbookCreate(WriteWorkbookHolder writeWorkbookHolder) {
         initCellStyle(writeWorkbookHolder.getWorkbook());
         hasInitialized = true;
+    }
+
+    @Override
+    public void afterWorkbookDispose(WriteWorkbookHolder writeWorkbookHolder) {
+
     }
 
     /**
