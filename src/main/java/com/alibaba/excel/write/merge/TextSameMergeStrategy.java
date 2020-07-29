@@ -4,6 +4,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.MergeTypeEnum;
 import com.alibaba.excel.metadata.CellPoint;
 import com.alibaba.excel.metadata.Head;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -170,7 +171,7 @@ public class TextSameMergeStrategy extends AbstractMergeStrategy {
             text = Double.toString(cell.getNumericCellValue());
         }else if(CellType.STRING.equals(cellType)){
             text = cell.getStringCellValue();
-        }else if(cell.getCellTypeEnum().equals(Date.class)){
+        }else if(HSSFDateUtil.isCellDateFormatted(cell)){
             text = cell.getDateCellValue().toString();
         }
         return text;
