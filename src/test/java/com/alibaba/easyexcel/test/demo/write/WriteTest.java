@@ -3,14 +3,13 @@ package com.alibaba.easyexcel.test.demo.write;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.alibaba.excel.write.merge.DynamicMergeStrategy;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,6 +38,7 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
  * @author Jiaju Zhuang
  */
 @Ignore
+@Slf4j
 public class WriteTest {
 
     /**
@@ -374,6 +374,148 @@ public class WriteTest {
     }
 
     /**
+     * 流式合并单元格
+     */
+    @Test
+    public void streamMergeWrite() {
+
+        final String fileName = TestFileUtil.getPath() + "streamMergeWrite-" + System.currentTimeMillis() + ".xlsx";
+
+        final DynamicMergeStrategy mergeStrategy = new DynamicMergeStrategy();
+
+        final ExcelWriter writer = EasyExcel
+            .write(fileName, DemoDynamicMergeData.class)
+            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+            .registerWriteHandler(mergeStrategy)
+            .build();
+
+        final WriteSheet sheet = EasyExcel
+            .writerSheet("模板")
+            .build();
+
+        writeProvincesAsync(writer, sheet, mergeStrategy);
+
+        writer.finish();
+    }
+
+    private void writeProvincesAsync(final ExcelWriter writer, final WriteSheet sheet, final DynamicMergeStrategy mergeStrategy) {
+        final int[] relativeRowIndex = new int[1];
+        final Map<String, Map<String, List<String>>> provinces = hierarchicalData();
+        for (final String province : provinces.keySet()) {
+
+            final Map<String, List<String>> cities = provinces.get(province);
+            final DemoDynamicMergeData.DemoDynamicMergeDataBuilder provinceBuilder = DemoDynamicMergeData.builder();
+            provinceBuilder.province(province);
+
+            // 当前层级首行
+            final int provinceFirstRow = relativeRowIndex[0] + 1;
+
+            if (cities.isEmpty()) {
+                // 如果没有子集, 合并行内剩余单元格, 注意 firstRow 和 lastRow 都是当前层级所在行.
+                mergeStrategy.append(
+                    new CellRangeAddress(
+                        provinceFirstRow,
+                        provinceFirstRow,
+                        0,
+                        2
+                    ),
+                    sheet
+                );
+                writer.write(
+                    Collections.singletonList(
+                        provinceBuilder.build()
+                    ),
+                    sheet
+                );
+                relativeRowIndex[0] += 1;
+                continue;
+            }
+
+            writeCitiesAsync(writer, sheet, province, cities, mergeStrategy, relativeRowIndex);
+
+            // 当前层级末行
+            final int provinceLastRow = relativeRowIndex[0];
+
+            // 如果子集超过1行, 则合并当前层级多行
+            if (provinceLastRow > provinceFirstRow) {
+
+                // 这里可以分别合并多个列, 每个列插入一条记录, 注意 firstCol 和 lastCol 的值是一样的
+                mergeStrategy.append(
+                    new CellRangeAddress(
+                        provinceFirstRow,
+                        provinceLastRow,
+                        0,
+                        0
+                    ),
+                    sheet
+                );
+            }
+        }
+    }
+
+    private void writeCitiesAsync(final ExcelWriter writer, final WriteSheet sheet, final String province, final Map<String, List<String>> cities, final DynamicMergeStrategy mergeStrategy, final int[] relativeRowIndex) {
+        for (final String city : cities.keySet()) {
+
+            final List<String> districts = cities.get(city);
+            final DemoDynamicMergeData.DemoDynamicMergeDataBuilder cityBuilder = DemoDynamicMergeData.builder();
+            cityBuilder.province(province);
+            cityBuilder.city(city);
+
+            final int cityFirstRow = relativeRowIndex[0] + 1;
+
+            if (districts.isEmpty()) {
+                mergeStrategy.append(
+                    new CellRangeAddress(
+                        cityFirstRow,
+                        cityFirstRow,
+                        1,
+                        2
+                    ),
+                    sheet
+                );
+                writer.write(
+                    Collections.singletonList(
+                        cityBuilder.build()
+                    ),
+                    sheet
+                );
+                relativeRowIndex[0] += 1;
+                continue;
+            }
+
+            writeDistrictsAsync(writer, sheet, districts, cityBuilder, relativeRowIndex);
+
+            final int cityLastRow = relativeRowIndex[0];
+
+            if (cityLastRow > cityFirstRow) {
+
+                mergeStrategy.append(
+                    new CellRangeAddress(
+                        cityFirstRow,
+                        cityLastRow,
+                        1,
+                        1
+                    ),
+                    sheet
+                );
+            }
+        }
+    }
+
+    private void writeDistrictsAsync(final ExcelWriter writer, final WriteSheet sheet, final List<String> districts, final DemoDynamicMergeData.DemoDynamicMergeDataBuilder cityBuilder, final int[] relativeRowIndex) {
+        for (final String district : districts) {
+            writer.write(
+                Collections.singletonList(
+                    cityBuilder.district(district).build()
+                ),
+                sheet
+            );
+            relativeRowIndex[0] += 1;
+        }
+    }
+
+
+    /**
      * 使用table去写入
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link DemoData}
@@ -577,4 +719,93 @@ public class WriteTest {
         return list;
     }
 
+    /**
+     * 层级数据
+     */
+    private Map<String, Map<String, List<String>>> hierarchicalData() {
+
+        // 省/市/区
+        final Map<String, Map<String, List<String>>> provinces = new TreeMap<String, Map<String, List<String>>>();
+
+        provinces.put("北京市", new TreeMap<String, List<String>>());
+        {
+            final Map<String, List<String>> cities = new TreeMap<String, List<String>>();
+            provinces.put("广西省", cities);
+
+            cities.put("南宁市", new ArrayList<String>());
+            {
+                final List<String> districts = new ArrayList<String>();
+                cities.put("桂林市", districts);
+
+                districts.add("秀峰区");
+                districts.add("叠彩区");
+                districts.add("象山区");
+                districts.add("七星区");
+                districts.add("雁山区");
+                districts.add("临桂区");
+                districts.add("阳朔县");
+                districts.add("灵川县");
+                districts.add("全州县");
+                districts.add("兴安县");
+                districts.add("永福县");
+                districts.add("灌阳县");
+                districts.add("龙胜各族自治县");
+                districts.add("资源县");
+                districts.add("平乐县");
+                districts.add("恭城瑶族自治县");
+                districts.add("荔浦市");
+            }
+            cities.put("北海市", new ArrayList<String>());
+            {
+                final List<String> districts = new ArrayList<String>();
+                cities.put("柳州市", districts);
+
+                districts.add("城中区");
+                districts.add("鱼峰区");
+                districts.add("柳南区");
+                districts.add("柳北区");
+                districts.add("柳江区");
+                districts.add("柳城县");
+                districts.add("鹿寨县");
+                districts.add("融安县");
+                districts.add("融水苗族自治县");
+                districts.add("三江侗族自治县");
+            }
+            cities.put("来宾市", new ArrayList<String>());
+        }
+        provinces.put("上海市", new TreeMap<String, List<String>>());
+        {
+            final Map<String, List<String>> cities = new TreeMap<String, List<String>>();
+            provinces.put("广东省", cities);
+
+            cities.put("广州市", new ArrayList<String>());
+            {
+                final List<String> districts = new ArrayList<String>();
+                cities.put("珠海市", districts);
+
+                districts.add("香洲区");
+                districts.add("斗门区");
+                districts.add("金湾区");
+            }
+            cities.put("中山市", new ArrayList<String>());
+            {
+                final List<String> districts = new ArrayList<String>();
+                cities.put("深圳市", districts);
+
+                districts.add("罗湖区");
+                districts.add("福田区");
+                districts.add("南山区");
+                districts.add("宝安区");
+                districts.add("龙岗区");
+                districts.add("盐田区");
+                districts.add("龙华区");
+                districts.add("坪山区");
+                districts.add("光明区");
+                districts.add("大鹏新区");
+            }
+            cities.put("佛山市", new ArrayList<String>());
+        }
+
+        return provinces;
+    }
 }
