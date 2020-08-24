@@ -2,6 +2,7 @@ package com.alibaba.excel.context;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.UUID;
@@ -72,7 +73,7 @@ public class WriteContextImpl implements WriteContext {
      */
     private boolean finished = false;
 
-    public WriteContextImpl(WriteWorkbook writeWorkbook) {
+    public WriteContextImpl(WriteWorkbook writeWorkbook) throws IOException {
         if (writeWorkbook == null) {
             throw new IllegalArgumentException("Workbook argument cannot be null");
         }
@@ -92,7 +93,7 @@ public class WriteContextImpl implements WriteContext {
         }
     }
 
-    private void initCurrentWorkbookHolder(WriteWorkbook writeWorkbook) {
+    private void initCurrentWorkbookHolder(WriteWorkbook writeWorkbook) throws IOException {
         writeWorkbookHolder = new WriteWorkbookHolder(writeWorkbook);
         currentWriteHolder = writeWorkbookHolder;
         if (LOGGER.isDebugEnabled()) {

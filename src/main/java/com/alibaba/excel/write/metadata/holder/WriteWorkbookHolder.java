@@ -113,7 +113,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     private Boolean writeExcelOnException;
 
 
-    public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
+    public WriteWorkbookHolder(WriteWorkbook writeWorkbook) throws IOException {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
         this.writeWorkbook = writeWorkbook;
         this.file = writeWorkbook.getFile();
@@ -134,6 +134,8 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         try {
             copyTemplate();
         } catch (IOException e) {
+            throw new IOException(e.getMessage(), e);
+        } catch (ExcelGenerateException e) {
             throw new ExcelGenerateException("Copy template failure.", e);
         }
         if (writeWorkbook.getExcelType() == null) {
