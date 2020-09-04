@@ -213,10 +213,11 @@ public class WriteContextImpl implements WriteContext {
         }
         int newRowIndex;
         Integer startDoWriteRowIndex = writeSheetHolder.getWriteSheet().getStartDoWriteRowIndex();
-        if(startDoWriteRowIndex != null && startDoWriteRowIndex != -1)
+        if(startDoWriteRowIndex != null && startDoWriteRowIndex != -1) {
             newRowIndex = startDoWriteRowIndex.intValue();
-        else
+        }else {
             newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
+        }
         newRowIndex += currentWriteHolder.relativeHeadRowIndex();
         // Combined head
         if (currentWriteHolder.automaticMergeHead()) {
