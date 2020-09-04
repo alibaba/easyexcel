@@ -2,6 +2,7 @@ package com.alibaba.excel.write.builder;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.ExcelBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
@@ -20,12 +21,27 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
      */
     private WriteWorkbook writeWorkbook;
 
+    /**
+     * excelBuilder
+     */
+    private ExcelBuilder excelBuilder;
+
     public ExcelWriterBuilder() {
         this.writeWorkbook = new WriteWorkbook();
     }
 
     public ExcelWriterBuilder(WriteWorkbook writeWorkbook) {
         this.writeWorkbook = writeWorkbook;
+    }
+
+    public ExcelWriterBuilder(WriteWorkbook writeWorkbook, ExcelBuilder excelBuilder) {
+        this.writeWorkbook = writeWorkbook;
+        this.excelBuilder = excelBuilder;
+    }
+
+    public ExcelWriterBuilder(ExcelBuilder excelBuilder) {
+        this();
+        this.excelBuilder = excelBuilder;
     }
 
     /**
@@ -131,7 +147,9 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     }
 
     public ExcelWriter build() {
-        return new ExcelWriter(this.parameter());
+        return excelBuilder != null
+            ? new ExcelWriter(this.parameter(), excelBuilder)
+            : new ExcelWriter(this.parameter());
     }
 
     public ExcelWriterSheetBuilder sheet() {
@@ -163,7 +181,17 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
         return writeWorkbook;
     }
 
-    public void setWriteWorkbook(WriteWorkbook writeWorkbook) {
+    public WriteWorkbook getWriteWorkbook() {
+        return this.parameter();
+    }
+
+    public ExcelWriterBuilder setWriteWorkbook(WriteWorkbook writeWorkbook) {
         this.writeWorkbook = writeWorkbook;
+        return this;
+    }
+
+    public ExcelWriterBuilder setExcelBuilder(ExcelBuilder excelBuilder) {
+        this.excelBuilder = excelBuilder;
+        return this;
     }
 }

@@ -211,7 +211,12 @@ public class WriteContextImpl implements WriteContext {
         if (!currentWriteHolder.needHead() || !currentWriteHolder.excelWriteHeadProperty().hasHead()) {
             return;
         }
-        int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
+        int newRowIndex;
+        Integer startDoWriteRowIndex = writeSheetHolder.getWriteSheet().getStartDoWriteRowIndex();
+        if(startDoWriteRowIndex != null && startDoWriteRowIndex != -1)
+            newRowIndex = startDoWriteRowIndex.intValue();
+        else
+            newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
         newRowIndex += currentWriteHolder.relativeHeadRowIndex();
         // Combined head
         if (currentWriteHolder.automaticMergeHead()) {

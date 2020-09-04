@@ -32,7 +32,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
 
     public ExcelBuilderImpl(WriteWorkbook writeWorkbook) {
         try {
-            context = new WriteContextImpl(writeWorkbook);
+            this.context = createContext(writeWorkbook);
         } catch (RuntimeException e) {
             finishOnException();
             throw e;
@@ -50,10 +50,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable) {
         try {
-            context.currentSheet(writeSheet, WriteTypeEnum.ADD);
-            context.currentTable(writeTable);
+            this.writeContext().currentSheet(writeSheet, WriteTypeEnum.ADD);
+            this.writeContext().currentTable(writeTable);
             if (excelWriteAddExecutor == null) {
-                excelWriteAddExecutor = new ExcelWriteAddExecutor(context);
+                excelWriteAddExecutor = createExcelWriteAddExecutor();
             }
             excelWriteAddExecutor.add(data);
         } catch (RuntimeException e) {
@@ -68,12 +68,12 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void fill(Object data, FillConfig fillConfig, WriteSheet writeSheet) {
         try {
-            if (context.writeWorkbookHolder().getTempTemplateInputStream() == null) {
+            if (this.writeContext().writeWorkbookHolder().getTempTemplateInputStream() == null) {
                 throw new ExcelGenerateException("Calling the 'fill' method must use a template.");
             }
-            context.currentSheet(writeSheet, WriteTypeEnum.FILL);
+            this.writeContext().currentSheet(writeSheet, WriteTypeEnum.FILL);
             if (excelWriteFillExecutor == null) {
-                excelWriteFillExecutor = new ExcelWriteFillExecutor(context);
+                excelWriteFillExecutor = createExcelWriteFillExecutor();
             }
             excelWriteFillExecutor.fill(data, fillConfig);
         } catch (RuntimeException e) {
@@ -92,18 +92,30 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void finish(boolean onException) {
         if (context != null) {
-            context.finish(onException);
+            this.writeContext().finish(onException);
         }
     }
 
     @Override
     public void merge(int firstRow, int lastRow, int firstCol, int lastCol) {
         CellRangeAddress cra = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
-        context.writeSheetHolder().getSheet().addMergedRegion(cra);
+        this.writeContext().writeSheetHolder().getSheet().addMergedRegion(cra);
     }
 
     @Override
     public WriteContext writeContext() {
         return context;
+    }
+
+    public WriteContext createContext(WriteWorkbook writeWorkbook) {
+        return new WriteContextImpl(writeWorkbook);
+    }
+
+    public ExcelWriteFillExecutor createExcelWriteFillExecutor() {
+        return new ExcelWriteFillExecutor(writeContext());
+    }
+
+    public ExcelWriteAddExecutor createExcelWriteAddExecutor() {
+        return new ExcelWriteAddExecutor(writeContext());
     }
 }

@@ -50,6 +50,17 @@ public class ExcelWriter {
     /**
      * Create new writer
      *
+     * @param writeWorkbook
+     *
+     * @param excelBuilder
+     */
+    public ExcelWriter(WriteWorkbook writeWorkbook, ExcelBuilder excelBuilder) {
+        this.excelBuilder = excelBuilder;
+    }
+
+    /**
+     * Create new writer
+     *
      * @param outputStream
      *            the java OutputStream you wish to write the value to
      * @param typeEnum
@@ -350,5 +361,9 @@ public class ExcelWriter {
      */
     public WriteContext writeContext() {
         return excelBuilder.writeContext();
+    }
+
+    public void setExcelBuilder(ExcelBuilder excelBuilder) {
+        this.excelBuilder = excelBuilder;
     }
 }
