@@ -70,6 +70,10 @@ public class WorkBookUtil {
         return sheet.createRow(rowNum);
     }
 
+    public static void deleteRow(Sheet sheet, int rowNum) {
+        sheet.removeRow(sheet.getRow(rowNum));
+    }
+
     public static Cell createCell(Row row, int colNum) {
         return row.createCell(colNum);
     }
