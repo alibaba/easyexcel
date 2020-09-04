@@ -22,6 +22,12 @@ public class WriteBasicParameter extends BasicParameter {
      */
     private Boolean needHead;
     /**
+     * startDoWriteRowIndex, default is null, start with 0
+     * not null : Start with the set rowIndex
+     * is null or -1 : Automatically recognize content, then write
+     */
+    private Integer startDoWriteRowIndex;
+    /**
      * Custom type handler override the default
      */
     private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
@@ -122,4 +128,11 @@ public class WriteBasicParameter extends BasicParameter {
         this.includeColumnFiledNames = includeColumnFiledNames;
     }
 
+    public void setStartDoWriteRowIndex(Integer startDoWriteRowIndex) {
+        this.startDoWriteRowIndex = startDoWriteRowIndex;
+    }
+
+    public Integer getStartDoWriteRowIndex() {
+        return startDoWriteRowIndex;
+    }
 }

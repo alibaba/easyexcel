@@ -44,7 +44,12 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             data = new ArrayList();
         }
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
-        int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
+        int newRowIndex;
+        Integer startDoWriteRowIndex = writeContext.writeSheetHolder().getWriteSheet().getStartDoWriteRowIndex();
+        if(!writeSheetHolder.getExcelWriteHeadProperty().hasHead() && startDoWriteRowIndex != null && startDoWriteRowIndex != -1) // not exists head
+            newRowIndex = startDoWriteRowIndex.intValue();
+        else
+            newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
         if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
             newRowIndex += writeContext.currentWriteHolder().relativeHeadRowIndex();
         }
