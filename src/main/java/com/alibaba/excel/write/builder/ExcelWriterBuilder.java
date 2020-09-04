@@ -1,13 +1,13 @@
 package com.alibaba.excel.write.builder;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Build ExcelBuilder
@@ -24,6 +24,10 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
         this.writeWorkbook = new WriteWorkbook();
     }
 
+    public ExcelWriterBuilder(WriteWorkbook writeWorkbook) {
+        this.writeWorkbook = writeWorkbook;
+    }
+
     /**
      * Default true
      *
@@ -31,7 +35,7 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
      * @return
      */
     public ExcelWriterBuilder autoCloseStream(Boolean autoCloseStream) {
-        writeWorkbook.setAutoCloseStream(autoCloseStream);
+        this.parameter().setAutoCloseStream(autoCloseStream);
         return this;
     }
 
@@ -44,7 +48,7 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
      * @return
      */
     public ExcelWriterBuilder password(String password) {
-        writeWorkbook.setPassword(password);
+        this.parameter().setPassword(password);
         return this;
     }
 
@@ -54,7 +58,7 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
      * Comment and RichTextString are only supported in memory mode.
      */
     public ExcelWriterBuilder inMemory(Boolean inMemory) {
-        writeWorkbook.setInMemory(inMemory);
+        this.parameter().setInMemory(inMemory);
         return this;
     }
 
@@ -62,7 +66,7 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
      * Excel is also written in the event of an exception being thrown.The default false.
      */
     public ExcelWriterBuilder writeExcelOnException(Boolean writeExcelOnException) {
-        writeWorkbook.setWriteExcelOnException(writeExcelOnException);
+        this.parameter().setWriteExcelOnException(writeExcelOnException);
         return this;
     }
 
@@ -78,22 +82,22 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
      */
     @Deprecated
     public ExcelWriterBuilder convertAllFiled(Boolean convertAllFiled) {
-        writeWorkbook.setConvertAllFiled(convertAllFiled);
+        this.parameter().setConvertAllFiled(convertAllFiled);
         return this;
     }
 
     public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
-        writeWorkbook.setExcelType(excelType);
+        this.parameter().setExcelType(excelType);
         return this;
     }
 
     public ExcelWriterBuilder file(OutputStream outputStream) {
-        writeWorkbook.setOutputStream(outputStream);
+        this.parameter().setOutputStream(outputStream);
         return this;
     }
 
     public ExcelWriterBuilder file(File outputFile) {
-        writeWorkbook.setFile(outputFile);
+        this.parameter().setFile(outputFile);
         return this;
     }
 
@@ -102,12 +106,12 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     }
 
     public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {
-        writeWorkbook.setTemplateInputStream(templateInputStream);
+        this.parameter().setTemplateInputStream(templateInputStream);
         return this;
     }
 
     public ExcelWriterBuilder withTemplate(File templateFile) {
-        writeWorkbook.setTemplateFile(templateFile);
+        this.parameter().setTemplateFile(templateFile);
         return this;
     }
 
@@ -122,12 +126,12 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
      */
     @Deprecated
     public ExcelWriterBuilder registerWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
-        writeWorkbook.setWriteHandler(writeHandler);
+        this.parameter().setWriteHandler(writeHandler);
         return this;
     }
 
     public ExcelWriter build() {
-        return new ExcelWriter(writeWorkbook);
+        return new ExcelWriter(this.parameter());
     }
 
     public ExcelWriterSheetBuilder sheet() {
@@ -157,5 +161,9 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     @Override
     protected WriteWorkbook parameter() {
         return writeWorkbook;
+    }
+
+    public void setWriteWorkbook(WriteWorkbook writeWorkbook) {
+        this.writeWorkbook = writeWorkbook;
     }
 }
