@@ -4,11 +4,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import com.alibaba.easyexcel.test.vo.BomMergeStrategy;
-import com.alibaba.easyexcel.test.vo.CustomerAndProductionInfo;
-import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.util.StringUtils;
-import com.alibaba.fastjson.JSON;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
