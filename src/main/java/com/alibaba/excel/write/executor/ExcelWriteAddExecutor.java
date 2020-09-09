@@ -91,14 +91,13 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Field[] declaredFields = aClass.getDeclaredFields();
 
         for (Field field : declaredFields) {
-            Annotation[] annotations = field.getAnnotations();
-            for (Annotation annotation : annotations) {
-                if (annotation instanceof ExcelIgnore) {
-                    return false;
-                }
-                if (annotation instanceof ExcelList) {
-                    isNeed = true;
-                }
+            ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
+            if (excelIgnore != null) {
+                continue;
+            }
+            ExcelList excelList = field.getAnnotation(ExcelList.class);
+            if (excelList != null) {
+                isNeed = true;
             }
         }
         return isNeed;

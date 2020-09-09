@@ -7,6 +7,7 @@ import java.util.*;
 import com.alibaba.easyexcel.test.vo.BomMergeStrategy;
 import com.alibaba.easyexcel.test.vo.CustomerAndProductionInfo;
 import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -520,35 +521,13 @@ public class WriteTest {
      */
     @Test
     public void writeList() throws IOException {
-        OutputStream outputStream = new FileOutputStream("/Users/dongfengfeng/Desktop/easytest.xlsx");
-//
-        ExcelWriter writer = EasyExcel.write(outputStream, CustomerAndProductionInfo.class).build();
 
-        Sheet sheet1 = new Sheet(0);
-        sheet1.setSheetName("test");
+        String fileName = TestFileUtil.getPath() + "writeDynamicList" + System.currentTimeMillis() + ".xlsx";
 
-        String datas = getData();
-        List customerAndProductionInfos = JSON.parseArray(datas, CustomerAndProductionInfo.class);
-
-
-        writer.write(customerAndProductionInfos, sheet1);
-        writer.finish();
+        EasyExcel.write(fileName, DemoListData.class).sheet("模板").doWrite(listData());
 
     }
 
-    private String getData() throws IOException{
-        InputStream inputStream = new FileInputStream("/Users/dongfengfeng/Desktop/purchase.txt");
-        InputStreamReader reader = new InputStreamReader(inputStream);
-        BufferedReader bf = new BufferedReader(reader);
-
-        StringBuilder sb = new StringBuilder();
-        int data;
-        while ((data = reader.read()) != -1) {
-            sb.append((char)data);
-        }
-        reader.close();
-        return sb.toString();
-    }
 
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = new ArrayList<LongestMatchColumnWidthData>();
@@ -609,6 +588,34 @@ public class WriteTest {
             data.setString("字符串" + i);
             data.setDate(new Date());
             data.setDoubleData(0.56);
+            list.add(data);
+        }
+        return list;
+    }
+
+    private List<DemoListData> listData() {
+        List<DemoListData> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DemoListData data = new DemoListData();
+            data.setString("字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(0.56);
+            List<Integer> dynamicRows = new ArrayList<>();
+            List<String> dynamicCols = new ArrayList<>();
+            String[] strs = {"", "AAA", "", "BBB", "", "CCC"};
+            for (int j=0; j<3; j++) {
+                dynamicRows.add(i);
+            }
+            data.setDynamicRows(dynamicRows);
+            Random random = new Random();
+            for (int k=0; k<4; k++) {
+                int randomIndex = random.nextInt(strs.length);
+                if (!StringUtils.isEmpty(strs[randomIndex])) {
+                    dynamicCols.add(strs[randomIndex]);
+                }
+            }
+            data.setDynamicCols(dynamicCols);
+
             list.add(data);
         }
         return list;
