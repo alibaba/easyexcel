@@ -177,7 +177,12 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
 
         // Initialization property
-        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllFiled);
+        if (parentAbstractWriteHolder != null && parentAbstractWriteHolder.getExcelWriteHeadProperty() != null) {
+            this.excelWriteHeadProperty = parentAbstractWriteHolder.getExcelWriteHeadProperty();
+        } else {
+            this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllFiled);
+        }
+//        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllFiled);
 
         // Compatible with old code
         compatibleOldCode(writeBasicParameter);

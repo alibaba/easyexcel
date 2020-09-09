@@ -1,14 +1,13 @@
 package com.alibaba.easyexcel.test.demo.write;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.alibaba.easyexcel.test.vo.BomMergeStrategy;
+import com.alibaba.easyexcel.test.vo.CustomerAndProductionInfo;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.fastjson.JSON;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -421,7 +420,7 @@ public class WriteTest {
         EasyExcel.write(fileName)
             // 这里放入动态头
             .head(head()).sheet("模板")
-            // 当然这里数据也可以用 List<List<String>> 去传入
+            // 当然这里数据也可以用 ExcelList<ExcelList<String>> 去传入
             .doWrite(data());
     }
 
@@ -488,7 +487,7 @@ public class WriteTest {
     /**
      * 可变标题处理(包括标题国际化等)
      * <p>
-     * 简单的说用List<List<String>>的标题 但是还支持注解
+     * 简单的说用List<ExcelList<String>>的标题 但是还支持注解
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link ConverterData}
      * <p>
@@ -511,6 +510,44 @@ public class WriteTest {
         String fileName = TestFileUtil.getPath() + "noModelWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
+    }
+
+    /**
+     * 支持某个对象内部有列表属性动态写入
+     * 1.列动态写入
+     * 2.行动态写入
+     * @throws IOException
+     */
+    @Test
+    public void writeList() throws IOException {
+        OutputStream outputStream = new FileOutputStream("/Users/dongfengfeng/Desktop/easytest.xlsx");
+//
+        ExcelWriter writer = EasyExcel.write(outputStream, CustomerAndProductionInfo.class).build();
+
+        Sheet sheet1 = new Sheet(0);
+        sheet1.setSheetName("test");
+
+        String datas = getData();
+        List customerAndProductionInfos = JSON.parseArray(datas, CustomerAndProductionInfo.class);
+
+
+        writer.write(customerAndProductionInfos, sheet1);
+        writer.finish();
+
+    }
+
+    private String getData() throws IOException{
+        InputStream inputStream = new FileInputStream("/Users/dongfengfeng/Desktop/purchase.txt");
+        InputStreamReader reader = new InputStreamReader(inputStream);
+        BufferedReader bf = new BufferedReader(reader);
+
+        StringBuilder sb = new StringBuilder();
+        int data;
+        while ((data = reader.read()) != -1) {
+            sb.append((char)data);
+        }
+        reader.close();
+        return sb.toString();
     }
 
     private List<LongestMatchColumnWidthData> dataLong() {
