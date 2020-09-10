@@ -79,10 +79,10 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (!context.currentWriteHolder().needHead() || !context.currentWriteHolder().excelWriteHeadProperty().hasHead()) {
             return;
         }
-        Map<String, Integer> dynamicMap = new HashMap<>();
         Object object = data.get(0);
         Class<?> aClass = object.getClass();
         Field[] fields = aClass.getDeclaredFields();
+        Map<String, Integer> dynamicMap = new HashMap<>(fields.length);
         for (Field field : fields) {
             ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
             if (excelIgnore != null) {
@@ -98,7 +98,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         }
         if (dynamicMap.size() > 0) {
             Map<Integer, Head> headMap = context.currentWriteHolder().excelWriteHeadProperty().getHeadMap();
-            Map<Integer, Head> newHeadMap = new HashMap<>();
+            Map<Integer, Head> newHeadMap = new HashMap<>(2 * headMap.size());
             int index = 0;
             for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
                 Head currentHead = entry.getValue();

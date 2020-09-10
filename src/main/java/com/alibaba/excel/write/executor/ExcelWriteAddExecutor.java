@@ -110,7 +110,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
 
         Field[] declaredFields = aClass.getDeclaredFields();
 
-        Map<Integer, List<Object>> listMap = new HashMap<>();
+        Map<Integer, List<Object>> listMap = new HashMap<>(2 * declaredFields.length);
         for (Field field : declaredFields) {
             field.setAccessible(true);
 
