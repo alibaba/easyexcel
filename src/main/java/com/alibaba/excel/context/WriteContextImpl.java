@@ -71,7 +71,7 @@ public class WriteContextImpl implements WriteContext {
     /**
      * Dynamic data max count map
      */
-    private Map<String, Integer> dynamicMap = new HashMap<>();
+    private Map<String, Integer> dynamicMap = new HashMap<String, Integer>();
     /**
      * Prevent multiple shutdowns
      */

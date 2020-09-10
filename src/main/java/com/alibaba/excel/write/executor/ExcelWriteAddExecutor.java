@@ -104,13 +104,13 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private List<List<Object>> changeJavaObject2BasicType(Object oneRowData) {
-        List<Object> dataList = new ArrayList<>();
+        List<Object> dataList = new ArrayList<Object>();
 
         Class<?> aClass = oneRowData.getClass();
 
         Field[] declaredFields = aClass.getDeclaredFields();
 
-        Map<Integer, List<Object>> listMap = new HashMap<>(2 * declaredFields.length);
+        Map<Integer, List<Object>> listMap = new HashMap<Integer, List<Object>>(2 * declaredFields.length);
         for (Field field : declaredFields) {
             field.setAccessible(true);
 
@@ -157,11 +157,11 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             }
         }
 
-        List<List<Object>> allDataList = new ArrayList<>();
+        List<List<Object>> allDataList = new ArrayList<List<Object>>();
         if (listMap.size() > 0) {
 
             allDataList.add(dataList);
-            List<List<Object>> tmpList = new ArrayList<>();
+            List<List<Object>> tmpList = new ArrayList<List<Object>>();
 
             for (Map.Entry<Integer, List<Object>> entry : listMap.entrySet()) {
                 Integer key = entry.getKey();
@@ -169,7 +169,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 for (Object fieldValue : fieldValueList) {
                     for (List<Object> rows : allDataList) {
                         rows.set(key, fieldValue);
-                        List<Object> copyList = new ArrayList<>(rows.size());
+                        List<Object> copyList = new ArrayList<Object>(rows.size());
                         copyList.addAll(rows);
                         tmpList.add(copyList);
                     }

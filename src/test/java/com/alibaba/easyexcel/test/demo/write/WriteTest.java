@@ -590,14 +590,14 @@ public class WriteTest {
     }
 
     private List<DemoListData> listData() {
-        List<DemoListData> list = new ArrayList<>();
+        List<DemoListData> list = new ArrayList<DemoListData>();
         for (int i = 0; i < 10; i++) {
             DemoListData data = new DemoListData();
             data.setString("字符串" + i);
             data.setDate(new Date());
             data.setDoubleData(0.56);
-            List<Integer> dynamicRows = new ArrayList<>();
-            List<String> dynamicCols = new ArrayList<>();
+            List<Integer> dynamicRows = new ArrayList<Integer>();
+            List<String> dynamicCols = new ArrayList<String>();
             String[] strs = {"", "AAA", "", "BBB", "", "CCC"};
             for (int j=0; j<3; j++) {
                 dynamicRows.add(i);
