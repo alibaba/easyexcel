@@ -64,8 +64,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 relativeRowIndex++;
             }
         }
-//        WriteContextImpl context = (WriteContextImpl)writeContext;
-//        context.initHead(writeContext.writeSheetHolder().excelWriteHeadProperty());
     }
 
     private void addOneRowOfDataToExcel(Object oneRowData, int n, int relativeRowIndex,
@@ -258,7 +256,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         }
         Map<String, Field> ignoreMap = writeContext.currentWriteHolder().excelWriteHeadProperty().getIgnoreMap();
         initSortedAllFiledMapFieldList(oneRowData.getClass(), sortedAllFiledMap);
-
         for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {
             cellIndex = entry.getKey();
             Field field = entry.getValue();
@@ -274,7 +271,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
             CellData cellData = converterAndSet(currentWriteHolder, value == null ? null : value.getClass(), cell,
                 value, null, null, relativeRowIndex);
-
             WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
         }
     }
