@@ -43,12 +43,12 @@ public class WebTest {
     @GetMapping("download")
     public void download(HttpServletResponse response) throws IOException {
         // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
         String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-        EasyExcel.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data());
+        EasyExcel.write(response.getOutputStream(), DownloadData.class).excelType(ExcelTypeEnum.XLSX).sheet("模板").doWrite(data());
     }
 
     /**
@@ -60,13 +60,13 @@ public class WebTest {
     public void downloadFailedUsingJson(HttpServletResponse response) throws IOException {
         // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
         try {
-            response.setContentType("application/vnd.ms-excel");
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setCharacterEncoding("utf-8");
             // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
             String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
             response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
             // 这里需要设置不关闭流
-            EasyExcel.write(response.getOutputStream(), DownloadData.class).autoCloseStream(Boolean.FALSE).sheet("模板")
+            EasyExcel.write(response.getOutputStream(), DownloadData.class).excelType(ExcelTypeEnum.XLSX).autoCloseStream(Boolean.FALSE).sheet("模板")
                 .doWrite(data());
         } catch (Exception e) {
             // 重置response
