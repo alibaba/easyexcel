@@ -178,6 +178,18 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
         // Initialization property
         this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllFiled);
+        if (parentAbstractWriteHolder != null && parentAbstractWriteHolder.getExcelWriteHeadProperty() != null) {
+            ExcelWriteHeadProperty dynamicExcelWriteHeadProperty = parentAbstractWriteHolder.getExcelWriteHeadProperty();
+
+            Map<Integer, Head> headMap = this.getExcelWriteHeadProperty().getHeadMap();
+            Map<Integer, Head> dynamicHeadMap = dynamicExcelWriteHeadProperty.getHeadMap();
+            if (dynamicHeadMap != null && headMap != null && dynamicHeadMap.size() > headMap.size()) {
+                this.getExcelWriteHeadProperty().setHeadMap(dynamicHeadMap);
+            }
+            if (dynamicHeadMap != null && headMap == null) {
+                this.getExcelWriteHeadProperty().setHeadMap(dynamicHeadMap);
+            }
+        }
 
         // Compatible with old code
         compatibleOldCode(writeBasicParameter);

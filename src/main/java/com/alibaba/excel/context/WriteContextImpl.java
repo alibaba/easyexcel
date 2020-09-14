@@ -3,6 +3,7 @@ package com.alibaba.excel.context;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -67,6 +68,10 @@ public class WriteContextImpl implements WriteContext {
      * Configuration of currently operated cell
      */
     private WriteHolder currentWriteHolder;
+    /**
+     * Dynamic data max count map
+     */
+    private Map<String, Integer> dynamicMap = new HashMap<String, Integer>();
     /**
      * Prevent multiple shutdowns
      */
@@ -413,6 +418,14 @@ public class WriteContextImpl implements WriteContext {
             return;
         }
         Biff8EncryptionKey.setCurrentUserPassword(null);
+    }
+
+    public Map<String, Integer> getDynamicMap() {
+        return dynamicMap;
+    }
+
+    public void setDynamicMap(Map<String, Integer> dynamicMap) {
+        this.dynamicMap = dynamicMap;
     }
 
     /**

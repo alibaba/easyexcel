@@ -1,5 +1,10 @@
 package com.alibaba.excel.write.executor;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelList;
+import com.alibaba.excel.context.WriteContextImpl;
+import com.alibaba.excel.enums.DynamicDirectionEnum;
+import com.alibaba.excel.util.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -17,6 +22,12 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Excel write Executor
@@ -94,6 +105,29 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             return cellDataReturn;
         }
         return doConvert(currentWriteHolder, clazz, cell, value, excelContentProperty);
+    }
+
+
+    protected boolean needConvertToList(Object oneRowData) {
+        boolean isNeed = false;
+        if (oneRowData instanceof List) {
+            return isNeed;
+        }
+
+        Class<?> aClass = oneRowData.getClass();
+        Field[] declaredFields = aClass.getDeclaredFields();
+
+        for (Field field : declaredFields) {
+            ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
+            if (excelIgnore != null) {
+                continue;
+            }
+            ExcelList excelList = field.getAnnotation(ExcelList.class);
+            if (excelList != null) {
+                isNeed = true;
+            }
+        }
+        return isNeed;
     }
 
     private CellData doConvert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,

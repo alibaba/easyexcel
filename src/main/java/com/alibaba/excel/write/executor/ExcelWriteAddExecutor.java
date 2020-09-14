@@ -1,13 +1,14 @@
 package com.alibaba.excel.write.executor;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
+import com.alibaba.excel.annotation.ExcelList;
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.context.WriteContextImpl;
+import com.alibaba.excel.enums.DynamicDirectionEnum;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
@@ -20,8 +21,6 @@ import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
-import com.alibaba.excel.write.metadata.WriteWorkbook;
-import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
@@ -52,9 +51,18 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Map<Integer, Field> sortedAllFiledMap = new TreeMap<Integer, Field>();
         int relativeRowIndex = 0;
         for (Object oneRowData : data) {
-            int n = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, sortedAllFiledMap);
-            relativeRowIndex++;
+            if (needConvertToList(oneRowData)) {
+                List<List<Object>> dynamicDataList = changeJavaObject2BasicType(oneRowData);
+                for (List list : dynamicDataList) {
+                    int n = relativeRowIndex + newRowIndex;
+                    addOneRowOfDataToExcel(list, n, relativeRowIndex, sortedAllFiledMap);
+                    relativeRowIndex++;
+                }
+            } else {
+                int n = relativeRowIndex + newRowIndex;
+                addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, sortedAllFiledMap);
+                relativeRowIndex++;
+            }
         }
     }
 
@@ -72,6 +80,87 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             addJavaObjectToExcel(oneRowData, row, relativeRowIndex, sortedAllFiledMap);
         }
         WriteHandlerUtils.afterRowDispose(writeContext, row, relativeRowIndex, Boolean.FALSE);
+    }
+
+    private List<List<Object>> changeJavaObject2BasicType(Object oneRowData) {
+        List<Object> dataList = new ArrayList<Object>();
+
+        Class<?> aClass = oneRowData.getClass();
+
+        Field[] declaredFields = aClass.getDeclaredFields();
+
+        Map<Integer, List<Object>> listMap = new HashMap<Integer, List<Object>>(2 * declaredFields.length);
+        for (Field field : declaredFields) {
+            field.setAccessible(true);
+
+            ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
+            if (excelIgnore != null) {
+                continue;
+            }
+            ExcelList excelList = field.getAnnotation(ExcelList.class);
+
+            try {
+                Object fieldValue = field.get(oneRowData);
+                if (fieldValue instanceof List && excelList != null) {
+
+                    List tmpList = (List) field.get(oneRowData);
+
+                    if (DynamicDirectionEnum.PORTRAIT.equals(excelList.direction())) {
+                        if (!CollectionUtils.isEmpty(tmpList)) {
+                            dataList.add(tmpList.get(0));
+                            listMap.put(dataList.size() - 1, tmpList);
+                        } else {
+                            dataList.add(null);
+                        }
+                    } else if (DynamicDirectionEnum.ORIENTATION.equals(excelList.direction())) {
+                        if (!CollectionUtils.isEmpty(tmpList)) {
+                            Map<String, Integer> dynamicMap = ((WriteContextImpl) writeContext).getDynamicMap();
+                            Integer maxCount = dynamicMap.get(field.getName());
+                            if (tmpList.size() < maxCount) {
+                                int align = maxCount - tmpList.size();
+                                for (int i=0; i<align; i++) {
+                                    tmpList.add(null);
+                                }
+                            }
+                            dataList.addAll(tmpList);
+                        } else {
+                            dataList.add(null);
+                        }
+                    }
+                } else {
+                    dataList.add(field.get(oneRowData));
+                }
+
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        List<List<Object>> allDataList = new ArrayList<List<Object>>();
+        if (listMap.size() > 0) {
+
+            allDataList.add(dataList);
+            List<List<Object>> tmpList = new ArrayList<List<Object>>();
+
+            for (Map.Entry<Integer, List<Object>> entry : listMap.entrySet()) {
+                Integer key = entry.getKey();
+                List<Object> fieldValueList = entry.getValue();
+                for (Object fieldValue : fieldValueList) {
+                    for (List<Object> rows : allDataList) {
+                        rows.set(key, fieldValue);
+                        List<Object> copyList = new ArrayList<Object>(rows.size());
+                        copyList.addAll(rows);
+                        tmpList.add(copyList);
+                    }
+                }
+                allDataList.clear();
+                allDataList.addAll(tmpList);
+                tmpList.clear();
+            }
+        } else {
+            allDataList.add(dataList);
+        }
+        return allDataList;
     }
 
     private void addBasicTypeToExcel(List<Object> oneRowData, Row row, int relativeRowIndex) {

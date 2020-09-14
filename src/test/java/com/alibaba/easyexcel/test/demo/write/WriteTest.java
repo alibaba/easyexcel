@@ -1,14 +1,10 @@
 package com.alibaba.easyexcel.test.demo.write;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.alibaba.excel.util.StringUtils;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -513,6 +509,22 @@ public class WriteTest {
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
+    /**
+     * 支持某个对象内部有列表属性动态写入
+     * 1.列动态写入
+     * 2.行动态写入
+     * @throws IOException
+     */
+    @Test
+    public void writeList() throws IOException {
+
+        String fileName = TestFileUtil.getPath() + "writeDynamicList" + System.currentTimeMillis() + ".xlsx";
+
+        EasyExcel.write(fileName, DemoListData.class).sheet("模板").doWrite(listData());
+
+    }
+
+
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = new ArrayList<LongestMatchColumnWidthData>();
         for (int i = 0; i < 10; i++) {
@@ -572,6 +584,34 @@ public class WriteTest {
             data.setString("字符串" + i);
             data.setDate(new Date());
             data.setDoubleData(0.56);
+            list.add(data);
+        }
+        return list;
+    }
+
+    private List<DemoListData> listData() {
+        List<DemoListData> list = new ArrayList<DemoListData>();
+        for (int i = 0; i < 10; i++) {
+            DemoListData data = new DemoListData();
+            data.setString("字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(0.56);
+            List<Integer> dynamicRows = new ArrayList<Integer>();
+            List<String> dynamicCols = new ArrayList<String>();
+            String[] strs = {"", "AAA", "", "BBB", "", "CCC"};
+            for (int j=0; j<3; j++) {
+                dynamicRows.add(i);
+            }
+            data.setDynamicRows(dynamicRows);
+            Random random = new Random();
+            for (int k=0; k<4; k++) {
+                int randomIndex = random.nextInt(strs.length);
+                if (!StringUtils.isEmpty(strs[randomIndex])) {
+                    dynamicCols.add(strs[randomIndex]);
+                }
+            }
+            data.setDynamicCols(dynamicCols);
+
             list.add(data);
         }
         return list;
