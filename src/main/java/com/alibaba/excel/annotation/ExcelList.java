@@ -12,10 +12,13 @@ import java.lang.annotation.*;
 @Inherited
 public @interface ExcelList {
     /**
-     * the direction of dynamic colletion
-     * default orientation: dynamic column
-     * portrait: dynamic row
-     * @return
+     * The direction of dynamic colletion
+     *
+     * Portrait(default): dynamic row
+     *
+     * Orientation: dynamic column
+     *
+     * @return The direction of dynamic colletion
      */
     DynamicDirectionEnum direction() default DynamicDirectionEnum.PORTRAIT;
 }

@@ -82,25 +82,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHandlerUtils.afterRowDispose(writeContext, row, relativeRowIndex, Boolean.FALSE);
     }
 
-    private boolean needConvertToList(Object oneRowData) {
-        boolean isNeed = false;
-
-        Class<?> aClass = oneRowData.getClass();
-        Field[] declaredFields = aClass.getDeclaredFields();
-
-        for (Field field : declaredFields) {
-            ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
-            if (excelIgnore != null) {
-                continue;
-            }
-            ExcelList excelList = field.getAnnotation(ExcelList.class);
-            if (excelList != null) {
-                isNeed = true;
-            }
-        }
-        return isNeed;
-    }
-
     private List<List<Object>> changeJavaObject2BasicType(Object oneRowData) {
         List<Object> dataList = new ArrayList<Object>();
 
