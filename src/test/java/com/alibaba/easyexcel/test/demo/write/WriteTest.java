@@ -417,7 +417,7 @@ public class WriteTest {
         EasyExcel.write(fileName)
             // 这里放入动态头
             .head(head()).sheet("模板")
-            // 当然这里数据也可以用 ExcelList<ExcelList<String>> 去传入
+            // 当然这里数据也可以用 List<List<String>> 去传入
             .doWrite(data());
     }
 
@@ -484,7 +484,7 @@ public class WriteTest {
     /**
      * 可变标题处理(包括标题国际化等)
      * <p>
-     * 简单的说用List<ExcelList<String>>的标题 但是还支持注解
+     * 简单的说用List<List<String>>的标题 但是还支持注解
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link ConverterData}
      * <p>
