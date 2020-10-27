@@ -188,6 +188,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         Map<String, ExcelContentProperty> fieldNameContentPropertyMap =
             writeContext.currentWriteHolder().excelWriteHeadProperty().getFieldNameContentPropertyMap();
+        if(null == analysisCellList || analysisCellList.isEmpty()){
+            return;
+        }
         for (AnalysisCell analysisCell : analysisCellList) {
             Cell cell = getOneCell(analysisCell, fillConfig);
             if (analysisCell.getOnlyOneVariable()) {
