@@ -54,16 +54,16 @@ import com.alibaba.excel.util.DateUtils;
 public class DataFormatter {
     /** For logging any problems we find */
     private static final Logger LOGGER = LoggerFactory.getLogger(DataFormatter.class);
-    private static final String defaultFractionWholePartFormat = "#";
-    private static final String defaultFractionFractionPartFormat = "#/##";
+    private static final String DEFAULT_FRACTION_WHOLE_PART_FORMAT = "#";
+    private static final String DEFAULT_FRACTION_FRACTION_PART_FORMAT = "#/##";
     /** Pattern to find a number format: "0" or "#" */
-    private static final Pattern numPattern = Pattern.compile("[0#]+");
+    private static final Pattern NUM_PATTERN = Pattern.compile("[0#]+");
 
     /** Pattern to find days of week as text "ddd...." */
-    private static final Pattern daysAsText = Pattern.compile("([d]{3,})", Pattern.CASE_INSENSITIVE);
+    private static final Pattern DAYS_AS_TEXT = Pattern.compile("([d]{3,})", Pattern.CASE_INSENSITIVE);
 
     /** Pattern to find "AM/PM" marker */
-    private static final Pattern amPmPattern =
+    private static final Pattern AM_PM_PATTERN =
         Pattern.compile("(([AP])[M/P]*)|(([上下])[午/下]*)", Pattern.CASE_INSENSITIVE);
 
     /** Pattern to find formats with condition ranges e.g. [>=100] */
@@ -74,13 +74,13 @@ public class DataFormatter {
      * A regex to find locale patterns like [$$-1009] and [$?-452]. Note that we don't currently process these into
      * locales
      */
-    private static final Pattern localePatternGroup = Pattern.compile("(\\[\\$[^-\\]]*-[0-9A-Z]+])");
+    private static final Pattern LOCALE_PATTERN_GROUP = Pattern.compile("(\\[\\$[^-\\]]*-[0-9A-Z]+])");
 
     /**
      * A regex to match the colour formattings rules. Allowed colours are: Black, Blue, Cyan, Green, Magenta, Red,
      * White, Yellow, "Color n" (1<=n<=56)
      */
-    private static final Pattern colorPattern = Pattern.compile(
+    private static final Pattern COLOR_PATTERN = Pattern.compile(
         "(\\[BLACK])|(\\[BLUE])|(\\[CYAN])|(\\[GREEN])|" + "(\\[MAGENTA])|(\\[RED])|(\\[WHITE])|(\\[YELLOW])|"
             + "(\\[COLOR\\s*\\d])|(\\[COLOR\\s*[0-5]\\d])|(\\[DBNum(1|2|3)])|(\\[\\$-\\d{0,3}])",
         Pattern.CASE_INSENSITIVE);
@@ -88,28 +88,30 @@ public class DataFormatter {
     /**
      * A regex to identify a fraction pattern. This requires that replaceAll("\\?", "#") has already been called
      */
-    private static final Pattern fractionPattern = Pattern.compile("(?:([#\\d]+)\\s+)?(#+)\\s*/\\s*([#\\d]+)");
+    private static final Pattern FRACTION_PATTERN = Pattern.compile("(?:([#\\d]+)\\s+)?(#+)\\s*/\\s*([#\\d]+)");
 
     /**
      * A regex to strip junk out of fraction formats
      */
-    private static final Pattern fractionStripper = Pattern.compile("(\"[^\"]*\")|([^ ?#\\d/]+)");
+    private static final Pattern FRACTION_STRIPPER = Pattern.compile("(\"[^\"]*\")|([^ ?#\\d/]+)");
 
     /**
      * A regex to detect if an alternate grouping character is used in a numeric format
      */
-    private static final Pattern alternateGrouping = Pattern.compile("([#0]([^.#0])[#0]{3})");
+    private static final Pattern ALTERNATE_GROUPING = Pattern.compile("([#0]([^.#0])[#0]{3})");
 
     /**
      * Cells formatted with a date or time format and which contain invalid date or time values show 255 pound signs
      * ("#").
      */
-    private static final String invalidDateTimeString;
+    private static final String INVALID_DATE_TIME_STRING;
+
     static {
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < 255; i++)
+        for (int i = 0; i < 255; i++) {
             buf.append('#');
-        invalidDateTimeString = buf.toString();
+        }
+        INVALID_DATE_TIME_STRING = buf.toString();
     }
 
     /**
@@ -126,7 +128,7 @@ public class DataFormatter {
     /**
      * A map to cache formats. Map<String,Format> formats
      */
-    private final Map<String, Format> formats = new HashMap<String, Format>();
+    private final Map<String, Format> FORMATS = new HashMap<String, Format>();
 
     /** stores the locale valid it the last formatting call */
     private Locale locale;
@@ -170,7 +172,7 @@ public class DataFormatter {
 
     private Format getFormat(Integer dataFormat, String dataFormatString) {
         // See if we already have it cached
-        Format format = formats.get(dataFormatString);
+        Format format = FORMATS.get(dataFormatString);
         if (format != null) {
             return format;
         }
@@ -196,25 +198,27 @@ public class DataFormatter {
         }
 
         // Remove colour formatting if present
-        Matcher colourM = colorPattern.matcher(formatStr);
+        Matcher colourM = COLOR_PATTERN.matcher(formatStr);
         while (colourM.find()) {
             String colour = colourM.group();
 
             // Paranoid replacement...
             int at = formatStr.indexOf(colour);
-            if (at == -1)
+            if (at == -1) {
                 break;
+            }
             String nFormatStr = formatStr.substring(0, at) + formatStr.substring(at + colour.length());
-            if (nFormatStr.equals(formatStr))
+            if (nFormatStr.equals(formatStr)) {
                 break;
+            }
 
             // Try again in case there's multiple
             formatStr = nFormatStr;
-            colourM = colorPattern.matcher(formatStr);
+            colourM = COLOR_PATTERN.matcher(formatStr);
         }
 
         // Strip off the locale information, we use an instance-wide locale for everything
-        Matcher m = localePatternGroup.matcher(formatStr);
+        Matcher m = LOCALE_PATTERN_GROUP.matcher(formatStr);
         while (m.find()) {
             String match = m.group();
             String symbol = match.substring(match.indexOf('$') + 1, match.indexOf('-'));
@@ -222,7 +226,7 @@ public class DataFormatter {
                 symbol = symbol.substring(0, symbol.indexOf('$')) + '\\' + symbol.substring(symbol.indexOf('$'));
             }
             formatStr = m.replaceAll(symbol);
-            m = localePatternGroup.matcher(formatStr);
+            m = LOCALE_PATTERN_GROUP.matcher(formatStr);
         }
 
         // Check for special cases
@@ -242,13 +246,13 @@ public class DataFormatter {
             String[] chunks = formatStr.split(";");
             for (String chunk1 : chunks) {
                 String chunk = chunk1.replaceAll("\\?", "#");
-                Matcher matcher = fractionStripper.matcher(chunk);
+                Matcher matcher = FRACTION_STRIPPER.matcher(chunk);
                 chunk = matcher.replaceAll(" ");
                 chunk = chunk.replaceAll(" +", " ");
-                Matcher fractionMatcher = fractionPattern.matcher(chunk);
+                Matcher fractionMatcher = FRACTION_PATTERN.matcher(chunk);
                 // take the first match
                 if (fractionMatcher.find()) {
-                    String wholePart = (fractionMatcher.group(1) == null) ? "" : defaultFractionWholePartFormat;
+                    String wholePart = (fractionMatcher.group(1) == null) ? "" : DEFAULT_FRACTION_WHOLE_PART_FORMAT;
                     return new FractionFormat(wholePart, fractionMatcher.group(3));
                 }
             }
@@ -257,10 +261,10 @@ public class DataFormatter {
             // fractions.
             // String strippedFormatStr = formatStr.replaceAll("\\\\ ", " ").replaceAll("\\\\.",
             // "").replaceAll("\"[^\"]*\"", " ").replaceAll("\\?", "#");
-            return new FractionFormat(defaultFractionWholePartFormat, defaultFractionFractionPartFormat);
+            return new FractionFormat(DEFAULT_FRACTION_WHOLE_PART_FORMAT, DEFAULT_FRACTION_FRACTION_PART_FORMAT);
         }
 
-        if (numPattern.matcher(formatStr).find()) {
+        if (NUM_PATTERN.matcher(formatStr).find()) {
             return createNumberFormat(formatStr);
         }
         return getDefaultFormat();
@@ -296,15 +300,15 @@ public class DataFormatter {
         formatStr = formatStr.replace("\"", "");
 
         boolean hasAmPm = false;
-        Matcher amPmMatcher = amPmPattern.matcher(formatStr);
+        Matcher amPmMatcher = AM_PM_PATTERN.matcher(formatStr);
         while (amPmMatcher.find()) {
             formatStr = amPmMatcher.replaceAll("@");
             hasAmPm = true;
-            amPmMatcher = amPmPattern.matcher(formatStr);
+            amPmMatcher = AM_PM_PATTERN.matcher(formatStr);
         }
         formatStr = formatStr.replaceAll("@", "a");
 
-        Matcher dateMatcher = daysAsText.matcher(formatStr);
+        Matcher dateMatcher = DAYS_AS_TEXT.matcher(formatStr);
         if (dateMatcher.find()) {
             String match = dateMatcher.group(0).toUpperCase(Locale.ROOT).replaceAll("D", "E");
             formatStr = dateMatcher.replaceAll(match);
@@ -455,19 +459,19 @@ public class DataFormatter {
 
     private static class InternalDecimalFormatWithScale extends Format {
 
-        private static final Pattern endsWithCommas = Pattern.compile("(,+)$");
+        private static final Pattern ENDS_WITH_COMMAS  = Pattern.compile("(,+)$");
         private BigDecimal divider;
         private static final BigDecimal ONE_THOUSAND = new BigDecimal(1000);
-        private final DecimalFormat df;
+        private final DecimalFormat DF;
 
         private static String trimTrailingCommas(String s) {
             return s.replaceAll(",+$", "");
         }
 
         public InternalDecimalFormatWithScale(String pattern, DecimalFormatSymbols symbols) {
-            df = new DecimalFormat(trimTrailingCommas(pattern), symbols);
-            setExcelStyleRoundingMode(df);
-            Matcher endsWithCommasMatcher = endsWithCommas.matcher(pattern);
+            DF = new DecimalFormat(trimTrailingCommas(pattern), symbols);
+            setExcelStyleRoundingMode(DF);
+            Matcher endsWithCommasMatcher = ENDS_WITH_COMMAS.matcher(pattern);
             if (endsWithCommasMatcher.find()) {
                 String commas = (endsWithCommasMatcher.group(1));
                 BigDecimal temp = BigDecimal.ONE;
@@ -496,7 +500,7 @@ public class DataFormatter {
         @Override
         public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
             obj = scaleInput(obj);
-            return df.format(obj, toAppendTo, pos);
+            return DF.format(obj, toAppendTo, pos);
         }
 
         @Override
@@ -511,7 +515,7 @@ public class DataFormatter {
 
         // Do we need to change the grouping character?
         // eg for a format like #'##0 which wants 12'345 not 12,345
-        Matcher agm = alternateGrouping.matcher(format);
+        Matcher agm = ALTERNATE_GROUPING.matcher(format);
         if (agm.find()) {
             char grouping = agm.group(2).charAt(0);
             // Only replace the grouping character if it is not the default
@@ -630,7 +634,7 @@ public class DataFormatter {
      * @see Format#format
      */
     public void setDefaultNumberFormat(Format format) {
-        for (Map.Entry<String, Format> entry : formats.entrySet()) {
+        for (Map.Entry<String, Format> entry : FORMATS.entrySet()) {
             if (entry.getValue() == defaultNumFormat) {
                 entry.setValue(format);
             }
@@ -652,7 +656,7 @@ public class DataFormatter {
      *            A Format instance
      */
     public void addFormat(String excelFormatStr, Format format) {
-        formats.put(excelFormatStr, format);
+        FORMATS.put(excelFormatStr, format);
     }
 
     // Some custom formats
