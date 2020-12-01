@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.poi.ss.format.CellFormat;
+import org.apache.poi.ss.format.CellFormatResult;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.ExcelStyleDateFormatter;
 import org.apache.poi.ss.usermodel.FractionFormat;
@@ -168,22 +170,58 @@ public class DataFormatter {
         this.decimalSymbols = DecimalFormatSymbols.getInstance(this.locale);
     }
 
-    private Format getFormat(Integer dataFormat, String dataFormatString) {
+    private Format getFormat(Double data,Integer dataFormat, String dataFormatString) {
+
+        // Might be better to separate out the n p and z formats, falling back to p when n and z are not set.
+        // That however would require other code to be re factored.
+        // String[] formatBits = formatStrIn.split(";");
+        // int i = cellValue > 0.0 ? 0 : cellValue < 0.0 ? 1 : 2;
+        // String formatStr = (i < formatBits.length) ? formatBits[i] : formatBits[0];
+        String formatStr = dataFormatString;
+
+        // Excel supports 2+ part conditional data formats, eg positive/negative/zero,
+        //  or (>1000),(>0),(0),(negative). As Java doesn't handle these kinds
+        //  of different formats for different ranges, just +ve/-ve, we need to
+        //  handle these ourselves in a special way.
+        // For now, if we detect 2+ parts, we call out to CellFormat to handle it
+        // TODO Going forward, we should really merge the logic between the two classes
+        if (formatStr.contains(";") &&
+            (formatStr.indexOf(';') != formatStr.lastIndexOf(';')
+                || rangeConditionalPattern.matcher(formatStr).matches()
+            ) ) {
+            try {
+                // Ask CellFormat to get a formatter for it
+                CellFormat cfmt = CellFormat.getInstance(locale, formatStr);
+                // CellFormat requires callers to identify date vs not, so do so
+                Object cellValueO = data;
+                if (DateUtil.isADateFormat(dataFormat, formatStr) &&
+                    // don't try to handle Date value 0, let a 3 or 4-part format take care of it
+                    data.doubleValue() != 0.0) {
+                    cellValueO = DateUtil.getJavaDate(data, use1904windowing);
+                }
+                // Wrap and return (non-cachable - CellFormat does that)
+                return new CellFormatResultWrapper( cfmt.apply(cellValueO) );
+            } catch (Exception e) {
+                LOGGER.warn("Formatting failed for format {}, falling back",formatStr, e);
+            }
+        }
+
         // See if we already have it cached
-        Format format = formats.get(dataFormatString);
+        Format format = formats.get(formatStr);
         if (format != null) {
             return format;
         }
+
         // Is it one of the special built in types, General or @?
-        if ("General".equalsIgnoreCase(dataFormatString) || "@".equals(dataFormatString)) {
+        if ("General".equalsIgnoreCase(formatStr) || "@".equals(formatStr)) {
             format = getDefaultFormat();
-            addFormat(dataFormatString, format);
+            addFormat(formatStr, format);
             return format;
         }
 
         // Build a formatter, and cache it
-        format = createFormat(dataFormat, dataFormatString);
-        addFormat(dataFormatString, format);
+        format = createFormat(dataFormat, formatStr);
+        addFormat(formatStr, format);
         return format;
     }
 
@@ -530,7 +568,7 @@ public class DataFormatter {
         try {
             return new InternalDecimalFormatWithScale(format, symbols);
         } catch (IllegalArgumentException iae) {
-            LOGGER.debug("Formatting failed for format {}, falling back", formatStr, iae);
+            LOGGER.error("Formatting failed for format {}, falling back", formatStr, iae);
             // the pattern could not be parsed correctly,
             // so fall back to the default number format
             return getDefaultFormat();
@@ -570,7 +608,7 @@ public class DataFormatter {
      * @return Formatted value
      */
     private String getFormattedDateString(Double data, Integer dataFormat, String dataFormatString) {
-        Format dateFormat = getFormat(dataFormat, dataFormatString);
+        Format dateFormat = getFormat(data, dataFormat, dataFormatString);
         if (dateFormat instanceof ExcelStyleDateFormatter) {
             // Hint about the raw excel value
             ((ExcelStyleDateFormatter)dateFormat).setDateToBeFormatted(data);
@@ -593,7 +631,7 @@ public class DataFormatter {
      * @return a formatted number string
      */
     private String getFormattedNumberString(Double data, Integer dataFormat, String dataFormatString) {
-        Format numberFormat = getFormat(dataFormat, dataFormatString);
+        Format numberFormat = getFormat(data, dataFormat, dataFormatString);
         String formatted = numberFormat.format(data);
         return formatted.replaceFirst("E(\\d)", "E+$1"); // to match Excel's E-notation
     }
@@ -791,6 +829,28 @@ public class DataFormatter {
         @Override
         public Object parseObject(String source, ParsePosition pos) {
             return df.parseObject(source, pos);
+        }
+    }
+
+    /**
+     * Workaround until we merge {@link org.apache.poi.ss.usermodel.DataFormatter} with {@link CellFormat}. Constant, non-cachable wrapper around a
+     * {@link CellFormatResult}
+     */
+    private final class CellFormatResultWrapper extends Format {
+        private final CellFormatResult result;
+
+        private CellFormatResultWrapper(CellFormatResult result) {
+            this.result = result;
+        }
+
+        @Override
+        public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+            return toAppendTo.append(result.text.trim());
+        }
+
+        @Override
+        public Object parseObject(String source, ParsePosition pos) {
+            return null; // Not supported
         }
     }
 
