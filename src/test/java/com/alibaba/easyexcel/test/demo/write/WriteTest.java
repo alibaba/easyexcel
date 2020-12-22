@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.excel.write.style.column.AutoColumnWidthStyleStrategy;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -446,6 +447,24 @@ public class WriteTest {
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, LongestMatchColumnWidthData.class)
             .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet("模板").doWrite(dataLong());
+    }
+
+    /**
+     * Auto adjust the column width of the longest row, only expand, exclude column 0.
+     * <p>
+     * @author Liyi
+     */
+    @Test
+    public void autoColumnWidthStyleStrategyWrite() {
+        String templateFileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String fileName =
+            TestFileUtil.getPath() + "autoColumnWidthStyleStrategyWrite" + System.currentTimeMillis() + ".xlsx";
+        AutoColumnWidthStyleStrategy autoColumnWidthStyleStrategy =
+            new AutoColumnWidthStyleStrategy().excludeColumns(Arrays.asList(0)).onlyExpand(true);
+        EasyExcel.write(fileName)
+            .withTemplate(templateFileName)
+            .registerWriteHandler(autoColumnWidthStyleStrategy)
+            .sheet(0).doWrite(dataLong());
     }
 
     /**
