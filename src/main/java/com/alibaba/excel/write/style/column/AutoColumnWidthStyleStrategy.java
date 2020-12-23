@@ -22,6 +22,8 @@ public class AutoColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrate
 
     private static final int MAX_COLUMN_WIDTH = 255;
 
+    private static final int COLUMN_WIDTH_SCALE = 256;
+
     private Map<Integer, Map<Integer, Integer>> cache = new HashMap<Integer, Map<Integer, Integer>>(8);
 
     private boolean onlyExpand = false;
@@ -51,10 +53,10 @@ public class AutoColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrate
     protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell, Head head,
                                   Integer relativeRowIndex, Boolean isHead) {
         boolean needSetWidth = isHead || !CollectionUtils.isEmpty(cellDataList);
-        if (
-            !needSetWidth ||
-            (!CollectionUtils.isEmpty(excludeColumnIndexs) && excludeColumnIndexs.contains(cell.getColumnIndex()))
-        ) {
+        if (!needSetWidth){
+            return;
+        }
+        if(!CollectionUtils.isEmpty(excludeColumnIndexs) && excludeColumnIndexs.contains(cell.getColumnIndex())){
             return;
         }
         Map<Integer, Integer> maxColumnWidthMap = cache.get(writeSheetHolder.getSheetNo());
@@ -63,10 +65,10 @@ public class AutoColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrate
             cache.put(writeSheetHolder.getSheetNo(), maxColumnWidthMap);
         }
         Integer columnWidth = dataLength(cellDataList, cell, isHead);
-        if (
-            columnWidth < 0 ||
-            (onlyExpand && columnWidth * 256 <= writeSheetHolder.getSheet().getColumnWidth(cell.getColumnIndex()))
-        ) {
+        if (columnWidth < 0) {
+            return;
+        }
+        if(onlyExpand && columnWidth * COLUMN_WIDTH_SCALE <= writeSheetHolder.getSheet().getColumnWidth(cell.getColumnIndex())){
             return;
         }
         if (columnWidth > MAX_COLUMN_WIDTH) {
@@ -75,7 +77,7 @@ public class AutoColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrate
         Integer maxColumnWidth = maxColumnWidthMap.get(cell.getColumnIndex());
         if (maxColumnWidth == null || columnWidth > maxColumnWidth) {
             maxColumnWidthMap.put(cell.getColumnIndex(), columnWidth);
-            writeSheetHolder.getSheet().setColumnWidth(cell.getColumnIndex(), columnWidth * 256);
+            writeSheetHolder.getSheet().setColumnWidth(cell.getColumnIndex(), columnWidth * COLUMN_WIDTH_SCALE);
         }
     }
 
