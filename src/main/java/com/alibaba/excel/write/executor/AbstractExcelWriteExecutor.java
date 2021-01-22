@@ -32,9 +32,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
     protected CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty, Head head, Integer relativeRowIndex) {
-        if (value == null) {
-            return new CellData(CellDataTypeEnum.EMPTY);
-        }
+//        if (value == null) {
+//            return new CellData(CellDataTypeEnum.EMPTY);
+//        }
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
             value = ((String)value).trim();
         }
