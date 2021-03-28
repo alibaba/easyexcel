@@ -132,6 +132,28 @@ public class FileUtils {
         }
     }
 
+    public static void writeToFileNotCloseStream(File file, InputStream inputStream) {
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            int bytesRead;
+            byte[] buffer = new byte[WRITE_BUFF_SIZE];
+            while ((bytesRead = inputStream.read(buffer, 0, WRITE_BUFF_SIZE)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (Exception e) {
+            throw new ExcelAnalysisException("Can not create temporary file!", e);
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    throw new ExcelAnalysisException("Can not close 'outputStream'!", e);
+                }
+            }
+        }
+    }
+
     public static void createPoiFilesDirectory() {
         File poiFilesPathFile = new File(poiFilesPath);
         createDirectory(poiFilesPathFile);
