@@ -6,6 +6,9 @@
 * 支持非驼峰的字段读写
 * 修复`CellData`可能不返回行列号 [Issue #1832](https://github.com/alibaba/easyexcel/issues/1832)
 
+# 2.2.8
+* 兼容07在特殊的excel的情况下，读取数据异常
+
 # 2.2.7
 * 修改07在特殊情况下用`String`接收数字会丢小数位的bug
 
