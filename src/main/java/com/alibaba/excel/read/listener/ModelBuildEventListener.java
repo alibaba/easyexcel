@@ -17,6 +17,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.ConverterUtils;
+import com.alibaba.excel.util.FieldUtils;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -124,7 +125,7 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                 excelContentProperty, currentReadHolder.converterMap(), currentReadHolder.globalConfiguration(),
                 context.readRowHolder().getRowIndex(), index);
             if (value != null) {
-                map.put(excelContentProperty.getField().getName(), value);
+                map.put(FieldUtils.resolveCglibFieldName(excelContentProperty.getField()), value);
             }
         }
         BeanMap.create(resultModel).putAll(map);
