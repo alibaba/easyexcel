@@ -9,8 +9,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import com.alibaba.excel.analysis.ExcelReadExecutor;
+import com.alibaba.excel.analysis.v07.handlers.sax.SharedStringsTableHandler;
+import com.alibaba.excel.analysis.v07.handlers.sax.XlsxRowHandler;
+import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.context.xlsx.XlsxReadContext;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.metadata.CellExtra;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.SheetUtils;
+import com.alibaba.excel.util.StringUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -26,21 +41,8 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.WorkbookDocument;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-
-import com.alibaba.excel.analysis.ExcelReadExecutor;
-import com.alibaba.excel.analysis.v07.handlers.sax.SharedStringsTableHandler;
-import com.alibaba.excel.analysis.v07.handlers.sax.XlsxRowHandler;
-import com.alibaba.excel.cache.ReadCache;
-import com.alibaba.excel.context.xlsx.XlsxReadContext;
-import com.alibaba.excel.enums.CellExtraTypeEnum;
-import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.CellExtra;
-import com.alibaba.excel.read.metadata.ReadSheet;
-import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
-import com.alibaba.excel.util.FileUtils;
-import com.alibaba.excel.util.SheetUtils;
-import com.alibaba.excel.util.StringUtils;
 
 /**
  * @author jipengfei
@@ -177,9 +179,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             xmlReader.setContentHandler(handler);
             xmlReader.parse(inputSource);
             inputStream.close();
-        } catch (ExcelAnalysisException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException | ParserConfigurationException | SAXException e) {
             throw new ExcelAnalysisException(e);
         } finally {
             if (inputStream != null) {

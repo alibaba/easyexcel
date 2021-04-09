@@ -9,6 +9,7 @@
 * 修复部分情况下不抛出异常
 * 07版在导出的时候会导出 行数 [Issue #1282](https://github.com/alibaba/easyexcel/issues/1282)
 * 修复没有样式的情况下空指针异常 [Issue #1738](https://github.com/alibaba/easyexcel/issues/1738)
+* 修改异常抛出逻辑 [Issue #1618](https://github.com/alibaba/easyexcel/issues/1618)
 
 
 # 2.2.8
