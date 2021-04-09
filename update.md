@@ -7,6 +7,7 @@
 * 修复`CellData`可能不返回行列号 [Issue #1832](https://github.com/alibaba/easyexcel/issues/1832)
 * 优化读取性能
 * 修复部分情况下不抛出异常
+* 07版在导出的时候会导出 行数 [Issue #1282](https://github.com/alibaba/easyexcel/issues/1282)
 
 # 2.2.8
 * 兼容07在特殊的excel的情况下，读取数据异常
