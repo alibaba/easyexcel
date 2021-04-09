@@ -9,12 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.WriteDirectionEnum;
@@ -22,7 +16,6 @@ import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
@@ -31,6 +24,12 @@ import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import net.sf.cglib.beans.BeanMap;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  * Fill the data into excel
@@ -179,6 +178,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
     private void doFill(List<AnalysisCell> analysisCellList, Object oneRowData, FillConfig fillConfig,
         Integer relativeRowIndex) {
+        if (CollectionUtils.isEmpty(analysisCellList)) {
+            return;
+        }
         Map dataMap;
         if (oneRowData instanceof Map) {
             dataMap = (Map) oneRowData;
@@ -188,9 +190,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         Map<String, ExcelContentProperty> fieldNameContentPropertyMap =
             writeContext.currentWriteHolder().excelWriteHeadProperty().getFieldNameContentPropertyMap();
-        if(null == analysisCellList || analysisCellList.isEmpty()){
-            return;
-        }
         for (AnalysisCell analysisCell : analysisCellList) {
             Cell cell = getOneCell(analysisCell, fillConfig);
             if (analysisCell.getOnlyOneVariable()) {

@@ -2,8 +2,11 @@ package com.alibaba.excel.cache;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.ehcache.CacheManager;
 import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -14,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.FileUtils;
 
 /**
@@ -32,11 +34,11 @@ public class Ehcache implements ReadCache {
      * Key index
      */
     private int index = 0;
-    private HashMap<Integer, String> dataMap = new HashMap<Integer, String>(BATCH_COUNT * 4 / 3 + 1);
-    private static CacheManager fileCacheManager;
-    private static CacheConfiguration<Integer, HashMap> fileCacheConfiguration;
-    private static CacheManager activeCacheManager;
-    private CacheConfiguration<Integer, HashMap> activeCacheConfiguration;
+    private HashMap<Integer, String> dataMap = new HashMap<>(BATCH_COUNT * 4 / 3 + 1);
+    private static final CacheManager FILE_CACHE_MANAGER;
+    private static final CacheConfiguration<Integer, HashMap> FILE_CACHE_CONFIGURATION;
+    private static final CacheManager ACTIVE_CACHE_MANAGER;
+    private final CacheConfiguration<Integer, HashMap> activeCacheConfiguration;
     /**
      * Bulk storage data
      */
@@ -61,10 +63,10 @@ public class Ehcache implements ReadCache {
 
     static {
         File cacheFile = FileUtils.createCacheTmpFile();
-        fileCacheManager =
+        FILE_CACHE_MANAGER =
             CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile)).build(true);
-        activeCacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
-        fileCacheConfiguration = CacheConfigurationBuilder
+        ACTIVE_CACHE_MANAGER = CacheManagerBuilder.newCacheManagerBuilder().build(true);
+        FILE_CACHE_CONFIGURATION = CacheConfigurationBuilder
             .newCacheConfigurationBuilder(Integer.class, HashMap.class,
                 ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.GB))
             .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(10, MemoryUnit.GB).build();
@@ -73,8 +75,8 @@ public class Ehcache implements ReadCache {
     @Override
     public void init(AnalysisContext analysisContext) {
         cacheAlias = UUID.randomUUID().toString();
-        fileCache = fileCacheManager.createCache(cacheAlias, fileCacheConfiguration);
-        activeCache = activeCacheManager.createCache(cacheAlias, activeCacheConfiguration);
+        fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
+        activeCache = ACTIVE_CACHE_MANAGER.createCache(cacheAlias, activeCacheConfiguration);
     }
 
     @Override
@@ -113,7 +115,7 @@ public class Ehcache implements ReadCache {
 
     @Override
     public void putFinished() {
-        if (CollectionUtils.isEmpty(dataMap)) {
+        if (MapUtils.isEmpty(dataMap)) {
             return;
         }
         fileCache.put(index / BATCH_COUNT, dataMap);
@@ -121,8 +123,8 @@ public class Ehcache implements ReadCache {
 
     @Override
     public void destroy() {
-        fileCacheManager.removeCache(cacheAlias);
-        activeCacheManager.removeCache(cacheAlias);
+        FILE_CACHE_MANAGER.removeCache(cacheAlias);
+        ACTIVE_CACHE_MANAGER.removeCache(cacheAlias);
     }
 
 }

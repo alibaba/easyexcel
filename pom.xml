@@ -179,7 +179,7 @@
                     <dependency>
                         <groupId>com.alibaba.p3c</groupId>
                         <artifactId>p3c-pmd</artifactId>
-                        <version>2.1.1</version>
+                        <version>1.3.6</version>
                     </dependency>
                 </dependencies>
             </plugin>
