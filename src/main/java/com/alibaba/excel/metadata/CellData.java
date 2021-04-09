@@ -53,6 +53,8 @@ public class CellData<T> extends AbstractCell {
         this.dataFormat = other.dataFormat;
         this.dataFormatString = other.dataFormatString;
         this.data = other.data;
+        setRowIndex(other.getRowIndex());
+        setColumnIndex(other.getColumnIndex());
     }
 
     public CellData() {}

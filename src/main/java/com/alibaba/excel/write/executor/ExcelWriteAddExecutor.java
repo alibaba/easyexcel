@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -18,15 +15,16 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.CollectionUtils;
+import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
-import com.alibaba.excel.write.metadata.WriteWorkbook;
-import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 import net.sf.cglib.beans.BeanMap;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 /**
  * Add the data into excel
@@ -67,7 +65,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Row row = WorkBookUtil.createRow(writeContext.writeSheetHolder().getSheet(), n);
         WriteHandlerUtils.afterRowCreate(writeContext, row, relativeRowIndex, Boolean.FALSE);
         if (oneRowData instanceof List) {
-            addBasicTypeToExcel((List) oneRowData, row, relativeRowIndex);
+            addBasicTypeToExcel((List)oneRowData, row, relativeRowIndex);
         } else {
             addJavaObjectToExcel(oneRowData, row, relativeRowIndex, sortedAllFiledMap);
         }
@@ -127,7 +125,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             for (Map.Entry<Integer, ExcelContentProperty> entry : contentPropertyMap.entrySet()) {
                 cellIndex = entry.getKey();
                 ExcelContentProperty excelContentProperty = entry.getValue();
-                String name = excelContentProperty.getField().getName();
+                String name = FieldUtils.resolveCglibFieldName(excelContentProperty.getField());
                 if (!beanMap.containsKey(name)) {
                     continue;
                 }

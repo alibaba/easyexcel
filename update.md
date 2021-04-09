@@ -1,3 +1,11 @@
+# 3.0.0-beta1
+* 升级jdk8 不再支持jdk6 jdk7 
+* 升级poi 到 4.1.2
+* 升级cglib 到 3.3.0
+* 升级ehcache 到 3.8.1
+* 支持非驼峰的字段读写
+* 修复`CellData`可能不返回行列号 [Issue #1832](https://github.com/alibaba/easyexcel/issues/1832)
+
 # 2.2.7
 * 修改07在特殊情况下用`String`接收数字会丢小数位的bug
 
