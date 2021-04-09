@@ -5,6 +5,7 @@
 * 升级ehcache 到 3.8.1
 * 支持非驼峰的字段读写
 * 修复`CellData`可能不返回行列号 [Issue #1832](https://github.com/alibaba/easyexcel/issues/1832)
+* 优化读取性能
 
 # 2.2.8
 * 兼容07在特殊的excel的情况下，读取数据异常
