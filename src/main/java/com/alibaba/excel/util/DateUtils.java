@@ -43,6 +43,8 @@ public class DateUtils {
 
     public static final String DATE_FORMAT_10 = "yyyy-MM-dd";
     public static final String DATE_FORMAT_14 = "yyyyMMddHHmmss";
+    public static final String DATE_FORMAT_16 = "yyyy-MM-dd HH:mm";
+    public static final String DATE_FORMAT_16_FORWARD_SLASH = "yyyy/MM/dd HH:mm";
     public static final String DATE_FORMAT_17 = "yyyyMMdd HH:mm:ss";
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
@@ -90,6 +92,12 @@ public class DateUtils {
                     return DATE_FORMAT_19;
                 } else {
                     return DATE_FORMAT_19_FORWARD_SLASH;
+                }
+            case 16:
+                if (dateString.contains(MINUS)) {
+                    return DATE_FORMAT_16;
+                } else {
+                    return DATE_FORMAT_16_FORWARD_SLASH;
                 }
             case 17:
                 return DATE_FORMAT_17;
