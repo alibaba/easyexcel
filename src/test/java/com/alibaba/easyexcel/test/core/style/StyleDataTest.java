@@ -17,13 +17,17 @@ import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.annotation.write.style.OnceAbsoluteMerge;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.property.LoopMergeProperty;
+import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
@@ -36,11 +40,19 @@ public class StyleDataTest {
 
     private static File file07;
     private static File file03;
+    private static File file04;
+    private static File file05;
+    private static File file06;
+    private static File file08;
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("style07.xlsx");
         file03 = TestFileUtil.createNewFile("style03.xls");
+        file04 = TestFileUtil.createNewFile("simpleVerticalCellStyleStrategy01.xls");
+        file05 = TestFileUtil.createNewFile("longestMatchColumnWidthStyleStrategy01.xls");
+        file06 = TestFileUtil.createNewFile("loopMergeStrategy01.xls");
+        file08 = TestFileUtil.createNewFile("onceAbsoluteMergeStrategy01.xls");
     }
 
     @Test
@@ -117,6 +129,37 @@ public class StyleDataTest {
             .doWrite(data10());
     }
 
+    @Test
+    public void t05AbstractVerticalCellStyleStrategy03() {
+        AbstractVerticalCellStyleStrategy verticalCellStyleStrategy = new SimpleVerticalCellStyleStrategy();
+        EasyExcel.write(file04, AnnotationStyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
+            .doWrite(data1());
+    }
+
+    @Test
+    public void t06longestMatchColumnWidthStyleStrategy() {
+        EasyExcel.write(file05, StyleData.class).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+            .sheet("模板").doWrite(data());
+    }
+
+    @Test
+    public void t07loopMergeStrategy() {
+        LoopMergeProperty loopMergeProperty = new LoopMergeProperty(1, 2);
+        loopMergeProperty.setEachRow(2);
+        loopMergeProperty.setColumnExtend(1);
+        EasyExcel.write(file06, LoopMergeData.class).registerWriteHandler(new LoopMergeStrategy(loopMergeProperty, 1))
+            .sheet("模板").doWrite(data2());
+    }
+
+    @Test
+    public void to8onceAbsoluteMergeStrategy() {
+        OnceAbsoluteMerge onceAbsoluteMerge = OnceAbsoluteMergeData.class.getAnnotation(OnceAbsoluteMerge.class);
+        OnceAbsoluteMergeProperty onceAbsoluteMergeProperty = OnceAbsoluteMergeProperty.build(onceAbsoluteMerge);
+        OnceAbsoluteMergeStrategy onceAbsoluteMergeStrategy = new OnceAbsoluteMergeStrategy(onceAbsoluteMergeProperty);
+        EasyExcel.write(file08, OnceAbsoluteMergeData.class).registerWriteHandler(onceAbsoluteMergeStrategy).sheet("模板")
+            .doWrite(data3());
+    }
+
     private void readAndWrite(File file) {
         SimpleColumnWidthStyleStrategy simpleColumnWidthStyleStrategy = new SimpleColumnWidthStyleStrategy(50);
         SimpleRowHeightStyleStrategy simpleRowHeightStyleStrategy =
@@ -153,6 +196,43 @@ public class StyleDataTest {
         data1.setString1("字符串11");
         list.add(data);
         list.add(data1);
+        return list;
+    }
+
+    private List<AnnotationStyleData> data1() {
+        List<AnnotationStyleData> list = new ArrayList<AnnotationStyleData>();
+        AnnotationStyleData data = new AnnotationStyleData();
+        data.setString("字符串0");
+        data.setString1("字符串01");
+        AnnotationStyleData data1 = new AnnotationStyleData();
+        data1.setString("字符串1");
+        data1.setString1("字符串11");
+        list.add(data);
+        list.add(data1);
+        return list;
+    }
+
+    private List<LoopMergeData> data2() {
+        List<LoopMergeData> list = new ArrayList<LoopMergeData>();
+        for (int i = 0; i <= 5; i++) {
+            LoopMergeData loopMergeData = new LoopMergeData();
+            loopMergeData.setCategory("洗漱用品");
+            loopMergeData.setTowel("毛巾");
+            loopMergeData.setSize("10" + i + "#");
+            list.add(loopMergeData);
+        }
+        return list;
+    }
+
+    private List<OnceAbsoluteMergeData> data3() {
+        List<OnceAbsoluteMergeData> list = new ArrayList<OnceAbsoluteMergeData>();
+        for (int i = 0; i <= 5; i++) {
+            OnceAbsoluteMergeData onceAbsoluteMergeData = new OnceAbsoluteMergeData();
+            onceAbsoluteMergeData.setCategory("洗漱用品");
+            onceAbsoluteMergeData.setTowel("毛巾");
+            onceAbsoluteMergeData.setSize("10" + i + "#");
+            list.add(onceAbsoluteMergeData);
+        }
         return list;
     }
 
