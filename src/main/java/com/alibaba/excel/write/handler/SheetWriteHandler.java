@@ -16,7 +16,7 @@ public interface SheetWriteHandler extends WriteHandler {
      * @param writeWorkbookHolder
      * @param writeSheetHolder
      */
-    void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder);
+    default void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {}
 
     /**
      * Called after the sheet is created
@@ -24,5 +24,5 @@ public interface SheetWriteHandler extends WriteHandler {
      * @param writeWorkbookHolder
      * @param writeSheetHolder
      */
-    void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder);
+    default void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {}
 }

@@ -8,6 +8,7 @@ import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.AbstractCellWriteHandler;
+import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
@@ -16,7 +17,7 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
  *
  * @author Jiaju Zhuang
  */
-public abstract class AbstractColumnWidthStyleStrategy extends AbstractCellWriteHandler implements NotRepeatExecutor {
+public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandler,NotRepeatExecutor {
 
     @Override
     public String uniqueValue() {

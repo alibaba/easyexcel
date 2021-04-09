@@ -5,6 +5,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.write.handler.AbstractRowWriteHandler;
+import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
@@ -13,7 +14,7 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
  *
  * @author Jiaju Zhuang
  */
-public class LoopMergeStrategy extends AbstractRowWriteHandler {
+public class LoopMergeStrategy implements RowWriteHandler {
     /**
      * Each row
      */

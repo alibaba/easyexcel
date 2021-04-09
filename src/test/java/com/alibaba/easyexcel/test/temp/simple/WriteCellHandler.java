@@ -3,6 +3,7 @@ package com.alibaba.easyexcel.test.temp.simple;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.AbstractCellWriteHandler;
+import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
@@ -17,7 +18,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
  * @author Jiaju Zhuang
  */
 @Slf4j
-public class WriteCellHandler extends AbstractCellWriteHandler {
+public class WriteCellHandler implements CellWriteHandler {
 
     @Override
     public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.AbstractCellWriteHandler;
+import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
@@ -20,7 +21,7 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
  *
  * @author Jiaju Zhuang
  */
-public class CustomCellWriteHandler extends AbstractCellWriteHandler {
+public class CustomCellWriteHandler implements CellWriteHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomCellWriteHandler.class);
 
