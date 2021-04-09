@@ -49,9 +49,10 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         // BeanMap is out of order,so use sortedAllFiledMap
         Map<Integer, Field> sortedAllFiledMap = new TreeMap<Integer, Field>();
         int relativeRowIndex = 0;
+        int lastRowIndex = 0;
         for (Object oneRowData : data) {
-            int n = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, sortedAllFiledMap);
+            lastRowIndex = relativeRowIndex + newRowIndex;
+            addOneRowOfDataToExcel(oneRowData, lastRowIndex, relativeRowIndex, sortedAllFiledMap);
             relativeRowIndex++;
         }
     }
@@ -108,6 +109,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Object value = oneRowData.get(dataIndex);
         CellData cellData = converterAndSet(writeContext.currentWriteHolder(), value == null ? null : value.getClass(),
             cell, value, null, head, relativeRowIndex);
+        writeContext.writeSheetHolder().setLastRowIndex(cellData.getRowIndex());
         WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
     }
 

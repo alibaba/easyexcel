@@ -6,6 +6,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -208,4 +210,51 @@ public class ClassUtils {
             return ignoreMap;
         }
     }
+
+
+    /**
+     * <p>Gets a {@code List} of all interfaces implemented by the given
+     * class and its superclasses.</p>
+     *
+     * <p>The order is determined by looking through each interface in turn as
+     * declared in the source file and following its hierarchy up. Then each
+     * superclass is considered in the same way. Later duplicates are ignored,
+     * so the order is maintained.</p>
+     *
+     * @param cls  the class to look up, may be {@code null}
+     * @return the {@code List} of interfaces in order,
+     *  {@code null} if null input
+     */
+    public static List<Class<?>> getAllInterfaces(final Class<?> cls) {
+        if (cls == null) {
+            return null;
+        }
+
+        final LinkedHashSet<Class<?>> interfacesFound = new LinkedHashSet<>();
+        getAllInterfaces(cls, interfacesFound);
+
+        return new ArrayList<>(interfacesFound);
+    }
+
+
+    /**
+     * Gets the interfaces for the specified class.
+     *
+     * @param cls  the class to look up, may be {@code null}
+     * @param interfacesFound the {@code Set} of interfaces for the class
+     */
+    private static void getAllInterfaces(Class<?> cls, final HashSet<Class<?>> interfacesFound) {
+        while (cls != null) {
+            final Class<?>[] interfaces = cls.getInterfaces();
+
+            for (final Class<?> i : interfaces) {
+                if (interfacesFound.add(i)) {
+                    getAllInterfaces(i, interfacesFound);
+                }
+            }
+
+            cls = cls.getSuperclass();
+        }
+    }
+
 }

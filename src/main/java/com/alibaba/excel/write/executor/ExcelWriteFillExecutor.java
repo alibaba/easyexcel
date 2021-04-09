@@ -93,7 +93,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
         Object realData;
         if (data instanceof FillWrapper) {
-            FillWrapper fillWrapper = (FillWrapper) data;
+            FillWrapper fillWrapper = (FillWrapper)data;
             currentDataPrefix = fillWrapper.getName();
             realData = fillWrapper.getCollectionData();
         } else {
@@ -105,7 +105,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         // processing data
         if (realData instanceof Collection) {
             List<AnalysisCell> analysisCellList = readTemplateData(templateCollectionAnalysisCache);
-            Collection collectionData = (Collection) realData;
+            Collection collectionData = (Collection)realData;
             if (CollectionUtils.isEmpty(collectionData)) {
                 return;
             }
@@ -183,7 +183,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
         Map dataMap;
         if (oneRowData instanceof Map) {
-            dataMap = (Map) oneRowData;
+            dataMap = (Map)oneRowData;
         } else {
             dataMap = BeanMap.create(oneRowData);
         }
@@ -293,7 +293,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
 
         Row row = createRowIfNecessary(sheet, cachedSheet, lastRowIndex, fillConfig, analysisCell, isOriginalCell);
-        Cell cell = createCellIfNecessary(row,lastColumnIndex);
+        Cell cell = createCellIfNecessary(row, lastColumnIndex);
 
         Map<AnalysisCell, CellStyle> collectionFieldStyleMap = collectionFieldStyleCache.get(currentUniqueDataFlag);
         if (collectionFieldStyleMap == null) {
@@ -335,7 +335,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 row = cachedSheet.createRow(lastRowIndex);
             } else {
                 // The last row of the middle disk inside empty rows, resulting in cachedSheet can not get inside.
-                // Will throw Attempting to write a row[" + rownum + "] " + "in the range [0," + this._sh.getLastRowNum() + "] that is already written to disk.
+                // Will throw Attempting to write a row[" + rownum + "] " + "in the range [0," + this._sh
+                // .getLastRowNum() + "] that is already written to disk.
                 try {
                     row = sheet.createRow(lastRowIndex);
                 } catch (IllegalArgumentException ignore) {
@@ -414,7 +415,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         int startIndex = 0;
         int length = value.length();
         int lastPrepareDataIndex = 0;
-        out: while (startIndex < length) {
+        out:
+        while (startIndex < length) {
             int prefixIndex = value.indexOf(FILL_PREFIX, startIndex);
             if (prefixIndex < 0) {
                 break out;

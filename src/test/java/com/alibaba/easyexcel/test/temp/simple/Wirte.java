@@ -14,6 +14,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.fastjson.JSON;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.beans.BeanMap;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Jiaju Zhuang
  **/
 @Ignore
+@Slf4j
 public class Wirte {
     private static final Logger LOGGER = LoggerFactory.getLogger(Wirte.class);
 
@@ -42,6 +44,7 @@ public class Wirte {
 
     @Test
     public void simpleWrite() {
+        log.info("t5");
         // 写法1
         String fileName = TestFileUtil.getPath() + "t22" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭

@@ -69,4 +69,29 @@ public class StringUtils {
         return true;
     }
 
+
+    /**
+     * <p>Checks if a CharSequence is not empty (""), not null and not whitespace only.</p>
+     *
+     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
+     *
+     * <pre>
+     * StringUtils.isNotBlank(null)      = false
+     * StringUtils.isNotBlank("")        = false
+     * StringUtils.isNotBlank(" ")       = false
+     * StringUtils.isNotBlank("bob")     = true
+     * StringUtils.isNotBlank("  bob  ") = true
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if the CharSequence is
+     *  not empty and not null and not whitespace only
+     * @since 2.0
+     * @since 3.0 Changed signature from isNotBlank(String) to isNotBlank(CharSequence)
+     */
+    public static boolean isNotBlank(final CharSequence cs) {
+        return !isBlank(cs);
+    }
+
+
 }
