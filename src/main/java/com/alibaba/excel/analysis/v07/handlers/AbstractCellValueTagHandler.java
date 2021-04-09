@@ -54,7 +54,7 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
 
         if (tempCellData.getStringValue() != null
             && xlsxReadContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
-            tempCellData.setStringValue(tempCellData.getStringValue());
+            tempCellData.setStringValue(tempCellData.getStringValue().trim());
         }
 
         tempCellData.checkEmpty();
