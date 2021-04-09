@@ -81,6 +81,24 @@ public class FillTest {
     }
 
     /**
+     * 处理无变量问题
+     *
+     * @since 2.1.1
+     */
+    @Test
+    public void noVariableFill() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        // 填充list 的时候还要注意 模板中{.} 多了个点 表示list
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "no_variable.xlsx";
+
+        // 方案1 一下子全部放到内存里面 并填充
+        String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(data());
+    }
+
+    /**
      * 复杂的填充
      *
      * @since 2.1.1
