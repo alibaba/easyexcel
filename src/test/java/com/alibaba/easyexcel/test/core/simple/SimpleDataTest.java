@@ -62,7 +62,6 @@ public class SimpleDataTest {
 
     private void synchronousRead(File file) {
         // Synchronous read file
-        EasyExcel.write(file, SimpleData.class).sheet().doWrite(data());
         List<Object> list = EasyExcel.read(file).head(SimpleData.class).sheet().doReadSync();
         Assert.assertEquals(list.size(), 10);
         Assert.assertTrue(list.get(0) instanceof SimpleData);
