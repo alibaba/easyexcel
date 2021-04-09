@@ -33,12 +33,6 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
         if (!needSetWidth) {
             return;
         }
-        
-        //LongestMatchColumnWidthStyleStrategy设置列宽BUG：与spring集成时 ，由于bean是单例，CACHE内容不会改变，同一个报表只有第一次调用会动态设置列宽
-        if (cell.getRowIndex() == 0 && cell.getColumnIndex() == 0) {
-            CACHE.clear();
-        }
-        
         Map<Integer, Integer> maxColumnWidthMap = cache.get(writeSheetHolder.getSheetNo());
         if (maxColumnWidthMap == null) {
             maxColumnWidthMap = new HashMap<Integer, Integer>(16);
