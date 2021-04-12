@@ -52,7 +52,7 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
             return;
         }
         XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
-        int dataFormat = xssfCellStyle.getDataFormat();
+        short dataFormat = xssfCellStyle.getDataFormat();
         xlsxReadSheetHolder.getTempCellData().setDataFormat(dataFormat);
         xlsxReadSheetHolder.getTempCellData().setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
             xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));

@@ -16,7 +16,7 @@ import com.alibaba.excel.util.ConverterUtils;
 public abstract class AnalysisEventListener<T> implements ReadListener<T> {
 
     @Override
-    public void invokeHead(Map<Integer, CellData> headMap, AnalysisContext context) {
+    public void invokeHead(Map<Integer, CellData<?>> headMap, AnalysisContext context) {
         invokeHeadMap(ConverterUtils.convertToStringMap(headMap, context), context);
     }
 

@@ -1,12 +1,5 @@
 package com.alibaba.excel.write.executor;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.Sheet;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
@@ -17,6 +10,13 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  * Excel write Executor
@@ -56,6 +56,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             case NUMBER:
                 cell.setCellValue(cellData.getNumberValue().doubleValue());
                 return cellData;
+            case DATE:
+                cell.setCellValue(cellData.getDateValue());
+                return cellData;
             case IMAGE:
                 setImageValue(cellData, cell);
                 return cellData;
@@ -64,7 +67,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             default:
                 throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(), cellData,
                     excelContentProperty, "Not supported data:" + value + " return type:" + cell.getCellType()
-                        + "at row:" + cell.getRow().getRowNum());
+                    + "at row:" + cell.getRow().getRowNum());
         }
     }
 
@@ -113,7 +116,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         CellData cellData;
         try {
             cellData =
-                converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
+                converter.convertToExcelData(value, excelContentProperty, currentWriteHolder);
         } catch (Exception e) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,

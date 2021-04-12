@@ -27,7 +27,7 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
     private Map<Integer, Map<Integer, Integer>> cache = new HashMap<Integer, Map<Integer, Integer>>(8);
 
     @Override
-    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell, Head head,
+    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData<?>> cellDataList, Cell cell, Head head,
         Integer relativeRowIndex, Boolean isHead) {
         boolean needSetWidth = isHead || !CollectionUtils.isEmpty(cellDataList);
         if (!needSetWidth) {
@@ -52,7 +52,7 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
         }
     }
 
-    private Integer dataLength(List<CellData> cellDataList, Cell cell, Boolean isHead) {
+    private Integer dataLength(List<CellData<?>> cellDataList, Cell cell, Boolean isHead) {
         if (isHead) {
             return cell.getStringCellValue().getBytes().length;
         }

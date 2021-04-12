@@ -17,7 +17,7 @@ import java.util.Locale;
  **/
 public class BuiltinFormats {
 
-    private static final String[] BUILTIN_FORMATS_CN = {
+    public static final String[] BUILTIN_FORMATS_CN = {
         // 0
         "General",
         // 1
@@ -189,7 +189,7 @@ public class BuiltinFormats {
         // end
     };
 
-    private static final String[] BUILTIN_FORMATS_US = {
+    public static final String[] BUILTIN_FORMATS_US = {
         // 0
         "General",
         // 1
@@ -361,7 +361,7 @@ public class BuiltinFormats {
         // end
     };
 
-    public static String getBuiltinFormat(Integer index, String defaultFormat, Locale locale) {
+    public static String getBuiltinFormat(Short index, String defaultFormat, Locale locale) {
         String[] builtinFormat = switchBuiltinFormats(locale);
         if (index == null || index < 0 || index >= builtinFormat.length) {
             return defaultFormat;

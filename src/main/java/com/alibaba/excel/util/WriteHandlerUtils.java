@@ -157,14 +157,14 @@ public class WriteHandlerUtils {
 
     public static void afterCellDispose(WriteContext writeContext, CellData cellData, Cell cell, Head head,
         Integer relativeRowIndex, Boolean isHead) {
-        List<CellData> cellDataList = new ArrayList<CellData>();
+        List<CellData<?>> cellDataList = new ArrayList<>();
         if (cell != null) {
             cellDataList.add(cellData);
         }
         afterCellDispose(writeContext, cellDataList, cell, head, relativeRowIndex, isHead);
     }
 
-    public static void afterCellDispose(WriteContext writeContext, List<CellData> cellDataList, Cell cell, Head head,
+    public static void afterCellDispose(WriteContext writeContext, List<CellData<?>> cellDataList, Cell cell, Head head,
         Integer relativeRowIndex, Boolean isHead) {
         List<WriteHandler> handlerList =
             writeContext.currentWriteHolder().writeHandlerMap().get(CellWriteHandler.class);

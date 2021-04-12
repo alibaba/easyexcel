@@ -34,7 +34,7 @@ public abstract class AbstractHolder implements ConfigurationHolder {
      * <p>
      * Write key:
      */
-    private Map<String, Converter> converterMap;
+    private Map<String, Converter<?>> converterMap;
 
     public AbstractHolder(BasicParameter basicParameter, AbstractHolder prentAbstractHolder) {
         this.newInitialization = Boolean.TRUE;
@@ -103,16 +103,16 @@ public abstract class AbstractHolder implements ConfigurationHolder {
         this.globalConfiguration = globalConfiguration;
     }
 
-    public Map<String, Converter> getConverterMap() {
+    public Map<String, Converter<?>> getConverterMap() {
         return converterMap;
     }
 
-    public void setConverterMap(Map<String, Converter> converterMap) {
+    public void setConverterMap(Map<String, Converter<?>> converterMap) {
         this.converterMap = converterMap;
     }
 
     @Override
-    public Map<String, Converter> converterMap() {
+    public Map<String, Converter<?>> converterMap() {
         return getConverterMap();
     }
 

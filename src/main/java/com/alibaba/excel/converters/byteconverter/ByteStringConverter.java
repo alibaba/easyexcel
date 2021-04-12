@@ -35,7 +35,7 @@ public class ByteStringConverter implements Converter<Byte> {
     @Override
     public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 
 }

@@ -10,23 +10,30 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.IoUtils;
+import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Workbook holder
  *
  * @author Jiaju Zhuang
  */
+@Getter
+@Setter
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
      * Current poi Workbook.This is only for writing, and there may be no data in version 07 when template data needs to
@@ -111,7 +118,10 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * Excel is also written in the event of an exception being thrown.The default false.
      */
     private Boolean writeExcelOnException;
-
+    /**
+     * Used to cache data Format.
+     */
+    private Map<String, Short> dataFormatCache;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
@@ -139,7 +149,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (writeWorkbook.getExcelType() == null) {
             boolean isXls = (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue()))
                 || (writeWorkbook.getTemplateFile() != null
-                    && writeWorkbook.getTemplateFile().getName().endsWith(ExcelTypeEnum.XLS.getValue()));
+                && writeWorkbook.getTemplateFile().getName().endsWith(ExcelTypeEnum.XLS.getValue()));
             if (isXls) {
                 this.excelType = ExcelTypeEnum.XLS;
             } else {
@@ -166,6 +176,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.writeExcelOnException = writeWorkbook.getWriteExcelOnException();
         }
+        this.dataFormatCache = MapUtils.newHashMap();
     }
 
     private void copyTemplate() throws IOException {
@@ -187,136 +198,29 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         this.tempTemplateInputStream = new ByteArrayInputStream(templateFileByte);
     }
 
-    public Workbook getWorkbook() {
-        return workbook;
-    }
-
-    public void setWorkbook(Workbook workbook) {
-        this.workbook = workbook;
-    }
-
-    public Workbook getCachedWorkbook() {
-        return cachedWorkbook;
-    }
-
-    public void setCachedWorkbook(Workbook cachedWorkbook) {
-        this.cachedWorkbook = cachedWorkbook;
-    }
-
-    public Map<Integer, WriteSheetHolder> getHasBeenInitializedSheetIndexMap() {
-        return hasBeenInitializedSheetIndexMap;
-    }
-
-    public void setHasBeenInitializedSheetIndexMap(Map<Integer, WriteSheetHolder> hasBeenInitializedSheetIndexMap) {
-        this.hasBeenInitializedSheetIndexMap = hasBeenInitializedSheetIndexMap;
-    }
-
-    public Map<String, WriteSheetHolder> getHasBeenInitializedSheetNameMap() {
-        return hasBeenInitializedSheetNameMap;
-    }
-
-    public void setHasBeenInitializedSheetNameMap(Map<String, WriteSheetHolder> hasBeenInitializedSheetNameMap) {
-        this.hasBeenInitializedSheetNameMap = hasBeenInitializedSheetNameMap;
-    }
-
-    public WriteWorkbook getWriteWorkbook() {
-        return writeWorkbook;
-    }
-
-    public void setWriteWorkbook(WriteWorkbook writeWorkbook) {
-        this.writeWorkbook = writeWorkbook;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public OutputStream getOutputStream() {
-        return outputStream;
-    }
-
-    public void setOutputStream(OutputStream outputStream) {
-        this.outputStream = outputStream;
-    }
-
-    public InputStream getTemplateInputStream() {
-        return templateInputStream;
-    }
-
-    public void setTemplateInputStream(InputStream templateInputStream) {
-        this.templateInputStream = templateInputStream;
-    }
-
-    public InputStream getTempTemplateInputStream() {
-        return tempTemplateInputStream;
-    }
-
-    public void setTempTemplateInputStream(InputStream tempTemplateInputStream) {
-        this.tempTemplateInputStream = tempTemplateInputStream;
-    }
-
-    public File getTemplateFile() {
-        return templateFile;
-    }
-
-    public void setTemplateFile(File templateFile) {
-        this.templateFile = templateFile;
-    }
-
-    public Boolean getAutoCloseStream() {
-        return autoCloseStream;
-    }
-
-    public void setAutoCloseStream(Boolean autoCloseStream) {
-        this.autoCloseStream = autoCloseStream;
-    }
-
-    public ExcelTypeEnum getExcelType() {
-        return excelType;
-    }
-
-    public void setExcelType(ExcelTypeEnum excelType) {
-        this.excelType = excelType;
-    }
-
-    public Boolean getMandatoryUseInputStream() {
-        return mandatoryUseInputStream;
-    }
-
-    public void setMandatoryUseInputStream(Boolean mandatoryUseInputStream) {
-        this.mandatoryUseInputStream = mandatoryUseInputStream;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Boolean getInMemory() {
-        return inMemory;
-    }
-
-    public void setInMemory(Boolean inMemory) {
-        this.inMemory = inMemory;
-    }
-
-    public Boolean getWriteExcelOnException() {
-        return writeExcelOnException;
-    }
-
-    public void setWriteExcelOnException(Boolean writeExcelOnException) {
-        this.writeExcelOnException = writeExcelOnException;
-    }
-
     @Override
     public HolderEnum holderType() {
         return HolderEnum.WORKBOOK;
     }
+
+    /**
+     * Get a data format.
+     *
+     * @param format
+     * @return
+     */
+    public Short getDataFormat(String format) {
+        if (StringUtils.isEmpty(format)) {
+            return 0;
+        }
+        Short dataFormat = dataFormatCache.get(format);
+        if (dataFormat != null) {
+            return dataFormat;
+        }
+        DataFormat dataFormatCreate = workbook.createDataFormat();
+        dataFormat = dataFormatCreate.getFormat(format);
+        dataFormatCache.put(format,dataFormat);
+        return dataFormat;
+    }
+
 }

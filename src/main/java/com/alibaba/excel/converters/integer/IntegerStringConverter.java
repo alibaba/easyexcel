@@ -35,6 +35,6 @@ public class IntegerStringConverter implements Converter<Integer> {
     @Override
     public CellData convertToExcelData(Integer value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

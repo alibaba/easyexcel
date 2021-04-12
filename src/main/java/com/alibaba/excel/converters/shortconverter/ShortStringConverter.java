@@ -35,6 +35,6 @@ public class ShortStringConverter implements Converter<Short> {
     @Override
     public CellData convertToExcelData(Short value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

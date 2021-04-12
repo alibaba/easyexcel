@@ -36,6 +36,6 @@ public class BigDecimalStringConverter implements Converter<BigDecimal> {
     @Override
     public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

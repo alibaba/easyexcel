@@ -1,11 +1,7 @@
 package com.alibaba.excel.read.metadata.holder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
@@ -17,6 +13,10 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadBasicParameter;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
+import com.alibaba.excel.util.ListUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Read Holder
@@ -24,8 +24,6 @@ import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
  * @author Jiaju Zhuang
  */
 public abstract class AbstractReadHolder extends AbstractHolder implements ReadHolder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReadHolder.class);
-
     /**
      * Count the number of added heads when read sheet.
      *
@@ -84,9 +82,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         }
 
         if (parentAbstractReadHolder == null) {
-            this.readListenerList = new ArrayList<ReadListener>();
+            this.readListenerList = ListUtils.newArrayList();
         } else {
-            this.readListenerList = new ArrayList<ReadListener>(parentAbstractReadHolder.getReadListenerList());
+            this.readListenerList = ListUtils.newArrayList(parentAbstractReadHolder.getReadListenerList());
         }
         if (HolderEnum.WORKBOOK.equals(holderType())) {
             Boolean useDefaultListener = ((ReadWorkbook)readBasicParameter).getUseDefaultListener();
@@ -102,11 +100,11 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         if (parentAbstractReadHolder == null) {
             setConverterMap(DefaultConverterLoader.loadDefaultReadConverter());
         } else {
-            setConverterMap(new HashMap<String, Converter>(parentAbstractReadHolder.getConverterMap()));
+            setConverterMap(new HashMap<>(parentAbstractReadHolder.getConverterMap()));
         }
         if (readBasicParameter.getCustomConverterList() != null
             && !readBasicParameter.getCustomConverterList().isEmpty()) {
-            for (Converter converter : readBasicParameter.getCustomConverterList()) {
+            for (Converter<?> converter : readBasicParameter.getCustomConverterList()) {
                 getConverterMap().put(
                     ConverterKeyBuild.buildKey(converter.supportJavaTypeKey(), converter.supportExcelTypeKey()),
                     converter);

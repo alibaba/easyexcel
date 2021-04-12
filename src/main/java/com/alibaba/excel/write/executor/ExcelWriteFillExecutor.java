@@ -204,7 +204,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();
                 int index = 0;
-                List<CellData> cellDataList = new ArrayList<CellData>();
+                List<CellData<?>> cellDataList = new ArrayList<>();
                 for (String variable : analysisCell.getVariableList()) {
                     cellValueBuild.append(analysisCell.getPrepareDataList().get(index++));
                     if (!dataMap.containsKey(variable)) {

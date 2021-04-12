@@ -7,6 +7,8 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.NumberUtils;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * BigDecimal and number converter
@@ -32,8 +34,8 @@ public class BigDecimalNumberConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return new CellData(value);
+    public CellData<?> convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
+        WriteHolder currentWriteHolder) {
+        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
     }
 }

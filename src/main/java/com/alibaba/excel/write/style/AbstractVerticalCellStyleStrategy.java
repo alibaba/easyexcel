@@ -3,13 +3,13 @@ package com.alibaba.excel.write.style;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Workbook;
-
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  * Use the same style for the column
@@ -63,7 +63,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
             }
             return;
         }
-        WriteCellStyle contentCellStyle = contentCellStyle(head);
+        WriteCellStyle contentCellStyle = contentCellStyle(cell, head, relativeRowIndex);
         if (contentCellStyle == null) {
             contentCellStyleCache.put(columnIndex, null);
         } else {
@@ -71,6 +71,18 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
             contentCellStyleCache.put(columnIndex, cellStyle);
             cell.setCellStyle(cellStyle);
         }
+    }
+
+    /**
+     * Returns the column width corresponding to each column head.
+     *
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     * @return
+     */
+    protected WriteCellStyle contentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        return contentCellStyle(head);
     }
 
     /**
@@ -87,6 +99,10 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
      * @param head Nullable
      * @return
      */
-    protected abstract WriteCellStyle contentCellStyle(Head head);
+    protected WriteCellStyle contentCellStyle(Head head) {
+        throw new UnsupportedOperationException(
+            "One of the two methods 'contentCellStyle(Cell cell, Head head, Integer relativeRowIndex)' and "
+                + "'contentCellStyle(Head head)' must be implemented.");
+    }
 
 }

@@ -56,7 +56,7 @@ public interface CellWriteHandler extends WriteHandler {
      * @param isHead           It will always be false when fill data.
      */
     default void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        CellData cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {}
+        CellData<?> cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {}
 
     /**
      * Called after all operations on the cell have been completed
@@ -70,5 +70,5 @@ public interface CellWriteHandler extends WriteHandler {
      * @param isHead           It will always be false when fill data.
      */
     default void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {}
+        List<CellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {}
 }

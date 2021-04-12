@@ -17,16 +17,16 @@ public class DateUtils {
     /**
      * Is a cache of dates
      */
-    private static final ThreadLocal<Map<Integer, Boolean>> DATE_THREAD_LOCAL =
-        new ThreadLocal<Map<Integer, Boolean>>();
+    private static final ThreadLocal<Map<Short, Boolean>> DATE_THREAD_LOCAL =
+        new ThreadLocal<>();
     /**
      * Is a cache of dates
      */
     private static final ThreadLocal<Map<String, SimpleDateFormat>> DATE_FORMAT_THREAD_LOCAL =
-        new ThreadLocal<Map<String, SimpleDateFormat>>();
+        new ThreadLocal<>();
 
     /**
-     * The following patterns are used in {@link #isADateFormat(Integer, String)}
+     * The following patterns are used in {@link #isADateFormat(Short, String)}
      */
     private static final Pattern date_ptrn1 = Pattern.compile("^\\[\\$\\-.*?\\]");
     private static final Pattern date_ptrn2 = Pattern.compile("^\\[[a-zA-Z]+\\]");
@@ -49,6 +49,8 @@ public class DateUtils {
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
     private static final String MINUS = "-";
+
+    public static String defaultDateFormat = DATE_FORMAT_19;
 
     private DateUtils() {}
 
@@ -134,7 +136,7 @@ public class DateUtils {
             return "";
         }
         if (StringUtils.isEmpty(dateFormat)) {
-            dateFormat = DATE_FORMAT_19;
+            dateFormat = defaultDateFormat;
         }
         return getCacheDateFormat(dateFormat).format(date);
     }
@@ -162,13 +164,13 @@ public class DateUtils {
      * @param formatString
      * @return
      */
-    public static boolean isADateFormat(Integer formatIndex, String formatString) {
+    public static boolean isADateFormat(Short formatIndex, String formatString) {
         if (formatIndex == null) {
             return false;
         }
-        Map<Integer, Boolean> isDateCache = DATE_THREAD_LOCAL.get();
+        Map<Short, Boolean> isDateCache = DATE_THREAD_LOCAL.get();
         if (isDateCache == null) {
-            isDateCache = new HashMap<Integer, Boolean>();
+            isDateCache = MapUtils.newHashMap();
             DATE_THREAD_LOCAL.set(isDateCache);
         } else {
             Boolean isDateCachedData = isDateCache.get(formatIndex);
@@ -188,7 +190,7 @@ public class DateUtils {
      * @param formatString
      * @return
      */
-    public static boolean isADateFormatUncached(Integer formatIndex, String formatString) {
+    public static boolean isADateFormatUncached(Short formatIndex, String formatString) {
         // First up, is this an internal date format?
         if (isInternalDateFormat(formatIndex)) {
             return true;
@@ -264,9 +266,9 @@ public class DateUtils {
     /**
      * Given a format ID this will check whether the format represents an internal excel date format or not.
      *
-     * @see #isADateFormat(Integer, String)
+     * @see #isADateFormat(Short, String)
      */
-    public static boolean isInternalDateFormat(int format) {
+    public static boolean isInternalDateFormat(short format) {
         switch (format) {
             // Internal Date Formats as described on page 427 in
             // Microsoft Excel Dev's Kit...

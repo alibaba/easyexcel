@@ -44,7 +44,7 @@ public class DataFormatTest {
             EasyExcel.read(file, DataFormatData.class, null).sheet().headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (DataFormatData data : list) {
-            Integer dataFormat = data.getDate().getDataFormat();
+            Short dataFormat = data.getDate().getDataFormat();
 
             String dataFormatString = data.getDate().getDataFormatString();
 
@@ -67,7 +67,7 @@ public class DataFormatTest {
             EasyExcel.read(file, DataFormatData.class, null).sheet().headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (DataFormatData data : list) {
-            Integer dataFormat = data.getDate().getDataFormat();
+            Short dataFormat = data.getDate().getDataFormat();
 
             String dataFormatString = data.getDate().getDataFormatString();
 

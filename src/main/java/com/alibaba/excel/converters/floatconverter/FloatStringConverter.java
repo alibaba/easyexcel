@@ -35,6 +35,6 @@ public class FloatStringConverter implements Converter<Float> {
     @Override
     public CellData convertToExcelData(Float value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

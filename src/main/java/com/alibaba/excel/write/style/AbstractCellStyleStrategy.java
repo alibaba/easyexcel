@@ -2,19 +2,17 @@ package com.alibaba.excel.write.style;
 
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
-import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  * Cell style strategy
@@ -31,26 +29,8 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
     }
 
     @Override
-    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
-        Head head, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        CellData cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        List<CellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         if (isHead == null) {
             return;
         }
@@ -62,19 +42,9 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
     }
 
     @Override
-    public void beforeWorkbookCreate() {
-
-    }
-
-    @Override
     public void afterWorkbookCreate(WriteWorkbookHolder writeWorkbookHolder) {
         initCellStyle(writeWorkbookHolder.getWorkbook());
         hasInitialized = true;
-    }
-
-    @Override
-    public void afterWorkbookDispose(WriteWorkbookHolder writeWorkbookHolder) {
-
     }
 
     /**

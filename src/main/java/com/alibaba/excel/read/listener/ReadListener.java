@@ -29,7 +29,7 @@ public interface ReadListener<T> extends Listener {
      * @param headMap
      * @param context
      */
-    void invokeHead(Map<Integer, CellData> headMap, AnalysisContext context);
+    void invokeHead(Map<Integer, CellData<?>> headMap, AnalysisContext context);
 
     /**
      * When analysis one row trigger invoke function.

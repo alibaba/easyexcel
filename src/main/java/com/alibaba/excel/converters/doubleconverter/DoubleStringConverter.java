@@ -35,6 +35,6 @@ public class DoubleStringConverter implements Converter<Double> {
     @Override
     public CellData convertToExcelData(Double value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

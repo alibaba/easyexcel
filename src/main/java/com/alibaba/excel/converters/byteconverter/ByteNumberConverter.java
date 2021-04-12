@@ -7,6 +7,8 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.NumberUtils;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Byte and number converter
@@ -32,9 +34,9 @@ public class ByteNumberConverter implements Converter<Byte> {
     }
 
     @Override
-    public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return new CellData(new BigDecimal(Byte.toString(value)));
+    public CellData<?> convertToExcelData(Byte value, ExcelContentProperty contentProperty,
+        WriteHolder currentWriteHolder) {
+        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.excel.write.handler.impl.DefaultRowWriteHandler;
 import com.alibaba.excel.write.handler.impl.DimensionWorkbookWriteHandler;
+import com.alibaba.excel.write.handler.impl.FillDataFormatCellWriteHandler;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
@@ -43,6 +44,7 @@ public class DefaultWriteHandlerLoader {
             handlerList.add(new HorizontalCellStyleStrategy(headWriteCellStyle, new ArrayList<>()));
         }
         handlerList.addAll(DEFAULT_WRITE_HANDLER_LIST);
+        handlerList.add(new FillDataFormatCellWriteHandler());
         return handlerList;
     }
 

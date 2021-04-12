@@ -170,7 +170,7 @@ public class DataFormatter {
         this.decimalSymbols = DecimalFormatSymbols.getInstance(this.locale);
     }
 
-    private Format getFormat(Double data,Integer dataFormat, String dataFormatString) {
+    private Format getFormat(Double data,Short dataFormat, String dataFormatString) {
 
         // Might be better to separate out the n p and z formats, falling back to p when n and z are not set.
         // That however would require other code to be re factored.
@@ -225,7 +225,7 @@ public class DataFormatter {
         return format;
     }
 
-    private Format createFormat(Integer dataFormat, String dataFormatString) {
+    private Format createFormat(Short dataFormat, String dataFormatString) {
         String formatStr = dataFormatString;
 
         Format format = checkSpecialConverter(formatStr);
@@ -607,7 +607,7 @@ public class DataFormatter {
      * @param dataFormatString
      * @return Formatted value
      */
-    private String getFormattedDateString(Double data, Integer dataFormat, String dataFormatString) {
+    private String getFormattedDateString(Double data, Short dataFormat, String dataFormatString) {
         Format dateFormat = getFormat(data, dataFormat, dataFormatString);
         if (dateFormat instanceof ExcelStyleDateFormatter) {
             // Hint about the raw excel value
@@ -630,7 +630,7 @@ public class DataFormatter {
      * @param dataFormatString
      * @return a formatted number string
      */
-    private String getFormattedNumberString(Double data, Integer dataFormat, String dataFormatString) {
+    private String getFormattedNumberString(Double data, Short dataFormat, String dataFormatString) {
         Format numberFormat = getFormat(data, dataFormat, dataFormatString);
         String formatted = numberFormat.format(data);
         return formatted.replaceFirst("E(\\d)", "E+$1"); // to match Excel's E-notation
@@ -644,7 +644,7 @@ public class DataFormatter {
      * @param dataFormatString
      * @return
      */
-    public String format(Double data, Integer dataFormat, String dataFormatString) {
+    public String format(Double data, Short dataFormat, String dataFormatString) {
         if (DateUtils.isADateFormat(dataFormat, dataFormatString)) {
             return getFormattedDateString(data, dataFormat, dataFormatString);
         }
