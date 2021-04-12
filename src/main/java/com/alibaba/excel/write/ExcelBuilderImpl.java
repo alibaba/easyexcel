@@ -1,6 +1,7 @@
 package com.alibaba.excel.write;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,12 +49,12 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     }
 
     @Override
-    public void addContent(List data, WriteSheet writeSheet) {
+    public void addContent(Collection<?> data, WriteSheet writeSheet) {
         addContent(data, writeSheet, null);
     }
 
     @Override
-    public void addContent(List data, WriteSheet writeSheet, WriteTable writeTable) {
+    public void addContent(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable) {
         try {
             context.currentSheet(writeSheet, WriteTypeEnum.ADD);
             context.currentTable(writeTable);

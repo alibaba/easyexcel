@@ -1,5 +1,6 @@
 package com.alibaba.excel.write;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.alibaba.excel.context.WriteContext;
@@ -20,10 +21,10 @@ public interface ExcelBuilder {
      *            java basic type or java model extend BaseModel
      * @param writeSheet
      *            Write the sheet
-     * @deprecated please use{@link ExcelBuilder#addContent(List, WriteSheet, WriteTable)}
+     * @deprecated please use{@link ExcelBuilder#addContent(Collection, WriteSheet, WriteTable)}
      */
     @Deprecated
-    void addContent(List data, WriteSheet writeSheet);
+    void addContent(Collection<?> data, WriteSheet writeSheet);
 
     /**
      * WorkBook increase value
@@ -35,7 +36,7 @@ public interface ExcelBuilder {
      * @param writeTable
      *            Write the table
      */
-    void addContent(List data, WriteSheet writeSheet, WriteTable writeTable);
+    void addContent(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable);
 
     /**
      * WorkBook fill value

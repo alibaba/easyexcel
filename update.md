@@ -12,6 +12,7 @@
 * 修改异常抛出逻辑 [Issue #1618](https://github.com/alibaba/easyexcel/issues/1618)
 * 兼容一些非官方excel的情况 [Issue #1527](https://github.com/alibaba/easyexcel/issues/1527)
 * 修改读的关闭流无效 [Issue #1840](https://github.com/alibaba/easyexcel/issues/1840)
+* 写入支持Collection [Issue #1834](https://github.com/alibaba/easyexcel/issues/1834)
 
 
 # 2.2.8

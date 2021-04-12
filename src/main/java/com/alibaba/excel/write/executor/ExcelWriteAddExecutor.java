@@ -2,8 +2,8 @@ package com.alibaba.excel.write.executor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -17,6 +17,9 @@ import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
+import com.alibaba.excel.write.metadata.CollectionRowData;
+import com.alibaba.excel.write.metadata.MapRowData;
+import com.alibaba.excel.write.metadata.RowData;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
@@ -37,9 +40,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         super(writeContext);
     }
 
-    public void add(List data) {
+    public void add(Collection<?> data) {
         if (CollectionUtils.isEmpty(data)) {
-            data = new ArrayList();
+            data = new ArrayList<>();
         }
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
@@ -47,11 +50,10 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             newRowIndex += writeContext.currentWriteHolder().relativeHeadRowIndex();
         }
         // BeanMap is out of order,so use sortedAllFiledMap
-        Map<Integer, Field> sortedAllFiledMap = new TreeMap<Integer, Field>();
+        Map<Integer, Field> sortedAllFiledMap = new TreeMap<>();
         int relativeRowIndex = 0;
-        int lastRowIndex = 0;
         for (Object oneRowData : data) {
-            lastRowIndex = relativeRowIndex + newRowIndex;
+            int lastRowIndex = relativeRowIndex + newRowIndex;
             addOneRowOfDataToExcel(oneRowData, lastRowIndex, relativeRowIndex, sortedAllFiledMap);
             relativeRowIndex++;
         }
@@ -65,16 +67,19 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHandlerUtils.beforeRowCreate(writeContext, n, relativeRowIndex, Boolean.FALSE);
         Row row = WorkBookUtil.createRow(writeContext.writeSheetHolder().getSheet(), n);
         WriteHandlerUtils.afterRowCreate(writeContext, row, relativeRowIndex, Boolean.FALSE);
-        if (oneRowData instanceof List) {
-            addBasicTypeToExcel((List)oneRowData, row, relativeRowIndex);
+
+        if (oneRowData instanceof Collection<?>) {
+            addBasicTypeToExcel(new CollectionRowData((Collection<?>)oneRowData), row, relativeRowIndex);
+        } else if (oneRowData instanceof Map) {
+            addBasicTypeToExcel(new MapRowData((Map<Integer, ?>)oneRowData), row, relativeRowIndex);
         } else {
             addJavaObjectToExcel(oneRowData, row, relativeRowIndex, sortedAllFiledMap);
         }
         WriteHandlerUtils.afterRowDispose(writeContext, row, relativeRowIndex, Boolean.FALSE);
     }
 
-    private void addBasicTypeToExcel(List<Object> oneRowData, Row row, int relativeRowIndex) {
-        if (CollectionUtils.isEmpty(oneRowData)) {
+    private void addBasicTypeToExcel(RowData oneRowData, Row row, int relativeRowIndex) {
+        if (oneRowData.isEmpty()) {
             return;
         }
         Map<Integer, Head> headMap = writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadMap();
@@ -101,7 +106,8 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         }
     }
 
-    private void doAddBasicTypeToExcel(List<Object> oneRowData, Head head, Row row, int relativeRowIndex, int dataIndex,
+    private void doAddBasicTypeToExcel(RowData oneRowData, Head head, Row row, int relativeRowIndex,
+        int dataIndex,
         int cellIndex) {
         WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
