@@ -27,6 +27,7 @@ import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.SheetUtils;
 import com.alibaba.excel.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
@@ -47,6 +48,7 @@ import org.xml.sax.XMLReader;
 /**
  * @author jipengfei
  */
+@Slf4j
 public class XlsxSaxAnalyser implements ExcelReadExecutor {
 
     private XlsxReadContext xlsxReadContext;
@@ -80,7 +82,9 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         XSSFReader xssfReader = new XSSFReader(pkg);
         analysisUse1904WindowDate(xssfReader, xlsxReadWorkbookHolder);
 
-        xlsxReadWorkbookHolder.setStylesTable(xssfReader.getStylesTable());
+        // set style table
+        setStylesTable(xlsxReadWorkbookHolder, xssfReader);
+
         sheetList = new ArrayList<ReadSheet>();
         sheetMap = new HashMap<Integer, InputStream>();
         commentsTableMap = new HashMap<Integer, CommentsTable>();
@@ -100,6 +104,17 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
                 }
             }
             index++;
+        }
+    }
+
+    private void setStylesTable(XlsxReadWorkbookHolder xlsxReadWorkbookHolder, XSSFReader xssfReader) {
+        try {
+            xlsxReadWorkbookHolder.setStylesTable(xssfReader.getStylesTable());
+        } catch (Exception e) {
+            log.warn(
+                "Currently excel cannot get style information, but it doesn't affect the data analysis.You can try to"
+                    + " save the file with office again or ignore the current error.",
+                e);
         }
     }
 
