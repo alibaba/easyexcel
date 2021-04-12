@@ -11,6 +11,7 @@
 * 修复没有样式的情况下空指针异常 [Issue #1738](https://github.com/alibaba/easyexcel/issues/1738)
 * 修改异常抛出逻辑 [Issue #1618](https://github.com/alibaba/easyexcel/issues/1618)
 * 兼容一些非官方excel的情况 [Issue #1527](https://github.com/alibaba/easyexcel/issues/1527)
+* 修改读的关闭流无效 [Issue #1840](https://github.com/alibaba/easyexcel/issues/1840)
 
 
 # 2.2.8

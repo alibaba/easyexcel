@@ -164,11 +164,10 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         xlsxReadWorkbookHolder.setTempFile(readTempFile);
         File tempFile = new File(readTempFile.getPath(), UUID.randomUUID().toString() + ".xlsx");
         if (decryptedStream != null) {
-            if(xlsxReadWorkbookHolder.getAutoCloseStream()) FileUtils.writeToFile(tempFile, decryptedStream);
-            else FileUtils.writeToFileNotCloseStream(tempFile, decryptedStream);
+            FileUtils.writeToFile(tempFile, decryptedStream, false);
         } else {
-            if(xlsxReadWorkbookHolder.getAutoCloseStream()) FileUtils.writeToFile(tempFile, xlsxReadWorkbookHolder.getInputStream());
-            else FileUtils.writeToFileNotCloseStream(tempFile, xlsxReadWorkbookHolder.getInputStream());
+            FileUtils.writeToFile(tempFile, xlsxReadWorkbookHolder.getInputStream(),
+                xlsxReadWorkbookHolder.getAutoCloseStream());
         }
         return OPCPackage.open(tempFile, PackageAccess.READ);
     }
