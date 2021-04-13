@@ -1,9 +1,9 @@
 package com.alibaba.excel.converters;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.util.MapUtils;
 
 /**
  * Converter unique key.Consider that you can just use class as the key.
@@ -12,7 +12,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
  */
 public class ConverterKeyBuild {
 
-    private static final Map<String, String> BOXING_MAP = new HashMap<String, String>(16);
+    private static final Map<String, String> BOXING_MAP = MapUtils.newHashMap();
 
     static {
         BOXING_MAP.put(int.class.getName(), Integer.class.getName());
@@ -25,7 +25,7 @@ public class ConverterKeyBuild {
         BOXING_MAP.put(boolean.class.getName(), Boolean.class.getName());
     }
 
-    public static String buildKey(Class clazz) {
+    public static String buildKey(Class<?> clazz) {
         String className = clazz.getName();
         String boxingClassName = BOXING_MAP.get(clazz.getName());
         if (boxingClassName == null) {
@@ -34,7 +34,11 @@ public class ConverterKeyBuild {
         return boxingClassName;
     }
 
-    public static String buildKey(Class clazz, CellDataTypeEnum cellDataTypeEnum) {
-        return buildKey(clazz) + "-" + cellDataTypeEnum.toString();
+    public static String buildKey(Class<?> clazz, CellDataTypeEnum cellDataTypeEnum) {
+        String key = buildKey(clazz);
+        if (cellDataTypeEnum == null) {
+            return key;
+        }
+        return key + "-" + cellDataTypeEnum.toString();
     }
 }

@@ -98,7 +98,7 @@ public class DefaultConverterLoader {
     }
 
     private static void initDefaultWriteConverter() {
-        defaultWriteConverter = MapUtils.newHashMapWithExpectedSize(20);
+        defaultWriteConverter = MapUtils.newHashMapWithExpectedSize(40);
         putWriteConverter(new BigDecimalNumberConverter());
         putWriteConverter(new BooleanBooleanConverter());
         putWriteConverter(new ByteNumberConverter());
@@ -114,6 +114,18 @@ public class DefaultConverterLoader {
         putWriteConverter(new ByteArrayImageConverter());
         putWriteConverter(new BoxingByteArrayImageConverter());
         putWriteConverter(new UrlImageConverter());
+
+        // In some cases, it must be converted to string
+        putWriteStringConverter(new BigDecimalStringConverter());
+        putWriteStringConverter(new BooleanStringConverter());
+        putWriteStringConverter(new ByteStringConverter());
+        putWriteStringConverter(new DateStringConverter());
+        putWriteStringConverter(new DoubleStringConverter());
+        putWriteStringConverter(new FloatStringConverter());
+        putWriteStringConverter(new IntegerStringConverter());
+        putWriteStringConverter(new LongStringConverter());
+        putWriteStringConverter(new ShortStringConverter());
+        putWriteStringConverter(new StringStringConverter());
     }
 
     /**
@@ -127,6 +139,11 @@ public class DefaultConverterLoader {
 
     private static void putWriteConverter(Converter<?> converter) {
         defaultWriteConverter.put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
+    }
+
+    private static void putWriteStringConverter(Converter<?> converter) {
+        defaultWriteConverter.put(
+            ConverterKeyBuild.buildKey(converter.supportJavaTypeKey(), converter.supportExcelTypeKey()), converter);
     }
 
     /**

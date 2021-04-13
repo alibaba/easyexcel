@@ -16,7 +16,7 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
 public class FloatNumberConverter implements Converter<Float> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Float.class;
     }
 
@@ -26,7 +26,7 @@ public class FloatNumberConverter implements Converter<Float> {
     }
 
     @Override
-    public Float convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Float convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().floatValue();
     }

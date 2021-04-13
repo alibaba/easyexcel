@@ -69,8 +69,13 @@ public class DimensionWorkbookWriteHandler implements WorkbookWriteHandler {
                     headSize--;
                 }
             }
+            Integer lastRowIndex = writeSheetHolder.getLastRowIndex();
+            if (lastRowIndex == null) {
+                lastRowIndex = 0;
+            }
+
             ctWorksheet.getDimension().setRef(
-                "A1:" + CellReference.convertNumToColString(headSize) + (writeSheetHolder.getLastRowIndex() + 1));
+                "A1:" + CellReference.convertNumToColString(headSize) + (lastRowIndex + 1));
         }
     }
 }

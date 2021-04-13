@@ -42,7 +42,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
         }
         WriteCellStyle headCellStyle = headCellStyle(head);
         if (headCellStyle == null) {
-            headCellStyleCache.put(columnIndex, null);
+            headCellStyleCache.put(columnIndex, StyleUtil.buildHeadCellStyle(workbook, null));
         } else {
             CellStyle cellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle);
             headCellStyleCache.put(columnIndex, cellStyle);
@@ -65,7 +65,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
         }
         WriteCellStyle contentCellStyle = contentCellStyle(cell, head, relativeRowIndex);
         if (contentCellStyle == null) {
-            contentCellStyleCache.put(columnIndex, null);
+            contentCellStyleCache.put(columnIndex, StyleUtil.buildContentCellStyle(workbook, null));
         } else {
             CellStyle cellStyle = StyleUtil.buildContentCellStyle(workbook, contentCellStyle);
             contentCellStyleCache.put(columnIndex, cellStyle);

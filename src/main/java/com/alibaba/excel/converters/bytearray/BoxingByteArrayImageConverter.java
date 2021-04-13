@@ -13,7 +13,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
  */
 public class BoxingByteArrayImageConverter implements Converter<Byte[]> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Byte[].class;
     }
 
@@ -23,19 +23,19 @@ public class BoxingByteArrayImageConverter implements Converter<Byte[]> {
     }
 
     @Override
-    public Byte[] convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Byte[] convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         throw new UnsupportedOperationException("Cannot convert images to byte arrays");
     }
 
     @Override
-    public CellData convertToExcelData(Byte[] value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Byte[] value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         byte[] byteValue = new byte[value.length];
         for (int i = 0; i < value.length; i++) {
             byteValue[i] = value[i];
         }
-        return new CellData(byteValue);
+        return new CellData<>(byteValue);
     }
 
 }

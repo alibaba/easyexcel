@@ -198,8 +198,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     continue;
                 }
                 Object value = dataMap.get(variable);
-                CellData cellData = converterAndSet(writeSheetHolder, value == null ? null : value.getClass(), cell,
-                    value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
+                CellData<?> cellData = converterAndSet(writeSheetHolder, value == null ? null : value.getClass(), null,
+                    cell, value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();
@@ -211,8 +211,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                         continue;
                     }
                     Object value = dataMap.get(variable);
-                    CellData cellData = convert(writeSheetHolder, value == null ? null : value.getClass(), cell, value,
-                        fieldNameContentPropertyMap.get(variable));
+                    CellData<?> cellData = convert(writeSheetHolder, value == null ? null : value.getClass(),
+                        CellDataTypeEnum.STRING, cell, value, fieldNameContentPropertyMap.get(variable));
                     cellDataList.add(cellData);
                     CellDataTypeEnum type = cellData.getType();
                     if (type != null) {

@@ -17,7 +17,7 @@ import com.alibaba.excel.util.FileUtils;
  */
 public class StringImageConverter implements Converter<String> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return String.class;
     }
 
@@ -27,15 +27,15 @@ public class StringImageConverter implements Converter<String> {
     }
 
     @Override
-    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public String convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         throw new UnsupportedOperationException("Cannot convert images to string");
     }
 
     @Override
-    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(String value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws IOException {
-        return new CellData(FileUtils.readFileToByteArray(new File(value)));
+        return new CellData<>(FileUtils.readFileToByteArray(new File(value)));
     }
 
 }

@@ -17,6 +17,8 @@ import java.util.Locale;
  **/
 public class BuiltinFormats {
 
+    public static short GENERAL = 0;
+
     public static final String[] BUILTIN_FORMATS_CN = {
         // 0
         "General",

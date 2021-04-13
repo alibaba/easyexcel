@@ -16,7 +16,7 @@ public class IntegerBooleanConverter implements Converter<Integer> {
     private static final Integer ZERO = 0;
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Integer.class;
     }
 
@@ -26,7 +26,7 @@ public class IntegerBooleanConverter implements Converter<Integer> {
     }
 
     @Override
-    public Integer convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Integer convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (cellData.getBooleanValue()) {
             return ONE;
@@ -35,12 +35,12 @@ public class IntegerBooleanConverter implements Converter<Integer> {
     }
 
     @Override
-    public CellData convertToExcelData(Integer value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Integer value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (ONE.equals(value)) {
-            return new CellData(Boolean.TRUE);
+            return new CellData<>(Boolean.TRUE);
         }
-        return new CellData(Boolean.FALSE);
+        return new CellData<>(Boolean.FALSE);
     }
 
 }

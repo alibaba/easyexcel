@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -211,7 +212,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     public Short getDataFormat(String format) {
         if (StringUtils.isEmpty(format)) {
-            return 0;
+            return BuiltinFormats.GENERAL;
         }
         Short dataFormat = dataFormatCache.get(format);
         if (dataFormat != null) {

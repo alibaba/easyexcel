@@ -30,15 +30,16 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         this.writeContext = writeContext;
     }
 
-    protected CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
+    protected CellData<?> converterAndSet(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,
+        Cell cell, Object value,
         ExcelContentProperty excelContentProperty, Head head, Integer relativeRowIndex) {
         if (value == null) {
-            return new CellData(CellDataTypeEnum.EMPTY);
+            return new CellData<>(CellDataTypeEnum.EMPTY);
         }
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
             value = ((String)value).trim();
         }
-        CellData cellData = convert(currentWriteHolder, clazz, cell, value, excelContentProperty);
+        CellData<?> cellData = convert(currentWriteHolder, clazz, targetType, cell, value, excelContentProperty);
         if (cellData.getFormula() != null && cellData.getFormula()) {
             cell.setCellFormula(cellData.getFormulaValue());
         }
@@ -71,14 +72,15 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         }
     }
 
-    protected CellData convert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
-        ExcelContentProperty excelContentProperty) {
+    protected CellData<?> convert(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,
+        Cell cell,
+        Object value, ExcelContentProperty excelContentProperty) {
         if (value == null) {
-            return new CellData(CellDataTypeEnum.EMPTY);
+            return new CellData<>(CellDataTypeEnum.EMPTY);
         }
         // This means that the user has defined the data.
         if (value instanceof CellData) {
-            CellData cellDataValue = (CellData)value;
+            CellData<?> cellDataValue = (CellData<?>)value;
             if (cellDataValue.getType() != null) {
                 return cellDataValue;
             } else {
@@ -87,8 +89,8 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                     return cellDataValue;
                 }
             }
-            CellData cellDataReturn = doConvert(currentWriteHolder, cellDataValue.getData().getClass(), cell,
-                cellDataValue.getData(), excelContentProperty);
+            CellData<?> cellDataReturn = doConvert(currentWriteHolder, cellDataValue.getData().getClass(), targetType,
+                cell, cellDataValue.getData(), excelContentProperty);
             // The formula information is subject to user input
             if (cellDataValue.getFormula() != null) {
                 cellDataReturn.setFormula(cellDataValue.getFormula());
@@ -96,41 +98,40 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             }
             return cellDataReturn;
         }
-        return doConvert(currentWriteHolder, clazz, cell, value, excelContentProperty);
+        return doConvert(currentWriteHolder, clazz, targetType, cell, value, excelContentProperty);
     }
 
-    private CellData doConvert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
-        ExcelContentProperty excelContentProperty) {
+    private CellData<?> doConvert(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,
+        Cell cell, Object value, ExcelContentProperty excelContentProperty) {
         Converter converter = null;
         if (excelContentProperty != null) {
             converter = excelContentProperty.getConverter();
         }
         if (converter == null) {
-            converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz));
+            converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz, targetType));
         }
         if (converter == null) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
-                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
+                new CellData<>(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
         }
-        CellData cellData;
+        CellData<?> cellData;
         try {
-            cellData =
-                converter.convertToExcelData(value, excelContentProperty, currentWriteHolder);
+            cellData = converter.convertToExcelData(value, excelContentProperty, currentWriteHolder);
         } catch (Exception e) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
-                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
+                new CellData<>(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(), e);
         }
         if (cellData == null || cellData.getType() == null) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
-                new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
+                new CellData<>(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Convert data:" + value + " return null,at row:" + cell.getRow().getRowNum());
         }
         return cellData;
     }
 
-    private void setImageValue(CellData cellData, Cell cell) {
+    private void setImageValue(CellData<?> cellData, Cell cell) {
         Sheet sheet = cell.getSheet();
         int index = sheet.getWorkbook().addPicture(cellData.getImageValue(), HSSFWorkbook.PICTURE_TYPE_PNG);
         Drawing drawing = sheet.getDrawingPatriarch();

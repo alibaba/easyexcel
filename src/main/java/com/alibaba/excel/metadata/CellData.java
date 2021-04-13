@@ -122,6 +122,16 @@ public class CellData<T> extends AbstractCell {
         this.formula = Boolean.FALSE;
     }
 
+    public CellData(Date dateValue) {
+        if (dateValue == null) {
+            throw new IllegalArgumentException("DateValue can not be null");
+        }
+        this.type = CellDataTypeEnum.DATE;
+        this.dateValue = dateValue;
+        this.formula = Boolean.FALSE;
+    }
+
+
     public CellData(CellDataTypeEnum type) {
         if (type == null) {
             throw new IllegalArgumentException("Type can not be null");
@@ -158,37 +168,37 @@ public class CellData<T> extends AbstractCell {
         }
     }
 
-    public static CellData newEmptyInstance() {
+    public static CellData<?> newEmptyInstance() {
         return newEmptyInstance(null, null);
     }
 
-    public static CellData newEmptyInstance(Integer rowIndex, Integer columnIndex) {
-        CellData cellData = new CellData(CellDataTypeEnum.EMPTY);
+    public static CellData<?> newEmptyInstance(Integer rowIndex, Integer columnIndex) {
+        CellData<?> cellData = new CellData<>(CellDataTypeEnum.EMPTY);
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;
     }
 
-    public static CellData newInstance(Boolean booleanValue) {
+    public static CellData<?> newInstance(Boolean booleanValue) {
         return newInstance(booleanValue, null, null);
     }
 
-    public static CellData newInstance(Boolean booleanValue, Integer rowIndex, Integer columnIndex) {
-        CellData cellData = new CellData(booleanValue);
+    public static CellData<?> newInstance(Boolean booleanValue, Integer rowIndex, Integer columnIndex) {
+        CellData<?> cellData = new CellData<>(booleanValue);
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;
     }
 
-    public static CellData newInstance(String stringValue, Integer rowIndex, Integer columnIndex) {
-        CellData cellData = new CellData(stringValue);
+    public static CellData<?> newInstance(String stringValue, Integer rowIndex, Integer columnIndex) {
+        CellData<?> cellData = new CellData<>(stringValue);
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;
     }
 
-    public static CellData newInstance(BigDecimal numberValue, Integer rowIndex, Integer columnIndex) {
-        CellData cellData = new CellData(numberValue);
+    public static CellData<?> newInstance(BigDecimal numberValue, Integer rowIndex, Integer columnIndex) {
+        CellData<?> cellData = new CellData<>(numberValue);
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;

@@ -17,7 +17,7 @@ import com.alibaba.excel.util.NumberUtils;
 public class IntegerStringConverter implements Converter<Integer> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Integer.class;
     }
 
@@ -27,13 +27,13 @@ public class IntegerStringConverter implements Converter<Integer> {
     }
 
     @Override
-    public Integer convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Integer convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseInteger(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData convertToExcelData(Integer value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Integer value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return NumberUtils.formatToCellDataString(value, contentProperty);
     }

@@ -16,7 +16,7 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
 public class IntegerNumberConverter implements Converter<Integer> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Integer.class;
     }
 
@@ -26,7 +26,7 @@ public class IntegerNumberConverter implements Converter<Integer> {
     }
 
     @Override
-    public Integer convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Integer convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().intValue();
     }

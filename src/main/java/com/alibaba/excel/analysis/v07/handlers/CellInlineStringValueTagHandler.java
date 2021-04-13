@@ -15,7 +15,7 @@ public class CellInlineStringValueTagHandler extends AbstractCellValueTagHandler
     @Override
     protected void setStringValue(XlsxReadContext xlsxReadContext) {
         // This is a special form of string
-        CellData tempCellData = xlsxReadContext.xlsxReadSheetHolder().getTempCellData();
+        CellData<?> tempCellData = xlsxReadContext.xlsxReadSheetHolder().getTempCellData();
         XSSFRichTextString richTextString = new XSSFRichTextString(tempCellData.getStringValue());
         tempCellData.setStringValue(richTextString.toString());
     }

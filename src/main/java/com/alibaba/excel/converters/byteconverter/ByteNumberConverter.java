@@ -18,7 +18,7 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
 public class ByteNumberConverter implements Converter<Byte> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Byte.class;
     }
 
@@ -28,7 +28,7 @@ public class ByteNumberConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Byte convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().byteValue();
     }

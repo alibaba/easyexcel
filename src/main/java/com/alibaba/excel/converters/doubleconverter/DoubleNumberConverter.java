@@ -18,7 +18,7 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
 public class DoubleNumberConverter implements Converter<Double> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Double.class;
     }
 
@@ -28,7 +28,7 @@ public class DoubleNumberConverter implements Converter<Double> {
     }
 
     @Override
-    public Double convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Double convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().doubleValue();
     }

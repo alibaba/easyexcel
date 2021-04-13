@@ -34,5 +34,5 @@ public class ConverterData {
     @ExcelProperty("字符串")
     private String string;
     @ExcelProperty("自定义")
-    private CellData cellData;
+    private CellData<?> cellData;
 }

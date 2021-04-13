@@ -39,7 +39,7 @@ public class HorizontalCellStyleStrategy extends AbstractVerticalCellStyleStrate
     @Override
     protected WriteCellStyle contentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
         if (CollectionUtils.isEmpty(contentWriteCellStyleList)) {
-            return null;
+            return new WriteCellStyle();
         }
         return contentWriteCellStyleList.get(relativeRowIndex % contentWriteCellStyleList.size());
     }

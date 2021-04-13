@@ -18,7 +18,7 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
 public class BigDecimalNumberConverter implements Converter<BigDecimal> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<BigDecimal> supportJavaTypeKey() {
         return BigDecimal.class;
     }
 
@@ -28,7 +28,7 @@ public class BigDecimalNumberConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public BigDecimal convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue();
     }

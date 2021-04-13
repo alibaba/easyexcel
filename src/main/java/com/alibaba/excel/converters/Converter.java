@@ -22,7 +22,7 @@ public interface Converter<T> {
      *
      * @return Support for Java class
      */
-    default Class<T> supportJavaTypeKey() {
+    default Class<?> supportJavaTypeKey() {
         throw new UnsupportedOperationException("The current operation is not supported by the current converter.");
     }
 

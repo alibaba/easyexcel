@@ -14,7 +14,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 public class BooleanStringConverter implements Converter<Boolean> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Boolean.class;
     }
 
@@ -24,15 +24,15 @@ public class BooleanStringConverter implements Converter<Boolean> {
     }
 
     @Override
-    public Boolean convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Boolean convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return Boolean.valueOf(cellData.getStringValue());
     }
 
     @Override
-    public CellData convertToExcelData(Boolean value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Boolean value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(value.toString());
+        return new CellData<>(value.toString());
     }
 
 }

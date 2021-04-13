@@ -3,7 +3,9 @@ package com.alibaba.excel.converters.date;
 import java.util.Date;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
@@ -17,6 +19,17 @@ public class DateDateConverter implements Converter<Date> {
     @Override
     public Class<Date> supportJavaTypeKey() {
         return Date.class;
+    }
+
+    @Override
+    public CellDataTypeEnum supportExcelTypeKey() {
+        return CellDataTypeEnum.DATE;
+    }
+
+    @Override
+    public Date convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
+        return cellData.getDateValue();
     }
 
     @Override

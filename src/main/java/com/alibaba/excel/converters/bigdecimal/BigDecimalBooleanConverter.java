@@ -16,7 +16,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<BigDecimal> supportJavaTypeKey() {
         return BigDecimal.class;
     }
 
@@ -26,7 +26,7 @@ public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public BigDecimal convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (cellData.getBooleanValue()) {
             return BigDecimal.ONE;
@@ -35,12 +35,12 @@ public class BigDecimalBooleanConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (BigDecimal.ONE.equals(value)) {
-            return new CellData(Boolean.TRUE);
+            return new CellData<>(Boolean.TRUE);
         }
-        return new CellData(Boolean.FALSE);
+        return new CellData<>(Boolean.FALSE);
     }
 
 }

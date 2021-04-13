@@ -10,6 +10,7 @@ import com.alibaba.excel.event.Order;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.DateUtils;
+import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
@@ -46,7 +47,7 @@ public class FillDataFormatCellWriteHandler implements CellWriteHandler, Order {
         }
         CellData<?> cellData = cellDataList.get(0);
         CellStyle cellStyle = cell.getCellStyle();
-        if (cellStyle == null) {
+        if (cellStyle == null || StyleUtil.isDefaultStyle(cellStyle)) {
             if (cellData.getType() == CellDataTypeEnum.DATE) {
                 cell.setCellStyle(getDefaultDateCellStyle(writeSheetHolder));
             }

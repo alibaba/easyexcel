@@ -21,7 +21,7 @@ public class NumberRecordHandler extends AbstractXlsRecordHandler implements Ign
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         NumberRecord nr = (NumberRecord)record;
-        CellData cellData = CellData.newInstance(BigDecimal.valueOf(nr.getValue()), nr.getRow(), (int)nr.getColumn());
+        CellData<?>cellData = CellData.newInstance(BigDecimal.valueOf(nr.getValue()), nr.getRow(), (int)nr.getColumn());
         short dataFormat = (short)xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatIndex(
             nr);
         cellData.setDataFormat(dataFormat);
