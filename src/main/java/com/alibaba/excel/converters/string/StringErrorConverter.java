@@ -13,7 +13,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
  */
 public class StringErrorConverter implements Converter<String> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<String> supportJavaTypeKey() {
         return String.class;
     }
 
@@ -23,15 +23,15 @@ public class StringErrorConverter implements Converter<String> {
     }
 
     @Override
-    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public String convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getStringValue();
     }
 
     @Override
-    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(String value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(CellDataTypeEnum.ERROR, value);
+        return new CellData<>(CellDataTypeEnum.ERROR, value);
     }
 
 }

@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.demo.fill;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,7 +206,9 @@ public class FillTest {
         excelWriter.fill(new FillWrapper("data3", data()), writeSheet);
 
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("date", "2019年10月9日13:28:28");
+        //map.put("date", "2019年10月9日13:28:28");
+        map.put("date", new Date());
+
         excelWriter.fill(map, writeSheet);
 
         // 别忘记关闭流

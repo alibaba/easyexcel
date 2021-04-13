@@ -20,7 +20,7 @@ import com.alibaba.excel.util.IoUtils;
  */
 public class StringImageConverter implements Converter<String> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return String.class;
     }
 
@@ -30,13 +30,13 @@ public class StringImageConverter implements Converter<String> {
     }
 
     @Override
-    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public String convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         throw new UnsupportedOperationException("Cannot convert images to string");
     }
 
     @Override
-    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(String value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws IOException {
         ImagePosition imagePosition = contentProperty.getField().getAnnotation(ImagePosition.class);
         if (imagePosition != null) {

@@ -8,6 +8,7 @@ import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.AbstractCellWriteHandler;
+import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
@@ -16,7 +17,7 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
  *
  * @author Jiaju Zhuang
  */
-public abstract class AbstractColumnWidthStyleStrategy extends AbstractCellWriteHandler implements NotRepeatExecutor {
+public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandler,NotRepeatExecutor {
 
     @Override
     public String uniqueValue() {
@@ -25,7 +26,7 @@ public abstract class AbstractColumnWidthStyleStrategy extends AbstractCellWrite
 
     @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        List<CellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         setColumnWidth(writeSheetHolder, cellDataList, cell, head, relativeRowIndex, isHead);
     }
 
@@ -39,7 +40,7 @@ public abstract class AbstractColumnWidthStyleStrategy extends AbstractCellWrite
      * @param relativeRowIndex
      * @param isHead
      */
-    protected abstract void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell,
+    protected abstract void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData<?>> cellDataList, Cell cell,
         Head head, Integer relativeRowIndex, Boolean isHead);
 
 }

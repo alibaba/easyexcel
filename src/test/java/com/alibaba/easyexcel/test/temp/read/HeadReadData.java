@@ -11,10 +11,9 @@ import lombok.experimental.Accessors;
  * @author Jiaju Zhuang
  **/
 @Data
-@Accessors(chain = true)
 public class HeadReadData {
-    @ExcelProperty("头1")
+    @ExcelProperty({"主标题","数据1"})
     private String h1;
-    @ExcelProperty({"头", "头2"})
+    @ExcelProperty({"主标题", "数据2"})
     private String h2;
 }

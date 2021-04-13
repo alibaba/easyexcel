@@ -1,5 +1,8 @@
 package com.alibaba.excel.util;
 
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -8,14 +11,16 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
-
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
 /**
  * @author jipengfei
  */
 public class StyleUtil {
+
+    public static short XSSF_DEFAULT_STYLE = 0;
+    public static short HSSF_DEFAULT_STYLE = 15;
 
     private StyleUtil() {}
 
@@ -183,4 +188,13 @@ public class StyleUtil {
         }
     }
 
+    public static boolean isDefaultStyle(CellStyle cellStyle) {
+        if (cellStyle == null) {
+            return true;
+        }
+        if (cellStyle instanceof XSSFCellStyle) {
+            return cellStyle.getIndex() == XSSF_DEFAULT_STYLE;
+        }
+        return cellStyle.getIndex() == HSSF_DEFAULT_STYLE;
+    }
 }

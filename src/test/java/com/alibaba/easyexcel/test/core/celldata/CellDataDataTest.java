@@ -55,7 +55,7 @@ public class CellDataDataTest {
     private List<CellDataData> data() throws Exception {
         List<CellDataData> list = new ArrayList<CellDataData>();
         CellDataData cellDataData = new CellDataData();
-        cellDataData.setDate(new CellData<Date>(DateUtils.parseDate("2020-01-01 01:01:01")));
+        cellDataData.setDate(new CellData<>(DateUtils.parseDate("2020-01-01 01:01:01")));
         CellData<Integer> integer1 = new CellData<Integer>();
         integer1.setType(CellDataTypeEnum.NUMBER);
         integer1.setNumberValue(BigDecimal.valueOf(2L));

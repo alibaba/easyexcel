@@ -17,7 +17,7 @@ import com.alibaba.excel.util.FileUtils;
  */
 public class FileImageConverter implements Converter<File> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return File.class;
     }
 
@@ -27,13 +27,13 @@ public class FileImageConverter implements Converter<File> {
     }
 
     @Override
-    public File convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public File convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         throw new UnsupportedOperationException("Cannot convert images to file");
     }
 
     @Override
-    public CellData convertToExcelData(File value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(File value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws IOException {
         ImagePosition imagePosition = contentProperty.getField().getAnnotation(ImagePosition.class);
         if (imagePosition != null) {

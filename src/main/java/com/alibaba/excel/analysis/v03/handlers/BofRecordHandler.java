@@ -22,10 +22,11 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
 
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
-        BOFRecord br = (BOFRecord)record;
+        BOFRecord br = (BOFRecord) record;
         XlsReadWorkbookHolder xlsReadWorkbookHolder = xlsReadContext.xlsReadWorkbookHolder();
         if (br.getType() == BOFRecord.TYPE_WORKBOOK) {
             xlsReadWorkbookHolder.setReadSheetIndex(null);
+            xlsReadWorkbookHolder.setIgnoreRecord(Boolean.FALSE);
             return;
         }
         if (br.getType() != BOFRecord.TYPE_WORKSHEET) {
@@ -38,15 +39,15 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
             readSheetIndex = 0;
             xlsReadWorkbookHolder.setReadSheetIndex(readSheetIndex);
         }
-        ReadSheet readSheet = xlsReadWorkbookHolder.getActualSheetDataList().get(readSheetIndex);
-        assert readSheet != null : "Can't find the sheet.";
+        ReadSheet actualReadSheet = xlsReadWorkbookHolder.getActualSheetDataList().get(readSheetIndex);
+        assert actualReadSheet != null : "Can't find the sheet.";
         // Copy the parameter to the current sheet
-        readSheet = SheetUtils.match(readSheet, xlsReadContext);
+        ReadSheet readSheet = SheetUtils.match(actualReadSheet, xlsReadContext);
         if (readSheet != null) {
             xlsReadContext.currentSheet(readSheet);
-            xlsReadContext.xlsReadSheetHolder().setIgnoreRecord(Boolean.FALSE);
+            xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.FALSE);
         } else {
-            xlsReadContext.xlsReadSheetHolder().setIgnoreRecord(Boolean.TRUE);
+            xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.TRUE);
         }
         // Go read the next one
         xlsReadWorkbookHolder.setReadSheetIndex(xlsReadWorkbookHolder.getReadSheetIndex() + 1);

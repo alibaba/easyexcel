@@ -70,12 +70,12 @@ import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
  * <p>
  * * To turn an excel file into a CSV or similar, then see * the XLS2CSVmra example *
  * </p>
- * * * @see <a href=
- * "http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/hssf/eventusermodel/examples/XLS2CSVmra.java">XLS2CSVmra</a>
+ * * * @see <a href= "http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/hssf/eventusermodel/examples/XLS2CSVmra.java">XLS2CSVmra</a>
  *
  * @author jipengfei
  */
 public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(XlsSaxAnalyser.class);
     private static final short DUMMY_RECORD_SID = -1;
     private XlsReadContext xlsReadContext;
@@ -138,11 +138,6 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         } catch (IOException e) {
             throw new ExcelAnalysisException(e);
         }
-        // Sometimes tables lack the end record of the last column
-        if (!xlsReadContext.xlsReadSheetHolder().getCellMap().isEmpty()) {
-            // Forge a termination data
-            processRecord(new LastCellOfRowDummyRecord(xlsReadContext.xlsReadSheetHolder().getRowIndex() + 1, -1));
-        }
     }
 
     @Override
@@ -151,8 +146,8 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         if (handler == null) {
             return;
         }
-        boolean ignoreRecord = (handler instanceof IgnorableXlsRecordHandler)
-            && xlsReadContext.xlsReadSheetHolder() != null && xlsReadContext.xlsReadSheetHolder().getIgnoreRecord();
+        boolean ignoreRecord =
+            (handler instanceof IgnorableXlsRecordHandler) && xlsReadContext.xlsReadWorkbookHolder().getIgnoreRecord();
         if (ignoreRecord) {
             // No need to read the current sheet
             return;

@@ -20,7 +20,7 @@ import com.alibaba.excel.util.IoUtils;
  */
 public class InputStreamImageConverter implements Converter<InputStream> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return InputStream.class;
     }
 
@@ -30,13 +30,13 @@ public class InputStreamImageConverter implements Converter<InputStream> {
     }
 
     @Override
-    public InputStream convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public InputStream convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         throw new UnsupportedOperationException("Cannot convert images to input stream");
     }
 
     @Override
-    public CellData convertToExcelData(InputStream value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(InputStream value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws IOException {
         ImagePosition imagePosition = contentProperty.getField().getAnnotation(ImagePosition.class);
         if (imagePosition != null) {

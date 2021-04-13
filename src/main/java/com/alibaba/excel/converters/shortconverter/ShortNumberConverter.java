@@ -7,6 +7,8 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.NumberUtils;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Short and number converter
@@ -16,7 +18,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 public class ShortNumberConverter implements Converter<Short> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<Short> supportJavaTypeKey() {
         return Short.class;
     }
 
@@ -26,15 +28,14 @@ public class ShortNumberConverter implements Converter<Short> {
     }
 
     @Override
-    public Short convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Short convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().shortValue();
     }
 
     @Override
-    public CellData convertToExcelData(Short value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return new CellData(new BigDecimal(Short.toString(value)));
+    public CellData<?> convertToExcelData(Short value, ExcelContentProperty contentProperty,
+        WriteHolder currentWriteHolder) {
+        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
     }
-
 }

@@ -32,6 +32,19 @@ public abstract class AbstractExcelReaderParameterBuilder<T extends AbstractExce
     }
 
     /**
+     * Whether to use scientific Format.
+     *
+     * default is false
+     *
+     * @param useScientificFormat
+     * @return
+     */
+    public T useScientificFormat(Boolean useScientificFormat) {
+        parameter().setUseScientificFormat(useScientificFormat);
+        return self();
+    }
+
+    /**
      * Custom type listener run after default
      *
      * @param readListener

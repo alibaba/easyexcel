@@ -16,7 +16,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
  */
 public class ByteArrayImageConverter implements Converter<byte[]> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<byte[]> supportJavaTypeKey() {
         return byte[].class;
     }
 
@@ -26,8 +26,9 @@ public class ByteArrayImageConverter implements Converter<byte[]> {
     }
 
     @Override
-    public byte[] convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
-                                    GlobalConfiguration globalConfiguration) {
+
+    public byte[] convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         throw new UnsupportedOperationException("Cannot convert images to byte arrays");
     }
 

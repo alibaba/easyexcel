@@ -15,6 +15,7 @@ import com.alibaba.excel.read.metadata.ReadSheet;
  * @author Jiaju Zhuang
  */
 public class ReadSheetHolder extends AbstractReadHolder {
+
     /**
      * current param
      */
@@ -50,7 +51,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
     /**
      * Current CellData
      */
-    private CellData tempCellData;
+    private CellData<?> tempCellData;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
         super(readSheet, readWorkbookHolder, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
@@ -59,6 +60,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.sheetNo = readSheet.getSheetNo();
         this.sheetName = readSheet.getSheetName();
         this.cellMap = new LinkedHashMap<Integer, Cell>();
+        this.rowIndex = -1;
     }
 
     public ReadSheet getReadSheet() {
@@ -133,11 +135,11 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.rowIndex = rowIndex;
     }
 
-    public CellData getTempCellData() {
+    public CellData<?> getTempCellData() {
         return tempCellData;
     }
 
-    public void setTempCellData(CellData tempCellData) {
+    public void setTempCellData(CellData<?> tempCellData) {
         this.tempCellData = tempCellData;
     }
 

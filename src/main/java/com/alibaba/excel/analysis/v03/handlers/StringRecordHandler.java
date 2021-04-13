@@ -23,7 +23,7 @@ public class StringRecordHandler extends AbstractXlsRecordHandler implements Ign
         // String for formula
         StringRecord srec = (StringRecord)record;
         XlsReadSheetHolder xlsReadSheetHolder = xlsReadContext.xlsReadSheetHolder();
-        CellData tempCellData = xlsReadSheetHolder.getTempCellData();
+        CellData<?>tempCellData = xlsReadSheetHolder.getTempCellData();
         if (tempCellData == null) {
             LOGGER.warn("String type formula but no value found.");
             return;

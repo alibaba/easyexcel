@@ -19,10 +19,6 @@ public class XlsReadSheetHolder extends ReadSheetHolder {
      */
     private RowTypeEnum tempRowType;
     /**
-     * Ignore record.
-     */
-    private Boolean ignoreRecord;
-    /**
      * Temp object index.
      */
     private Integer tempObjectIndex;
@@ -33,7 +29,6 @@ public class XlsReadSheetHolder extends ReadSheetHolder {
 
     public XlsReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
         super(readSheet, readWorkbookHolder);
-        ignoreRecord = Boolean.FALSE;
         tempRowType = RowTypeEnum.EMPTY;
         objectCacheMap = new HashMap<Integer, String>(16);
     }
@@ -46,13 +41,6 @@ public class XlsReadSheetHolder extends ReadSheetHolder {
         this.tempRowType = tempRowType;
     }
 
-    public Boolean getIgnoreRecord() {
-        return ignoreRecord;
-    }
-
-    public void setIgnoreRecord(Boolean ignoreRecord) {
-        this.ignoreRecord = ignoreRecord;
-    }
 
     public Integer getTempObjectIndex() {
         return tempObjectIndex;

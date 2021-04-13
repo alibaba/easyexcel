@@ -29,6 +29,13 @@ public interface WriteHolder extends ConfigurationHolder {
     Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap();
 
     /**
+     * create your own write handler.
+     *
+     * @return
+     */
+    Map<Class<? extends WriteHandler>, List<WriteHandler>> ownWriteHandlerMap();
+
+    /**
      * Is to determine if a field needs to be ignored
      *
      * @param fieldName

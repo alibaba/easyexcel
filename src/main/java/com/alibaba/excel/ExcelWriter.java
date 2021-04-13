@@ -3,6 +3,8 @@ package com.alibaba.excel;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -142,7 +144,7 @@ public class ExcelWriter {
      *            Write to this sheet
      * @return this current writer
      */
-    public ExcelWriter write(List data, WriteSheet writeSheet) {
+    public ExcelWriter write(Collection<?> data, WriteSheet writeSheet) {
         return write(data, writeSheet, null);
     }
 
@@ -157,7 +159,7 @@ public class ExcelWriter {
      *            Write to this table
      * @return this
      */
-    public ExcelWriter write(List data, WriteSheet writeSheet, WriteTable writeTable) {
+    public ExcelWriter write(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable) {
         excelBuilder.addContent(data, writeSheet, writeTable);
         return this;
     }
@@ -194,7 +196,7 @@ public class ExcelWriter {
      * @param sheet
      *            Write to this sheet
      * @return this current writer
-     * @deprecated please use {@link ExcelWriter#write(List, WriteSheet)}
+     * @deprecated please use {@link ExcelWriter#write(Collection, WriteSheet)}
      */
     @Deprecated
     public ExcelWriter write(List data, Sheet sheet) {
@@ -211,7 +213,7 @@ public class ExcelWriter {
      * @param table
      *            Write to this table
      * @return this
-     * @deprecated * @deprecated please use {@link ExcelWriter#write(List, WriteSheet,WriteTable)}
+     * @deprecated * @deprecated please use {@link ExcelWriter#write(Collection, WriteSheet,WriteTable)}
      */
     @Deprecated
     public ExcelWriter write(List data, Sheet sheet, Table table) {
@@ -246,7 +248,7 @@ public class ExcelWriter {
      * @param sheet
      *            Write to this sheet
      * @return this current writer
-     * @deprecated please use {@link ExcelWriter#write(List, WriteSheet)}
+     * @deprecated please use {@link ExcelWriter#write(Collection, WriteSheet)}
      */
     @Deprecated
     public ExcelWriter write0(List data, Sheet sheet) {
@@ -263,7 +265,7 @@ public class ExcelWriter {
      * @param table
      *            Write to this table
      * @return this
-     * @deprecated * @deprecated please use {@link ExcelWriter#write(List, WriteSheet,WriteTable)}
+     * @deprecated * @deprecated please use {@link ExcelWriter#write(Collection, WriteSheet,WriteTable)}
      */
     @Deprecated
     public ExcelWriter write0(List data, Sheet sheet, Table table) {
@@ -278,7 +280,7 @@ public class ExcelWriter {
      * @param sheet
      *            Write to this sheet
      * @return this current writer
-     * @deprecated please use {@link ExcelWriter#write(List, WriteSheet)}
+     * @deprecated please use {@link ExcelWriter#write(Collection, WriteSheet)}
      */
     @Deprecated
     public ExcelWriter write1(List data, Sheet sheet) {
@@ -295,7 +297,7 @@ public class ExcelWriter {
      * @param table
      *            Write to this table
      * @return this
-     * @deprecated * @deprecated please use {@link ExcelWriter#write(List, WriteSheet,WriteTable)}
+     * @deprecated * @deprecated please use {@link ExcelWriter#write(Collection, WriteSheet,WriteTable)}
      */
     @Deprecated
     public ExcelWriter write1(List data, Sheet sheet, Table table) {
@@ -325,7 +327,9 @@ public class ExcelWriter {
      * Close IO
      */
     public void finish() {
-        excelBuilder.finish(false);
+        if (excelBuilder != null) {
+            excelBuilder.finish(false);
+        }
     }
 
     /**

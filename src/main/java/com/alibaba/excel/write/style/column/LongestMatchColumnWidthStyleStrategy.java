@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 /**
@@ -27,7 +27,7 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
     private Map<Integer, Map<Integer, Integer>> cache = new HashMap<Integer, Map<Integer, Integer>>(8);
 
     @Override
-    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell, Head head,
+    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData<?>> cellDataList, Cell cell, Head head,
         Integer relativeRowIndex, Boolean isHead) {
         boolean needSetWidth = isHead || !CollectionUtils.isEmpty(cellDataList);
         if (!needSetWidth) {
@@ -52,7 +52,7 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
         }
     }
 
-    private Integer dataLength(List<CellData> cellDataList, Cell cell, Boolean isHead) {
+    private Integer dataLength(List<CellData<?>> cellDataList, Cell cell, Boolean isHead) {
         if (isHead) {
             return cell.getStringCellValue().getBytes().length;
         }

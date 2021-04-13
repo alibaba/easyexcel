@@ -17,7 +17,7 @@ import com.alibaba.excel.util.NumberUtils;
 public class LongStringConverter implements Converter<Long> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<Long> supportJavaTypeKey() {
         return Long.class;
     }
 
@@ -27,14 +27,14 @@ public class LongStringConverter implements Converter<Long> {
     }
 
     @Override
-    public Long convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Long convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseLong(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData convertToExcelData(Long value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Long value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

@@ -2,9 +2,13 @@ package com.alibaba.excel.metadata;
 
 import java.math.BigDecimal;
 import com.alibaba.excel.annotation.write.style.ImagePosition;
+import java.util.Date;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.property.ImagePositionProperty;
 import com.alibaba.excel.util.StringUtils;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Excel internal cell data.
@@ -13,6 +17,8 @@ import com.alibaba.excel.util.StringUtils;
  *
  * @author Jiaju Zhuang
  */
+@Getter
+@Setter
 public class CellData<T> extends AbstractCell {
     private CellDataTypeEnum type;
     /**
@@ -41,11 +47,15 @@ public class CellData<T> extends AbstractCell {
      */
     private Boolean useImagePositionProperty = false;
     /**
-     * The number formatting.Currently only supported when reading
+     * Support only when writing.
      */
-    private Integer dataFormat;
+    private Date dateValue;
     /**
-     * The string of number formatting.Currently only supported when reading
+     * The number formatting.
+     */
+    private Short dataFormat;
+    /**
+     * The string of number formatting.
      */
     private String dataFormatString;
     /**
@@ -66,6 +76,8 @@ public class CellData<T> extends AbstractCell {
         this.dataFormat = other.dataFormat;
         this.dataFormatString = other.dataFormatString;
         this.data = other.data;
+        setRowIndex(other.getRowIndex());
+        setColumnIndex(other.getColumnIndex());
     }
 
     public CellData() {}
@@ -137,108 +149,21 @@ public class CellData<T> extends AbstractCell {
         this.formula = Boolean.FALSE;
     }
 
+    public CellData(Date dateValue) {
+        if (dateValue == null) {
+            throw new IllegalArgumentException("DateValue can not be null");
+        }
+        this.type = CellDataTypeEnum.DATE;
+        this.dateValue = dateValue;
+        this.formula = Boolean.FALSE;
+    }
+
+
     public CellData(CellDataTypeEnum type) {
         if (type == null) {
             throw new IllegalArgumentException("Type can not be null");
         }
         this.type = type;
-        this.formula = Boolean.FALSE;
-    }
-
-    public CellDataTypeEnum getType() {
-        return type;
-    }
-
-    public void setType(CellDataTypeEnum type) {
-        this.type = type;
-    }
-
-    public BigDecimal getNumberValue() {
-        return numberValue;
-    }
-
-    public void setNumberValue(BigDecimal numberValue) {
-        this.numberValue = numberValue;
-    }
-
-    public String getStringValue() {
-        return stringValue;
-    }
-
-    public void setStringValue(String stringValue) {
-        this.stringValue = stringValue;
-    }
-
-    public Boolean getBooleanValue() {
-        return booleanValue;
-    }
-
-    public void setBooleanValue(Boolean booleanValue) {
-        this.booleanValue = booleanValue;
-    }
-
-    public Boolean getFormula() {
-        return formula;
-    }
-
-    public void setFormula(Boolean formula) {
-        this.formula = formula;
-    }
-
-    public String getFormulaValue() {
-        return formulaValue;
-    }
-
-    public void setFormulaValue(String formulaValue) {
-        this.formulaValue = formulaValue;
-    }
-
-    public byte[] getImageValue() {
-        return imageValue;
-    }
-
-    public void setImageValue(byte[] imageValue) {
-        this.imageValue = imageValue;
-    }
-
-    public ImagePositionProperty getImagePositionProperty() {
-        return imagePositionProperty;
-    }
-
-    public void setImagePositionProperty(ImagePositionProperty imagePositionProperty) {
-        this.imagePositionProperty = imagePositionProperty;
-    }
-
-    public Boolean getUseImagePositionProperty() {
-        return useImagePositionProperty;
-    }
-
-    public void setUseImagePositionProperty(Boolean useImagePositionProperty) {
-        this.useImagePositionProperty = useImagePositionProperty;
-    }
-
-    public Integer getDataFormat() {
-        return dataFormat;
-    }
-
-    public void setDataFormat(Integer dataFormat) {
-        this.dataFormat = dataFormat;
-    }
-
-    public String getDataFormatString() {
-        return dataFormatString;
-    }
-
-    public void setDataFormatString(String dataFormatString) {
-        this.dataFormatString = dataFormatString;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 
     /**
@@ -269,37 +194,37 @@ public class CellData<T> extends AbstractCell {
         }
     }
 
-    public static CellData newEmptyInstance() {
+    public static CellData<?> newEmptyInstance() {
         return newEmptyInstance(null, null);
     }
 
-    public static CellData newEmptyInstance(Integer rowIndex, Integer columnIndex) {
-        CellData cellData = new CellData(CellDataTypeEnum.EMPTY);
+    public static CellData<?> newEmptyInstance(Integer rowIndex, Integer columnIndex) {
+        CellData<?> cellData = new CellData<>(CellDataTypeEnum.EMPTY);
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;
     }
 
-    public static CellData newInstance(Boolean booleanValue) {
+    public static CellData<?> newInstance(Boolean booleanValue) {
         return newInstance(booleanValue, null, null);
     }
 
-    public static CellData newInstance(Boolean booleanValue, Integer rowIndex, Integer columnIndex) {
-        CellData cellData = new CellData(booleanValue);
+    public static CellData<?> newInstance(Boolean booleanValue, Integer rowIndex, Integer columnIndex) {
+        CellData<?> cellData = new CellData<>(booleanValue);
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;
     }
 
-    public static CellData newInstance(String stringValue, Integer rowIndex, Integer columnIndex) {
-        CellData cellData = new CellData(stringValue);
+    public static CellData<?> newInstance(String stringValue, Integer rowIndex, Integer columnIndex) {
+        CellData<?> cellData = new CellData<>(stringValue);
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;
     }
 
-    public static CellData newInstance(BigDecimal numberValue, Integer rowIndex, Integer columnIndex) {
-        CellData cellData = new CellData(numberValue);
+    public static CellData<?> newInstance(BigDecimal numberValue, Integer rowIndex, Integer columnIndex) {
+        CellData<?> cellData = new CellData<>(numberValue);
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;
@@ -312,14 +237,28 @@ public class CellData<T> extends AbstractCell {
         }
         switch (type) {
             case NUMBER:
+                if (numberValue == null) {
+                    return StringUtils.EMPTY;
+                }
                 return numberValue.toString();
             case BOOLEAN:
+                if (booleanValue == null) {
+                    return StringUtils.EMPTY;
+                }
                 return booleanValue.toString();
             case DIRECT_STRING:
             case STRING:
             case ERROR:
                 return stringValue;
+            case DATE:
+                if (dateValue == null) {
+                    return StringUtils.EMPTY;
+                }
+                return dateValue.toString();
             case IMAGE:
+                if (imageValue == null) {
+                    return StringUtils.EMPTY;
+                }
                 return "image[" + imageValue.length + "]";
             default:
                 return StringUtils.EMPTY;

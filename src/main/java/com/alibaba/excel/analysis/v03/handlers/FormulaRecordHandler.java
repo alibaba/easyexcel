@@ -3,19 +3,20 @@ package com.alibaba.excel.analysis.v03.handlers;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
+import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.context.xls.XlsReadContext;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.enums.RowTypeEnum;
+import com.alibaba.excel.metadata.Cell;
+import com.alibaba.excel.metadata.CellData;
+
 import org.apache.poi.hssf.model.HSSFFormulaParser;
 import org.apache.poi.hssf.record.FormulaRecord;
 import org.apache.poi.hssf.record.Record;
 import org.apache.poi.ss.usermodel.CellType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
-import com.alibaba.excel.constant.BuiltinFormats;
-import com.alibaba.excel.context.xls.XlsReadContext;
-import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.Cell;
-import com.alibaba.excel.metadata.CellData;
 
 /**
  * Record handler
@@ -30,7 +31,7 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         FormulaRecord frec = (FormulaRecord)record;
         Map<Integer, Cell> cellMap = xlsReadContext.xlsReadSheetHolder().getCellMap();
-        CellData tempCellData = new CellData();
+        CellData<?> tempCellData = new CellData<>();
         tempCellData.setRowIndex(frec.getRow());
         tempCellData.setColumnIndex((int)frec.getColumn());
         CellType cellType = CellType.forInt(frec.getCachedResultType());
@@ -43,6 +44,7 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
         }
         tempCellData.setFormula(Boolean.TRUE);
         tempCellData.setFormulaValue(formulaValue);
+        xlsReadContext.xlsReadSheetHolder().setTempRowType(RowTypeEnum.DATA);
         switch (cellType) {
             case STRING:
                 // Formula result is a string
@@ -55,8 +57,9 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
                 tempCellData.setNumberValue(BigDecimal.valueOf(frec.getValue()));
                 Integer dataFormat =
                     xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatIndex(frec);
-                tempCellData.setDataFormat(dataFormat);
-                tempCellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+                Short dataFormatShort = dataFormat.shortValue();
+                tempCellData.setDataFormat(dataFormatShort);
+                tempCellData.setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormatShort,
                     xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatString(frec),
                     xlsReadContext.readSheetHolder().getGlobalConfiguration().getLocale()));
                 cellMap.put((int)frec.getColumn(), tempCellData);

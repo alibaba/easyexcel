@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class ExcelHeadProperty {
             int headIndex = 0;
             for (int i = 0; i < head.size(); i++) {
                 if (holder instanceof AbstractWriteHolder) {
-                    if (((AbstractWriteHolder)holder).ignore(null, i)) {
+                    if (((AbstractWriteHolder) holder).ignore(null, i)) {
                         continue;
                     }
                 }
@@ -119,116 +120,31 @@ public class ExcelHeadProperty {
             return;
         }
         // Declared fields
-        List<Field> defaultFieldList = new ArrayList<Field>();
-        Map<Integer, Field> customFieldMap = new TreeMap<Integer, Field>();
-        ClassUtils.declaredFields(headClazz, defaultFieldList, customFieldMap, ignoreMap, convertAllField);
+        Map<Integer, Field> sortedAllFiledMap = new TreeMap<Integer, Field>();
+        Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
 
-        List<Map.Entry<Field, Boolean>> exportFieldBoolPairsList = new ArrayList<Map.Entry<Field, Boolean>>();
-        int index = 0;
-        while (customFieldMap.containsKey(index)) {
-            Field field = customFieldMap.get(index);
-            Map.Entry<Field, Boolean> fieldBooleanPair =
-                new AbstractMap.SimpleEntry<Field, Boolean>(field, Boolean.TRUE);
-            exportFieldBoolPairsList.add(fieldBooleanPair);
-            index++;
-        }
-        for (Field field : defaultFieldList) {
-            Map.Entry<Field, Boolean> fieldBoolPair = new AbstractMap.SimpleEntry<Field, Boolean>(field, Boolean.FALSE);
-            exportFieldBoolPairsList.add(fieldBoolPair);
-        }
+        boolean needIgnore = (holder instanceof AbstractWriteHolder) && (
+            !CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getExcludeColumnFiledNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getExcludeColumnIndexes()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnFiledNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnIndexes()));
+        ClassUtils.declaredFields(headClazz, sortedAllFiledMap, indexFiledMap, ignoreMap, convertAllFiled, needIgnore,
+            holder);
 
-        sortExportColumnFields(holder, exportFieldBoolPairsList);
-        initColumnProperties(holder, exportFieldBoolPairsList);
-
-        for (Map.Entry<Integer, Field> entry : customFieldMap.entrySet()) {
-            initOneColumnProperty(holder, entry.getKey(), entry.getValue(), Boolean.TRUE);
-        }
-        headKind = HeadKindEnum.CLASS;
-    }
-
-    /**
-     * Give the field and flag pair list and arrange them in the specified order according to the user's settings. The
-     * field is what the user want to export to excel, the flag indicates whether the order of the field in excel is
-     * specified.
-     *
-     * @param holder
-     *            Write holder which keeps the parameters of a sheet.
-     * @param exportFieldBoolPairList
-     *            Keep all the fields and the flag(which indicate whether the field order is specified) of the head
-     *            class except the ignored. It will be modified after this function is called.
-     */
-    private void sortExportColumnFields(Holder holder, List<Map.Entry<Field, Boolean>> exportFieldBoolPairList) {
-        if (holder instanceof AbstractWriteHolder) {
-            Collection<String> includeColumnFieldNames = ((AbstractWriteHolder)holder).getIncludeColumnFieldNames();
-            if (includeColumnFieldNames != null) {
-                Map<String, Map.Entry<Field, Boolean>> exportFieldMap =
-                    new TreeMap<String, Map.Entry<Field, Boolean>>();
-                List<String> includeColumnFieldNameList = new ArrayList<String>(includeColumnFieldNames);
-                for (Map.Entry<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
-                    if (includeColumnFieldNameList.contains(fieldBoolPair.getKey().getName())) {
-                        exportFieldMap.put(fieldBoolPair.getKey().getName(), fieldBoolPair);
-                    }
-                }
-                exportFieldBoolPairList.clear();
-                for (String fieldName : includeColumnFieldNameList) {
-                    exportFieldBoolPairList.add(exportFieldMap.get(fieldName));
-                }
-                return;
-            }
-
-            Collection<Integer> includeColumnIndexes = ((AbstractWriteHolder)holder).getIncludeColumnIndexes();
-            if (includeColumnIndexes != null) {
-                List<Map.Entry<Field, Boolean>> tempFieldsList = new ArrayList<Map.Entry<Field, Boolean>>();
-                for (Integer includeColumnIndex : includeColumnIndexes) {
-                    tempFieldsList.add(exportFieldBoolPairList.get(includeColumnIndex));
-                }
-                exportFieldBoolPairList.clear();
-                exportFieldBoolPairList.addAll(tempFieldsList);
-                return;
-            }
-
-            int index = 0;
-            for (Map.Entry<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
-                if (((AbstractWriteHolder)holder).ignore(fieldBoolPair.getKey().getName(), index)) {
-                    exportFieldBoolPairList.remove(fieldBoolPair);
-                }
-                index++;
-            }
-        }
-    }
-
-    /**
-     * Initialize column properties.
-     *
-     * @param holder
-     *            Write holder which keeps the parameters of a sheet.
-     * @param exportFieldBoolPairList
-     *            Keep the fields which will be exported to excel and the flag which indicate whether the field order in
-     *            excel is specified.
-     */
-    private void initColumnProperties(Holder holder, List<Map.Entry<Field, Boolean>> exportFieldBoolPairList) {
-        int index = 0;
-        for (Map.Entry<Field, Boolean> fieldBoolPair : exportFieldBoolPairList) {
-            initOneColumnProperty(holder, index, fieldBoolPair.getKey(), fieldBoolPair.getValue());
-            index++;
+        for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {
+            initOneColumnProperty(entry.getKey(), entry.getValue(), indexFiledMap.containsKey(entry.getKey()));
         }
     }
 
     /**
      * Initialization column property
      *
-     * @param holder
      * @param index
      * @param field
      * @param forceIndex
      * @return Ignore current field
      */
-    private boolean initOneColumnProperty(Holder holder, int index, Field field, Boolean forceIndex) {
-        if (holder instanceof AbstractWriteHolder) {
-            if (((AbstractWriteHolder)holder).ignore(field.getName(), index)) {
-                return true;
-            }
-        }
+    private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         List<String> tmpHeadList = new ArrayList<String>();
         boolean notForceName = excelProperty == null || excelProperty.value().length <= 0
@@ -264,7 +180,6 @@ public class ExcelHeadProperty {
         headMap.put(index, head);
         contentPropertyMap.put(index, excelContentProperty);
         fieldNameContentPropertyMap.put(field.getName(), excelContentProperty);
-        return false;
     }
 
     public Class getHeadClazz() {

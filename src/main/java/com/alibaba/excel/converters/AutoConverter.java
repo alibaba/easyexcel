@@ -10,10 +10,10 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
  *
  * @author Jiaju Zhuang
  */
-public class AutoConverter implements Converter {
+public class AutoConverter implements Converter<Object> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return null;
     }
 
@@ -23,13 +23,13 @@ public class AutoConverter implements Converter {
     }
 
     @Override
-    public Object convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Object convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return null;
     }
 
     @Override
-    public CellData convertToExcelData(Object value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Object value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return null;
     }

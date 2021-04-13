@@ -2,25 +2,25 @@ package com.alibaba.excel.write.style;
 
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
-import com.alibaba.excel.write.handler.SheetWriteHandler;
+import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  * Cell style strategy
  *
  * @author Jiaju Zhuang
  */
-public abstract class AbstractCellStyleStrategy implements CellWriteHandler, SheetWriteHandler, NotRepeatExecutor {
+public abstract class AbstractCellStyleStrategy implements CellWriteHandler, WorkbookWriteHandler, NotRepeatExecutor {
+
     boolean hasInitialized = false;
 
     @Override
@@ -29,43 +29,20 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
     }
 
     @Override
-    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
-        Head head, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        CellData cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        if (isHead == null || head == null) {
+        List<CellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        if (isHead == null) {
             return;
         }
         if (isHead) {
-            setHeadCellStyle(cell, head, relativeRowIndex);
+            setHeadCellStyle(writeSheetHolder, writeTableHolder, cell, head, relativeRowIndex);
         } else {
-            setContentCellStyle(cell, head, relativeRowIndex);
+            setContentCellStyle(writeSheetHolder, writeTableHolder, cell, head, relativeRowIndex);
         }
     }
 
     @Override
-    public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
-
-    }
-
-    @Override
-    public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+    public void afterWorkbookCreate(WriteWorkbookHolder writeWorkbookHolder) {
         initCellStyle(writeWorkbookHolder.getWorkbook());
         hasInitialized = true;
     }
@@ -80,11 +57,27 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
     /**
      * Sets the cell style of header
      *
+     * @param writeSheetHolder
+     * @param writeTableHolder
      * @param cell
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex);
+    protected void setHeadCellStyle(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+        Cell cell, Head head, Integer relativeRowIndex) {
+        setHeadCellStyle(cell, head, relativeRowIndex);
+    }
+
+    /**
+     * Sets the cell style of header
+     *
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     */
+    protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        throw new UnsupportedOperationException("Custom styles must override the setHeadCellStyle method.");
+    }
 
     /**
      * Sets the cell style of content
@@ -93,6 +86,20 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, She
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex);
+    protected void setContentCellStyle(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+        Cell cell, Head head, Integer relativeRowIndex) {
+        setContentCellStyle(cell, head, relativeRowIndex);
+    }
+
+    /**
+     * Sets the cell style of content
+     *
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     */
+    protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        throw new UnsupportedOperationException("Custom styles must override the setContentCellStyle method.");
+    }
 
 }

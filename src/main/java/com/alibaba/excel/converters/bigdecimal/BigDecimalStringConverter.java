@@ -18,7 +18,7 @@ import com.alibaba.excel.util.NumberUtils;
 public class BigDecimalStringConverter implements Converter<BigDecimal> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<BigDecimal> supportJavaTypeKey() {
         return BigDecimal.class;
     }
 
@@ -28,14 +28,14 @@ public class BigDecimalStringConverter implements Converter<BigDecimal> {
     }
 
     @Override
-    public BigDecimal convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public BigDecimal convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseBigDecimal(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

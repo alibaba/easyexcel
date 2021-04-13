@@ -13,6 +13,6 @@ import lombok.Data;
  **/
 @Data
 public class TestCell {
-    private CellData c1;
+    private CellData<?> c1;
     private CellData<List<String>> c2;
 }

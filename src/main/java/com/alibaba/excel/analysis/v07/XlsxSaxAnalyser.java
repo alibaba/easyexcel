@@ -9,9 +9,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import com.alibaba.excel.analysis.ExcelReadExecutor;
+import com.alibaba.excel.analysis.v07.handlers.sax.SharedStringsTableHandler;
+import com.alibaba.excel.analysis.v07.handlers.sax.XlsxRowHandler;
+import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.context.xlsx.XlsxReadContext;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.metadata.CellExtra;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.SheetUtils;
+import com.alibaba.excel.util.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.openxml4j.opc.PackagePart;
@@ -25,26 +42,13 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.WorkbookDocument;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-
-import com.alibaba.excel.analysis.ExcelReadExecutor;
-import com.alibaba.excel.analysis.v07.handlers.sax.SharedStringsTableHandler;
-import com.alibaba.excel.analysis.v07.handlers.sax.XlsxRowHandler;
-import com.alibaba.excel.cache.ReadCache;
-import com.alibaba.excel.context.xlsx.XlsxReadContext;
-import com.alibaba.excel.enums.CellExtraTypeEnum;
-import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.CellExtra;
-import com.alibaba.excel.read.metadata.ReadSheet;
-import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
-import com.alibaba.excel.util.CollectionUtils;
-import com.alibaba.excel.util.FileUtils;
-import com.alibaba.excel.util.SheetUtils;
-import com.alibaba.excel.util.StringUtils;
 
 /**
  * @author jipengfei
  */
+@Slf4j
 public class XlsxSaxAnalyser implements ExcelReadExecutor {
 
     private XlsxReadContext xlsxReadContext;
@@ -78,7 +82,9 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         XSSFReader xssfReader = new XSSFReader(pkg);
         analysisUse1904WindowDate(xssfReader, xlsxReadWorkbookHolder);
 
-        xlsxReadWorkbookHolder.setStylesTable(xssfReader.getStylesTable());
+        // set style table
+        setStylesTable(xlsxReadWorkbookHolder, xssfReader);
+
         sheetList = new ArrayList<ReadSheet>();
         sheetMap = new HashMap<Integer, InputStream>();
         commentsTableMap = new HashMap<Integer, CommentsTable>();
@@ -98,6 +104,17 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
                 }
             }
             index++;
+        }
+    }
+
+    private void setStylesTable(XlsxReadWorkbookHolder xlsxReadWorkbookHolder, XSSFReader xssfReader) {
+        try {
+            xlsxReadWorkbookHolder.setStylesTable(xssfReader.getStylesTable());
+        } catch (Exception e) {
+            log.warn(
+                "Currently excel cannot get style information, but it doesn't affect the data analysis.You can try to"
+                    + " save the file with office again or ignore the current error.",
+                e);
         }
     }
 
@@ -147,9 +164,10 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         xlsxReadWorkbookHolder.setTempFile(readTempFile);
         File tempFile = new File(readTempFile.getPath(), UUID.randomUUID().toString() + ".xlsx");
         if (decryptedStream != null) {
-            FileUtils.writeToFile(tempFile, decryptedStream);
+            FileUtils.writeToFile(tempFile, decryptedStream, false);
         } else {
-            FileUtils.writeToFile(tempFile, xlsxReadWorkbookHolder.getInputStream());
+            FileUtils.writeToFile(tempFile, xlsxReadWorkbookHolder.getInputStream(),
+                xlsxReadWorkbookHolder.getAutoCloseStream());
         }
         return OPCPackage.open(tempFile, PackageAccess.READ);
     }
@@ -177,9 +195,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             xmlReader.setContentHandler(handler);
             xmlReader.parse(inputSource);
             inputStream.close();
-        } catch (ExcelAnalysisException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException | ParserConfigurationException | SAXException e) {
             throw new ExcelAnalysisException(e);
         } finally {
             if (inputStream != null) {

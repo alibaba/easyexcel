@@ -1,29 +1,23 @@
 package com.alibaba.excel.write.style;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Workbook;
-
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.Cell;
+
 /**
- *
  * Use the same style for the row
  *
  * @author Jiaju Zhuang
  */
-public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
+public class HorizontalCellStyleStrategy extends AbstractVerticalCellStyleStrategy {
 
-    private WriteCellStyle headWriteCellStyle;
-    private List<WriteCellStyle> contentWriteCellStyleList;
-
-    private CellStyle headCellStyle;
-    private List<CellStyle> contentCellStyleList;
+    private final WriteCellStyle headWriteCellStyle;
+    private final List<WriteCellStyle> contentWriteCellStyleList;
 
     public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle,
         List<WriteCellStyle> contentWriteCellStyleList) {
@@ -33,37 +27,21 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle, WriteCellStyle contentWriteCellStyle) {
         this.headWriteCellStyle = headWriteCellStyle;
-        contentWriteCellStyleList = new ArrayList<WriteCellStyle>();
+        contentWriteCellStyleList = ListUtils.newArrayList();
         contentWriteCellStyleList.add(contentWriteCellStyle);
     }
 
     @Override
-    protected void initCellStyle(Workbook workbook) {
-        if (headWriteCellStyle != null) {
-            headCellStyle = StyleUtil.buildHeadCellStyle(workbook, headWriteCellStyle);
-        }
-        if (contentWriteCellStyleList != null && !contentWriteCellStyleList.isEmpty()) {
-            contentCellStyleList = new ArrayList<CellStyle>();
-            for (WriteCellStyle writeCellStyle : contentWriteCellStyleList) {
-                contentCellStyleList.add(StyleUtil.buildContentCellStyle(workbook, writeCellStyle));
-            }
-        }
+    protected WriteCellStyle headCellStyle(Head head) {
+        return headWriteCellStyle;
     }
 
     @Override
-    protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
-        if (headCellStyle == null) {
-            return;
+    protected WriteCellStyle contentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        if (CollectionUtils.isEmpty(contentWriteCellStyleList)) {
+            return new WriteCellStyle();
         }
-        cell.setCellStyle(headCellStyle);
-    }
-
-    @Override
-    protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
-        if (contentCellStyleList == null || contentCellStyleList.isEmpty()) {
-            return;
-        }
-        cell.setCellStyle(contentCellStyleList.get(relativeRowIndex % contentCellStyleList.size()));
+        return contentWriteCellStyleList.get(relativeRowIndex % contentWriteCellStyleList.size());
     }
 
 }

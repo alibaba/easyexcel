@@ -17,7 +17,7 @@ import com.alibaba.excel.util.DateUtils;
  */
 public class DateStringConverter implements Converter<Date> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Date.class;
     }
 
@@ -27,7 +27,7 @@ public class DateStringConverter implements Converter<Date> {
     }
 
     @Override
-    public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Date convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
             return DateUtils.parseDate(cellData.getStringValue(), null);
@@ -38,12 +38,12 @@ public class DateStringConverter implements Converter<Date> {
     }
 
     @Override
-    public CellData convertToExcelData(Date value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Date value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
-            return new CellData(DateUtils.format(value, null));
+            return new CellData<>(DateUtils.format(value, null));
         } else {
-            return new CellData(DateUtils.format(value, contentProperty.getDateTimeFormatProperty().getFormat()));
+            return new CellData<>(DateUtils.format(value, contentProperty.getDateTimeFormatProperty().getFormat()));
         }
     }
 }

@@ -1,50 +1,49 @@
 package com.alibaba.excel.cache;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.UUID;
 
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.ListUtils;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.ehcache.CacheManager;
 import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.MemoryUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.util.CollectionUtils;
-import com.alibaba.excel.util.FileUtils;
 
 /**
  * Default cache
  *
  * @author Jiaju Zhuang
  */
+@Slf4j
 public class Ehcache implements ReadCache {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Ehcache.class);
-    private static final int BATCH_COUNT = 1000;
-    private static final int DEBUG_WRITE_SIZE = 100 * 10000;
-    private static final int DEBUG_CACHE_MISS_SIZE = 1000;
+    public static final int BATCH_COUNT = 1000;
     /**
      * Key index
      */
-    private int index = 0;
-    private HashMap<Integer, String> dataMap = new HashMap<Integer, String>(BATCH_COUNT * 4 / 3 + 1);
-    private static CacheManager fileCacheManager;
-    private static CacheConfiguration<Integer, HashMap> fileCacheConfiguration;
-    private static CacheManager activeCacheManager;
-    private CacheConfiguration<Integer, HashMap> activeCacheConfiguration;
+    private int activeIndex = 0;
+    public static final int DEBUG_CACHE_MISS_SIZE = 1000;
+    public static final int DEBUG_WRITE_SIZE = 100 * 10000;
+    private ArrayList<String> dataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    private static final CacheManager FILE_CACHE_MANAGER;
+    private static final CacheConfiguration<Integer, ArrayList> FILE_CACHE_CONFIGURATION;
+    private static final CacheManager ACTIVE_CACHE_MANAGER;
+    private final CacheConfiguration<Integer, ArrayList> activeCacheConfiguration;
     /**
      * Bulk storage data
      */
-    private org.ehcache.Cache<Integer, HashMap> fileCache;
+    private org.ehcache.Cache<Integer, ArrayList> fileCache;
     /**
      * Currently active cache
      */
-    private org.ehcache.Cache<Integer, HashMap> activeCache;
+    private org.ehcache.Cache<Integer, ArrayList> activeCache;
     private String cacheAlias;
     /**
      * Count the number of cache misses
@@ -53,7 +52,7 @@ public class Ehcache implements ReadCache {
 
     public Ehcache(int maxCacheActivateSize) {
         activeCacheConfiguration = CacheConfigurationBuilder
-            .newCacheConfigurationBuilder(Integer.class, HashMap.class,
+            .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
                 ResourcePoolsBuilder.newResourcePoolsBuilder().heap(maxCacheActivateSize, MemoryUnit.MB))
             .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(maxCacheActivateSize, MemoryUnit.MB)
             .build();
@@ -61,11 +60,11 @@ public class Ehcache implements ReadCache {
 
     static {
         File cacheFile = FileUtils.createCacheTmpFile();
-        fileCacheManager =
+        FILE_CACHE_MANAGER =
             CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile)).build(true);
-        activeCacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
-        fileCacheConfiguration = CacheConfigurationBuilder
-            .newCacheConfigurationBuilder(Integer.class, HashMap.class,
+        ACTIVE_CACHE_MANAGER = CacheManagerBuilder.newCacheManagerBuilder().build(true);
+        FILE_CACHE_CONFIGURATION = CacheConfigurationBuilder
+            .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
                 ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.GB))
             .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(10, MemoryUnit.GB).build();
     }
@@ -73,21 +72,22 @@ public class Ehcache implements ReadCache {
     @Override
     public void init(AnalysisContext analysisContext) {
         cacheAlias = UUID.randomUUID().toString();
-        fileCache = fileCacheManager.createCache(cacheAlias, fileCacheConfiguration);
-        activeCache = activeCacheManager.createCache(cacheAlias, activeCacheConfiguration);
+        fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
+        activeCache = ACTIVE_CACHE_MANAGER.createCache(cacheAlias, activeCacheConfiguration);
     }
 
     @Override
     public void put(String value) {
-        dataMap.put(index, value);
-        if ((index + 1) % BATCH_COUNT == 0) {
-            fileCache.put(index / BATCH_COUNT, dataMap);
-            dataMap = new HashMap<Integer, String>(BATCH_COUNT * 4 / 3 + 1);
+        dataList.add(value);
+        if (dataList.size() >= BATCH_COUNT) {
+            fileCache.put(activeIndex, dataList);
+            activeIndex++;
+            dataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
         }
-        index++;
-        if (LOGGER.isDebugEnabled()) {
-            if (index % DEBUG_WRITE_SIZE == 0) {
-                LOGGER.debug("Already put :{}", index);
+        if (log.isDebugEnabled()) {
+            int alreadyPut = activeIndex * BATCH_COUNT + dataList.size();
+            if (alreadyPut % DEBUG_WRITE_SIZE == 0) {
+                log.debug("Already put :{}", alreadyPut);
             }
         }
     }
@@ -98,31 +98,31 @@ public class Ehcache implements ReadCache {
             return null;
         }
         int route = key / BATCH_COUNT;
-        HashMap<Integer, String> dataMap = activeCache.get(route);
-        if (dataMap == null) {
-            dataMap = fileCache.get(route);
-            activeCache.put(route, dataMap);
-            if (LOGGER.isDebugEnabled()) {
+        ArrayList<String> dataList = activeCache.get(route);
+        if (dataList == null) {
+            dataList = fileCache.get(route);
+            activeCache.put(route, dataList);
+            if (log.isDebugEnabled()) {
                 if (cacheMiss++ % DEBUG_CACHE_MISS_SIZE == 0) {
-                    LOGGER.debug("Cache misses count:{}", cacheMiss);
+                    log.debug("Cache misses count:{}", cacheMiss);
                 }
             }
         }
-        return dataMap.get(key);
+        return dataList.get(key % BATCH_COUNT);
     }
 
     @Override
     public void putFinished() {
-        if (CollectionUtils.isEmpty(dataMap)) {
+        if (CollectionUtils.isEmpty(dataList)) {
             return;
         }
-        fileCache.put(index / BATCH_COUNT, dataMap);
+        fileCache.put(activeIndex, dataList);
     }
 
     @Override
     public void destroy() {
-        fileCacheManager.removeCache(cacheAlias);
-        activeCacheManager.removeCache(cacheAlias);
+        FILE_CACHE_MANAGER.removeCache(cacheAlias);
+        ACTIVE_CACHE_MANAGER.removeCache(cacheAlias);
     }
 
 }
