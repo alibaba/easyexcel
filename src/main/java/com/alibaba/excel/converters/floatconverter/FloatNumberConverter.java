@@ -1,12 +1,12 @@
 package com.alibaba.excel.converters.floatconverter;
 
-import java.math.BigDecimal;
-
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.NumberUtils;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Float and number converter
@@ -16,7 +16,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 public class FloatNumberConverter implements Converter<Float> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Float.class;
     }
 
@@ -26,15 +26,14 @@ public class FloatNumberConverter implements Converter<Float> {
     }
 
     @Override
-    public Float convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Float convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().floatValue();
     }
 
     @Override
-    public CellData convertToExcelData(Float value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return new CellData(new BigDecimal(Float.toString(value)));
+    public CellData<?> convertToExcelData(Float value, ExcelContentProperty contentProperty,
+        WriteHolder currentWriteHolder) {
+        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
     }
-
 }

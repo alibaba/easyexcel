@@ -16,7 +16,7 @@ public class DoubleBooleanConverter implements Converter<Double> {
     private static final Double ZERO = 0.0;
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Double.class;
     }
 
@@ -26,7 +26,7 @@ public class DoubleBooleanConverter implements Converter<Double> {
     }
 
     @Override
-    public Double convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Double convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (cellData.getBooleanValue()) {
             return ONE;
@@ -35,12 +35,12 @@ public class DoubleBooleanConverter implements Converter<Double> {
     }
 
     @Override
-    public CellData convertToExcelData(Double value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Double value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (ONE.equals(value)) {
-            return new CellData(Boolean.TRUE);
+            return new CellData<>(Boolean.TRUE);
         }
-        return new CellData(Boolean.FALSE);
+        return new CellData<>(Boolean.FALSE);
     }
 
 }

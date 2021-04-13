@@ -6,22 +6,6 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.openxml4j.opc.PackageAccess;
-import org.apache.poi.poifs.crypt.EncryptionInfo;
-import org.apache.poi.poifs.crypt.EncryptionMode;
-import org.apache.poi.poifs.crypt.Encryptor;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.CellData;
@@ -42,6 +26,22 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 
+import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.poifs.crypt.EncryptionInfo;
+import org.apache.poi.poifs.crypt.EncryptionMode;
+import org.apache.poi.poifs.crypt.Encryptor;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A context is the main anchorage point of a excel writer.
  *
@@ -50,6 +50,7 @@ import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 public class WriteContextImpl implements WriteContext {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteContextImpl.class);
+    private static final String NO_SHEETS="no sheets";
 
     /**
      * The Workbook currently written
@@ -178,8 +179,12 @@ public class WriteContextImpl implements WriteContext {
                 writeSheetHolder
                     .setCachedSheet(writeWorkbookHolder.getCachedWorkbook().getSheet(writeSheetHolder.getSheetName()));
             }
-        } catch (Exception e) {
-            currentSheet = createSheet();
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage() != null && e.getMessage().contains(NO_SHEETS)) {
+                currentSheet = createSheet();
+            } else {
+                throw e;
+            }
         }
         if (currentSheet == null) {
             currentSheet = createSheet();

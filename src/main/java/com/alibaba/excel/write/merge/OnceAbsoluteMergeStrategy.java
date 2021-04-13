@@ -4,6 +4,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.write.handler.AbstractSheetWriteHandler;
+import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
@@ -12,7 +13,7 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
  *
  * @author Jiaju Zhuang
  */
-public class OnceAbsoluteMergeStrategy extends AbstractSheetWriteHandler {
+public class OnceAbsoluteMergeStrategy implements SheetWriteHandler {
     /**
      * First row
      */

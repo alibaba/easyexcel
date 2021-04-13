@@ -34,7 +34,7 @@ public class Lock2Test {
     @Test
     public void test() throws Exception {
 //        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
-        File file = new File("D:\\test\\T85_税金入库表202010.xlsx");
+        File file = new File("/Users/zhuangjiaju/Downloads/1.xlsx");
 
         List<Object> list = EasyExcel.read(file).sheet(0).headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());

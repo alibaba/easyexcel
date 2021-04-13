@@ -1,3 +1,23 @@
+# 3.0.0-beta1
+* 升级jdk8 不再支持jdk6 jdk7 
+* 升级poi 到 4.1.2
+* 升级cglib 到 3.3.0
+* 升级ehcache 到 3.8.1
+* 支持非驼峰的字段读写
+* 修复`CellData`可能不返回行列号 [Issue #1832](https://github.com/alibaba/easyexcel/issues/1832)
+* 优化读取性能
+* 修复部分情况下不抛出异常
+* 07版在导出的时候会导出 行数 [Issue #1282](https://github.com/alibaba/easyexcel/issues/1282)
+* 修复没有样式的情况下空指针异常 [Issue #1738](https://github.com/alibaba/easyexcel/issues/1738)
+* 修改异常抛出逻辑 [Issue #1618](https://github.com/alibaba/easyexcel/issues/1618)
+* 兼容一些非官方excel的情况 [Issue #1527](https://github.com/alibaba/easyexcel/issues/1527)
+* 修改读的关闭流无效 [Issue #1840](https://github.com/alibaba/easyexcel/issues/1840)
+* 写入支持Collection [Issue #1834](https://github.com/alibaba/easyexcel/issues/1834)
+
+
+# 2.2.8
+* 兼容07在特殊的excel的情况下，读取数据异常
+
 # 2.2.7
 * 修改07在特殊情况下用`String`接收数字会丢小数位的bug
 

@@ -14,7 +14,9 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
  * Abstract cell write handler
  *
  * @author Jiaju Zhuang
+ * @deprecated Please use it directly {@link CellWriteHandler}
  **/
+@Deprecated
 public abstract class AbstractCellWriteHandler implements CellWriteHandler {
 
     @Override
@@ -37,7 +39,7 @@ public abstract class AbstractCellWriteHandler implements CellWriteHandler {
 
     @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        List<CellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
 
     }
 }

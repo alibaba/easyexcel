@@ -17,5 +17,5 @@ public class CellDataData {
     private CellData<Date> date;
     private CellData<Integer> integer1;
     private Integer integer2;
-    private CellData formulaValue;
+    private CellData<?> formulaValue;
 }

@@ -82,7 +82,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
 
     private void dealData(AnalysisContext analysisContext) {
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
-        Map<Integer, CellData> cellDataMap = (Map)readRowHolder.getCellMap();
+        Map<Integer, CellData<?>> cellDataMap = (Map)readRowHolder.getCellMap();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
         int currentHeadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
@@ -111,7 +111,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
         }
     }
 
-    private void buildHead(AnalysisContext analysisContext, Map<Integer, CellData> cellDataMap) {
+    private void buildHead(AnalysisContext analysisContext, Map<Integer, CellData<?>> cellDataMap) {
         if (!HeadKindEnum.CLASS.equals(analysisContext.currentReadHolder().excelReadHeadProperty().getHeadKind())) {
             return;
         }

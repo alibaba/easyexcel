@@ -16,7 +16,7 @@ public class LongBooleanConverter implements Converter<Long> {
     private static final Long ZERO = 0L;
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<Long> supportJavaTypeKey() {
         return Long.class;
     }
 
@@ -26,7 +26,7 @@ public class LongBooleanConverter implements Converter<Long> {
     }
 
     @Override
-    public Long convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Long convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (cellData.getBooleanValue()) {
             return ONE;
@@ -35,12 +35,12 @@ public class LongBooleanConverter implements Converter<Long> {
     }
 
     @Override
-    public CellData convertToExcelData(Long value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Long value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (ONE.equals(value)) {
-            return new CellData(Boolean.TRUE);
+            return new CellData<>(Boolean.TRUE);
         }
-        return new CellData(Boolean.FALSE);
+        return new CellData<>(Boolean.FALSE);
     }
 
 }

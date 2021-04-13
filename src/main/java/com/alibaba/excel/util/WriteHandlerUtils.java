@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
@@ -16,6 +13,9 @@ import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+
 /**
  * Write handler utils
  *
@@ -24,7 +24,6 @@ import com.alibaba.excel.write.handler.WriteHandler;
 public class WriteHandlerUtils {
 
     private WriteHandlerUtils() {}
-
 
     public static void beforeWorkbookCreate(WriteContext writeContext) {
         beforeWorkbookCreate(writeContext, false);
@@ -37,7 +36,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof WorkbookWriteHandler) {
-                ((WorkbookWriteHandler) writeHandler).beforeWorkbookCreate();
+                ((WorkbookWriteHandler)writeHandler).beforeWorkbookCreate();
             }
         }
     }
@@ -53,7 +52,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof WorkbookWriteHandler) {
-                ((WorkbookWriteHandler) writeHandler).afterWorkbookCreate(writeContext.writeWorkbookHolder());
+                ((WorkbookWriteHandler)writeHandler).afterWorkbookCreate(writeContext.writeWorkbookHolder());
             }
         }
     }
@@ -66,7 +65,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof WorkbookWriteHandler) {
-                ((WorkbookWriteHandler) writeHandler).afterWorkbookDispose(writeContext.writeWorkbookHolder());
+                ((WorkbookWriteHandler)writeHandler).afterWorkbookDispose(writeContext.writeWorkbookHolder());
             }
         }
     }
@@ -82,12 +81,11 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof SheetWriteHandler) {
-                ((SheetWriteHandler) writeHandler).beforeSheetCreate(writeContext.writeWorkbookHolder(),
+                ((SheetWriteHandler)writeHandler).beforeSheetCreate(writeContext.writeWorkbookHolder(),
                     writeContext.writeSheetHolder());
             }
         }
     }
-
 
     public static void afterSheetCreate(WriteContext writeContext) {
         afterSheetCreate(writeContext, false);
@@ -100,7 +98,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof SheetWriteHandler) {
-                ((SheetWriteHandler) writeHandler).afterSheetCreate(writeContext.writeWorkbookHolder(),
+                ((SheetWriteHandler)writeHandler).afterSheetCreate(writeContext.writeWorkbookHolder(),
                     writeContext.writeSheetHolder());
             }
         }
@@ -119,7 +117,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler) writeHandler).beforeCellCreate(writeContext.writeSheetHolder(),
+                ((CellWriteHandler)writeHandler).beforeCellCreate(writeContext.writeSheetHolder(),
                     writeContext.writeTableHolder(), row, head, columnIndex, relativeRowIndex, isHead);
             }
         }
@@ -134,7 +132,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler) writeHandler).afterCellCreate(writeContext.writeSheetHolder(),
+                ((CellWriteHandler)writeHandler).afterCellCreate(writeContext.writeSheetHolder(),
                     writeContext.writeTableHolder(), cell, head, relativeRowIndex, isHead);
             }
         }
@@ -149,7 +147,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler) writeHandler).afterCellDataConverted(writeContext.writeSheetHolder(),
+                ((CellWriteHandler)writeHandler).afterCellDataConverted(writeContext.writeSheetHolder(),
                     writeContext.writeTableHolder(), cellData, cell, head, relativeRowIndex, isHead);
             }
         }
@@ -157,14 +155,14 @@ public class WriteHandlerUtils {
 
     public static void afterCellDispose(WriteContext writeContext, CellData cellData, Cell cell, Head head,
         Integer relativeRowIndex, Boolean isHead) {
-        List<CellData> cellDataList = new ArrayList<CellData>();
-        if (cell != null) {
+        List<CellData<?>> cellDataList = new ArrayList<>();
+        if (cellData != null) {
             cellDataList.add(cellData);
         }
         afterCellDispose(writeContext, cellDataList, cell, head, relativeRowIndex, isHead);
     }
 
-    public static void afterCellDispose(WriteContext writeContext, List<CellData> cellDataList, Cell cell, Head head,
+    public static void afterCellDispose(WriteContext writeContext, List<CellData<?>> cellDataList, Cell cell, Head head,
         Integer relativeRowIndex, Boolean isHead) {
         List<WriteHandler> handlerList =
             writeContext.currentWriteHolder().writeHandlerMap().get(CellWriteHandler.class);
@@ -173,7 +171,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
-                ((CellWriteHandler) writeHandler).afterCellDispose(writeContext.writeSheetHolder(),
+                ((CellWriteHandler)writeHandler).afterCellDispose(writeContext.writeSheetHolder(),
                     writeContext.writeTableHolder(), cellDataList, cell, head, relativeRowIndex, isHead);
             }
         }
@@ -190,7 +188,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
-                ((RowWriteHandler) writeHandler).beforeRowCreate(writeContext.writeSheetHolder(),
+                ((RowWriteHandler)writeHandler).beforeRowCreate(writeContext.writeSheetHolder(),
                     writeContext.writeTableHolder(), rowIndex, relativeRowIndex, isHead);
             }
         }
@@ -203,7 +201,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
-                ((RowWriteHandler) writeHandler).afterRowCreate(writeContext.writeSheetHolder(),
+                ((RowWriteHandler)writeHandler).afterRowCreate(writeContext.writeSheetHolder(),
                     writeContext.writeTableHolder(), row, relativeRowIndex, isHead);
             }
         }
@@ -217,7 +215,7 @@ public class WriteHandlerUtils {
         }
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
-                ((RowWriteHandler) writeHandler).afterRowDispose(writeContext.writeSheetHolder(),
+                ((RowWriteHandler)writeHandler).afterRowDispose(writeContext.writeSheetHolder(),
                     writeContext.writeTableHolder(), row, relativeRowIndex, isHead);
             }
         }

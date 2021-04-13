@@ -17,7 +17,7 @@ import com.alibaba.excel.util.NumberUtils;
 public class FloatStringConverter implements Converter<Float> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Float.class;
     }
 
@@ -27,14 +27,14 @@ public class FloatStringConverter implements Converter<Float> {
     }
 
     @Override
-    public Float convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Float convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseFloat(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData convertToExcelData(Float value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Float value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

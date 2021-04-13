@@ -98,7 +98,7 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
 
     @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        List<CellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
             Assert.assertEquals(1L, beforeCellCreate);
             Assert.assertEquals(1L, afterCellCreate);

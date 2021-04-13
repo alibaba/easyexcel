@@ -7,6 +7,8 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.NumberUtils;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Double and number converter
@@ -16,7 +18,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 public class DoubleNumberConverter implements Converter<Double> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Double.class;
     }
 
@@ -26,15 +28,14 @@ public class DoubleNumberConverter implements Converter<Double> {
     }
 
     @Override
-    public Double convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Double convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().doubleValue();
     }
 
     @Override
-    public CellData convertToExcelData(Double value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return new CellData(BigDecimal.valueOf(value));
+    public CellData<?> convertToExcelData(Double value, ExcelContentProperty contentProperty,
+        WriteHolder currentWriteHolder) {
+        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
     }
-
 }

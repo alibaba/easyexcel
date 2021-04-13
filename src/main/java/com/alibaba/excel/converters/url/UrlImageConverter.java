@@ -19,7 +19,7 @@ import com.alibaba.excel.util.IoUtils;
  */
 public class UrlImageConverter implements Converter<URL> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return URL.class;
     }
 
@@ -29,19 +29,19 @@ public class UrlImageConverter implements Converter<URL> {
     }
 
     @Override
-    public URL convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public URL convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         throw new UnsupportedOperationException("Cannot convert images to url.");
     }
 
     @Override
-    public CellData convertToExcelData(URL value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(URL value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws IOException {
         InputStream inputStream = null;
         try {
             inputStream = value.openStream();
             byte[] bytes = IoUtils.toByteArray(inputStream);
-            return new CellData(bytes);
+            return new CellData<>(bytes);
         } finally {
             if (inputStream != null) {
                 inputStream.close();

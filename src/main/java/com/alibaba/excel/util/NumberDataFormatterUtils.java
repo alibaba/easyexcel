@@ -24,7 +24,7 @@ public class NumberDataFormatterUtils {
      * @param globalConfiguration
      * @return
      */
-    public static String format(Double data, Integer dataFormat, String dataFormatString,
+    public static String format(Double data, Short dataFormat, String dataFormatString,
         GlobalConfiguration globalConfiguration) {
         DataFormatter dataFormatter = DATA_FORMATTER_THREAD_LOCAL.get();
         if (dataFormatter == null) {

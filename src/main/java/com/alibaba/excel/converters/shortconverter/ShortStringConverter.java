@@ -17,7 +17,7 @@ import com.alibaba.excel.util.NumberUtils;
 public class ShortStringConverter implements Converter<Short> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Short.class;
     }
 
@@ -27,14 +27,14 @@ public class ShortStringConverter implements Converter<Short> {
     }
 
     @Override
-    public Short convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Short convertToJavaData(CellData<?>cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseShort(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData convertToExcelData(Short value, ExcelContentProperty contentProperty,
+    public CellData<?>convertToExcelData(Short value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

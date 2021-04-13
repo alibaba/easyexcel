@@ -17,7 +17,7 @@ import com.alibaba.excel.util.NumberUtils;
 public class ByteStringConverter implements Converter<Byte> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Byte.class;
     }
 
@@ -27,15 +27,15 @@ public class ByteStringConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Byte convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseByte(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty,
+    public CellData<?> convertToExcelData(Byte value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 
 }

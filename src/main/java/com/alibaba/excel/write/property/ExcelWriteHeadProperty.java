@@ -102,14 +102,6 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             headData.setContentFontProperty(FontProperty.build(contentFontStyle));
 
             headData.setLoopMergeProperty(LoopMergeProperty.build(field.getAnnotation(ContentLoopMerge.class)));
-            // If have @NumberFormat, 'NumberStringConverter' is specified by default
-            if (excelContentPropertyData.getConverter() == null) {
-                NumberFormat numberFormat = field.getAnnotation(NumberFormat.class);
-                if (numberFormat != null) {
-                    excelContentPropertyData.setConverter(DefaultConverterLoader.loadAllConverter()
-                        .get(ConverterKeyBuild.buildKey(field.getType(), CellDataTypeEnum.STRING)));
-                }
-            }
         }
     }
 

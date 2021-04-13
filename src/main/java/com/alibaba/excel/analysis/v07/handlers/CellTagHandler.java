@@ -1,8 +1,5 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.xml.sax.Attributes;
-
 import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
@@ -11,6 +8,10 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
+
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.xml.sax.Attributes;
 
 /**
  * Cell Handler
@@ -46,9 +47,12 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         } else {
             dateFormatIndexInteger = Integer.parseInt(dateFormatIndex);
         }
-        XSSFCellStyle xssfCellStyle =
-            xlsxReadContext.xlsxReadWorkbookHolder().getStylesTable().getStyleAt(dateFormatIndexInteger);
-        int dataFormat = xssfCellStyle.getDataFormat();
+        StylesTable stylesTable = xlsxReadContext.xlsxReadWorkbookHolder().getStylesTable();
+        if (stylesTable == null) {
+            return;
+        }
+        XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+        short dataFormat = xssfCellStyle.getDataFormat();
         xlsxReadSheetHolder.getTempCellData().setDataFormat(dataFormat);
         xlsxReadSheetHolder.getTempCellData().setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
             xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));

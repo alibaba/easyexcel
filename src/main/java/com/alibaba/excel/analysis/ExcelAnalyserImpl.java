@@ -3,6 +3,7 @@ package com.alibaba.excel.analysis;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.poifs.crypt.Decryptor;
 import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
@@ -26,7 +27,6 @@ import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;

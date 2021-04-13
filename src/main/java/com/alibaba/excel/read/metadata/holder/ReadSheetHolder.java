@@ -51,7 +51,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
     /**
      * Current CellData
      */
-    private CellData tempCellData;
+    private CellData<?> tempCellData;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
         super(readSheet, readWorkbookHolder, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
@@ -135,11 +135,11 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.rowIndex = rowIndex;
     }
 
-    public CellData getTempCellData() {
+    public CellData<?> getTempCellData() {
         return tempCellData;
     }
 
-    public void setTempCellData(CellData tempCellData) {
+    public void setTempCellData(CellData<?> tempCellData) {
         this.tempCellData = tempCellData;
     }
 

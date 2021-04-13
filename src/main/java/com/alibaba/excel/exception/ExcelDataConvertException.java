@@ -4,11 +4,16 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Data convert exception
  *
  * @author Jiaju Zhuang
  */
+@Getter
+@Setter
 public class ExcelDataConvertException extends RuntimeException {
     /**
      * NotNull.
@@ -21,7 +26,7 @@ public class ExcelDataConvertException extends RuntimeException {
     /**
      * NotNull.
      */
-    private CellData cellData;
+    private CellData<?> cellData;
     /**
      * Nullable.Only when the header is configured and when the class header is used is not null.
      *
@@ -47,35 +52,4 @@ public class ExcelDataConvertException extends RuntimeException {
         this.excelContentProperty = excelContentProperty;
     }
 
-    public Integer getRowIndex() {
-        return rowIndex;
-    }
-
-    public void setRowIndex(Integer rowIndex) {
-        this.rowIndex = rowIndex;
-    }
-
-    public Integer getColumnIndex() {
-        return columnIndex;
-    }
-
-    public void setColumnIndex(Integer columnIndex) {
-        this.columnIndex = columnIndex;
-    }
-
-    public ExcelContentProperty getExcelContentProperty() {
-        return excelContentProperty;
-    }
-
-    public void setExcelContentProperty(ExcelContentProperty excelContentProperty) {
-        this.excelContentProperty = excelContentProperty;
-    }
-
-    public CellData getCellData() {
-        return cellData;
-    }
-
-    public void setCellData(CellData cellData) {
-        this.cellData = cellData;
-    }
 }

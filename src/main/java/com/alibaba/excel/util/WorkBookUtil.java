@@ -2,6 +2,13 @@ package com.alibaba.excel.util;
 
 import java.io.IOException;
 
+import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -13,16 +20,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
-
 /**
- *
  * @author jipengfei
  */
 public class WorkBookUtil {
 
-    private static final int ROW_ACCESS_WINDOW_SIZE = 500;
+    public static final int ROW_ACCESS_WINDOW_SIZE = 500;
 
     private WorkBookUtil() {}
 
@@ -90,5 +93,17 @@ public class WorkBookUtil {
         Cell cell = row.createCell(colNum);
         cell.setCellValue(cellValue);
         return cell;
+    }
+
+    public static void fillDataFormat(CellData<?> cellData, WriteHolder currentWriteHolder, String format) {
+        WriteWorkbookHolder writeWorkbookHolder;
+        if (currentWriteHolder instanceof WriteSheetHolder) {
+            writeWorkbookHolder = ((WriteSheetHolder)currentWriteHolder).getParentWriteWorkbookHolder();
+        } else {
+            writeWorkbookHolder = ((WriteTableHolder)currentWriteHolder).getParentWriteSheetHolder()
+                .getParentWriteWorkbookHolder();
+        }
+        cellData.setDataFormat(writeWorkbookHolder.getDataFormat(format));
+        cellData.setDataFormatString(format);
     }
 }

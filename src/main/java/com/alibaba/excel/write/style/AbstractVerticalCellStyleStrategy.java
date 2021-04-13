@@ -1,15 +1,17 @@
 package com.alibaba.excel.write.style;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
-
-import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.util.StyleUtil;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 /**
  * Use the same style for the column
@@ -19,8 +21,8 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     private Workbook workbook;
-    private Map<Integer, CellStyle> headCellStyleCache = new HashMap<Integer, CellStyle>();
-    private Map<Integer, CellStyle> contentCellStyleCache = new HashMap<Integer, CellStyle>();
+    private final Map<Integer, Map<Integer, Map<Integer, CellStyle>>> headCellStyleCache = MapUtils.newHashMap();
+    private final Map<Integer, Map<Integer, Map<Integer, CellStyle>>> contentCellStyleCache = MapUtils.newHashMap();
 
     @Override
     protected void initCellStyle(Workbook workbook) {
@@ -28,13 +30,16 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
     }
 
     @Override
-    protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+    protected void setHeadCellStyle(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
+        Head head, Integer relativeRowIndex) {
         if (head == null) {
             return;
         }
+        Map<Integer, CellStyle> styleMap = getStyleMap(headCellStyleCache, writeSheetHolder, writeTableHolder);
+
         int columnIndex = head.getColumnIndex();
-        if (headCellStyleCache.containsKey(columnIndex)) {
-            CellStyle cellStyle = headCellStyleCache.get(columnIndex);
+        if (styleMap.containsKey(columnIndex)) {
+            CellStyle cellStyle = styleMap.get(columnIndex);
             if (cellStyle != null) {
                 cell.setCellStyle(cellStyle);
             }
@@ -42,35 +47,50 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
         }
         WriteCellStyle headCellStyle = headCellStyle(head);
         if (headCellStyle == null) {
-            headCellStyleCache.put(columnIndex, null);
+            styleMap.put(columnIndex, StyleUtil.buildHeadCellStyle(workbook, null));
         } else {
             CellStyle cellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle);
-            headCellStyleCache.put(columnIndex, cellStyle);
+            styleMap.put(columnIndex, cellStyle);
             cell.setCellStyle(cellStyle);
         }
     }
 
     @Override
-    protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+    protected void setContentCellStyle(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
+        Head head, Integer relativeRowIndex) {
         if (head == null) {
             return;
         }
+        Map<Integer, CellStyle> styleMap = getStyleMap(contentCellStyleCache, writeSheetHolder, writeTableHolder);
+
         int columnIndex = head.getColumnIndex();
-        if (contentCellStyleCache.containsKey(columnIndex)) {
-            CellStyle cellStyle = contentCellStyleCache.get(columnIndex);
+        if (styleMap.containsKey(columnIndex)) {
+            CellStyle cellStyle = styleMap.get(columnIndex);
             if (cellStyle != null) {
                 cell.setCellStyle(cellStyle);
             }
             return;
         }
-        WriteCellStyle contentCellStyle = contentCellStyle(head);
+        WriteCellStyle contentCellStyle = contentCellStyle(cell, head, relativeRowIndex);
         if (contentCellStyle == null) {
-            contentCellStyleCache.put(columnIndex, null);
+            styleMap.put(columnIndex, StyleUtil.buildContentCellStyle(workbook, null));
         } else {
             CellStyle cellStyle = StyleUtil.buildContentCellStyle(workbook, contentCellStyle);
-            contentCellStyleCache.put(columnIndex, cellStyle);
+            styleMap.put(columnIndex, cellStyle);
             cell.setCellStyle(cellStyle);
         }
+    }
+
+    /**
+     * Returns the column width corresponding to each column head.
+     *
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     * @return
+     */
+    protected WriteCellStyle contentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        return contentCellStyle(head);
     }
 
     /**
@@ -87,6 +107,21 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
      * @param head Nullable
      * @return
      */
-    protected abstract WriteCellStyle contentCellStyle(Head head);
+    protected WriteCellStyle contentCellStyle(Head head) {
+        throw new UnsupportedOperationException(
+            "One of the two methods 'contentCellStyle(Cell cell, Head head, Integer relativeRowIndex)' and "
+                + "'contentCellStyle(Head head)' must be implemented.");
+    }
+
+    private Map<Integer, CellStyle> getStyleMap(Map<Integer, Map<Integer, Map<Integer, CellStyle>>> cellStyleCache,
+        WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder) {
+        Map<Integer, Map<Integer, CellStyle>> tableStyleMap = cellStyleCache.computeIfAbsent(
+            writeSheetHolder.getSheetNo(), key -> MapUtils.newHashMap());
+        Integer tableNo = 0;
+        if (writeTableHolder != null) {
+            tableNo = writeTableHolder.getTableNo();
+        }
+        return tableStyleMap.computeIfAbsent(tableNo, key -> MapUtils.newHashMap());
+    }
 
 }
