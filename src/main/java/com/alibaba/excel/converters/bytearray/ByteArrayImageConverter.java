@@ -1,5 +1,8 @@
 package com.alibaba.excel.converters.bytearray;
 
+import java.lang.annotation.Annotation;
+
+import com.alibaba.excel.annotation.write.style.ImagePosition;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -23,15 +26,21 @@ public class ByteArrayImageConverter implements Converter<byte[]> {
     }
 
     @Override
+
     public byte[] convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         throw new UnsupportedOperationException("Cannot convert images to byte arrays");
     }
 
     @Override
-    public CellData<?> convertToExcelData(byte[] value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return new CellData<>(value);
+    public CellData convertToExcelData(byte[] value, ExcelContentProperty contentProperty,
+                                       GlobalConfiguration globalConfiguration) {
+        ImagePosition imagePosition = contentProperty.getField().getAnnotation(ImagePosition.class);
+        if (imagePosition != null) {
+            return new CellData(value, imagePosition);
+        } else {
+            return new CellData(value);
+        }
     }
 
 }

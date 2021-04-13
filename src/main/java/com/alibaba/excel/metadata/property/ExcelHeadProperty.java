@@ -1,7 +1,9 @@
 package com.alibaba.excel.metadata.property;
 
 import java.lang.reflect.Field;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +64,7 @@ public class ExcelHeadProperty {
      */
     private Map<String, Field> ignoreMap;
 
-    public ExcelHeadProperty(Holder holder, Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
+    public ExcelHeadProperty(Holder holder, Class headClazz, List<List<String>> head, Boolean convertAllField) {
         this.headClazz = headClazz;
         headMap = new TreeMap<Integer, Head>();
         contentPropertyMap = new TreeMap<Integer, ExcelContentProperty>();
@@ -85,7 +87,7 @@ public class ExcelHeadProperty {
             headKind = HeadKindEnum.STRING;
         }
         // convert headClazz to head
-        initColumnProperties(holder, convertAllFiled);
+        initColumnProperties(holder, convertAllField);
 
         initHeadRowNumber();
         if (LOGGER.isDebugEnabled()) {
@@ -113,7 +115,7 @@ public class ExcelHeadProperty {
         }
     }
 
-    private void initColumnProperties(Holder holder, Boolean convertAllFiled) {
+    private void initColumnProperties(Holder holder, Boolean convertAllField) {
         if (headClazz == null) {
             return;
         }
@@ -132,7 +134,6 @@ public class ExcelHeadProperty {
         for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {
             initOneColumnProperty(entry.getKey(), entry.getValue(), indexFiledMap.containsKey(entry.getKey()));
         }
-        headKind = HeadKindEnum.CLASS;
     }
 
     /**
