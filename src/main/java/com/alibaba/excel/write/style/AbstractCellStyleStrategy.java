@@ -35,9 +35,9 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
             return;
         }
         if (isHead) {
-            setHeadCellStyle(cell, head, relativeRowIndex);
+            setHeadCellStyle(writeSheetHolder, writeTableHolder, cell, head, relativeRowIndex);
         } else {
-            setContentCellStyle(cell, head, relativeRowIndex);
+            setContentCellStyle(writeSheetHolder, writeTableHolder, cell, head, relativeRowIndex);
         }
     }
 
@@ -57,11 +57,27 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
     /**
      * Sets the cell style of header
      *
+     * @param writeSheetHolder
+     * @param writeTableHolder
      * @param cell
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex);
+    protected void setHeadCellStyle(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+        Cell cell, Head head, Integer relativeRowIndex) {
+        setHeadCellStyle(cell, head, relativeRowIndex);
+    }
+
+    /**
+     * Sets the cell style of header
+     *
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     */
+    protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        throw new UnsupportedOperationException("Custom styles must override the setHeadCellStyle method.");
+    }
 
     /**
      * Sets the cell style of content
@@ -70,6 +86,20 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex);
+    protected void setContentCellStyle(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+        Cell cell, Head head, Integer relativeRowIndex) {
+        setContentCellStyle(cell, head, relativeRowIndex);
+    }
+
+    /**
+     * Sets the cell style of content
+     *
+     * @param cell
+     * @param head
+     * @param relativeRowIndex
+     */
+    protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        throw new UnsupportedOperationException("Custom styles must override the setContentCellStyle method.");
+    }
 
 }
