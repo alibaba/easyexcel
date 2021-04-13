@@ -73,8 +73,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     }
 
     protected CellData<?> convert(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,
-        Cell cell,
-        Object value, ExcelContentProperty excelContentProperty) {
+        Cell cell, Object value, ExcelContentProperty excelContentProperty) {
         // This means that the user has defined the data.
         if (value instanceof CellData) {
             CellData<?> cellDataValue = (CellData<?>)value;
