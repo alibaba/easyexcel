@@ -1,9 +1,10 @@
 package com.alibaba.excel.metadata;
 
 import java.math.BigDecimal;
+import com.alibaba.excel.annotation.write.style.ImagePosition;
 import java.util.Date;
-
 import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.property.ImagePositionProperty;
 import com.alibaba.excel.util.StringUtils;
 
 import lombok.Getter;
@@ -35,6 +36,16 @@ public class CellData<T> extends AbstractCell {
     private Boolean formula;
     private String formulaValue;
     private byte[] imageValue;
+
+    /**
+     * Keep the information of image position in annotation.
+     */
+    private ImagePositionProperty imagePositionProperty;
+
+    /**
+     * It will be set true when using annotation to set the image's position.
+     */
+    private Boolean useImagePositionProperty = false;
     /**
      * Support only when writing.
      */
@@ -60,6 +71,8 @@ public class CellData<T> extends AbstractCell {
         this.formula = other.formula;
         this.formulaValue = other.formulaValue;
         this.imageValue = other.imageValue;
+        this.imagePositionProperty = other.imagePositionProperty;
+        this.useImagePositionProperty = other.useImagePositionProperty;
         this.dataFormat = other.dataFormat;
         this.dataFormatString = other.dataFormatString;
         this.data = other.data;
@@ -113,6 +126,20 @@ public class CellData<T> extends AbstractCell {
         this.formula = Boolean.FALSE;
     }
 
+    public CellData(byte[] imageValue, ImagePosition imagePosition) {
+        if (imageValue == null) {
+            throw new IllegalArgumentException("ImageValue can not be null");
+        }
+        if (imagePosition == null) {
+            throw new IllegalArgumentException("ImagePosition can not be null");
+        }
+        this.type = CellDataTypeEnum.IMAGE;
+        this.imageValue = imageValue;
+        this.imagePositionProperty = ImagePositionProperty.build(imagePosition);
+        this.useImagePositionProperty = true;
+        this.formula = Boolean.FALSE;
+    }
+
     public CellData(Boolean booleanValue) {
         if (booleanValue == null) {
             throw new IllegalArgumentException("BooleanValue can not be null");
@@ -137,7 +164,6 @@ public class CellData<T> extends AbstractCell {
             throw new IllegalArgumentException("Type can not be null");
         }
         this.type = type;
-        this.formula = Boolean.FALSE;
     }
 
     /**

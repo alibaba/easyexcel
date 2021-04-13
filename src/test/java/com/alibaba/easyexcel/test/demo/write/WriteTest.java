@@ -248,8 +248,41 @@ public class WriteTest {
             inputStream = FileUtils.openInputStream(new File(imagePath));
             imageData.setInputStream(inputStream);
             imageData.setUrl(new URL(
-                "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
+               "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
             EasyExcel.write(fileName, ImageData.class).sheet().doWrite(list);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    /**
+     * 使用注解设置图片位置,然后导出
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link ImageData}
+     * <p>
+     * 2. 直接写即可
+     */
+    @Test
+    public void imageWriteWithAnnotation() throws Exception {
+        String fileName = TestFileUtil.getPath() + "imageWriteWithAnnotation" + System.currentTimeMillis() + ".xlsx";
+        // 如果使用流 记得关闭
+        InputStream inputStream = null;
+        try {
+            List<ImageDataWithAnnotation> list = new ArrayList<ImageDataWithAnnotation>();
+            ImageDataWithAnnotation imageData = new ImageDataWithAnnotation();
+            list.add(imageData);
+            String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
+            // 放入五种类型的图片 实际使用只要选一种即可
+            imageData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
+            imageData.setFile(new File(imagePath));
+            imageData.setString(imagePath);
+            inputStream = FileUtils.openInputStream(new File(imagePath));
+            imageData.setInputStream(inputStream);
+            imageData.setUrl(new URL(
+                "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
+            EasyExcel.write(fileName, ImageDataWithAnnotation.class).sheet().doWrite(list);
         } finally {
             if (inputStream != null) {
                 inputStream.close();
