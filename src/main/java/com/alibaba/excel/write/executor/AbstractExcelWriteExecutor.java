@@ -3,6 +3,7 @@ package com.alibaba.excel.write.executor;
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.converters.NullableObjectConverter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.CellData;
@@ -33,10 +34,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     protected CellData<?> converterAndSet(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,
         Cell cell, Object value,
         ExcelContentProperty excelContentProperty, Head head, Integer relativeRowIndex) {
-        if (value == null) {
-            return new CellData<>(CellDataTypeEnum.EMPTY);
-        }
-        if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
+        boolean needTrim = value != null && (value instanceof String && currentWriteHolder.globalConfiguration()
+            .getAutoTrim());
+        if (needTrim) {
             value = ((String)value).trim();
         }
         CellData<?> cellData = convert(currentWriteHolder, clazz, targetType, cell, value, excelContentProperty);
@@ -75,9 +75,6 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     protected CellData<?> convert(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,
         Cell cell,
         Object value, ExcelContentProperty excelContentProperty) {
-        if (value == null) {
-            return new CellData<>(CellDataTypeEnum.EMPTY);
-        }
         // This means that the user has defined the data.
         if (value instanceof CellData) {
             CellData<?> cellDataValue = (CellData<?>)value;
@@ -114,6 +111,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new CellData<>(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
+        }
+        if (value == null && !(converter instanceof NullableObjectConverter)) {
+            return new CellData<>(CellDataTypeEnum.EMPTY);
         }
         CellData<?> cellData;
         try {

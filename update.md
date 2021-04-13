@@ -40,6 +40,8 @@
 * 修复填充的时候，最后一行中间有空行会创建失败的bug
 * 修复`includeColumnIndexes`不包含第列 会无法导出数据的bug [Issue #1346](https://github.com/alibaba/easyexcel/issues/1346)
 * 修复`@NumberFormat`注解转换double时可能会丢失精度 [Issue #1306](https://github.com/alibaba/easyexcel/issues/1306)
+* `Converter`支持null转换 [Issue #1776](https://github.com/alibaba/easyexcel/issues/1776)
+
 
 # 2.2.3
 * 修改填充数据空数据的bug  [Issue #1274](https://github.com/alibaba/easyexcel/issues/1274)
