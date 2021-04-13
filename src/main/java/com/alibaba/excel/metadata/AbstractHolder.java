@@ -6,11 +6,16 @@ import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * Write/read holder
  *
  * @author Jiaju Zhuang
  */
+@Data
+@NoArgsConstructor
 public abstract class AbstractHolder implements ConfigurationHolder {
     /**
      * Record whether it's new or from cache
@@ -69,46 +74,6 @@ public abstract class AbstractHolder implements ConfigurationHolder {
             globalConfiguration.setLocale(basicParameter.getLocale());
         }
 
-    }
-
-    public Boolean getNewInitialization() {
-        return newInitialization;
-    }
-
-    public void setNewInitialization(Boolean newInitialization) {
-        this.newInitialization = newInitialization;
-    }
-
-    public List<List<String>> getHead() {
-        return head;
-    }
-
-    public void setHead(List<List<String>> head) {
-        this.head = head;
-    }
-
-    public Class getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(Class clazz) {
-        this.clazz = clazz;
-    }
-
-    public GlobalConfiguration getGlobalConfiguration() {
-        return globalConfiguration;
-    }
-
-    public void setGlobalConfiguration(GlobalConfiguration globalConfiguration) {
-        this.globalConfiguration = globalConfiguration;
-    }
-
-    public Map<String, Converter<?>> getConverterMap() {
-        return converterMap;
-    }
-
-    public void setConverterMap(Map<String, Converter<?>> converterMap) {
-        this.converterMap = converterMap;
     }
 
     @Override

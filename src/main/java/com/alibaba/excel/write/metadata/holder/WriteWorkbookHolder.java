@@ -20,6 +20,7 @@ import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -33,8 +34,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author Jiaju Zhuang
  */
-@Getter
-@Setter
+@Data
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
      * Current poi Workbook.This is only for writing, and there may be no data in version 07 when template data needs to

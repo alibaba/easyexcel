@@ -179,9 +179,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         }
         WriteWorkbookHolder writeWorkbookHolder = writeContext.writeWorkbookHolder();
         boolean needIgnore =
-            !CollectionUtils.isEmpty(writeWorkbookHolder.getExcludeColumnFiledNames()) || !CollectionUtils
+            !CollectionUtils.isEmpty(writeWorkbookHolder.getExcludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(writeWorkbookHolder.getExcludeColumnIndexes()) || !CollectionUtils
-                .isEmpty(writeWorkbookHolder.getIncludeColumnFiledNames()) || !CollectionUtils
+                .isEmpty(writeWorkbookHolder.getIncludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(writeWorkbookHolder.getIncludeColumnIndexes());
         ClassUtils.declaredFields(clazz, sortedAllFiledMap,
             writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled(), needIgnore, writeWorkbookHolder);

@@ -15,14 +15,14 @@ import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.ListUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Data;
 
 /**
  * Read Holder
  *
  * @author Jiaju Zhuang
  */
+@Data
 public abstract class AbstractReadHolder extends AbstractHolder implements ReadHolder {
     /**
      * Count the number of added heads when read sheet.
@@ -112,29 +112,6 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         }
     }
 
-    public List<ReadListener> getReadListenerList() {
-        return readListenerList;
-    }
-
-    public void setReadListenerList(List<ReadListener> readListenerList) {
-        this.readListenerList = readListenerList;
-    }
-
-    public ExcelReadHeadProperty getExcelReadHeadProperty() {
-        return excelReadHeadProperty;
-    }
-
-    public void setExcelReadHeadProperty(ExcelReadHeadProperty excelReadHeadProperty) {
-        this.excelReadHeadProperty = excelReadHeadProperty;
-    }
-
-    public Integer getHeadRowNumber() {
-        return headRowNumber;
-    }
-
-    public void setHeadRowNumber(Integer headRowNumber) {
-        this.headRowNumber = headRowNumber;
-    }
 
     @Override
     public List<ReadListener> readListenerList() {

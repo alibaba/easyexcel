@@ -8,7 +8,9 @@ import com.alibaba.excel.enums.WriteLastRowTypeEnum;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,8 +22,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  *
  * @author Jiaju Zhuang
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class WriteSheetHolder extends AbstractWriteHolder {
     /**
      * current param

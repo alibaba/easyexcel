@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -50,6 +52,8 @@ import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
  *
  * @author Jiaju Zhuang
  */
+@Data
+@NoArgsConstructor
 public abstract class AbstractWriteHolder extends AbstractHolder implements WriteHolder {
     /**
      * Need Head

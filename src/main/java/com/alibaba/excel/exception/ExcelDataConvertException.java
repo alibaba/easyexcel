@@ -4,6 +4,7 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +13,7 @@ import lombok.Setter;
  *
  * @author Jiaju Zhuang
  */
-@Getter
-@Setter
+@Data
 public class ExcelDataConvertException extends RuntimeException {
     /**
      * NotNull.

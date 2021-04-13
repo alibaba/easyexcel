@@ -1,14 +1,18 @@
 package com.alibaba.excel.metadata;
 
 import java.math.BigDecimal;
-import com.alibaba.excel.annotation.write.style.ImagePosition;
 import java.util.Date;
+
+import com.alibaba.excel.annotation.write.style.ImagePosition;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.property.ImagePositionProperty;
 import com.alibaba.excel.util.StringUtils;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.Hyperlink;
+import org.apache.poi.ss.usermodel.RichTextString;
 
 /**
  * Excel internal cell data.
@@ -17,8 +21,7 @@ import lombok.Setter;
  *
  * @author Jiaju Zhuang
  */
-@Getter
-@Setter
+@Data
 public class CellData<T> extends AbstractCell {
     private CellDataTypeEnum type;
     /**
@@ -33,63 +36,25 @@ public class CellData<T> extends AbstractCell {
      * {@link CellDataTypeEnum#BOOLEAN}
      */
     private Boolean booleanValue;
-    private Boolean formula;
-    private String formulaValue;
-    private byte[] imageValue;
 
-    /**
-     * Keep the information of image position in annotation.
-     */
-    private ImagePositionProperty imagePositionProperty;
-
-    /**
-     * It will be set true when using annotation to set the image's position.
-     */
-    private Boolean useImagePositionProperty = false;
-    /**
-     * Support only when writing.
-     */
-    private Date dateValue;
-    /**
-     * The number formatting.
-     */
-    private Short dataFormat;
-    /**
-     * The string of number formatting.
-     */
-    private String dataFormatString;
     /**
      * The resulting converted data.
      */
     private T data;
 
-    public CellData(CellData<T> other) {
-        this.type = other.type;
-        this.numberValue = other.numberValue;
-        this.stringValue = other.stringValue;
-        this.booleanValue = other.booleanValue;
-        this.formula = other.formula;
-        this.formulaValue = other.formulaValue;
-        this.imageValue = other.imageValue;
-        this.imagePositionProperty = other.imagePositionProperty;
-        this.useImagePositionProperty = other.useImagePositionProperty;
-        this.dataFormat = other.dataFormat;
-        this.dataFormatString = other.dataFormatString;
-        this.data = other.data;
-        setRowIndex(other.getRowIndex());
-        setColumnIndex(other.getColumnIndex());
-    }
+    /**
+     * formula
+     */
+    private FormulaData formulaData;
+    /**
+     * data format
+     */
+    private DataFormat dataFormat;
 
     public CellData() {}
 
     public CellData(T data) {
         this.data = data;
-    }
-
-    public CellData(T data, String formulaValue) {
-        this.data = data;
-        this.formula = Boolean.TRUE;
-        this.formulaValue = formulaValue;
     }
 
     public CellData(String stringValue) {
@@ -105,7 +70,6 @@ public class CellData<T> extends AbstractCell {
         }
         this.type = type;
         this.stringValue = stringValue;
-        this.formula = Boolean.FALSE;
     }
 
     public CellData(BigDecimal numberValue) {
@@ -114,7 +78,6 @@ public class CellData<T> extends AbstractCell {
         }
         this.type = CellDataTypeEnum.NUMBER;
         this.numberValue = numberValue;
-        this.formula = Boolean.FALSE;
     }
 
     public CellData(byte[] imageValue) {
@@ -123,7 +86,6 @@ public class CellData<T> extends AbstractCell {
         }
         this.type = CellDataTypeEnum.IMAGE;
         this.imageValue = imageValue;
-        this.formula = Boolean.FALSE;
     }
 
     public CellData(byte[] imageValue, ImagePosition imagePosition) {
@@ -146,7 +108,6 @@ public class CellData<T> extends AbstractCell {
         }
         this.type = CellDataTypeEnum.BOOLEAN;
         this.booleanValue = booleanValue;
-        this.formula = Boolean.FALSE;
     }
 
     public CellData(Date dateValue) {
@@ -157,7 +118,6 @@ public class CellData<T> extends AbstractCell {
         this.dateValue = dateValue;
         this.formula = Boolean.FALSE;
     }
-
 
     public CellData(CellDataTypeEnum type) {
         if (type == null) {
@@ -228,41 +188,6 @@ public class CellData<T> extends AbstractCell {
         cellData.setRowIndex(rowIndex);
         cellData.setColumnIndex(columnIndex);
         return cellData;
-    }
-
-    @Override
-    public String toString() {
-        if (type == null) {
-            return StringUtils.EMPTY;
-        }
-        switch (type) {
-            case NUMBER:
-                if (numberValue == null) {
-                    return StringUtils.EMPTY;
-                }
-                return numberValue.toString();
-            case BOOLEAN:
-                if (booleanValue == null) {
-                    return StringUtils.EMPTY;
-                }
-                return booleanValue.toString();
-            case DIRECT_STRING:
-            case STRING:
-            case ERROR:
-                return stringValue;
-            case DATE:
-                if (dateValue == null) {
-                    return StringUtils.EMPTY;
-                }
-                return dateValue.toString();
-            case IMAGE:
-                if (imageValue == null) {
-                    return StringUtils.EMPTY;
-                }
-                return "image[" + imageValue.length + "]";
-            default:
-                return StringUtils.EMPTY;
-        }
     }
 
 }
