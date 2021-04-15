@@ -149,7 +149,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Map<String, Field> ignoreMap = writeContext.currentWriteHolder().excelWriteHeadProperty().getIgnoreMap();
         initSortedAllFiledMapFieldList(oneRowData.getClass(), sortedAllFiledMap);
         for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {
-            cellIndex = entry.getKey();
+            // cellIndex = entry.getKey();
             Field field = entry.getValue();
             String filedName = field.getName();
             boolean uselessData = !beanMap.containsKey(filedName) || beanMapHandledSet.contains(filedName)
@@ -158,7 +158,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 continue;
             }
             Object value = beanMap.get(filedName);
-            WriteHandlerUtils.beforeCellCreate(writeContext, row, null, cellIndex, relativeRowIndex, Boolean.FALSE);
+            WriteHandlerUtils.beforeCellCreate(writeContext, row, null, cellIndex++, relativeRowIndex, Boolean.FALSE);
             Cell cell = WorkBookUtil.createCell(row, cellIndex);
             WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
             CellData cellData = converterAndSet(currentWriteHolder, value == null ? null : value.getClass(), cell,
