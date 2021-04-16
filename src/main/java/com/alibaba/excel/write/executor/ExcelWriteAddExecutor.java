@@ -1,16 +1,5 @@
 package com.alibaba.excel.write.executor;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -20,13 +9,15 @@ import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
-import com.alibaba.excel.write.metadata.WriteWorkbook;
-import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
-
 import net.sf.cglib.beans.BeanMap;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Add the data into excel
@@ -59,7 +50,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void addOneRowOfDataToExcel(Object oneRowData, int n, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFiledMap) {
+                                        Map<Integer, Field> sortedAllFiledMap) {
         if (oneRowData == null) {
             return;
         }
@@ -103,7 +94,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void doAddBasicTypeToExcel(List<Object> oneRowData, Head head, Row row, int relativeRowIndex, int dataIndex,
-        int cellIndex) {
+                                       int cellIndex) {
         WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
         WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
@@ -114,7 +105,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFiledMap) {
+                                      Map<Integer, Field> sortedAllFiledMap) {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
         BeanMap beanMap = BeanMap.create(oneRowData);
         Set<String> beanMapHandledSet = new HashSet<String>();
@@ -141,6 +132,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
                 beanMapHandledSet.add(name);
             }
+            cellIndex++;
         }
         // Finish
         if (beanMapHandledSet.size() == beanMap.size()) {
@@ -157,8 +149,8 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 continue;
             }
             Object value = beanMap.get(filedName);
-            WriteHandlerUtils.beforeCellCreate(writeContext, row, null, cellIndex++, relativeRowIndex, Boolean.FALSE);
-            Cell cell = WorkBookUtil.createCell(row, cellIndex);
+            WriteHandlerUtils.beforeCellCreate(writeContext, row, null, cellIndex, relativeRowIndex, Boolean.FALSE);
+            Cell cell = WorkBookUtil.createCell(row, cellIndex++);
             WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
             CellData cellData = converterAndSet(currentWriteHolder, value == null ? null : value.getClass(), cell,
                 value, null, null, relativeRowIndex);
