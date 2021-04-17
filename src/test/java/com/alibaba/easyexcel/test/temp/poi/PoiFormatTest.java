@@ -40,7 +40,7 @@ public class PoiFormatTest {
 
     @Test
     public void lastRowNumXSSF() throws IOException {
-        String file = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String file = TestFileUtil.getPath() + "demo" + File.separator + "OLAY.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         LOGGER.info("一共:{}个sheet", xssfWorkbook.getNumberOfSheets());
         XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);

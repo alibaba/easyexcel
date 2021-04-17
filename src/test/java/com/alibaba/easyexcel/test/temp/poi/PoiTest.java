@@ -37,7 +37,7 @@ public class PoiTest {
 
     @Test
     public void lastRowNum() throws IOException {
-        String file = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String file = TestFileUtil.getPath() + "demo" + File.separator + "OLAY.xlsx";
         SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
         SXSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
         LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
@@ -49,7 +49,7 @@ public class PoiTest {
 
     @Test
     public void lastRowNumXSSF() throws IOException {
-        String file = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String file = TestFileUtil.getPath() + "demo" + File.separator + "OLAY.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         LOGGER.info("一共:{}个sheet", xssfWorkbook.getNumberOfSheets());
         XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);

@@ -270,7 +270,7 @@ public class WriteTest {
      */
     @Test
     public void templateWrite() {
-        String templateFileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String templateFileName = TestFileUtil.getPath() + "demo" + File.separator + "OLAY.xlsx";
         String fileName = TestFileUtil.getPath() + "templateWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).withTemplate(templateFileName).sheet().doWrite(data());

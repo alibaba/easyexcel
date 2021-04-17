@@ -57,7 +57,10 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
             tempCellData.setStringValue(tempCellData.getStringValue());
         }
 
-        tempCellData.checkEmpty();
+        if (name.equals("c")){
+            tempCellData.checkEmpty();
+        }
+
         xlsxReadSheetHolder.getCellMap().put(xlsxReadSheetHolder.getColumnIndex(), tempCellData);
     }
 
