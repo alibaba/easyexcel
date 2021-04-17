@@ -502,6 +502,22 @@ public class WriteTest {
         EasyExcel.write(fileName, ConverterData.class).head(variableTitleHead()).sheet("模板").doWrite(data());
     }
 
+    @Test
+    public void noModelSimpleWriteWithOneHead() {
+        // 写法1
+        String fileName = TestFileUtil.getPath() + "noModelSimpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName).head(noModelSimpleOneHead()).sheet("模板").doWrite(dataList());
+    }
+
+    private List<List<String>> noModelSimpleOneHead() {
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> head0 = new ArrayList<String>();
+        head0.add("表头1");
+        list.add(head0);
+        return list;
+    }
+
     /**
      * 不创建对象的写
      */
