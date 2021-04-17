@@ -1,5 +1,9 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
+import com.alibaba.excel.constant.ExcelXmlConstants;
+import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
+import com.alibaba.excel.util.StringUtils;
 import org.xml.sax.Attributes;
 
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
@@ -22,7 +26,17 @@ public abstract class AbstractXlsxTagHandler implements XlsxTagHandler {
 
     @Override
     public void endElement(XlsxReadContext xlsxReadContext, String name) {
-
+        if (!StringUtils.isEmpty(name) && name.equals(ExcelXmlConstants.CELL_TAG)) {
+            XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
+            Integer colIndex = xlsxReadSheetHolder.getColumnIndex();
+            if (colIndex != null){
+                CellData cellData = (CellData) xlsxReadSheetHolder.getCellMap().get(colIndex);
+                if (cellData != null){
+                    cellData.checkEmpty();
+                    xlsxReadSheetHolder.getCellMap().put(colIndex, cellData);
+                }
+            }
+        }
     }
 
     @Override
