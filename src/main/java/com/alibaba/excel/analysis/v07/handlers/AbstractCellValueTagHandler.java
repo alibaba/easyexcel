@@ -2,6 +2,7 @@ package com.alibaba.excel.analysis.v07.handlers;
 
 import java.math.BigDecimal;
 
+import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -57,7 +58,9 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
             tempCellData.setStringValue(tempCellData.getStringValue());
         }
 
-        tempCellData.checkEmpty();
+        if (!StringUtils.isEmpty(name) && name.equals(ExcelXmlConstants.CELL_TAG)) {
+            tempCellData.checkEmpty();
+        }
         xlsxReadSheetHolder.getCellMap().put(xlsxReadSheetHolder.getColumnIndex(), tempCellData);
     }
 
