@@ -154,11 +154,11 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                     continue;
                 }
                 alreadyRangeSet.add(i + "-" + j);
-                String headName = headNameList.get(j);
+                String headName = headNameList.get(j) == null ? "" : headNameList.get(j);
                 int lastCol = i;
                 int lastRow = j;
                 for (int k = i + 1; k < headList.size(); k++) {
-                    if (headList.get(k).getHeadNameList().get(j).equals(headName)) {
+                    if ((headList.get(k).getHeadNameList().get(j) == null ? "" : headList.get(k).getHeadNameList().get(j)).equals(headName)) {
                         alreadyRangeSet.add(k + "-" + j);
                         lastCol = k;
                     } else {
