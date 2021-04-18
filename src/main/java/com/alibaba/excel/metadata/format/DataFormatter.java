@@ -17,7 +17,9 @@
  */
 package com.alibaba.excel.metadata.format;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
@@ -36,6 +38,7 @@ import java.util.regex.Pattern;
 
 import org.apache.poi.ss.format.CellFormat;
 import org.apache.poi.ss.format.CellFormatResult;
+import org.apache.poi.ss.format.SimpleFraction;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.ExcelStyleDateFormatter;
 import org.apache.poi.ss.usermodel.FractionFormat;
@@ -632,8 +635,89 @@ public class DataFormatter {
      */
     private String getFormattedNumberString(Double data, Integer dataFormat, String dataFormatString) {
         Format numberFormat = getFormat(data, dataFormat, dataFormatString);
-        String formatted = numberFormat.format(data);
+        String formatted;
+        if (numberFormat instanceof FractionFormat) {
+            formatted = getFormattedFractionString((FractionFormat)numberFormat,data);
+        }else{
+            formatted = numberFormat.format(data);
+        }
         return formatted.replaceFirst("E(\\d)", "E+$1"); // to match Excel's E-notation
+    }
+
+    /**
+     * Returns the formatted value of an Excel number as a <tt>String</tt> if the cell's <code>DataFormat</code> is
+     * {@link org.apache.poi.ss.usermodel.FractionFormat}
+     * <p>
+     *     The original solution will cut down the integer part of the fraction number to 2147483647 (java.lang.Integer.MAX_VALUE)
+     * </p>
+     * <p>
+     * Fix the bug  <a href=https://github.com/alibaba/easyexcel/issues/1624>#1624</a>
+     * </p>
+     * @param format an instance of {@link org.apache.poi.ss.usermodel.FractionFormat}
+     * @param data data to format
+     * @return a formatted number string
+     */
+    private String getFormattedFractionString(FractionFormat format, Double data){
+        double doubleValue = data.doubleValue();
+        boolean isNeg = doubleValue < 0.0D;
+        double absDoubleValue = Math.abs(doubleValue);
+        double wholePart = Math.floor(absDoubleValue);
+        double decPart = absDoubleValue - wholePart;
+        if (wholePart + decPart == 0.0D) {
+            return "0";
+        } else if (Double.compare(decPart, 0.0D) == 0) {
+            StringBuilder sb = new StringBuilder();
+            if (isNeg) {
+                sb.append("-");
+            }
+            sb.append(new BigDecimal(wholePart).toBigInteger());
+            return sb.toString();
+        } else {
+            SimpleFraction fract;
+            String wholePartFormatString;
+            try {
+                Field exactDenomField = format.getClass().getDeclaredField("exactDenom");
+                Field maxDenomField = format.getClass().getDeclaredField("maxDenom");
+                Field wholePartFormatStringField = format.getClass().getDeclaredField("wholePartFormatString");
+                exactDenomField.setAccessible(true);
+                maxDenomField.setAccessible(true);
+                wholePartFormatStringField.setAccessible(true);
+                wholePartFormatString = (String) wholePartFormatStringField.get(format);
+                if ((Integer)exactDenomField.get(format) > 0) {
+                    fract = SimpleFraction.buildFractionExactDenominator(decPart, (Integer)exactDenomField.get(format));
+                } else {
+                    fract = SimpleFraction.buildFractionMaxDenominator(decPart, (Integer)maxDenomField.get(format));
+                }
+            } catch (RuntimeException | NoSuchFieldException | IllegalAccessException e) {
+                return Double.toString(doubleValue);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            if (isNeg) {
+                sb.append("-");
+            }
+            BigInteger val = new BigDecimal(wholePart).toBigInteger();
+            BigInteger denominator = new BigInteger(String.valueOf(fract.getDenominator()));
+            BigInteger numerator = new BigInteger(String.valueOf(fract.getNumerator()));
+
+            if ("".equals(wholePartFormatString)) {
+                BigInteger trueNum = val.multiply(denominator).add(numerator);
+                sb.append(trueNum).append("/").append(fract.getDenominator());
+                return sb.toString();
+            } else if (fract.getNumerator() == 0) {
+                sb.append(val);
+                return sb.toString();
+            } else if (fract.getNumerator() == fract.getDenominator()) {
+                sb.append(val.add(new BigInteger("1")));
+                return sb.toString();
+            } else {
+                if (wholePart > 0.0D) {
+                    sb.append(val).append(" ");
+                }
+                sb.append(fract.getNumerator()).append("/").append(fract.getDenominator());
+                return sb.toString();
+            }
+        }
     }
 
     /**
