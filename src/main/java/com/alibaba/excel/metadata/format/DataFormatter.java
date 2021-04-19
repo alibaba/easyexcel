@@ -688,7 +688,11 @@ public class DataFormatter {
                 } else {
                     fract = SimpleFraction.buildFractionMaxDenominator(decPart, (Integer)maxDenomField.get(format));
                 }
-            } catch (RuntimeException | NoSuchFieldException | IllegalAccessException e) {
+            } catch (RuntimeException e) {
+                return Double.toString(doubleValue);
+            } catch (NoSuchFieldException e){
+                return Double.toString(doubleValue);
+            } catch (IllegalAccessException e){
                 return Double.toString(doubleValue);
             }
 
