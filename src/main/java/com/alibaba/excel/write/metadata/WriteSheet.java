@@ -3,9 +3,10 @@ package com.alibaba.excel.write.metadata;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
+
+import org.apache.poi.ss.usermodel.TableStyle;
 
 /**
  * Write sheet

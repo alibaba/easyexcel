@@ -8,11 +8,12 @@ import java.util.Map;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.converters.ReadConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 
 /**
@@ -31,13 +32,14 @@ public class ConverterUtils {
      * @param context
      * @return
      */
-    public static Map<Integer, String> convertToStringMap(Map<Integer, CellData<?>> cellDataMap, AnalysisContext context) {
+    public static Map<Integer, String> convertToStringMap(Map<Integer, ReadCellData<?>> cellDataMap,
+        AnalysisContext context) {
         Map<Integer, String> stringMap = MapUtils.newHashMapWithExpectedSize(cellDataMap.size());
         ReadSheetHolder readSheetHolder = context.readSheetHolder();
         int index = 0;
-        for (Map.Entry<Integer, CellData<?>> entry : cellDataMap.entrySet()) {
+        for (Map.Entry<Integer, ReadCellData<?>> entry : cellDataMap.entrySet()) {
             Integer key = entry.getKey();
-            CellData<?> cellData = entry.getValue();
+            ReadCellData<?> cellData = entry.getValue();
             while (index < key) {
                 stringMap.put(index, null);
                 index++;
@@ -55,7 +57,7 @@ public class ConverterUtils {
             }
             try {
                 stringMap.put(key,
-                    (String)(converter.convertToJavaData(cellData, null, readSheetHolder)));
+                    (String)(converter.convertToJavaData(new ReadConverterContext<>(cellData, null, context))));
             } catch (Exception e) {
                 throw new ExcelDataConvertException(context.readRowHolder().getRowIndex(), key, cellData, null,
                     "Convert data " + cellData + " to String error ", e);
@@ -71,14 +73,14 @@ public class ConverterUtils {
      * @param field
      * @param contentProperty
      * @param converterMap
-     * @param readSheetHolder
+     * @param context
      * @param rowIndex
      * @param columnIndex
      * @return
      */
-    public static Object convertToJavaObject(CellData<?> cellData, Field field, ExcelContentProperty contentProperty,
-        Map<String, Converter<?>> converterMap, ReadSheetHolder readSheetHolder, Integer rowIndex,
-        Integer columnIndex) {
+    public static Object convertToJavaObject(ReadCellData<?> cellData, Field field,
+        ExcelContentProperty contentProperty, Map<String, Converter<?>> converterMap, AnalysisContext context,
+        Integer rowIndex, Integer columnIndex) {
         Class<?> clazz;
         if (field == null) {
             clazz = String.class;
@@ -94,12 +96,13 @@ public class ConverterUtils {
             } else {
                 classGeneric = String.class;
             }
-            CellData<Object> cellDataReturn = new CellData<Object>(cellData);
+
+            ReadCellData<Object> cellDataReturn = cellData.clone();
             cellDataReturn.setData(doConvertToJavaObject(cellData, classGeneric, contentProperty, converterMap,
-                readSheetHolder, rowIndex, columnIndex));
+                context, rowIndex, columnIndex));
             return cellDataReturn;
         }
-        return doConvertToJavaObject(cellData, clazz, contentProperty, converterMap, readSheetHolder, rowIndex,
+        return doConvertToJavaObject(cellData, clazz, contentProperty, converterMap, context, rowIndex,
             columnIndex);
     }
 
@@ -108,15 +111,14 @@ public class ConverterUtils {
      * @param clazz
      * @param contentProperty
      * @param converterMap
-     * @param readSheetHolder
+     * @param context
      * @param rowIndex
      * @param columnIndex
      * @return
      */
-    private static Object doConvertToJavaObject(CellData<?> cellData, Class<?> clazz,
-        ExcelContentProperty contentProperty,
-        Map<String, Converter<?>> converterMap, ReadSheetHolder readSheetHolder, Integer rowIndex,
-        Integer columnIndex) {
+    private static Object doConvertToJavaObject(ReadCellData<?> cellData, Class<?> clazz,
+        ExcelContentProperty contentProperty, Map<String, Converter<?>> converterMap, AnalysisContext context,
+        Integer rowIndex, Integer columnIndex) {
         Converter<?> converter = null;
         if (contentProperty != null) {
             converter = contentProperty.getConverter();
@@ -129,7 +131,7 @@ public class ConverterUtils {
                 "Converter not found, convert " + cellData.getType() + " to " + clazz.getName());
         }
         try {
-            return converter.convertToJavaData(cellData, contentProperty, readSheetHolder);
+            return converter.convertToJavaData(new ReadConverterContext<>(cellData, contentProperty, context));
         } catch (Exception e) {
             throw new ExcelDataConvertException(rowIndex, columnIndex, cellData, contentProperty,
                 "Convert data " + cellData + " to " + clazz + " error ", e);

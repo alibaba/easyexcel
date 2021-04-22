@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.junit.Assert;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;

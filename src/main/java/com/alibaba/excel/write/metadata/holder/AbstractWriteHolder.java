@@ -24,7 +24,6 @@ import com.alibaba.excel.event.Order;
 import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;

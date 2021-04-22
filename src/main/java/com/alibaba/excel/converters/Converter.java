@@ -1,13 +1,10 @@
 package com.alibaba.excel.converters;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
 /**
  * Convert between Java objects and excel objects
@@ -44,7 +41,7 @@ public interface Converter<T> {
      * @return Data to put into a Java object
      * @throws Exception Exception.
      */
-    default T convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+    default T convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws Exception {
         throw new UnsupportedOperationException("The current operation is not supported by the current converter.");
     }
@@ -52,15 +49,13 @@ public interface Converter<T> {
     /**
      * Convert excel objects to Java objects
      *
-     * @param cellData        Excel cell data.NotNull.
-     * @param contentProperty Content property.Nullable.
-     * @param readSheetHolder .NotNull.
+     * @param context read converter context
      * @return Data to put into a Java object
      * @throws Exception Exception.
      */
-    default T convertToJavaData(CellData<?> cellData,
-        ExcelContentProperty contentProperty, ReadSheetHolder readSheetHolder) throws Exception {
-        return convertToJavaData(cellData, contentProperty, readSheetHolder.globalConfiguration());
+    default T convertToJavaData(ReadConverterContext<?> context) throws Exception {
+        return convertToJavaData(context.getReadCellData(), context.getContentProperty(),
+            context.getAnalysisContext().currentReadHolder().globalConfiguration());
     }
 
     /**
@@ -72,7 +67,7 @@ public interface Converter<T> {
      * @return Data to put into a Excel
      * @throws Exception Exception.
      */
-    default CellData<?> convertToExcelData(T value, ExcelContentProperty contentProperty,
+    default WriteCellData<?> convertToExcelData(T value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws Exception {
         throw new UnsupportedOperationException("The current operation is not supported by the current converter.");
     }
@@ -80,14 +75,12 @@ public interface Converter<T> {
     /**
      * Convert Java objects to excel objects
      *
-     * @param value              Java Data.NotNull.
-     * @param contentProperty    Content property.Nullable.
-     * @param currentWriteHolder He would be {@link WriteSheetHolder} or  {@link WriteTableHolder}.NotNull.
+     * @param context write context
      * @return Data to put into a Excel
      * @throws Exception Exception.
      */
-    default CellData<?> convertToExcelData(T value, ExcelContentProperty contentProperty,
-        WriteHolder currentWriteHolder) throws Exception {
-        return convertToExcelData(value, contentProperty, currentWriteHolder.globalConfiguration());
+    default WriteCellData<?> convertToExcelData(WriteConverterContext<T> context) throws Exception {
+        return convertToExcelData(context.getValue(), context.getContentProperty(),
+            context.getWriteContext().currentWriteHolder().globalConfiguration());
     }
 }

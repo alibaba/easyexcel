@@ -1,12 +1,14 @@
 package com.alibaba.excel.write.metadata.style;
 
+import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.metadata.DataFormat;
+import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.util.StringUtils;
 
 import lombok.Data;
 import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
@@ -23,7 +25,8 @@ public class WriteCellStyle {
     /**
      * Set the data format (must be a valid format). Built in formats are defined at {@link BuiltinFormats}.
      */
-    private Short dataFormat;
+    private DataFormatData dataFormatData;
+
     /**
      * Set the font for this style
      */

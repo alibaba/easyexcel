@@ -2,7 +2,7 @@ package com.alibaba.excel.write.merge;
 
 import java.util.List;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;

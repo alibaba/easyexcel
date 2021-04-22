@@ -1,6 +1,6 @@
 package com.alibaba.easyexcel.test.temp.dataformat;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 
 import lombok.Data;
 

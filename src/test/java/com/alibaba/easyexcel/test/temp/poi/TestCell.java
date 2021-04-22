@@ -2,7 +2,7 @@ package com.alibaba.easyexcel.test.temp.poi;
 
 import java.util.List;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 
 import lombok.Data;
 

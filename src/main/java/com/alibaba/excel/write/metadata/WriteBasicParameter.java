@@ -7,11 +7,14 @@ import java.util.List;
 import com.alibaba.excel.metadata.BasicParameter;
 import com.alibaba.excel.write.handler.WriteHandler;
 
+import lombok.Data;
+
 /**
  * Write basic parameter
  *
  * @author Jiaju Zhuang
  **/
+@Data
 public class WriteBasicParameter extends BasicParameter {
     /**
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.
@@ -49,77 +52,4 @@ public class WriteBasicParameter extends BasicParameter {
      * Only output the custom columns.
      */
     private Collection<String> includeColumnFieldNames;
-
-    public Integer getRelativeHeadRowIndex() {
-        return relativeHeadRowIndex;
-    }
-
-    public void setRelativeHeadRowIndex(Integer relativeHeadRowIndex) {
-        this.relativeHeadRowIndex = relativeHeadRowIndex;
-    }
-
-    public Boolean getNeedHead() {
-        return needHead;
-    }
-
-    public void setNeedHead(Boolean needHead) {
-        this.needHead = needHead;
-    }
-
-    public List<WriteHandler> getCustomWriteHandlerList() {
-        return customWriteHandlerList;
-    }
-
-    public void setCustomWriteHandlerList(List<WriteHandler> customWriteHandlerList) {
-        this.customWriteHandlerList = customWriteHandlerList;
-    }
-
-    public Boolean getUseDefaultStyle() {
-        return useDefaultStyle;
-    }
-
-    public void setUseDefaultStyle(Boolean useDefaultStyle) {
-        this.useDefaultStyle = useDefaultStyle;
-    }
-
-    public Boolean getAutomaticMergeHead() {
-        return automaticMergeHead;
-    }
-
-    public void setAutomaticMergeHead(Boolean automaticMergeHead) {
-        this.automaticMergeHead = automaticMergeHead;
-    }
-
-    public Collection<Integer> getExcludeColumnIndexes() {
-        return excludeColumnIndexes;
-    }
-
-    public void setExcludeColumnIndexes(Collection<Integer> excludeColumnIndexes) {
-        this.excludeColumnIndexes = excludeColumnIndexes;
-    }
-
-    public Collection<String> getExcludeColumnFieldNames() {
-        return excludeColumnFieldNames;
-    }
-
-    public void setExcludeColumnFieldNames(Collection<String> excludeColumnFieldNames) {
-        this.excludeColumnFieldNames = excludeColumnFieldNames;
-    }
-
-    public Collection<Integer> getIncludeColumnIndexes() {
-        return includeColumnIndexes;
-    }
-
-    public void setIncludeColumnIndexes(Collection<Integer> includeColumnIndexes) {
-        this.includeColumnIndexes = includeColumnIndexes;
-    }
-
-    public Collection<String> getIncludeColumnFieldNames() {
-        return includeColumnFieldNames;
-    }
-
-    public void setIncludeColumnFieldNames(Collection<String> includeColumnFieldNames) {
-        this.includeColumnFieldNames = includeColumnFieldNames;
-    }
-
 }

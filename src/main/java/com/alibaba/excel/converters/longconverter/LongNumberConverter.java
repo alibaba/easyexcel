@@ -1,12 +1,13 @@
 package com.alibaba.excel.converters.longconverter;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.WriteConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Long and number converter
@@ -26,15 +27,14 @@ public class LongNumberConverter implements Converter<Long> {
     }
 
     @Override
-    public Long convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+    public Long convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().longValue();
     }
 
     @Override
-    public CellData<?> convertToExcelData(Long value, ExcelContentProperty contentProperty,
-        WriteHolder currentWriteHolder) {
-        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
+    public WriteCellData<?> convertToExcelData(WriteConverterContext<Long> context) {
+        return NumberUtils.formatToCellData(context.getValue(), context.getContentProperty());
     }
 
 }

@@ -5,9 +5,8 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Number utils
@@ -47,8 +46,8 @@ public class NumberUtils {
      * @param contentProperty
      * @return
      */
-    public static CellData<?> formatToCellDataString(Number num, ExcelContentProperty contentProperty) {
-        return new CellData<>(format(num, contentProperty));
+    public static WriteCellData<?> formatToCellDataString(Number num, ExcelContentProperty contentProperty) {
+        return new WriteCellData<>(format(num, contentProperty));
     }
 
     /**
@@ -56,16 +55,13 @@ public class NumberUtils {
      *
      * @param num
      * @param contentProperty
-     * @param currentWriteHolder
      * @return
      */
-    public static CellData<?> formatToCellData(Number num, ExcelContentProperty contentProperty,
-        WriteHolder currentWriteHolder) {
-        CellData<?> cellData = new CellData<>(BigDecimal.valueOf(num.doubleValue()));
+    public static WriteCellData<?> formatToCellData(Number num, ExcelContentProperty contentProperty) {
+        WriteCellData<?> cellData = new WriteCellData<>(BigDecimal.valueOf(num.doubleValue()));
         if (contentProperty != null && contentProperty.getNumberFormatProperty() != null
             && StringUtils.isNotBlank(contentProperty.getNumberFormatProperty().getFormat())) {
-            WorkBookUtil.fillDataFormat(cellData, currentWriteHolder,
-                contentProperty.getNumberFormatProperty().getFormat());
+            WorkBookUtil.fillDataFormat(cellData, contentProperty.getNumberFormatProperty().getFormat());
         }
         return cellData;
     }

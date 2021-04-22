@@ -13,6 +13,7 @@ import java.util.Map;
 import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
+import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.IoUtils;
@@ -122,7 +123,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     /**
      * Used to cache data Format.
      */
-    private Map<String, Short> dataFormatCache;
+    private Map<String, DataFormatData> dataFormatCache;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
@@ -210,11 +211,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * @param format
      * @return
      */
-    public Short getDataFormat(String format) {
+    public DataFormatData getDataFormat(String format) {
         if (StringUtils.isEmpty(format)) {
             return BuiltinFormats.GENERAL;
         }
-        Short dataFormat = dataFormatCache.get(format);
+        DataFormatData dataFormat = dataFormatCache.get(format);
         if (dataFormat != null) {
             return dataFormat;
         }

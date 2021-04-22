@@ -1,6 +1,5 @@
 package com.alibaba.excel.write.metadata;
 
-import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 
 /**

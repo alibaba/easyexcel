@@ -1,9 +1,9 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
+
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
 /**
  * Cell inline string value handler

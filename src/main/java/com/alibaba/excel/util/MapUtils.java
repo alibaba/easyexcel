@@ -1,9 +1,7 @@
 package com.alibaba.excel.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Map utils
@@ -12,6 +10,7 @@ import java.util.Map;
  **/
 public class MapUtils {
     private MapUtils() {}
+
     /**
      * Creates a <i>mutable</i>, empty {@code HashMap} instance.
      *
@@ -37,11 +36,42 @@ public class MapUtils {
      *
      * @param expectedSize the number of entries you expect to add to the returned map
      * @return a new, empty {@code HashMap} with enough capacity to hold {@code expectedSize} entries
-     *     without resizing
+     * without resizing
      * @throws IllegalArgumentException if {@code expectedSize} is negative
      */
     public static <K, V> HashMap<K, V> newHashMapWithExpectedSize(int expectedSize) {
         return new HashMap<>(capacity(expectedSize));
+    }
+
+    /**
+     * Creates a <i>mutable</i>, empty, insertion-ordered {@code LinkedHashMap} instance.
+     *
+     * <p><b>Note:</b> if mutability is not required, use {@link ImmutableMap#of()} instead.
+     *
+     * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and should be treated as
+     * deprecated. Instead, use the {@code LinkedHashMap} constructor directly, taking advantage of
+     * the new <a href="http://goo.gl/iz2Wi">"diamond" syntax</a>.
+     *
+     * @return a new, empty {@code LinkedHashMap}
+     */
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap() {
+        return new LinkedHashMap<>();
+    }
+
+    /**
+     * Creates a {@code LinkedHashMap} instance, with a high enough "initial capacity" that it
+     * <i>should</i> hold {@code expectedSize} elements without growth. This behavior cannot be
+     * broadly guaranteed, but it is observed to be true for OpenJDK 1.7. It also can't be guaranteed
+     * that the method isn't inadvertently <i>oversizing</i> the returned map.
+     *
+     * @param expectedSize the number of entries you expect to add to the returned map
+     * @return a new, empty {@code LinkedHashMap} with enough capacity to hold {@code expectedSize}
+     * entries without resizing
+     * @throws IllegalArgumentException if {@code expectedSize} is negative
+     * @since 19.0
+     */
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMapWithExpectedSize(int expectedSize) {
+        return new LinkedHashMap<>(capacity(expectedSize));
     }
 
     /**
@@ -56,7 +86,7 @@ public class MapUtils {
             // This is the calculation used in JDK8 to resize when a putAll
             // happens; it seems to be the most conservative calculation we
             // can make.  0.75 is the default load factor.
-            return (int) ((float) expectedSize / 0.75F + 1.0F);
+            return (int)((float)expectedSize / 0.75F + 1.0F);
         }
         return Integer.MAX_VALUE;
     }

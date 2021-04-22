@@ -1,14 +1,12 @@
 package com.alibaba.excel.converters.byteconverter;
 
-import java.math.BigDecimal;
-
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Byte and number converter
@@ -28,15 +26,15 @@ public class ByteNumberConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+    public Byte convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().byteValue();
     }
 
     @Override
-    public CellData<?> convertToExcelData(Byte value, ExcelContentProperty contentProperty,
-        WriteHolder currentWriteHolder) {
-        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
+    public WriteCellData<?> convertToExcelData(Byte value, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
+        return NumberUtils.formatToCellData(value, contentProperty);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.alibaba.excel.metadata;
+package com.alibaba.excel.metadata.data;
 
 import lombok.Data;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -21,47 +21,27 @@ import org.apache.poi.util.Internal;
  * @author Jiaju Zhuang
  */
 @Data
-public class ClientAnchorData {
+public class ClientAnchorData extends CoordinateData {
+    /**
+     * top
+     */
+    private Integer top;
 
     /**
-     * The x coordinate within the first cell.
+     * right
      */
-    private int dx1;
+    private Integer right;
 
     /**
-     * The y coordinate within the first cell.
+     * bottom
      */
-    private int dy1;
+    private Integer bottom;
 
     /**
-     * The x coordinate within the second cell.
+     * left
      */
-    private int dx2;
+    private Integer left;
 
-    /**
-     * The y coordinate within the second cell
-     */
-    private int dy2;
-
-    /**
-     * 0-based column of the first cell.
-     */
-    private short col1;
-
-    /**
-     * 0-based row of the first cell.
-     */
-    private int row1;
-
-    /**
-     * 0-based column of the second cell.
-     */
-    private short col2;
-
-    /**
-     * 0-based row of the second cell.
-     */
-    private int row2;
     /**
      * anchor type
      */

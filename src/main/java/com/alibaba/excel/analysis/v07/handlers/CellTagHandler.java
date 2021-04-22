@@ -4,7 +4,8 @@ import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.DataFormatData;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
@@ -36,7 +37,7 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         // t="n" ,it's means Number
         // t is null ,it's means Empty or Number
         CellDataTypeEnum type = CellDataTypeEnum.buildFromCellType(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_T));
-        xlsxReadSheetHolder.setTempCellData(new CellData(type));
+        xlsxReadSheetHolder.setTempCellData(new ReadCellData<>(type));
         xlsxReadSheetHolder.setTempData(new StringBuilder());
 
         // Put in data transformation information
@@ -53,9 +54,11 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         }
         XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
         short dataFormat = xssfCellStyle.getDataFormat();
-        xlsxReadSheetHolder.getTempCellData().setDataFormat(dataFormat);
-        xlsxReadSheetHolder.getTempCellData().setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+        DataFormatData dataFormatData = new DataFormatData();
+        dataFormatData.setIndex(dataFormat);
+        dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormat,
             xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));
+        xlsxReadSheetHolder.getTempCellData().setDataFormatData(dataFormatData);
     }
 
 }

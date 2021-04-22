@@ -12,7 +12,7 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.listener.ReadListener;

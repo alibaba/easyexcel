@@ -10,7 +10,7 @@ import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.Cell;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
 

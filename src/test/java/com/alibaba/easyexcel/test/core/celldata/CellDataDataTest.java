@@ -3,22 +3,17 @@ package com.alibaba.easyexcel.test.core.celldata;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.alibaba.easyexcel.test.core.simple.SimpleData;
-import com.alibaba.easyexcel.test.core.simple.SimpleDataListener;
-import com.alibaba.easyexcel.test.core.simple.SimpleDataSheetNameListener;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.util.DateUtils;
 
 /**

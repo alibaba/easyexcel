@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.context.WriteContext;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;

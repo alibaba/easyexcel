@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.StringUtils;

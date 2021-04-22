@@ -5,15 +5,18 @@ import java.util.Map;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.metadata.Cell;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.CellExtra;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.ReadSheet;
+
+import lombok.Data;
 
 /**
  * sheet holder
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class ReadSheetHolder extends AbstractReadHolder {
 
     /**
@@ -51,7 +54,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
     /**
      * Current CellData
      */
-    private CellData<?> tempCellData;
+    private ReadCellData<?> tempCellData;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
         super(readSheet, readWorkbookHolder, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
@@ -59,40 +62,8 @@ public class ReadSheetHolder extends AbstractReadHolder {
         this.parentReadWorkbookHolder = readWorkbookHolder;
         this.sheetNo = readSheet.getSheetNo();
         this.sheetName = readSheet.getSheetName();
-        this.cellMap = new LinkedHashMap<Integer, Cell>();
+        this.cellMap = new LinkedHashMap<>();
         this.rowIndex = -1;
-    }
-
-    public ReadSheet getReadSheet() {
-        return readSheet;
-    }
-
-    public void setReadSheet(ReadSheet readSheet) {
-        this.readSheet = readSheet;
-    }
-
-    public ReadWorkbookHolder getParentReadWorkbookHolder() {
-        return parentReadWorkbookHolder;
-    }
-
-    public void setParentReadWorkbookHolder(ReadWorkbookHolder parentReadWorkbookHolder) {
-        this.parentReadWorkbookHolder = parentReadWorkbookHolder;
-    }
-
-    public Integer getSheetNo() {
-        return sheetNo;
-    }
-
-    public void setSheetNo(Integer sheetNo) {
-        this.sheetNo = sheetNo;
-    }
-
-    public String getSheetName() {
-        return sheetName;
-    }
-
-    public void setSheetName(String sheetName) {
-        this.sheetName = sheetName;
     }
 
     /**
@@ -106,58 +77,9 @@ public class ReadSheetHolder extends AbstractReadHolder {
         return approximateTotalRowNumber;
     }
 
-    /**
-     * Approximate total number of rows
-     *
-     * @return
-     */
-    public Integer getApproximateTotalRowNumber() {
-        return approximateTotalRowNumber;
-    }
-
-    public void setApproximateTotalRowNumber(Integer approximateTotalRowNumber) {
-        this.approximateTotalRowNumber = approximateTotalRowNumber;
-    }
-
-    public Map<Integer, Cell> getCellMap() {
-        return cellMap;
-    }
-
-    public void setCellMap(Map<Integer, Cell> cellMap) {
-        this.cellMap = cellMap;
-    }
-
-    public Integer getRowIndex() {
-        return rowIndex;
-    }
-
-    public void setRowIndex(Integer rowIndex) {
-        this.rowIndex = rowIndex;
-    }
-
-    public CellData<?> getTempCellData() {
-        return tempCellData;
-    }
-
-    public void setTempCellData(CellData<?> tempCellData) {
-        this.tempCellData = tempCellData;
-    }
-
-    public CellExtra getCellExtra() {
-        return cellExtra;
-    }
-
-    public void setCellExtra(CellExtra cellExtra) {
-        this.cellExtra = cellExtra;
-    }
-
     @Override
     public HolderEnum holderType() {
         return HolderEnum.SHEET;
     }
 
-    @Override
-    public String toString() {
-        return "ReadSheetHolder{" + "sheetNo=" + sheetNo + ", sheetName='" + sheetName + '\'' + "} " + super.toString();
-    }
 }

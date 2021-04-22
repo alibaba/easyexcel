@@ -6,7 +6,7 @@ import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.NullableObjectConverter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WriteHandlerUtils;

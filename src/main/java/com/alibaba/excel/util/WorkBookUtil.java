@@ -2,12 +2,11 @@ package com.alibaba.excel.util;
 
 import java.io.IOException;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.DataFormatData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -95,15 +94,15 @@ public class WorkBookUtil {
         return cell;
     }
 
-    public static void fillDataFormat(CellData<?> cellData, WriteHolder currentWriteHolder, String format) {
-        WriteWorkbookHolder writeWorkbookHolder;
-        if (currentWriteHolder instanceof WriteSheetHolder) {
-            writeWorkbookHolder = ((WriteSheetHolder)currentWriteHolder).getParentWriteWorkbookHolder();
-        } else {
-            writeWorkbookHolder = ((WriteTableHolder)currentWriteHolder).getParentWriteSheetHolder()
-                .getParentWriteWorkbookHolder();
+    public static void fillDataFormat(WriteCellData<?> cellData, String format) {
+        if (cellData.getWriteCellStyle() == null) {
+            cellData.setWriteCellStyle(new WriteCellStyle());
         }
-        cellData.setDataFormat(writeWorkbookHolder.getDataFormat(format));
-        cellData.setDataFormatString(format);
+        if (cellData.getWriteCellStyle().getDataFormatData() == null) {
+            cellData.getWriteCellStyle().setDataFormatData(new DataFormatData());
+        }
+        if (cellData.getWriteCellStyle().getDataFormatData().getFormat() == null) {
+            cellData.getWriteCellStyle().getDataFormatData().setFormat(format);
+        }
     }
 }

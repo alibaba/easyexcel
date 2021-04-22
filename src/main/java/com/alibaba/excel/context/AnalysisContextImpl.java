@@ -3,11 +3,7 @@ package com.alibaba.excel.context;
 import java.io.InputStream;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadHolder;
@@ -22,12 +18,13 @@ import com.alibaba.excel.read.processor.AnalysisEventProcessor;
 import com.alibaba.excel.read.processor.DefaultAnalysisEventProcessor;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
- *
  * @author jipengfei
  */
+@Slf4j
 public class AnalysisContextImpl implements AnalysisContext {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnalysisContextImpl.class);
     /**
      * The Workbook currently written
      */
@@ -65,8 +62,8 @@ public class AnalysisContextImpl implements AnalysisContext {
         }
         currentReadHolder = readWorkbookHolder;
         analysisEventProcessor = new DefaultAnalysisEventProcessor();
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Initialization 'AnalysisContextImpl' complete");
+        if (log.isDebugEnabled()) {
+            log.debug("Initialization 'AnalysisContextImpl' complete");
         }
     }
 
@@ -87,8 +84,8 @@ public class AnalysisContextImpl implements AnalysisContext {
             throw new ExcelAnalysisException("Cannot read sheet repeatedly.");
         }
         readWorkbookHolder.getHasReadSheet().add(readSheetHolder.getSheetNo());
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Began to read：{}", readSheetHolder);
+        if (log.isDebugEnabled()) {
+            log.debug("Began to read：{}", readSheetHolder);
         }
     }
 
@@ -137,15 +134,6 @@ public class AnalysisContextImpl implements AnalysisContext {
 
     }
 
-    @Override
-    public Sheet getCurrentSheet() {
-        Sheet sheet = new Sheet(readSheetHolder.getSheetNo() + 1);
-        sheet.setSheetName(readSheetHolder.getSheetName());
-        sheet.setHead(readSheetHolder.getHead());
-        sheet.setClazz(readSheetHolder.getClazz());
-        sheet.setHeadLineMun(readSheetHolder.getHeadRowNumber());
-        return sheet;
-    }
 
     @Override
     public ExcelTypeEnum getExcelType() {

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.DateUtils;

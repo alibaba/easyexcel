@@ -13,7 +13,7 @@ import org.junit.runners.MethodSorters;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
 

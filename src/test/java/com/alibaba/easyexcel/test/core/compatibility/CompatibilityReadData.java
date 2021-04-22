@@ -1,7 +1,5 @@
 package com.alibaba.easyexcel.test.core.compatibility;
 
-import com.alibaba.excel.metadata.BaseRowModel;
-
 import lombok.Data;
 
 /**

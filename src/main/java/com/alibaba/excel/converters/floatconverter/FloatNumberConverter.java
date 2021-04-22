@@ -1,12 +1,13 @@
 package com.alibaba.excel.converters.floatconverter;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.WriteConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Float and number converter
@@ -26,14 +27,13 @@ public class FloatNumberConverter implements Converter<Float> {
     }
 
     @Override
-    public Float convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+    public Float convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().floatValue();
     }
 
     @Override
-    public CellData<?> convertToExcelData(Float value, ExcelContentProperty contentProperty,
-        WriteHolder currentWriteHolder) {
-        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
+    public WriteCellData<?> convertToExcelData(WriteConverterContext<Float> context) {
+        return NumberUtils.formatToCellData(context.getValue(), context.getContentProperty());
     }
 }

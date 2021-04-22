@@ -1,12 +1,8 @@
 package com.alibaba.excel.converters.bytearray;
 
-import java.lang.annotation.Annotation;
-
-import com.alibaba.excel.annotation.write.style.ImagePosition;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
@@ -21,29 +17,13 @@ public class BoxingByteArrayImageConverter implements Converter<Byte[]> {
     }
 
     @Override
-    public CellDataTypeEnum supportExcelTypeKey() {
-        return CellDataTypeEnum.IMAGE;
-    }
-
-    @Override
-    public Byte[] convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        throw new UnsupportedOperationException("Cannot convert images to byte arrays");
-    }
-
-    @Override
-    public CellData<?> convertToExcelData(Byte[] value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Byte[] value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         byte[] byteValue = new byte[value.length];
         for (int i = 0; i < value.length; i++) {
             byteValue[i] = value[i];
         }
-        ImagePosition imagePosition = contentProperty.getField().getAnnotation(ImagePosition.class);
-        if (imagePosition != null) {
-            return new CellData(byteValue, imagePosition);
-        } else {
-            return new CellData(byteValue);
-        }
+        return new WriteCellData<>(byteValue);
     }
 
 }

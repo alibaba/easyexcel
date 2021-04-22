@@ -4,8 +4,9 @@ import java.text.ParseException;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
 
@@ -27,13 +28,13 @@ public class ByteStringConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+    public Byte convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseByte(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData<?> convertToExcelData(Byte value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Byte value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return NumberUtils.formatToCellDataString(value, contentProperty);
     }

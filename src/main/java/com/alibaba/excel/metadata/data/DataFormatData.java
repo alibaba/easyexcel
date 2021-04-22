@@ -1,4 +1,4 @@
-package com.alibaba.excel.metadata;
+package com.alibaba.excel.metadata.data;
 
 import lombok.Data;
 
@@ -8,11 +8,12 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
-public class DataFormat {
+public class DataFormatData {
     /**
      * index
      */
     private Short index;
+
     /**
      * format
      */

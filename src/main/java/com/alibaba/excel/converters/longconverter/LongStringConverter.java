@@ -4,8 +4,9 @@ import java.text.ParseException;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
 
@@ -27,13 +28,13 @@ public class LongStringConverter implements Converter<Long> {
     }
 
     @Override
-    public Long convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+    public Long convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseLong(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData<?> convertToExcelData(Long value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Long value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return NumberUtils.formatToCellDataString(value, contentProperty);
     }

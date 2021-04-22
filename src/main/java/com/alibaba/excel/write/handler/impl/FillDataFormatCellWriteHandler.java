@@ -7,7 +7,7 @@ import java.util.Set;
 import com.alibaba.excel.constant.OrderConstant;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.event.Order;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.StyleUtil;

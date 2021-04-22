@@ -37,11 +37,7 @@ public enum CellDataTypeEnum {
      */
     ERROR,
     /**
-     * image. Support only when writing.
-     */
-    IMAGE,
-    /**
-     * date.Support only when writing.
+     * date. Support only when writing.
      */
     DATE,
     /**

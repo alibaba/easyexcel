@@ -42,7 +42,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     /**
      * Read listener
      */
-    private List<ReadListener> readListenerList;
+    private List<ReadListener<?>> readListenerList;
 
     public AbstractReadHolder(ReadBasicParameter readBasicParameter, AbstractReadHolder parentAbstractReadHolder,
         Boolean convertAllFiled) {
@@ -114,7 +114,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
 
 
     @Override
-    public List<ReadListener> readListenerList() {
+    public List<ReadListener<?>> readListenerList() {
         return getReadListenerList();
     }
 

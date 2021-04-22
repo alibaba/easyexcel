@@ -1,14 +1,13 @@
 package com.alibaba.excel.converters.shortconverter;
 
-import java.math.BigDecimal;
-
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.WriteConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * Short and number converter
@@ -28,14 +27,13 @@ public class ShortNumberConverter implements Converter<Short> {
     }
 
     @Override
-    public Short convertToJavaData(CellData<?> cellData, ExcelContentProperty contentProperty,
+    public Short convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().shortValue();
     }
 
     @Override
-    public CellData<?> convertToExcelData(Short value, ExcelContentProperty contentProperty,
-        WriteHolder currentWriteHolder) {
-        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
+    public WriteCellData<?> convertToExcelData(WriteConverterContext<Short> context) {
+        return NumberUtils.formatToCellData(context.getValue(), context.getContentProperty());
     }
 }
