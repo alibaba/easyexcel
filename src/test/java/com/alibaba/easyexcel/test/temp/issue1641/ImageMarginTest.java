@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageMarginTest {
+    /**
+     *
+     * 测试导入图片后是否会预留边距
+     */
     @Test
     public void MutiImageWrite() {
         String fileName = TestFileUtil.getPath() + "MutiImageWrite" + System.currentTimeMillis() + ".xlsx";
