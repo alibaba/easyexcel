@@ -17,6 +17,8 @@ import com.alibaba.excel.event.SyncReadListener;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.groupdocs.conversion.internal.c.a.c.SaveFormat;
+import com.groupdocs.conversion.internal.c.a.c.Workbook;
 
 /**
  * Build ExcelWriter
@@ -54,7 +56,7 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
      * If 'inputStream' and 'file' all not empty,file first
      */
     public ExcelReaderBuilder file(File file) {
-        readWorkbook.setFile(file);
+        readWorkbook.setFile(xls2xlsx(file));
         return this;
     }
 
@@ -64,7 +66,7 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
      * If 'inputStream' and 'file' all not empty,file first
      */
     public ExcelReaderBuilder file(String pathName) {
-        return file(new File(pathName));
+        return file(xls2xlsx(new File(pathName)));
     }
 
     /**
@@ -239,5 +241,26 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     @Override
     protected ReadWorkbook parameter() {
         return readWorkbook;
+    }
+
+    /**
+     * Judge if it is an .xls file, and if so, convert it to .xlsx
+     *
+     * @param file file which would be read
+     */
+    private File xls2xlsx(File file){
+        try {
+            if (!file.getName().contains(".xls")){
+                return file;
+            }else {
+                Workbook book = new Workbook(file.getPath());
+                String tempFilePath = file.getParent() + File.separator + "temp.xlsx";
+                book.save(tempFilePath, SaveFormat.AUTO);
+                return new File(tempFilePath);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return file;
     }
 }

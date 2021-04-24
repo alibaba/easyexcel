@@ -14,17 +14,25 @@
     <inceptionYear>2018</inceptionYear>
 
 
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.6</jdk.version>
         <gpg.skip>true</gpg.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
+
     </properties>
 
     <scm>
         <url>https://github.com/alibaba/easyexcel</url>
         <connection>scm:git:https://git@github.com/alibaba/easyexcel.git</connection>
-    </scm>
+    </scm><repositories>
+    <repository>
+        <id>GroupDocsJavaAPI</id>
+        <name>GroupDocs Java API</name>
+        <url>http://repository.groupdocs.com/repo/</url>
+    </repository>
+</repositories>
 
     <!--<repositories>-->
     <!--<repository>-->
@@ -57,6 +65,11 @@
     </licenses>
 
     <dependencies>
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>emoji-java</artifactId>
+            <version>4.0.0</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -123,6 +136,11 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.groupdocs</groupId>
+            <artifactId>groupdocs-conversion</artifactId>
+            <version>20.2</version>
         </dependency>
     </dependencies>
     <distributionManagement>
