@@ -1,11 +1,7 @@
 package com.alibaba.excel.write.executor;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.converters.Converter;
@@ -17,6 +13,7 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import org.apache.poi.util.Units;
 
 /**
  * Excel write Executor
@@ -57,6 +54,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                 cell.setCellValue(cellData.getNumberValue().doubleValue());
                 return cellData;
             case IMAGE:
+
                 setImageValue(cellData, cell);
                 return cellData;
             case EMPTY:
@@ -129,16 +127,18 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
     private void setImageValue(CellData cellData, Cell cell) {
         Sheet sheet = cell.getSheet();
+
         int index = sheet.getWorkbook().addPicture(cellData.getImageValue(), HSSFWorkbook.PICTURE_TYPE_PNG);
         Drawing drawing = sheet.getDrawingPatriarch();
+
         if (drawing == null) {
             drawing = sheet.createDrawingPatriarch();
         }
         CreationHelper helper = sheet.getWorkbook().getCreationHelper();
         ClientAnchor anchor = helper.createClientAnchor();
-        anchor.setDx1(0);
+        anchor.setDx1(10*Units.EMU_PER_PIXEL);
         anchor.setDx2(0);
-        anchor.setDy1(0);
+        anchor.setDy1(10*Units.EMU_PER_PIXEL);
         anchor.setDy2(0);
         anchor.setCol1(cell.getColumnIndex());
         anchor.setCol2(cell.getColumnIndex() + 1);
@@ -146,5 +146,6 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         anchor.setRow2(cell.getRowIndex() + 1);
         anchor.setAnchorType(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
         drawing.createPicture(anchor, index);
+
     }
 }
