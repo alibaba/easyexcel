@@ -16,15 +16,15 @@ public class ImageMarginTest {
     @Test
     public void MutiImageWrite() {
         String fileName = TestFileUtil.getPath() + "MutiImageWrite" + System.currentTimeMillis() + ".xlsx";
-        List<ImageData> list = new ArrayList<ImageData>();
-        ImageData imageData = new ImageData();
-        ImageData imageData2 = new ImageData();
+        List<ImageMarginData> list = new ArrayList<ImageMarginData>();
+        ImageMarginData imageData = new ImageMarginData();
+        ImageMarginData imageData2 = new ImageMarginData();
         list.add(imageData);
         list.add(imageData2);
         String imagePath = "src/test/java/com/alibaba/easyexcel/test/temp/issue1641/2.jpg";
         String imagePath2 = "src/test/java/com/alibaba/easyexcel/test/temp/issue1641/img.png";
         imageData.setFile(new File(imagePath));
         imageData2.setFile(new File(imagePath2));
-        EasyExcel.write(fileName, ImageData.class).sheet().doWrite(list);
+        EasyExcel.write(fileName, ImageMarginData.class).sheet().doWrite(list);
     }
 }
