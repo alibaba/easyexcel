@@ -6,13 +6,13 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 
 import org.junit.Test;
 
-public class TempRead {
+public class IssueTest {
 
     /**
      * Read sheet by name from .xls file.(single sheet)
      */
     @Test
-    public void ReadIssueData1() {
+    public void IssueDataSingleSheetTest() {
         String fileName = "src/test/java/com/alibaba/easyexcel/test/temp/issue1888/INB21040528-332360-USA.xls";
         ExcelReader excelReader = null;
         try {
@@ -32,7 +32,7 @@ public class TempRead {
      * Read sheet by name from .xls file.(multiple sheets)
      */
     @Test
-    public void ReadIssueData2() {
+    public void IssueDataMultipleSheetsTest() {
         String fileName = "src/test/java/com/alibaba/easyexcel/test/temp/issue1888/INB21040528-332360-USA.xls";
         ExcelReader excelReader = null;
         try {
