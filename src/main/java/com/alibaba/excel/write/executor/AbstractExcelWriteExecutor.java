@@ -18,6 +18,8 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
+import java.util.regex.Pattern;
+
 /**
  * Excel write Executor
  *
@@ -30,14 +32,30 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         this.writeContext = writeContext;
     }
 
+    private final static String DOUBLE_REGEX = "^-?([1-9]\\d*\\.\\d*|0\\.\\d*[1-9]\\d*|0?\\.0+|0)$";
+    private final static String INTEGER_REGEX = "^-?[1-9]\\d*$";
+
     protected CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
         ExcelContentProperty excelContentProperty, Head head, Integer relativeRowIndex) {
         if (value == null) {
             return new CellData(CellDataTypeEnum.EMPTY);
         }
-        if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
-            value = ((String)value).trim();
+
+        if (value instanceof String) {
+            if (currentWriteHolder.globalConfiguration().getAutoTrim()) {
+                value = ((String) value).trim();
+            }
+
+            // Check that if current string data type can be converted to integer or double type.
+            if (Pattern.matches(INTEGER_REGEX, (String) value)) {
+                clazz = Integer.class;
+                value = Integer.valueOf((String) value);
+            } else if (Pattern.matches(DOUBLE_REGEX, (String) value)) {
+                clazz = Double.class;
+                value = Double.valueOf((String) value);
+            }
         }
+
         CellData cellData = convert(currentWriteHolder, clazz, cell, value, excelContentProperty);
         if (cellData.getFormula() != null && cellData.getFormula()) {
             cell.setCellFormula(cellData.getFormulaValue());
