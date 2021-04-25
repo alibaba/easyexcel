@@ -21,6 +21,7 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
  * Excel write Executor
  *
@@ -28,7 +29,7 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     protected WriteContext writeContext;
-
+    public static final Pattern pattern = Pattern.compile("-?[0-9]+.?[0-9]+");
     public AbstractExcelWriteExecutor(WriteContext writeContext) {
         this.writeContext = writeContext;
     }
@@ -51,7 +52,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         WriteHandlerUtils.afterCellDataConverted(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
         switch (cellData.getType()) {
             case STRING:
-                Pattern pattern = Pattern.compile("-?[0-9]+.?[0-9]+");
+
                 Matcher isNum = pattern.matcher(cellData.getStringValue());
                 if(isNum.matches()){
                     cell.setCellValue(Double.valueOf(cellData.getStringValue()));
