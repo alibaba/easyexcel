@@ -27,4 +27,14 @@ public class ImageMarginTest {
         imageData2.setFile(new File(imagePath2));
         EasyExcel.write(fileName, ImageMarginData.class).sheet().doWrite(list);
     }
+    @Test
+    public void ImageWrite(){
+        String fileName = TestFileUtil.getPath() + "MutiImageWrite" + System.currentTimeMillis() + ".xlsx";
+        List<ImageMarginData> list = new ArrayList<ImageMarginData>();
+        ImageMarginData imageData = new ImageMarginData();
+        list.add(imageData);
+        String imagePath = "src/test/java/com/alibaba/easyexcel/test/temp/issue1641/2.jpg";
+        imageData.setFile(new File(imagePath));
+        EasyExcel.write(fileName, ImageMarginData.class).sheet().doWrite(list);
+    }
 }
