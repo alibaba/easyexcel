@@ -11,7 +11,7 @@ import java.util.List;
 
 public class WriteStringOfNumberTest {
     public static final String TEST_STRING = "3.04";
-    public static final Double TEST_DOUBLE = Double.valueOf(3.04);
+    public static final Double TEST_DOUBLE = 3.04;
     public static final int TEST_INTEGER = 3;
     public static final int TEST_SIZE= 3;
 
@@ -37,7 +37,7 @@ public class WriteStringOfNumberTest {
                 list.add(TEST_STRING);
             } else if (i == 1) {
                 list.add(TEST_DOUBLE);
-            } else if (i == 2) {
+            } else{
                 list.add(TEST_INTEGER);
             }
         }
@@ -64,7 +64,7 @@ public class WriteStringOfNumberTest {
                 list.add(TEST_INTEGER);
             } else if (i == 1) {
                 list.add(TEST_DOUBLE);
-            } else if (i == 2) {
+            } else {
                 list.add(TEST_INTEGER);
             }
         }
