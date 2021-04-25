@@ -249,10 +249,10 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
      * @param file file which would be read
      */
     private File xls2xlsx(File file){
-        String xlsFileSuffix = ".xls";
+        String xlsxFileSuffix = ".xlsx";
         String tempFileName = "temp.xlsx";
         try {
-            if (!file.getName().contains(xlsFileSuffix)){
+            if (file.getName().contains(xlsxFileSuffix)){
                 return file;
             }else {
                 Workbook book = new Workbook(file.getPath());

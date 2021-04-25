@@ -26,13 +26,14 @@
     <scm>
         <url>https://github.com/alibaba/easyexcel</url>
         <connection>scm:git:https://git@github.com/alibaba/easyexcel.git</connection>
-    </scm><repositories>
-    <repository>
-        <id>GroupDocsJavaAPI</id>
-        <name>GroupDocs Java API</name>
-        <url>http://repository.groupdocs.com/repo/</url>
-    </repository>
-</repositories>
+    </scm>
+    <repositories>
+        <repository>
+            <id>GroupDocsJavaAPI</id>
+            <name>GroupDocs Java API</name>
+            <url>http://repository.groupdocs.com/repo/</url>
+        </repository>
+    </repositories>
 
     <!--<repositories>-->
     <!--<repository>-->
