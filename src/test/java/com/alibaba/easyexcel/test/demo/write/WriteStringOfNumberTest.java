@@ -25,7 +25,7 @@ public class WriteStringOfNumberTest {
         for (int i = 0; i < TEST_SIZE; i++) {
             header.add(Collections.singletonList("header" + i));
         }
-        ExcelWriter build = EasyExcel.write("/Users/ryan/easyTest/test.xlsx").build();
+        ExcelWriter build = EasyExcel.write("/tmp/t.xlsx").build();
         WriteSheet sheet = EasyExcel.writerSheet("shell0")
             .head(header)
             .build();
@@ -52,7 +52,7 @@ public class WriteStringOfNumberTest {
         for (int i = 0; i < TEST_SIZE; i++) {
             header.add(Collections.singletonList("header" + i));
         }
-        ExcelWriter build = EasyExcel.write("/Users/ryan/easyTest/test.xlsx").build();
+        ExcelWriter build = EasyExcel.write("/tmp/t.xlsx").build();
         WriteSheet sheet = EasyExcel.writerSheet("shell0")
             .head(header)
             .build();
