@@ -3,6 +3,8 @@ package com.alibaba.excel.write.builder;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -83,7 +85,23 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     }
 
     public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
+        // try to fix issue #1899
+        // https://github.com/alibaba/easyexcel/issues/1899
+        // use regex to match file name with xls
+        String regXLS = ".*(.xls|.XLS)$";
         writeWorkbook.setExcelType(excelType);
+        if (writeWorkbook.getFile() != null) {
+            String fileName = writeWorkbook.getFile().getName();
+            Pattern pattern = Pattern.compile(regXLS);
+            Matcher matcher = pattern.matcher(fileName);
+            if (matcher.matches()) {
+                // if current exceltype is XLSX, then change the file name with "xlsx" at the end
+                if (excelType == ExcelTypeEnum.XLSX) {
+                    fileName = fileName.substring(0, fileName.length() - 3) + "xlsx";
+                }
+            }
+            file(fileName);
+        }
         return this;
     }
 
