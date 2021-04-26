@@ -45,7 +45,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             if (currentWriteHolder.globalConfiguration().getAutoTrim()) {
                 value = ((String) value).trim();
             }
-
+            // Fix issue https://github.com/alibaba/easyexcel/issues/1405
             // Check that if current string data type can be converted to integer or double type.
             if (Pattern.matches(INTEGER_REGEX, (String) value)) {
                 clazz = Integer.class;
