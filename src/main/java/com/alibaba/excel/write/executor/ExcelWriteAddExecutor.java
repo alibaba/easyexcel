@@ -1,16 +1,5 @@
 package com.alibaba.excel.write.executor;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellData;
@@ -20,13 +9,20 @@ import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
-import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
-
 import net.sf.cglib.beans.BeanMap;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Add the data into excel
@@ -171,14 +167,17 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         if (!sortedAllFiledMap.isEmpty()) {
             return;
         }
-        WriteWorkbookHolder writeWorkbookHolder = writeContext.writeWorkbookHolder();
-        boolean needIgnore =
-            !CollectionUtils.isEmpty(writeWorkbookHolder.getExcludeColumnFiledNames()) || !CollectionUtils
-                .isEmpty(writeWorkbookHolder.getExcludeColumnIndexes()) || !CollectionUtils
-                .isEmpty(writeWorkbookHolder.getIncludeColumnFiledNames()) || !CollectionUtils
-                .isEmpty(writeWorkbookHolder.getIncludeColumnIndexes());
+
+        // 获取当前的使用的 holder
+        WriteHolder holder = writeContext.currentWriteHolder();
+        boolean needIgnore = (holder instanceof AbstractWriteHolder) && (
+            !CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getExcludeColumnFiledNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getExcludeColumnIndexes()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnFiledNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnIndexes()));
+
         ClassUtils.declaredFields(clazz, sortedAllFiledMap,
-            writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled(), needIgnore, writeWorkbookHolder);
+            writeContext.writeWorkbookHolder().getWriteWorkbook().getConvertAllFiled(), needIgnore, holder);
     }
 
 }
