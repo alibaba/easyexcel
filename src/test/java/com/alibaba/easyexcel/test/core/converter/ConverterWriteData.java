@@ -12,7 +12,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
-public class ConverterData {
+public class ConverterWriteData {
     @ExcelProperty("日期")
     private Date date;
     @ExcelProperty("布尔")

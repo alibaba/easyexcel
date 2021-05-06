@@ -8,7 +8,6 @@ import java.util.List;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.data.FormulaData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.DateUtils;
@@ -44,15 +43,15 @@ public class CellDataDataTest {
     }
 
     private void readAndWrite(File file) throws Exception {
-        EasyExcel.write(file, CellDataData.class).sheet().doWrite(data());
-        EasyExcel.read(file, CellDataData.class, new CellDataDataListener()).sheet().doRead();
+        EasyExcel.write(file, CellDataWriteData.class).sheet().doWrite(data());
+        EasyExcel.read(file, CellDataReadData.class, new CellDataDataListener()).sheet().doRead();
     }
 
-    private List<CellDataData> data() throws Exception {
-        List<CellDataData> list = new ArrayList<CellDataData>();
-        CellDataData cellDataData = new CellDataData();
+    private List<CellDataWriteData> data() throws Exception {
+        List<CellDataWriteData> list = new ArrayList<>();
+        CellDataWriteData cellDataData = new CellDataWriteData();
         cellDataData.setDate(new WriteCellData<>(DateUtils.parseDate("2020-01-01 01:01:01")));
-        CellData<Integer> integer1 = new CellData<Integer>();
+        WriteCellData<Integer> integer1 = new WriteCellData<>();
         integer1.setType(CellDataTypeEnum.NUMBER);
         integer1.setNumberValue(BigDecimal.valueOf(2L));
         cellDataData.setInteger1(integer1);

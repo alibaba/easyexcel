@@ -6,15 +6,15 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-
 import com.alibaba.easyexcel.test.core.simple.SimpleData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  *
@@ -30,7 +30,7 @@ public class EncryptDataTest {
 
     @BeforeClass
     public static void init() {
-        file07 = TestFileUtil.createNewFile("encrypt07.xlsx");
+        file07 = TestFileUtil.createNewFile("encrypt07111.xlsx");
         file03 = TestFileUtil.createNewFile("encrypt03.xls");
         file07OutputStream = TestFileUtil.createNewFile("encryptOutputStream07.xlsx");
         file03OutputStream = TestFileUtil.createNewFile("encryptOutputStream03.xls");

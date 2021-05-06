@@ -3,7 +3,7 @@ package com.alibaba.easyexcel.test.core.celldata;
 import java.util.Date;
 
 import com.alibaba.excel.annotation.format.DateTimeFormat;
-import com.alibaba.excel.metadata.data.CellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 
 import lombok.Data;
 
@@ -11,10 +11,10 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
-public class CellDataData {
+public class CellDataWriteData {
     @DateTimeFormat("yyyy年MM月dd日")
-    private CellData<Date> date;
-    private CellData<Integer> integer1;
+    private WriteCellData<Date> date;
+    private WriteCellData<Integer> integer1;
     private Integer integer2;
-    private CellData<?> formulaValue;
+    private WriteCellData<?> formulaValue;
 }

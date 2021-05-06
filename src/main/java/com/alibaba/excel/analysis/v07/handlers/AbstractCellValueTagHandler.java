@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.data.CellData;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.StringUtils;
@@ -19,7 +19,7 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
     @Override
     public void endElement(XlsxReadContext xlsxReadContext, String name) {
         XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
-        CellData tempCellData = xlsxReadSheetHolder.getTempCellData();
+        ReadCellData<?> tempCellData = xlsxReadSheetHolder.getTempCellData();
         StringBuilder tempData = xlsxReadSheetHolder.getTempData();
         String tempDataString = tempData.toString();
         CellDataTypeEnum oldType = tempCellData.getType();

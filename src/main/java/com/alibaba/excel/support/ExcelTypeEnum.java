@@ -5,12 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import org.apache.poi.poifs.filesystem.FileMagic;
-
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.util.StringUtils;
+
+import org.apache.poi.poifs.filesystem.FileMagic;
 
 /**
  * @author jipengfei
@@ -77,8 +77,6 @@ public enum ExcelTypeEnum {
             }
             return recognitionExcelType(inputStream);
         } catch (ExcelCommonException e) {
-            throw e;
-        } catch (ExcelAnalysisException e) {
             throw e;
         } catch (Exception e) {
             throw new ExcelCommonException(

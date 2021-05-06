@@ -20,7 +20,6 @@ public class ReadCellData<T> extends CellData<T> {
      */
     private DataFormatData dataFormatData;
 
-
     public ReadCellData(CellDataTypeEnum type) {
         super();
         if (type == null) {
@@ -104,10 +103,21 @@ public class ReadCellData<T> extends CellData<T> {
         return cellData;
     }
 
-
     @Override
-    public ReadCellData<Object> clone(){
-        return new ReadCellData<>("");
+    public ReadCellData<Object> clone() {
+        ReadCellData<Object> readCellData = new ReadCellData<>();
+        readCellData.setType(getType());
+        readCellData.setNumberValue(getNumberValue());
+        readCellData.setStringValue(getStringValue());
+        readCellData.setBooleanValue(getBooleanValue());
+        readCellData.setData(getData());
+        if (getDataFormatData() != null) {
+            readCellData.setDataFormatData(getDataFormatData().clone());
+        }
+        if (getFormulaData() != null) {
+            readCellData.setFormulaData(getFormulaData().clone());
+        }
+        return readCellData;
     }
 
 }

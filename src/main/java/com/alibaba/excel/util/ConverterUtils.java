@@ -11,7 +11,6 @@ import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.ReadConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
@@ -22,6 +21,7 @@ import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
  * @author Jiaju Zhuang
  **/
 public class ConverterUtils {
+    public static Class<?> defaultClassGeneric = String.class;
 
     private ConverterUtils() {}
 
@@ -87,16 +87,8 @@ public class ConverterUtils {
         } else {
             clazz = field.getType();
         }
-        if (clazz == CellData.class) {
-            Type type = field.getGenericType();
-            Class<?> classGeneric;
-            if (type instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType)type;
-                classGeneric = (Class<?>)parameterizedType.getActualTypeArguments()[0];
-            } else {
-                classGeneric = String.class;
-            }
-
+        if (clazz == ReadCellData.class) {
+            Class<?> classGeneric = getClassGeneric(field.getGenericType());
             ReadCellData<Object> cellDataReturn = cellData.clone();
             cellDataReturn.setData(doConvertToJavaObject(cellData, classGeneric, contentProperty, converterMap,
                 context, rowIndex, columnIndex));
@@ -104,6 +96,22 @@ public class ConverterUtils {
         }
         return doConvertToJavaObject(cellData, clazz, contentProperty, converterMap, context, rowIndex,
             columnIndex);
+    }
+
+    private static Class<?> getClassGeneric(Type type) {
+        if (!(type instanceof ParameterizedType)) {
+            return defaultClassGeneric;
+        }
+        ParameterizedType parameterizedType = (ParameterizedType)type;
+        Type[] types = parameterizedType.getActualTypeArguments();
+        if (types == null || types.length == 0) {
+            return defaultClassGeneric;
+        }
+        Type actualType = types[0];
+        if (!(actualType instanceof Class<?>)) {
+            return defaultClassGeneric;
+        }
+        return (Class<?>)actualType;
     }
 
     /**

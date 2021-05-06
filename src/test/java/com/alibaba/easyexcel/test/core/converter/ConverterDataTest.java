@@ -48,8 +48,8 @@ public class ConverterDataTest {
     }
 
     private void readAndWrite(File file) throws Exception {
-        EasyExcel.write(file, ConverterData.class).sheet().doWrite(data());
-        EasyExcel.read(file, ConverterData.class, new ConverterDataListener()).sheet().doRead();
+        EasyExcel.write(file, ConverterWriteData.class).sheet().doWrite(data());
+        EasyExcel.read(file, ConverterReadData.class, new ConverterDataListener()).sheet().doRead();
     }
 
     @Test
@@ -97,21 +97,21 @@ public class ConverterDataTest {
             .sheet().doRead();
     }
 
-    private List<ConverterData> data() throws Exception {
-        List<ConverterData> list = new ArrayList<ConverterData>();
-        ConverterData converterData = new ConverterData();
-        converterData.setDate(DateUtils.parseDate("2020-01-01 01:01:01"));
-        converterData.setBooleanData(Boolean.TRUE);
-        converterData.setBigDecimal(BigDecimal.ONE);
-        converterData.setLongData(1L);
-        converterData.setIntegerData(1);
-        converterData.setShortData((short)1);
-        converterData.setByteData((byte)1);
-        converterData.setDoubleData(1.0);
-        converterData.setFloatData((float)1.0);
-        converterData.setString("测试");
-        converterData.setCellData(new WriteCellData<>("自定义"));
-        list.add(converterData);
+    private List<ConverterWriteData> data() throws Exception {
+        List<ConverterWriteData> list = new ArrayList<ConverterWriteData>();
+        ConverterWriteData converterWriteData = new ConverterWriteData();
+        converterWriteData.setDate(DateUtils.parseDate("2020-01-01 01:01:01"));
+        converterWriteData.setBooleanData(Boolean.TRUE);
+        converterWriteData.setBigDecimal(BigDecimal.ONE);
+        converterWriteData.setLongData(1L);
+        converterWriteData.setIntegerData(1);
+        converterWriteData.setShortData((short)1);
+        converterWriteData.setByteData((byte)1);
+        converterWriteData.setDoubleData(1.0);
+        converterWriteData.setFloatData((float)1.0);
+        converterWriteData.setString("测试");
+        converterWriteData.setCellData(new WriteCellData<>("自定义"));
+        list.add(converterWriteData);
         return list;
     }
 }

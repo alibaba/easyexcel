@@ -18,4 +18,12 @@ public class DataFormatData {
      * format
      */
     private String format;
+
+    @Override
+    public DataFormatData clone() {
+        DataFormatData dataFormatData = new DataFormatData();
+        dataFormatData.setIndex(getIndex());
+        dataFormatData.setFormat(getFormat());
+        return dataFormatData;
+    }
 }
