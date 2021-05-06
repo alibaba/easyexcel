@@ -41,7 +41,7 @@ public class FillTest {
             .registerWriteHandler(horizontalCellStyleStrategy)
             .build();
         // Wrap fillConfig.
-        FillConfig build = FillConfig.builder().Wrapped(true).build();
+        FillConfig build = FillConfig.builder().wrap(true).build();
 
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
 
@@ -76,7 +76,7 @@ public class FillTest {
             .registerWriteHandler(horizontalCellStyleStrategy)
             .build();
         // Wrap fillConfig.
-        FillConfig build = FillConfig.builder().Wrapped(true).build();
+        FillConfig build = FillConfig.builder().wrap(true).build();
 
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
 

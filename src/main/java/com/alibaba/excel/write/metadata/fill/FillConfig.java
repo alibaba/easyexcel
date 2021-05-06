@@ -99,7 +99,7 @@ public class FillConfig {
          * @param wrapped
          *        wrapped value
          */
-        public FillConfigBuilder Wrapped(Boolean wrapped) {
+        public FillConfigBuilder wrap(Boolean wrapped) {
             fillConfig.setWrapped(wrapped);
             return this;
         }
