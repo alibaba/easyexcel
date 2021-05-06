@@ -17,6 +17,10 @@ public class FillConfig {
      */
     private Boolean forceNewRow;
     private boolean hasInit;
+    /**
+     * Set whether the text should be wrapped.
+     */
+    private Boolean wrapped;
 
     public WriteDirectionEnum getDirection() {
         return direction;
@@ -34,6 +38,23 @@ public class FillConfig {
         this.forceNewRow = forceNewRow;
     }
 
+    /**
+     * Get wrapped value.
+     */
+    public Boolean getWrapped() {
+        return wrapped;
+    }
+
+    /**
+     * Set wrapped value.
+     *
+     * @param wrapped
+     *        wrapped value
+     */
+    public void setWrapped(Boolean wrapped) {
+        this.wrapped = wrapped;
+    }
+
     public void init() {
         if (hasInit) {
             return;
@@ -43,6 +64,10 @@ public class FillConfig {
         }
         if (forceNewRow == null) {
             forceNewRow = Boolean.FALSE;
+        }
+        // Init wrapped value.
+        if (wrapped == null) {
+            wrapped = Boolean.FALSE;
         }
         hasInit = true;
     }
@@ -65,6 +90,17 @@ public class FillConfig {
 
         public FillConfigBuilder forceNewRow(Boolean forceNewRow) {
             fillConfig.setForceNewRow(forceNewRow);
+            return this;
+        }
+
+        /**
+         * Wrap FillConfig.
+         *
+         * @param wrapped
+         *        wrapped value
+         */
+        public FillConfigBuilder Wrapped(Boolean wrapped) {
+            fillConfig.setWrapped(wrapped);
             return this;
         }
 
