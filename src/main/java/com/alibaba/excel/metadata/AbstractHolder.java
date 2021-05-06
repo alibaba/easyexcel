@@ -28,7 +28,7 @@ public abstract class AbstractHolder implements ConfigurationHolder {
     /**
      * You can only choose one of the {@link AbstractHolder#head} and {@link AbstractHolder#clazz}
      */
-    private Class clazz;
+    private Class<?> clazz;
     /**
      * Some global variables
      */

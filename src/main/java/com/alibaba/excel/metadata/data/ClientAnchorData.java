@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata.data;
 
 import lombok.Data;
+import lombok.Getter;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.util.Internal;
 
@@ -47,6 +48,7 @@ public class ClientAnchorData extends CoordinateData {
      */
     private AnchorType anchorType;
 
+    @Getter
     public enum AnchorType {
         /**
          * Move and Resize With Anchor Cells (0)
@@ -56,7 +58,7 @@ public class ClientAnchorData extends CoordinateData {
          * object is anchored to the actual from and to row and column)
          * </p>
          */
-        MOVE_AND_RESIZE(0),
+        MOVE_AND_RESIZE(ClientAnchor.AnchorType.MOVE_AND_RESIZE),
 
         /**
          * Don't Move but do Resize With Anchor Cells (1)
@@ -67,7 +69,7 @@ public class ClientAnchorData extends CoordinateData {
          * </p>
          * Note: Excel has no setting for this combination, nor does the ECMA standard.
          */
-        DONT_MOVE_DO_RESIZE(1),
+        DONT_MOVE_DO_RESIZE(ClientAnchor.AnchorType.DONT_MOVE_DO_RESIZE),
 
         /**
          * Move With Cells but Do Not Resize (2)
@@ -81,7 +83,7 @@ public class ClientAnchorData extends CoordinateData {
          * the drawing shall move its to anchors as needed to maintain this same absolute size.
          * </p>
          */
-        MOVE_DONT_RESIZE(2),
+        MOVE_DONT_RESIZE(ClientAnchor.AnchorType.MOVE_DONT_RESIZE),
 
         /**
          * Do Not Move or Resize With Underlying Rows/Columns (3)
@@ -96,13 +98,13 @@ public class ClientAnchorData extends CoordinateData {
          * to maintain this same absolute position.
          * </p>
          */
-        DONT_MOVE_AND_RESIZE(3);
+        DONT_MOVE_AND_RESIZE(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
 
-        public final short value;
+        ClientAnchor.AnchorType value;
 
         // disallow non-sequential enum instance creation
-        private AnchorType(int value) {
-            this.value = (short)value;
+        private AnchorType(ClientAnchor.AnchorType value) {
+            this.value = value;
         }
 
         /**

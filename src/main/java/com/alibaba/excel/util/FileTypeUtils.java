@@ -18,10 +18,23 @@ public class FileTypeUtils {
 
     private static final Map<String, ImageType> FILE_TYPE_MAP;
 
+    /**
+     * Default image type
+     */
+    public static ImageType defaultImageType = ImageType.PICTURE_TYPE_PNG;
+
     static {
         FILE_TYPE_MAP = new HashMap<>();
         FILE_TYPE_MAP.put("ffd8ff", ImageType.PICTURE_TYPE_JPEG);
         FILE_TYPE_MAP.put("89504e47", ImageType.PICTURE_TYPE_PNG);
+    }
+
+    public static int getImageTypeFormat(byte[] image) {
+        ImageType imageType = getImageType(image);
+        if (imageType != null) {
+            return imageType.getValue();
+        }
+        return defaultImageType.getValue();
     }
 
     public static ImageType getImageType(byte[] image) {

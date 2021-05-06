@@ -8,8 +8,8 @@ import java.util.UUID;
 
 import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
@@ -248,7 +248,7 @@ public class WriteContextImpl implements WriteContext {
             Cell cell = row.createCell(columnIndex);
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
             cell.setCellValue(head.getHeadNameList().get(relativeRowIndex));
-            WriteHandlerUtils.afterCellDispose(this, (CellData) null, cell, head, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.afterCellDispose(this, (WriteCellData<?>) null, cell, head, relativeRowIndex, Boolean.TRUE);
         }
     }
 

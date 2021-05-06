@@ -14,7 +14,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.metadata.data.CellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
@@ -198,20 +198,20 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     continue;
                 }
                 Object value = dataMap.get(variable);
-                CellData<?> cellData = converterAndSet(writeSheetHolder, value == null ? null : value.getClass(), null,
+                WriteCellData<?> cellData = converterAndSet(writeSheetHolder, value == null ? null : value.getClass(), null,
                     cell, value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();
                 int index = 0;
-                List<CellData<?>> cellDataList = new ArrayList<>();
+                List<WriteCellData<?>> cellDataList = new ArrayList<>();
                 for (String variable : analysisCell.getVariableList()) {
                     cellValueBuild.append(analysisCell.getPrepareDataList().get(index++));
                     if (!dataMap.containsKey(variable)) {
                         continue;
                     }
                     Object value = dataMap.get(variable);
-                    CellData<?> cellData = convert(writeSheetHolder, value == null ? null : value.getClass(),
+                    WriteCellData<?> cellData = convert(writeSheetHolder, value == null ? null : value.getClass(),
                         CellDataTypeEnum.STRING, cell, value, fieldNameContentPropertyMap.get(variable));
                     cellDataList.add(cellData);
                     CellDataTypeEnum type = cellData.getType();

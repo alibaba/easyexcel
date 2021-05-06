@@ -9,12 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
@@ -22,7 +16,6 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.event.Order;
 import com.alibaba.excel.metadata.AbstractHolder;
-import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
@@ -36,15 +29,15 @@ import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteBasicParameter;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Write holder configuration
@@ -182,9 +175,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         // Initialization property
         this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllField);
 
-        // Compatible with old code
-        compatibleOldCode(writeBasicParameter);
-
         // Set writeHandlerMap
         List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
 
@@ -220,77 +210,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
     }
 
-    /**
-     * Compatible with old code
-     */
-    @Deprecated
-    private void compatibleOldCode(WriteBasicParameter writeBasicParameter) {
-        switch (holderType()) {
-            case SHEET:
-                compatibleOldCodeCreateRowCellStyleStrategy(writeBasicParameter,
-                    ((WriteSheet) writeBasicParameter).getTableStyle());
-                compatibleOldCodeCreateHeadColumnWidthStyleStrategy(writeBasicParameter,
-                    ((WriteSheet) writeBasicParameter).getColumnWidthMap());
-                return;
-            case TABLE:
-                compatibleOldCodeCreateRowCellStyleStrategy(writeBasicParameter,
-                    ((WriteTable) writeBasicParameter).getTableStyle());
-                return;
-            default:
-        }
-    }
-
-    @Deprecated
-    private void compatibleOldCodeCreateRowCellStyleStrategy(WriteBasicParameter writeBasicParameter,
-        TableStyle tableStyle) {
-        if (tableStyle == null) {
-            return;
-        }
-        if (writeBasicParameter.getCustomWriteHandlerList() == null) {
-            writeBasicParameter.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
-        }
-        writeBasicParameter.getCustomWriteHandlerList()
-            .add(new HorizontalCellStyleStrategy(
-                buildWriteCellStyle(tableStyle.getTableHeadFont(), tableStyle.getTableHeadBackGroundColor()),
-                buildWriteCellStyle(tableStyle.getTableContentFont(), tableStyle.getTableContentBackGroundColor())));
-    }
-
-    @Deprecated
-    private WriteCellStyle buildWriteCellStyle(Font font, IndexedColors indexedColors) {
-        WriteCellStyle writeCellStyle = new WriteCellStyle();
-        if (indexedColors != null) {
-            writeCellStyle.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
-            writeCellStyle.setFillForegroundColor(indexedColors.getIndex());
-        }
-        if (font != null) {
-            WriteFont writeFont = new WriteFont();
-            writeFont.setFontName(font.getFontName());
-            writeFont.setFontHeightInPoints(font.getFontHeightInPoints());
-            writeFont.setBold(font.isBold());
-            writeCellStyle.setWriteFont(writeFont);
-        }
-        return writeCellStyle;
-    }
-
-    @Deprecated
-    private void compatibleOldCodeCreateHeadColumnWidthStyleStrategy(WriteBasicParameter writeBasicParameter,
-        final Map<Integer, Integer> columnWidthMap) {
-        if (columnWidthMap == null || columnWidthMap.isEmpty()) {
-            return;
-        }
-        if (writeBasicParameter.getCustomWriteHandlerList() == null) {
-            writeBasicParameter.setCustomWriteHandlerList(new ArrayList<WriteHandler>());
-        }
-        writeBasicParameter.getCustomWriteHandlerList().add(new AbstractHeadColumnWidthStyleStrategy() {
-            @Override
-            protected Integer columnWidth(Head head, Integer columnIndex) {
-                if (columnWidthMap.containsKey(head.getColumnIndex())) {
-                    return columnWidthMap.get(head.getColumnIndex()) / 256;
-                }
-                return 20;
-            }
-        });
-    }
 
     protected void initAnnotationConfig(List<WriteHandler> handlerList, WriteBasicParameter writeBasicParameter) {
         if (!HeadKindEnum.CLASS.equals(getExcelWriteHeadProperty().getHeadKind())) {
@@ -481,95 +400,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             }
         }
         return false;
-    }
-
-    public Boolean getNeedHead() {
-        return needHead;
-    }
-
-    public void setNeedHead(Boolean needHead) {
-        this.needHead = needHead;
-    }
-
-    public Map<Class<? extends WriteHandler>, List<WriteHandler>> getWriteHandlerMap() {
-        return writeHandlerMap;
-    }
-
-    public void setWriteHandlerMap(Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap) {
-        this.writeHandlerMap = writeHandlerMap;
-    }
-
-    public Map<Class<? extends WriteHandler>, List<WriteHandler>> getOwnWriteHandlerMap() {
-        return ownWriteHandlerMap;
-    }
-
-    public void setOwnWriteHandlerMap(
-        Map<Class<? extends WriteHandler>, List<WriteHandler>> ownWriteHandlerMap) {
-        this.ownWriteHandlerMap = ownWriteHandlerMap;
-    }
-
-    public ExcelWriteHeadProperty getExcelWriteHeadProperty() {
-        return excelWriteHeadProperty;
-    }
-
-    public void setExcelWriteHeadProperty(ExcelWriteHeadProperty excelWriteHeadProperty) {
-        this.excelWriteHeadProperty = excelWriteHeadProperty;
-    }
-
-    public Integer getRelativeHeadRowIndex() {
-        return relativeHeadRowIndex;
-    }
-
-    public void setRelativeHeadRowIndex(Integer relativeHeadRowIndex) {
-        this.relativeHeadRowIndex = relativeHeadRowIndex;
-    }
-
-    public Boolean getUseDefaultStyle() {
-        return useDefaultStyle;
-    }
-
-    public void setUseDefaultStyle(Boolean useDefaultStyle) {
-        this.useDefaultStyle = useDefaultStyle;
-    }
-
-    public Boolean getAutomaticMergeHead() {
-        return automaticMergeHead;
-    }
-
-    public void setAutomaticMergeHead(Boolean automaticMergeHead) {
-        this.automaticMergeHead = automaticMergeHead;
-    }
-
-    public Collection<Integer> getExcludeColumnIndexes() {
-        return excludeColumnIndexes;
-    }
-
-    public void setExcludeColumnIndexes(Collection<Integer> excludeColumnIndexes) {
-        this.excludeColumnIndexes = excludeColumnIndexes;
-    }
-
-    public Collection<String> getExcludeColumnFieldNames() {
-        return excludeColumnFieldNames;
-    }
-
-    public void setExcludeColumnFieldNames(Collection<String> excludeColumnFieldNames) {
-        this.excludeColumnFieldNames = excludeColumnFieldNames;
-    }
-
-    public Collection<Integer> getIncludeColumnIndexes() {
-        return includeColumnIndexes;
-    }
-
-    public void setIncludeColumnIndexes(Collection<Integer> includeColumnIndexes) {
-        this.includeColumnIndexes = includeColumnIndexes;
-    }
-
-    public Collection<String> getIncludeColumnFieldNames() {
-        return includeColumnFieldNames;
-    }
-
-    public void setIncludeColumnFieldNames(Collection<String> includeColumnFieldNames) {
-        this.includeColumnFieldNames = includeColumnFieldNames;
     }
 
     @Override

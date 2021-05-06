@@ -10,8 +10,8 @@ import java.util.TreeMap;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.FieldUtils;
@@ -106,14 +106,14 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         }
     }
 
-    private void doAddBasicTypeToExcel(RowData oneRowData, Head head, Row row, int relativeRowIndex,
-        int dataIndex,
+    private void doAddBasicTypeToExcel(RowData oneRowData, Head head, Row row, int relativeRowIndex, int dataIndex,
         int cellIndex) {
         WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
         WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
         Object value = oneRowData.get(dataIndex);
-        CellData cellData = converterAndSet(writeContext.currentWriteHolder(), value == null ? null : value.getClass(),
+        WriteCellData<?> cellData = converterAndSet(writeContext.currentWriteHolder(),
+            value == null ? null : value.getClass(),
             null, cell, value, null, head, relativeRowIndex);
         WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
     }
@@ -123,7 +123,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
         BeanMap beanMap = BeanMap.create(oneRowData);
         Set<String> beanMapHandledSet = new HashSet<String>();
-        int cellIndex = 0;
+        int cellIndex;
         // If it's a class it needs to be cast by type
         if (HeadKindEnum.CLASS.equals(writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadKind())) {
             Map<Integer, Head> headMap = writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadMap();
@@ -141,7 +141,8 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 Cell cell = WorkBookUtil.createCell(row, cellIndex);
                 WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
                 Object value = beanMap.get(name);
-                CellData<?> cellData = converterAndSet(currentWriteHolder, excelContentProperty.getField().getType(),
+                WriteCellData<?> cellData = converterAndSet(currentWriteHolder,
+                    excelContentProperty.getField().getType(),
                     null,
                     cell, value, excelContentProperty, head, relativeRowIndex);
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
@@ -167,13 +168,14 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             WriteHandlerUtils.beforeCellCreate(writeContext, row, null, cellIndex, relativeRowIndex, Boolean.FALSE);
             Cell cell = WorkBookUtil.createCell(row, cellIndex);
             WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
-            CellData<?> cellData = converterAndSet(currentWriteHolder, value == null ? null : value.getClass(), null, cell,
+            WriteCellData<?> cellData = converterAndSet(currentWriteHolder, value == null ? null : value.getClass(),
+                null, cell,
                 value, null, null, relativeRowIndex);
             WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
         }
     }
 
-    private void initSortedAllFiledMapFieldList(Class clazz, Map<Integer, Field> sortedAllFiledMap) {
+    private void initSortedAllFiledMapFieldList(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap) {
         if (!sortedAllFiledMap.isEmpty()) {
             return;
         }

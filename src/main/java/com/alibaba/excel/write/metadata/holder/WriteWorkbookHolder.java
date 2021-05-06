@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.data.DataFormatData;
@@ -18,14 +17,15 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.IoUtils;
 import com.alibaba.excel.util.MapUtils;
-import com.alibaba.excel.util.StringUtils;
+import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -120,10 +120,19 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * Excel is also written in the event of an exception being thrown.The default false.
      */
     private Boolean writeExcelOnException;
+
     /**
-     * Used to cache data Format.
+     * Used to cell style.
      */
-    private Map<String, DataFormatData> dataFormatCache;
+    private Map<WriteCellStyle, CellStyle> cellStyleMap;
+    /**
+     * Used to font.
+     */
+    private Map<WriteFont, Font> fontMap;
+    /**
+     * Used to data format.
+     */
+    private Map<DataFormatData, Short> dataFormatMap;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
@@ -178,7 +187,9 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.writeExcelOnException = writeWorkbook.getWriteExcelOnException();
         }
-        this.dataFormatCache = MapUtils.newHashMap();
+        this.cellStyleMap = MapUtils.newHashMap();
+        this.fontMap= MapUtils.newHashMap();
+        this.dataFormatMap=MapUtils.newHashMap();
     }
 
     private void copyTemplate() throws IOException {
@@ -206,22 +217,52 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     }
 
     /**
-     * Get a data format.
+     * create a cell style.
      *
-     * @param format
+     * @param writeCellStyle
      * @return
      */
-    public DataFormatData getDataFormat(String format) {
-        if (StringUtils.isEmpty(format)) {
-            return BuiltinFormats.GENERAL;
+    public CellStyle createCellStyle(WriteCellStyle writeCellStyle) {
+        CellStyle cellStyle = cellStyleMap.get(writeCellStyle);
+        if (cellStyle != null) {
+            return cellStyle;
         }
-        DataFormatData dataFormat = dataFormatCache.get(format);
+        cellStyle = StyleUtil.buildCellStyle(workbook, writeCellStyle);
+        cellStyle.setDataFormat(createDataFormat(writeCellStyle.getDataFormatData()));
+        cellStyle.setFont(createFont(writeCellStyle.getWriteFont()));
+        cellStyleMap.put(writeCellStyle, cellStyle);
+        return cellStyle;
+    }
+
+    /**
+     * create a font.
+     *
+     * @param writeFont
+     * @return
+     */
+    public Font createFont(WriteFont writeFont) {
+        Font font = fontMap.get(writeFont);
+        if (font != null) {
+            return font;
+        }
+        font = StyleUtil.buildFont(workbook, writeFont);
+        fontMap.put(writeFont, font);
+        return font;
+    }
+
+    /**
+     * create a data format.
+     *
+     * @param dataFormatData
+     * @return
+     */
+    public Short createDataFormat(DataFormatData dataFormatData) {
+        Short dataFormat = dataFormatMap.get(dataFormatData);
         if (dataFormat != null) {
             return dataFormat;
         }
-        DataFormat dataFormatCreate = workbook.createDataFormat();
-        dataFormat = dataFormatCreate.getFormat(format);
-        dataFormatCache.put(format,dataFormat);
+        dataFormat = StyleUtil.buildDataFormat(workbook, dataFormatData);
+        dataFormatMap.put(dataFormatData, dataFormat);
         return dataFormat;
     }
 

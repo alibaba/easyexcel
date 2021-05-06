@@ -1,7 +1,6 @@
 package com.alibaba.excel.write.metadata.style;
 
 import com.alibaba.excel.constant.BuiltinFormats;
-import com.alibaba.excel.metadata.DataFormat;
 import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
@@ -53,7 +52,6 @@ public class WriteCellStyle {
     /**
      * Set whether the text should be wrapped. Setting this flag to <code>true</code> make all content visible within a
      * cell by displaying it on multiple lines
-     *
      */
     private Boolean wrapped;
     /**
@@ -101,7 +99,6 @@ public class WriteCellStyle {
      * Set the color to use for the right border
      *
      * @see IndexedColors
-     *
      */
     private Short rightBorderColor;
 
@@ -109,14 +106,12 @@ public class WriteCellStyle {
      * Set the color to use for the top border
      *
      * @see IndexedColors
-     *
      */
     private Short topBorderColor;
     /**
      * Set the color to use for the bottom border
      *
      * @see IndexedColors
-     *
      */
     private Short bottomBorderColor;
     /**
@@ -130,7 +125,6 @@ public class WriteCellStyle {
      * Set the background fill color.
      *
      * @see IndexedColors
-     *
      */
     private Short fillBackgroundColor;
 
@@ -138,7 +132,6 @@ public class WriteCellStyle {
      * Set the foreground fill color <i>Note: Ensure Foreground color is set prior to background color.</i>
      *
      * @see IndexedColors
-     *
      */
     private Short fillForegroundColor;
     /**
@@ -152,9 +145,7 @@ public class WriteCellStyle {
         }
         WriteCellStyle writeCellStyle = new WriteCellStyle();
         if (styleProperty != null) {
-            if (styleProperty.getDataFormat() >= 0) {
-                writeCellStyle.setDataFormat(styleProperty.getDataFormat());
-            }
+            writeCellStyle.setDataFormatData(styleProperty.getDataFormatData());
             writeCellStyle.setHidden(styleProperty.getHidden());
             writeCellStyle.setLocked(styleProperty.getLocked());
             writeCellStyle.setQuotePrefix(styleProperty.getQuotePrefix());

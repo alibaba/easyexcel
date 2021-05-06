@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * Use the same style for the row
@@ -16,8 +16,8 @@ import org.apache.poi.ss.usermodel.Cell;
  */
 public class HorizontalCellStyleStrategy extends AbstractVerticalCellStyleStrategy {
 
-    private final WriteCellStyle headWriteCellStyle;
-    private final List<WriteCellStyle> contentWriteCellStyleList;
+    private WriteCellStyle headWriteCellStyle;
+    private List<WriteCellStyle> contentWriteCellStyleList;
 
     public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle,
         List<WriteCellStyle> contentWriteCellStyleList) {
@@ -27,8 +27,9 @@ public class HorizontalCellStyleStrategy extends AbstractVerticalCellStyleStrate
 
     public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle, WriteCellStyle contentWriteCellStyle) {
         this.headWriteCellStyle = headWriteCellStyle;
-        contentWriteCellStyleList = ListUtils.newArrayList();
-        contentWriteCellStyleList.add(contentWriteCellStyle);
+        if (contentWriteCellStyle != null) {
+            this.contentWriteCellStyleList = ListUtils.newArrayList(contentWriteCellStyle);
+        }
     }
 
     @Override
@@ -37,11 +38,11 @@ public class HorizontalCellStyleStrategy extends AbstractVerticalCellStyleStrate
     }
 
     @Override
-    protected WriteCellStyle contentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+    protected WriteCellStyle contentCellStyle(CellWriteHandlerContext context) {
         if (CollectionUtils.isEmpty(contentWriteCellStyleList)) {
-            return new WriteCellStyle();
+            return null;
         }
-        return contentWriteCellStyleList.get(relativeRowIndex % contentWriteCellStyleList.size());
+        return contentWriteCellStyleList.get(context.getRelativeRowIndex() % contentWriteCellStyleList.size());
     }
 
 }

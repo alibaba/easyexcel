@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata.data;
 
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * image
@@ -20,6 +21,7 @@ public class ImageData extends ClientAnchorData {
      */
     private ImageType imageType;
 
+    @Getter
     public enum ImageType {
         /**
          * Extended windows meta file
@@ -48,7 +50,7 @@ public class ImageData extends ClientAnchorData {
 
         ;
 
-        public final int value;
+        int value;
 
         ImageType(int value) {
             this.value = value;

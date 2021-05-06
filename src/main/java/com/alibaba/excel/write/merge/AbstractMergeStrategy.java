@@ -1,12 +1,8 @@
 package com.alibaba.excel.write.merge;
 
-import java.util.List;
-
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -19,12 +15,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 public abstract class AbstractMergeStrategy implements CellWriteHandler {
 
     @Override
-    public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        if (isHead) {
+    public void afterCellDispose(CellWriteHandlerContext context) {
+        if (context.getHead()) {
             return;
         }
-        merge(writeSheetHolder.getSheet(), cell, head, relativeRowIndex);
+        merge(context.getWriteSheetHolder().getSheet(), context.getCell(), context.getHeadData(),
+            context.getRelativeRowIndex());
     }
 
     /**

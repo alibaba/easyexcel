@@ -4,22 +4,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.StringUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Analysis event
@@ -82,7 +82,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
 
     private void dealData(AnalysisContext analysisContext) {
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
-        Map<Integer, CellData<?>> cellDataMap = (Map)readRowHolder.getCellMap();
+        Map<Integer, ReadCellData<?>> cellDataMap = (Map)readRowHolder.getCellMap();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
         int currentHeadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
@@ -111,7 +111,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
         }
     }
 
-    private void buildHead(AnalysisContext analysisContext, Map<Integer, CellData<?>> cellDataMap) {
+    private void buildHead(AnalysisContext analysisContext, Map<Integer, ReadCellData<?>> cellDataMap) {
         if (!HeadKindEnum.CLASS.equals(analysisContext.currentReadHolder().excelReadHeadProperty().getHeadKind())) {
             return;
         }

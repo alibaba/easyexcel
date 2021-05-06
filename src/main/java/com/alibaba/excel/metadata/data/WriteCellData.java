@@ -9,6 +9,7 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * wirte cell data
@@ -16,6 +17,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
+@NoArgsConstructor
 public class WriteCellData<T> extends CellData<T> {
     /**
      * Support only when writing.{@link CellDataTypeEnum#DATE}
@@ -42,9 +44,13 @@ public class WriteCellData<T> extends CellData<T> {
      */
     private WriteCellStyle writeCellStyle;
 
-
     public WriteCellData(String stringValue) {
         this(CellDataTypeEnum.STRING, stringValue);
+    }
+
+    public WriteCellData(CellDataTypeEnum type) {
+        super();
+        setType(type);
     }
 
     public WriteCellData(CellDataTypeEnum type, String stringValue) {
@@ -92,7 +98,7 @@ public class WriteCellData<T> extends CellData<T> {
             throw new IllegalArgumentException("Image can not be null");
         }
         setType(CellDataTypeEnum.EMPTY);
-        this.imageDataList= ListUtils.newArrayList();
+        this.imageDataList = ListUtils.newArrayList();
         ImageData imageData = new ImageData();
         imageData.setImage(image);
         imageDataList.add(imageData);

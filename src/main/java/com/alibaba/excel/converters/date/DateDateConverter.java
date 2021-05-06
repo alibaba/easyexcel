@@ -6,6 +6,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 
 /**
@@ -23,11 +24,11 @@ public class DateDateConverter implements Converter<Date> {
     public WriteCellData<?> convertToExcelData(Date value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws Exception {
         WriteCellData<?> cellData = new WriteCellData<>(value);
-        if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null
-            || contentProperty.getDateTimeFormatProperty().getFormat() == null) {
-            return cellData;
+        String format = null;
+        if (contentProperty != null && contentProperty.getDateTimeFormatProperty() != null) {
+            format = contentProperty.getDateTimeFormatProperty().getFormat();
         }
-        WorkBookUtil.fillDataFormat(cellData, contentProperty.getDateTimeFormatProperty().getFormat());
+        WorkBookUtil.fillDataFormat(cellData, format, DateUtils.defaultDateFormat);
         return cellData;
     }
 }

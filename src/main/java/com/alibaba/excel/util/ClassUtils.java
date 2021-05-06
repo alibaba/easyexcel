@@ -27,10 +27,9 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
  **/
 public class ClassUtils {
 
-    private static final Map<Class, SoftReference<FieldCache>> FIELD_CACHE =
-        new ConcurrentHashMap<Class, SoftReference<FieldCache>>();
+    private static final Map<Class<?>, SoftReference<FieldCache>> FIELD_CACHE = new ConcurrentHashMap<>();
 
-    public static void declaredFields(Class clazz, Map<Integer, Field> sortedAllFiledMap,
+    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap,
         Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, Boolean convertAllFiled,
         Boolean needIgnore, Holder holder) {
         FieldCache fieldCache = getFieldCache(clazz, convertAllFiled);
@@ -54,7 +53,7 @@ public class ClassUtils {
         int index = 0;
         for (Map.Entry<Integer, Field> entry : fieldCache.getSortedAllFiledMap().entrySet()) {
             Field field = entry.getValue();
-            if (((WriteHolder) holder).ignore(entry.getValue().getName(), entry.getKey())) {
+            if (((WriteHolder)holder).ignore(entry.getValue().getName(), entry.getKey())) {
                 if (ignoreMap != null) {
                     ignoreMap.put(field.getName(), field);
                 }
@@ -69,12 +68,12 @@ public class ClassUtils {
         }
     }
 
-    public static void declaredFields(Class clazz, Map<Integer, Field> sortedAllFiledMap, Boolean convertAllFiled,
+    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap, Boolean convertAllFiled,
         Boolean needIgnore, WriteHolder writeHolder) {
         declaredFields(clazz, sortedAllFiledMap, null, null, convertAllFiled, needIgnore, writeHolder);
     }
 
-    private static FieldCache getFieldCache(Class clazz, Boolean convertAllFiled) {
+    private static FieldCache getFieldCache(Class<?> clazz, Boolean convertAllFiled) {
         if (clazz == null) {
             return null;
         }
@@ -92,12 +91,12 @@ public class ClassUtils {
         return FIELD_CACHE.get(clazz).get();
     }
 
-    private static void declaredFields(Class clazz, Boolean convertAllFiled) {
-        List<Field> tempFieldList = new ArrayList<Field>();
-        Class tempClass = clazz;
+    private static void declaredFields(Class<?> clazz, Boolean convertAllFiled) {
+        List<Field> tempFieldList = new ArrayList<>();
+        Class<?> tempClass = clazz;
         // When the parent class is null, it indicates that the parent class (Object class) has reached the top
         // level.
-        while (tempClass != null && tempClass != BaseRowModel.class) {
+        while (tempClass != null) {
             Collections.addAll(tempFieldList, tempClass.getDeclaredFields());
             // Get the parent class and give it to yourself
             tempClass = tempClass.getSuperclass();
@@ -107,8 +106,7 @@ public class ClassUtils {
         Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
         Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
 
-        ExcelIgnoreUnannotated excelIgnoreUnannotated =
-            (ExcelIgnoreUnannotated) clazz.getAnnotation(ExcelIgnoreUnannotated.class);
+        ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
         for (Field field : tempFieldList) {
             declaredOneField(field, orderFiledMap, indexFiledMap, ignoreMap, excelIgnoreUnannotated, convertAllFiled);
         }
@@ -208,7 +206,6 @@ public class ClassUtils {
         }
     }
 
-
     /**
      * <p>Gets a {@code List} of all interfaces implemented by the given
      * class and its superclasses.</p>
@@ -218,9 +215,9 @@ public class ClassUtils {
      * superclass is considered in the same way. Later duplicates are ignored,
      * so the order is maintained.</p>
      *
-     * @param cls  the class to look up, may be {@code null}
+     * @param cls the class to look up, may be {@code null}
      * @return the {@code List} of interfaces in order,
-     *  {@code null} if null input
+     * {@code null} if null input
      */
     public static List<Class<?>> getAllInterfaces(final Class<?> cls) {
         if (cls == null) {
@@ -233,11 +230,10 @@ public class ClassUtils {
         return new ArrayList<>(interfacesFound);
     }
 
-
     /**
      * Gets the interfaces for the specified class.
      *
-     * @param cls  the class to look up, may be {@code null}
+     * @param cls             the class to look up, may be {@code null}
      * @param interfacesFound the {@code Set} of interfaces for the class
      */
     private static void getAllInterfaces(Class<?> cls, final HashSet<Class<?>> interfacesFound) {

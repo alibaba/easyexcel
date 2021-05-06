@@ -61,7 +61,7 @@ public class NumberUtils {
         WriteCellData<?> cellData = new WriteCellData<>(BigDecimal.valueOf(num.doubleValue()));
         if (contentProperty != null && contentProperty.getNumberFormatProperty() != null
             && StringUtils.isNotBlank(contentProperty.getNumberFormatProperty().getFormat())) {
-            WorkBookUtil.fillDataFormat(cellData, contentProperty.getNumberFormatProperty().getFormat());
+            WorkBookUtil.fillDataFormat(cellData, contentProperty.getNumberFormatProperty().getFormat(), null);
         }
         return cellData;
     }

@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * TODO
+ * rich text string
  *
  * @author Jiaju Zhuang
  */

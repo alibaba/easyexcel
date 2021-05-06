@@ -94,7 +94,7 @@ public class WorkBookUtil {
         return cell;
     }
 
-    public static void fillDataFormat(WriteCellData<?> cellData, String format) {
+    public static void fillDataFormat(WriteCellData<?> cellData, String format, String defaultFormat) {
         if (cellData.getWriteCellStyle() == null) {
             cellData.setWriteCellStyle(new WriteCellStyle());
         }
@@ -102,7 +102,11 @@ public class WorkBookUtil {
             cellData.getWriteCellStyle().setDataFormatData(new DataFormatData());
         }
         if (cellData.getWriteCellStyle().getDataFormatData().getFormat() == null) {
-            cellData.getWriteCellStyle().getDataFormatData().setFormat(format);
+            if (format == null) {
+                cellData.getWriteCellStyle().getDataFormatData().setFormat(defaultFormat);
+            } else {
+                cellData.getWriteCellStyle().getDataFormatData().setFormat(format);
+            }
         }
     }
 }

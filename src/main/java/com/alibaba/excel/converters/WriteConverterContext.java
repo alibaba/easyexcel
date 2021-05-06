@@ -3,6 +3,7 @@ package com.alibaba.excel.converters;
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**

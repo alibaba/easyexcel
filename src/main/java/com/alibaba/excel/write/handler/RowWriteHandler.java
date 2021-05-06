@@ -1,5 +1,6 @@
 package com.alibaba.excel.write.handler;
 
+import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 
@@ -11,6 +12,16 @@ import org.apache.poi.ss.usermodel.Row;
  * @author Jiaju Zhuang
  */
 public interface RowWriteHandler extends WriteHandler {
+
+    /**
+     * Called before create the row
+     *
+     * @param context
+     */
+    default void beforeRowCreate(RowWriteHandlerContext context) {
+        beforeRowCreate(context.getWriteSheetHolder(), context.getWriteTableHolder(), context.getRowIndex(),
+            context.getRelativeRowIndex(), context.getHead());
+    }
 
     /**
      * Called before create the row
@@ -27,6 +38,16 @@ public interface RowWriteHandler extends WriteHandler {
     /**
      * Called after the row is created
      *
+     * @param context
+     */
+    default void afterRowCreate(RowWriteHandlerContext context) {
+        afterRowCreate(context.getWriteSheetHolder(), context.getWriteTableHolder(), context.getRow(),
+            context.getRelativeRowIndex(), context.getHead());
+    }
+
+    /**
+     * Called after the row is created
+     *
      * @param writeSheetHolder
      * @param writeTableHolder Nullable.It is null without using table writes.
      * @param row
@@ -35,6 +56,16 @@ public interface RowWriteHandler extends WriteHandler {
      */
     default void afterRowCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
         Integer relativeRowIndex, Boolean isHead) {}
+
+    /**
+     * Called after all operations on the row have been completed.This method is not called when fill the data.
+     *
+     * @param context
+     */
+    default void afterRowDispose(RowWriteHandlerContext context) {
+        afterRowDispose(context.getWriteSheetHolder(), context.getWriteTableHolder(), context.getRow(),
+            context.getRelativeRowIndex(), context.getHead());
+    }
 
     /**
      * Called after all operations on the row have been completed.This method is not called when fill the data.

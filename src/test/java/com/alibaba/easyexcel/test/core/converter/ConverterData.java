@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.data.CellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 
 import lombok.Data;
 
@@ -34,5 +34,5 @@ public class ConverterData {
     @ExcelProperty("字符串")
     private String string;
     @ExcelProperty("自定义")
-    private CellData<?> cellData;
+    private WriteCellData<?> cellData;
 }

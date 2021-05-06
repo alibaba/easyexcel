@@ -6,16 +6,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.util.DateUtils;
+import com.alibaba.excel.util.FileUtils;
+
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.metadata.data.CellData;
-import com.alibaba.excel.util.DateUtils;
-import com.alibaba.excel.util.FileUtils;
 
 /**
  *
@@ -110,7 +110,7 @@ public class ConverterDataTest {
         converterData.setDoubleData(1.0);
         converterData.setFloatData((float)1.0);
         converterData.setString("测试");
-        converterData.setCellData(new CellData("自定义"));
+        converterData.setCellData(new WriteCellData<>("自定义"));
         list.add(converterData);
         return list;
     }

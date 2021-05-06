@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata.data;
 
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * hyperlink
@@ -18,35 +19,36 @@ public class HyperlinkData extends CoordinateData {
      */
     private HyperlinkType hyperlinkType;
 
+    @Getter
     public enum HyperlinkType {
         /**
          * Not a hyperlink
          */
-        NONE(-1),
+        NONE(org.apache.poi.common.usermodel.HyperlinkType.NONE),
 
         /**
          * Link to an existing file or web page
          */
-        URL(1),
+        URL(org.apache.poi.common.usermodel.HyperlinkType.URL),
 
         /**
          * Link to a place in this document
          */
-        DOCUMENT(2),
+        DOCUMENT(org.apache.poi.common.usermodel.HyperlinkType.DOCUMENT),
 
         /**
          * Link to an E-mail address
          */
-        EMAIL(3),
+        EMAIL(org.apache.poi.common.usermodel.HyperlinkType.EMAIL),
 
         /**
          * Link to a file
          */
-        FILE(4);
+        FILE(org.apache.poi.common.usermodel.HyperlinkType.FILE);
 
-        public final int value;
+        org.apache.poi.common.usermodel.HyperlinkType value;
 
-        HyperlinkType(int value) {
+        HyperlinkType(org.apache.poi.common.usermodel.HyperlinkType value) {
             this.value = value;
         }
     }

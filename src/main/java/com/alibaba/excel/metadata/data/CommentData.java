@@ -8,15 +8,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
-public class CommentData {
-    /**
-     * Row index
-     */
-    private Integer rowIndex;
-    /**
-     * Column index
-     */
-    private Integer columnIndex;
+public class CommentData extends ClientAnchorData {
     /**
      * Name of the original comment author
      */

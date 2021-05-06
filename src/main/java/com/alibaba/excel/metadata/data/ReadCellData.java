@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * read cell data
@@ -12,6 +13,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
+@NoArgsConstructor
 public class ReadCellData<T> extends CellData<T> {
     /**
      * data format.

@@ -1,7 +1,7 @@
 package com.alibaba.easyexcel.test.temp.simple;
 
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
@@ -21,7 +21,7 @@ public class WriteCellHandler implements CellWriteHandler {
 
     @Override
     public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        CellData cellData, Cell cell, Head head, Integer integer, Boolean isHead) {
+        WriteCellData<?> cellData, Cell cell, Head head, Integer integer, Boolean isHead) {
 
         if (!isHead) {
             CreationHelper createHelper = writeSheetHolder.getSheet().getWorkbook().getCreationHelper();

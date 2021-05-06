@@ -9,7 +9,6 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 /**
  * BigDecimal and number converter
@@ -36,7 +35,7 @@ public class BigDecimalNumberConverter implements Converter<BigDecimal> {
 
     @Override
     public WriteCellData<?> convertToExcelData(BigDecimal value, ExcelContentProperty contentProperty,
-        WriteHolder currentWriteHolder) {
-        return NumberUtils.formatToCellData(value, contentProperty, currentWriteHolder);
+        GlobalConfiguration globalConfiguration) {
+        return NumberUtils.formatToCellData(value, contentProperty);
     }
 }

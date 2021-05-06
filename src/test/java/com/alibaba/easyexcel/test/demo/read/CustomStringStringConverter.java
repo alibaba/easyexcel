@@ -2,8 +2,9 @@ package com.alibaba.easyexcel.test.demo.read;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
@@ -13,7 +14,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
  */
 public class CustomStringStringConverter implements Converter<String> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return String.class;
     }
 
@@ -34,7 +35,7 @@ public class CustomStringStringConverter implements Converter<String> {
      * @return
      */
     @Override
-    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public String convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return "自定义：" + cellData.getStringValue();
     }
@@ -51,9 +52,9 @@ public class CustomStringStringConverter implements Converter<String> {
      * @return
      */
     @Override
-    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(String value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(value);
+        return new WriteCellData<>(value);
     }
 
 }

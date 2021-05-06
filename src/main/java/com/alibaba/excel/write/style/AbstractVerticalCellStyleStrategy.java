@@ -1,17 +1,13 @@
 package com.alibaba.excel.write.style;
 
-import java.util.Map;
+import java.util.List;
 
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.util.MapUtils;
-import com.alibaba.excel.util.StyleUtil;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Use the same style for the column
@@ -20,77 +16,32 @@ import org.apache.poi.ss.usermodel.Workbook;
  */
 public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyleStrategy {
 
-    private Workbook workbook;
-    private final Map<Integer, Map<Integer, Map<Integer, CellStyle>>> headCellStyleCache = MapUtils.newHashMap();
-    private final Map<Integer, Map<Integer, Map<Integer, CellStyle>>> contentCellStyleCache = MapUtils.newHashMap();
-
     @Override
-    protected void initCellStyle(Workbook workbook) {
-        this.workbook = workbook;
+    protected void setHeadCellStyle(CellWriteHandlerContext context) {
+        if (!continueProcessing(context)) {
+            return;
+        }
+        WriteCellData<?> cellData = context.getCellDataList().get(0);
+        cellData.setWriteCellStyle(headCellStyle(context.getHeadData()));
     }
 
     @Override
-    protected void setHeadCellStyle(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
-        Head head, Integer relativeRowIndex) {
-        if (head == null) {
+    protected void setContentCellStyle(CellWriteHandlerContext context) {
+        if (!continueProcessing(context)) {
             return;
         }
-        Map<Integer, CellStyle> styleMap = getStyleMap(headCellStyleCache, writeSheetHolder, writeTableHolder);
-
-        int columnIndex = head.getColumnIndex();
-        if (styleMap.containsKey(columnIndex)) {
-            CellStyle cellStyle = styleMap.get(columnIndex);
-            if (cellStyle != null) {
-                cell.setCellStyle(cellStyle);
-            }
-            return;
-        }
-        WriteCellStyle headCellStyle = headCellStyle(head);
-        if (headCellStyle == null) {
-            styleMap.put(columnIndex, StyleUtil.buildHeadCellStyle(workbook, null));
-        } else {
-            CellStyle cellStyle = StyleUtil.buildHeadCellStyle(workbook, headCellStyle);
-            styleMap.put(columnIndex, cellStyle);
-            cell.setCellStyle(cellStyle);
-        }
-    }
-
-    @Override
-    protected void setContentCellStyle(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
-        Head head, Integer relativeRowIndex) {
-        if (head == null) {
-            return;
-        }
-        Map<Integer, CellStyle> styleMap = getStyleMap(contentCellStyleCache, writeSheetHolder, writeTableHolder);
-
-        int columnIndex = head.getColumnIndex();
-        if (styleMap.containsKey(columnIndex)) {
-            CellStyle cellStyle = styleMap.get(columnIndex);
-            if (cellStyle != null) {
-                cell.setCellStyle(cellStyle);
-            }
-            return;
-        }
-        WriteCellStyle contentCellStyle = contentCellStyle(cell, head, relativeRowIndex);
-        if (contentCellStyle == null) {
-            styleMap.put(columnIndex, StyleUtil.buildContentCellStyle(workbook, null));
-        } else {
-            CellStyle cellStyle = StyleUtil.buildContentCellStyle(workbook, contentCellStyle);
-            styleMap.put(columnIndex, cellStyle);
-            cell.setCellStyle(cellStyle);
-        }
+        WriteCellData<?> cellData = context.getCellDataList().get(0);
+        cellData.setWriteCellStyle(contentCellStyle(context));
     }
 
     /**
      * Returns the column width corresponding to each column head.
      *
-     * @param cell
-     * @param head
-     * @param relativeRowIndex
+     * @param context
      * @return
      */
-    protected WriteCellStyle contentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
-        return contentCellStyle(head);
+    protected WriteCellStyle contentCellStyle(CellWriteHandlerContext context) {
+        return contentCellStyle(context.getHeadData());
     }
 
     /**
@@ -113,15 +64,11 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
                 + "'contentCellStyle(Head head)' must be implemented.");
     }
 
-    private Map<Integer, CellStyle> getStyleMap(Map<Integer, Map<Integer, Map<Integer, CellStyle>>> cellStyleCache,
-        WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder) {
-        Map<Integer, Map<Integer, CellStyle>> tableStyleMap = cellStyleCache.computeIfAbsent(
-            writeSheetHolder.getSheetNo(), key -> MapUtils.newHashMap());
-        Integer tableNo = 0;
-        if (writeTableHolder != null) {
-            tableNo = writeTableHolder.getTableNo();
+    protected boolean continueProcessing(CellWriteHandlerContext context) {
+        List<WriteCellData<?>> cellDataList = context.getCellDataList();
+        if (CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1) {
+            return false;
         }
-        return tableStyleMap.computeIfAbsent(tableNo, key -> MapUtils.newHashMap());
+        return context.getHeadData() != null;
     }
-
 }

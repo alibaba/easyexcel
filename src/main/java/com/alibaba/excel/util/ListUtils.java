@@ -2,6 +2,7 @@ package com.alibaba.excel.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +27,20 @@ public class ListUtils {
     public static <E> ArrayList<E> newArrayList() {
         return new ArrayList<>();
     }
+
+    /**
+     * Creates a <i>mutable</i> {@code ArrayList} instance containing the given elements.
+     *
+     */
+    public static <E> ArrayList<E> newArrayList(E... elements) {
+        checkNotNull(elements);
+        // Avoid integer overflow when a large array is passed in
+        int capacity = computeArrayListCapacity(elements.length);
+        ArrayList<E> list = new ArrayList<>(capacity);
+        Collections.addAll(list, elements);
+        return list;
+    }
+
 
     /**
      * Creates a <i>mutable</i> {@code ArrayList} instance containing the given elements; a very thin

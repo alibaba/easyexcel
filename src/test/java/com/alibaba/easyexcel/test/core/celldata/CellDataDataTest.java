@@ -5,19 +5,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.data.CellData;
+import com.alibaba.excel.metadata.data.FormulaData;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.util.DateUtils;
+
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.data.CellData;
-import com.alibaba.excel.util.DateUtils;
-
 /**
- *
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -50,15 +51,16 @@ public class CellDataDataTest {
     private List<CellDataData> data() throws Exception {
         List<CellDataData> list = new ArrayList<CellDataData>();
         CellDataData cellDataData = new CellDataData();
-        cellDataData.setDate(new CellData<>(DateUtils.parseDate("2020-01-01 01:01:01")));
+        cellDataData.setDate(new WriteCellData<>(DateUtils.parseDate("2020-01-01 01:01:01")));
         CellData<Integer> integer1 = new CellData<Integer>();
         integer1.setType(CellDataTypeEnum.NUMBER);
         integer1.setNumberValue(BigDecimal.valueOf(2L));
         cellDataData.setInteger1(integer1);
         cellDataData.setInteger2(2);
-        CellData formulaValue = new CellData();
-        formulaValue.setFormula(Boolean.TRUE);
-        formulaValue.setFormulaValue("B2+C2");
+        WriteCellData<?> formulaValue = new WriteCellData<>();
+        FormulaData formulaData = new FormulaData();
+        formulaValue.setFormulaData(formulaData);
+        formulaData.setFormulaValue("B2+C2");
         cellDataData.setFormulaValue(formulaValue);
         list.add(cellDataData);
         return list;

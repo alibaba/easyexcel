@@ -1,11 +1,9 @@
 package com.alibaba.excel.write.handler.impl;
 
 import com.alibaba.excel.write.handler.RowWriteHandler;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Row;
 
 /**
  * Default row handler.
@@ -14,9 +12,10 @@ import org.apache.poi.ss.usermodel.Row;
  */
 @Slf4j
 public class DefaultRowWriteHandler implements RowWriteHandler {
+
     @Override
-    public void afterRowDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Integer relativeRowIndex, Boolean isHead) {
-        writeSheetHolder.setLastRowIndex(row.getRowNum());
+    public void afterRowDispose(RowWriteHandlerContext context) {
+        context.getWriteSheetHolder().setLastRowIndex(context.getRowIndex());
     }
+
 }
