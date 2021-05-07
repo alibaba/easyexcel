@@ -1,6 +1,7 @@
 package com.alibaba.excel.write.executor;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,13 +54,13 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         int relativeRowIndex = 0;
         for (Object oneRowData : data) {
             int n = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, sortedAllFiledMap);
+            addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, sortedAllFiledMap, writeContext.writeSheetHolder().getClazz());
             relativeRowIndex++;
         }
     }
 
     private void addOneRowOfDataToExcel(Object oneRowData, int n, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFiledMap) {
+        Map<Integer, Field> sortedAllFiledMap, Class class_) {
         if (oneRowData == null) {
             return;
         }
@@ -67,14 +68,14 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Row row = WorkBookUtil.createRow(writeContext.writeSheetHolder().getSheet(), n);
         WriteHandlerUtils.afterRowCreate(writeContext, row, relativeRowIndex, Boolean.FALSE);
         if (oneRowData instanceof List) {
-            addBasicTypeToExcel((List) oneRowData, row, relativeRowIndex);
+            addBasicTypeToExcel((List) oneRowData, row, relativeRowIndex, class_);
         } else {
-            addJavaObjectToExcel(oneRowData, row, relativeRowIndex, sortedAllFiledMap);
+            addJavaObjectToExcel(oneRowData, row, relativeRowIndex, sortedAllFiledMap, class_);
         }
         WriteHandlerUtils.afterRowDispose(writeContext, row, relativeRowIndex, Boolean.FALSE);
     }
 
-    private void addBasicTypeToExcel(List<Object> oneRowData, Row row, int relativeRowIndex) {
+    private void addBasicTypeToExcel(List<Object> oneRowData, Row row, int relativeRowIndex, Class class_) {
         if (CollectionUtils.isEmpty(oneRowData)) {
             return;
         }
@@ -114,7 +115,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFiledMap) {
+        Map<Integer, Field> sortedAllFiledMap, Class class_) {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
         BeanMap beanMap = BeanMap.create(oneRowData);
         Set<String> beanMapHandledSet = new HashSet<String>();
@@ -128,6 +129,11 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 cellIndex = entry.getKey();
                 ExcelContentProperty excelContentProperty = entry.getValue();
                 String name = excelContentProperty.getField().getName();
+                if(!Modifier.isStatic(class_.getModifiers()) &&  class_.isMemberClass()) {
+                    if (name.equals("this$0")) {
+                        continue;
+                    }
+                }
                 if (!beanMap.containsKey(name)) {
                     continue;
                 }
