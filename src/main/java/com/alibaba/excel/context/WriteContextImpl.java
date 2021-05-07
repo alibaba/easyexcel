@@ -189,7 +189,7 @@ public class WriteContextImpl implements WriteContext {
         WriteHandlerUtils.afterSheetCreate(this);
         if (WriteTypeEnum.ADD.equals(writeType)) {
             // Initialization head
-            if(!Modifier.isStatic(writeSheetHolder.getClazz().getModifiers()) &&  writeSheetHolder.getClazz().isMemberClass()){
+            if(writeSheetHolder.getClazz() != null && !Modifier.isStatic(writeSheetHolder.getClazz().getModifiers()) &&  writeSheetHolder.getClazz().isMemberClass()){
                 initHead(writeSheetHolder.excelWriteHeadProperty(), true);
             }
             else {
@@ -285,7 +285,7 @@ public class WriteContextImpl implements WriteContext {
         WriteHandlerUtils.beforeSheetCreate(this, true);
         WriteHandlerUtils.afterSheetCreate(this, true);
 
-        if(!Modifier.isStatic(writeSheetHolder.getClazz().getModifiers()) &&  writeSheetHolder.getClazz().isMemberClass()){
+        if(writeSheetHolder.getClazz() != null && !Modifier.isStatic(writeSheetHolder.getClazz().getModifiers()) &&  writeSheetHolder.getClazz().isMemberClass()){
             initHead(writeSheetHolder.excelWriteHeadProperty(), true);
         }
         else {
