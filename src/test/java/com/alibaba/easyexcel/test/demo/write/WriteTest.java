@@ -9,12 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -32,6 +26,12 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * 写的常见写法
@@ -250,39 +250,6 @@ public class WriteTest {
             imageData.setUrl(new URL(
                "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
             EasyExcel.write(fileName, ImageData.class).sheet().doWrite(list);
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        }
-    }
-
-    /**
-     * 使用注解设置图片位置,然后导出
-     * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ImageData}
-     * <p>
-     * 2. 直接写即可
-     */
-    @Test
-    public void imageWriteWithAnnotation() throws Exception {
-        String fileName = TestFileUtil.getPath() + "imageWriteWithAnnotation" + System.currentTimeMillis() + ".xlsx";
-        // 如果使用流 记得关闭
-        InputStream inputStream = null;
-        try {
-            List<ImageDataWithAnnotation> list = new ArrayList<ImageDataWithAnnotation>();
-            ImageDataWithAnnotation imageData = new ImageDataWithAnnotation();
-            list.add(imageData);
-            String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
-            // 放入五种类型的图片 实际使用只要选一种即可
-            imageData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
-            imageData.setFile(new File(imagePath));
-            imageData.setString(imagePath);
-            inputStream = FileUtils.openInputStream(new File(imagePath));
-            imageData.setInputStream(inputStream);
-            imageData.setUrl(new URL(
-                "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
-            EasyExcel.write(fileName, ImageDataWithAnnotation.class).sheet().doWrite(list);
         } finally {
             if (inputStream != null) {
                 inputStream.close();

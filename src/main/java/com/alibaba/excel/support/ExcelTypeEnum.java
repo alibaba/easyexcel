@@ -48,11 +48,8 @@ public enum ExcelTypeEnum {
                 }
                 // If there is a password, use the FileMagic first
                 if (!StringUtils.isEmpty(readWorkbook.getPassword())) {
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-                    try {
+                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
                         return recognitionExcelType(bufferedInputStream);
-                    } finally {
-                        bufferedInputStream.close();
                     }
                 }
                 // Use the name to determine the type
@@ -63,11 +60,8 @@ public enum ExcelTypeEnum {
                     return XLS;
                 }
                 if (StringUtils.isEmpty(readWorkbook.getPassword())) {
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-                    try {
+                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
                         return recognitionExcelType(bufferedInputStream);
-                    } finally {
-                        bufferedInputStream.close();
                     }
                 }
             }
