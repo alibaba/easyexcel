@@ -2,7 +2,12 @@ package com.alibaba.excel.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
+import com.alibaba.excel.metadata.NullObject;
+import com.alibaba.excel.write.metadata.RowData;
+
+import net.sf.cglib.beans.BeanMap;
 
 /**
  * Field utils
@@ -11,7 +16,28 @@ import java.lang.reflect.Modifier;
  **/
 public class FieldUtils {
 
+    public static Class<?> nullObjectClass = NullObject.class;
+
     private static final int START_RESOLVE_FIELD_LENGTH = 2;
+
+    public static Class<?> getFieldClass(Map dataMap, String filedName) {
+        if (dataMap instanceof BeanMap) {
+            return ((BeanMap)dataMap).getPropertyType(filedName);
+        }
+        Object value = dataMap.get(filedName);
+        if (value != null) {
+            return value.getClass();
+        }
+        return nullObjectClass;
+    }
+
+    public static Class<?> getFieldClass(RowData rowData, int dataIndex) {
+        Object value = rowData.get(dataIndex);
+        if (value != null) {
+            return value.getClass();
+        }
+        return nullObjectClass;
+    }
 
     /**
      * Parsing the name matching cglib。
@@ -51,17 +77,13 @@ public class FieldUtils {
         return firstChar + fieldName.substring(1);
     }
 
-
     /**
      * Gets an accessible {@link Field} by name respecting scope. Superclasses/interfaces will be considered.
      *
-     * @param cls
-     *            the {@link Class} to reflect, must not be {@code null}
-     * @param fieldName
-     *            the field name to obtain
+     * @param cls       the {@link Class} to reflect, must not be {@code null}
+     * @param fieldName the field name to obtain
      * @return the Field object
-     * @throws IllegalArgumentException
-     *             if the class is {@code null}, or the field name is blank or empty
+     * @throws IllegalArgumentException if the class is {@code null}, or the field name is blank or empty
      */
     public static Field getField(final Class<?> cls, final String fieldName) {
         final Field field = getField(cls, fieldName, false);
@@ -69,20 +91,16 @@ public class FieldUtils {
         return field;
     }
 
-
-
     /**
      * Gets an accessible {@link Field} by name, breaking scope if requested. Superclasses/interfaces will be
      * considered.
      *
-     * @param cls
-     *            the {@link Class} to reflect, must not be {@code null}
-     * @param fieldName
-     *            the field name to obtain
-     * @param forceAccess
-     *            whether to break scope restrictions using the
-     *            {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)} method. {@code false} will only
-     *            match {@code public} fields.
+     * @param cls         the {@link Class} to reflect, must not be {@code null}
+     * @param fieldName   the field name to obtain
+     * @param forceAccess whether to break scope restrictions using the
+     *                    {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)} method. {@code false} will
+     *                    only
+     *                    match {@code public} fields.
      * @return the Field object
      * @throws NullPointerException if the class is {@code null}
      * @throws IllegalArgumentException if the field name is blank or empty or is matched at multiple places
@@ -139,7 +157,5 @@ public class FieldUtils {
         }
         return match;
     }
-
-
 
 }

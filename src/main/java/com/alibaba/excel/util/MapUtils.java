@@ -9,7 +9,9 @@ import java.util.LinkedHashMap;
  * @author Jiaju Zhuang
  **/
 public class MapUtils {
+
     private MapUtils() {}
+
 
     /**
      * Creates a <i>mutable</i>, empty {@code HashMap} instance.

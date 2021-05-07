@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 public class WriteContextImpl implements WriteContext {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteContextImpl.class);
-    private static final String NO_SHEETS="no sheets";
+    private static final String NO_SHEETS = "no sheets";
 
     /**
      * The Workbook currently written
@@ -248,7 +248,8 @@ public class WriteContextImpl implements WriteContext {
             Cell cell = row.createCell(columnIndex);
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
             cell.setCellValue(head.getHeadNameList().get(relativeRowIndex));
-            WriteHandlerUtils.afterCellDispose(this, (WriteCellData<?>) null, cell, head, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.afterCellDispose(this, (WriteCellData<?>)null, cell, head, relativeRowIndex,
+                Boolean.TRUE);
         }
     }
 
@@ -351,7 +352,7 @@ public class WriteContextImpl implements WriteContext {
         try {
             Workbook workbook = writeWorkbookHolder.getWorkbook();
             if (workbook instanceof SXSSFWorkbook) {
-                ((SXSSFWorkbook) workbook).dispose();
+                ((SXSSFWorkbook)workbook).dispose();
             }
         } catch (Throwable t) {
             throwable = t;
@@ -446,14 +447,9 @@ public class WriteContextImpl implements WriteContext {
                 throw e;
             }
         }
-        POIFSFileSystem fileSystem = null;
-        try {
-            fileSystem = openFileSystemAndEncrypt(tempXlsx);
+        try (POIFSFileSystem fileSystem = openFileSystemAndEncrypt(tempXlsx)) {
             fileSystem.writeFilesystem(writeWorkbookHolder.getOutputStream());
         } finally {
-            if (fileSystem != null) {
-                fileSystem.close();
-            }
             if (!tempXlsx.delete()) {
                 throw new ExcelGenerateException("Can not delete temp File!");
             }
@@ -472,19 +468,9 @@ public class WriteContextImpl implements WriteContext {
         if (writeWorkbookHolder.getFile() == null) {
             return;
         }
-        FileOutputStream fileOutputStream = null;
-        POIFSFileSystem fileSystem = null;
-        try {
-            fileSystem = openFileSystemAndEncrypt(writeWorkbookHolder.getFile());
-            fileOutputStream = new FileOutputStream(writeWorkbookHolder.getFile());
+        try (POIFSFileSystem fileSystem = openFileSystemAndEncrypt(writeWorkbookHolder.getFile());
+             FileOutputStream fileOutputStream = new FileOutputStream(writeWorkbookHolder.getFile())) {
             fileSystem.writeFilesystem(fileOutputStream);
-        } finally {
-            if (fileOutputStream != null) {
-                fileOutputStream.close();
-            }
-            if (fileSystem != null) {
-                fileSystem.close();
-            }
         }
     }
 
@@ -492,15 +478,9 @@ public class WriteContextImpl implements WriteContext {
         POIFSFileSystem fileSystem = new POIFSFileSystem();
         Encryptor encryptor = new EncryptionInfo(EncryptionMode.standard).getEncryptor();
         encryptor.confirmPassword(writeWorkbookHolder.getPassword());
-        OPCPackage opcPackage = null;
-        try {
-            opcPackage = OPCPackage.open(file, PackageAccess.READ_WRITE);
-            OutputStream outputStream = encryptor.getDataStream(fileSystem);
+        try (OPCPackage opcPackage = OPCPackage.open(file, PackageAccess.READ_WRITE);
+             OutputStream outputStream = encryptor.getDataStream(fileSystem)) {
             opcPackage.save(outputStream);
-        } finally {
-            if (opcPackage != null) {
-                opcPackage.close();
-            }
         }
         return fileSystem;
     }

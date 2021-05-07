@@ -113,8 +113,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
         Object value = oneRowData.get(dataIndex);
         WriteCellData<?> cellData = converterAndSet(writeContext.currentWriteHolder(),
-            value == null ? null : value.getClass(),
-            null, cell, value, null, head, relativeRowIndex);
+            FieldUtils.getFieldClass(oneRowData, dataIndex), null, cell, value, null, head, relativeRowIndex);
         WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
     }
 
@@ -143,8 +142,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 Object value = beanMap.get(name);
                 WriteCellData<?> cellData = converterAndSet(currentWriteHolder,
                     excelContentProperty.getField().getType(),
-                    null,
-                    cell, value, excelContentProperty, head, relativeRowIndex);
+                    null, cell, value, excelContentProperty, head, relativeRowIndex);
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
                 beanMapHandledSet.add(name);
             }
@@ -168,9 +166,8 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             WriteHandlerUtils.beforeCellCreate(writeContext, row, null, cellIndex, relativeRowIndex, Boolean.FALSE);
             Cell cell = WorkBookUtil.createCell(row, cellIndex);
             WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
-            WriteCellData<?> cellData = converterAndSet(currentWriteHolder, value == null ? null : value.getClass(),
-                null, cell,
-                value, null, null, relativeRowIndex);
+            WriteCellData<?> cellData = converterAndSet(currentWriteHolder,
+                FieldUtils.getFieldClass(beanMap, filedName), null, cell, value, null, null, relativeRowIndex);
             WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
         }
     }

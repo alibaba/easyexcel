@@ -16,6 +16,7 @@ import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
@@ -198,8 +199,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     continue;
                 }
                 Object value = dataMap.get(variable);
-                WriteCellData<?> cellData = converterAndSet(writeSheetHolder, value == null ? null : value.getClass(), null,
-                    cell, value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
+                WriteCellData<?> cellData = converterAndSet(writeSheetHolder, FieldUtils.getFieldClass(dataMap, variable),
+                    null, cell, value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();
