@@ -129,7 +129,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 cellIndex = entry.getKey();
                 ExcelContentProperty excelContentProperty = entry.getValue();
                 String name = excelContentProperty.getField().getName();
-                if(!Modifier.isStatic(clazz.getModifiers()) &&  clazz.isMemberClass()) {
+                if(clazz != null && !Modifier.isStatic(clazz.getModifiers()) &&  clazz.isMemberClass()) {
                     if ("this$0".equals(name)) {
                         continue;
                     }
