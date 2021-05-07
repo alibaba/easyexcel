@@ -32,7 +32,6 @@ import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 
@@ -61,8 +60,6 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
         // Fill in picture information
         fillImage(cell, cellData.getImageDataList());
-
-        //setImageValue(cellData,cell);
 
         // Fill in comment information
         fillComment(cell, cellData.getCommentData());
@@ -221,8 +218,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             if (imageData.getAnchorType() != null) {
                 anchor.setAnchorType(imageData.getAnchorType().getValue());
             }
-            Picture picture = drawing.createPicture(anchor, index);
-            //picture.resize(0.5, 0.5);
+            drawing.createPicture(anchor, index);
         }
     }
 
