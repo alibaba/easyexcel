@@ -3,6 +3,7 @@ package com.alibaba.excel.context;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.UUID;
 
@@ -188,7 +189,12 @@ public class WriteContextImpl implements WriteContext {
         WriteHandlerUtils.afterSheetCreate(this);
         if (WriteTypeEnum.ADD.equals(writeType)) {
             // Initialization head
-            initHead(writeSheetHolder.excelWriteHeadProperty());
+            if(!Modifier.isStatic(writeSheetHolder.getClazz().getModifiers()) &&  writeSheetHolder.getClazz().isMemberClass()){
+                initHead(writeSheetHolder.excelWriteHeadProperty(), true);
+            }
+            else {
+                initHead(writeSheetHolder.excelWriteHeadProperty(), false);
+            }
         }
         writeWorkbookHolder.getHasBeenInitializedSheetIndexMap().put(writeSheetHolder.getSheetNo(), writeSheetHolder);
         writeWorkbookHolder.getHasBeenInitializedSheetNameMap().put(writeSheetHolder.getSheetName(), writeSheetHolder);
@@ -207,7 +213,7 @@ public class WriteContextImpl implements WriteContext {
         return currentSheet;
     }
 
-    public void initHead(ExcelWriteHeadProperty excelWriteHeadProperty) {
+    public void initHead(ExcelWriteHeadProperty excelWriteHeadProperty, Boolean inner) {
         if (!currentWriteHolder.needHead() || !currentWriteHolder.excelWriteHeadProperty().hasHead()) {
             return;
         }
@@ -222,7 +228,7 @@ public class WriteContextImpl implements WriteContext {
             WriteHandlerUtils.beforeRowCreate(this, newRowIndex, relativeRowIndex, Boolean.TRUE);
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
-            addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
+            addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex, inner);
             WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.TRUE);
         }
     }
@@ -235,10 +241,13 @@ public class WriteContextImpl implements WriteContext {
         }
     }
 
-    private void addOneRowOfHeadDataToExcel(Row row, Map<Integer, Head> headMap, int relativeRowIndex) {
+    private void addOneRowOfHeadDataToExcel(Row row, Map<Integer, Head> headMap, int relativeRowIndex, Boolean inner) {
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Head head = entry.getValue();
             int columnIndex = entry.getKey();
+            if(inner && columnIndex == headMap.size() - 1){
+                continue;
+            }
             WriteHandlerUtils.beforeCellCreate(this, row, head, columnIndex, relativeRowIndex, Boolean.TRUE);
             Cell cell = row.createCell(columnIndex);
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
@@ -276,7 +285,12 @@ public class WriteContextImpl implements WriteContext {
         WriteHandlerUtils.beforeSheetCreate(this, true);
         WriteHandlerUtils.afterSheetCreate(this, true);
 
-        initHead(writeTableHolder.excelWriteHeadProperty());
+        if(!Modifier.isStatic(writeSheetHolder.getClazz().getModifiers()) &&  writeSheetHolder.getClazz().isMemberClass()){
+            initHead(writeSheetHolder.excelWriteHeadProperty(), true);
+        }
+        else {
+            initHead(writeSheetHolder.excelWriteHeadProperty(), false);
+        }
     }
 
     private void initCurrentTableHolder(WriteTable writeTable) {
