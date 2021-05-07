@@ -138,6 +138,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             hyperlinkData.getRelativeLastRowIndex()));
         hyperlink.setLastColumn(StyleUtil.getCellCoordinate(cell.getColumnIndex(), hyperlinkData.getLastColumnIndex(),
             hyperlinkData.getRelativeLastColumnIndex()));
+        cell.setHyperlink(hyperlink);
     }
 
     private void fillComment(Cell cell, CommentData commentData) {
@@ -155,9 +156,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                 StyleUtil.getCellCoordinate(cell.getRow().getRowNum(), commentData.getFirstRowIndex(),
                     commentData.getRelativeFirstRowIndex()),
                 StyleUtil.getCellCoordinate(cell.getColumnIndex(), commentData.getLastColumnIndex(),
-                    commentData.getRelativeLastColumnIndex()),
+                    commentData.getRelativeLastColumnIndex()) + 1,
                 StyleUtil.getCellCoordinate(cell.getRow().getRowNum(), commentData.getLastRowIndex(),
-                    commentData.getRelativeLastRowIndex()));
+                    commentData.getRelativeLastRowIndex()) + 1);
         } else {
             anchor = new HSSFClientAnchor(StyleUtil.getCoordinate(commentData.getLeft()),
                 StyleUtil.getCoordinate(commentData.getTop()),
@@ -167,10 +168,10 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                     commentData.getRelativeFirstColumnIndex()),
                 StyleUtil.getCellCoordinate(cell.getRow().getRowNum(), commentData.getFirstRowIndex(),
                     commentData.getRelativeFirstRowIndex()),
-                (short)StyleUtil.getCellCoordinate(cell.getColumnIndex(), commentData.getLastColumnIndex(),
-                    commentData.getRelativeLastColumnIndex()),
+                (short)(StyleUtil.getCellCoordinate(cell.getColumnIndex(), commentData.getLastColumnIndex(),
+                    commentData.getRelativeLastColumnIndex()) + 1),
                 StyleUtil.getCellCoordinate(cell.getRow().getRowNum(), commentData.getLastRowIndex(),
-                    commentData.getRelativeLastRowIndex()));
+                    commentData.getRelativeLastRowIndex()) + 1);
         }
         Comment comment = cell.getSheet().createDrawingPatriarch().createCellComment(anchor);
         if (commentData.getRichTextStringData() != null) {
@@ -180,6 +181,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         if (commentData.getAuthor() != null) {
             comment.setAuthor(commentData.getAuthor());
         }
+        cell.setCellComment(comment);
     }
 
     protected void fillImage(Cell cell, List<ImageData> imageDataList) {
