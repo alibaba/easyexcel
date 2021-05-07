@@ -32,6 +32,7 @@ import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Hyperlink;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 
@@ -60,6 +61,8 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
         // Fill in picture information
         fillImage(cell, cellData.getImageDataList());
+
+        //setImageValue(cellData,cell);
 
         // Fill in comment information
         fillComment(cell, cellData.getCommentData());
@@ -197,10 +200,10 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                 anchor.setDy1(StyleUtil.getCoordinate(imageData.getTop()));
             }
             if (imageData.getRight() != null) {
-                anchor.setDx2(StyleUtil.getCoordinate(imageData.getRight()));
+                anchor.setDx2(-StyleUtil.getCoordinate(imageData.getRight()));
             }
             if (imageData.getBottom() != null) {
-                anchor.setDy2(StyleUtil.getCoordinate(imageData.getBottom()));
+                anchor.setDy2(-StyleUtil.getCoordinate(imageData.getBottom()));
             }
             if (imageData.getLeft() != null) {
                 anchor.setDx1(StyleUtil.getCoordinate(imageData.getLeft()));
@@ -210,20 +213,24 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             anchor.setCol1(StyleUtil.getCellCoordinate(cell.getColumnIndex(), imageData.getFirstColumnIndex(),
                 imageData.getRelativeFirstColumnIndex()));
             anchor.setRow2(StyleUtil.getCellCoordinate(cell.getRow().getRowNum(), imageData.getLastRowIndex(),
-                imageData.getRelativeLastRowIndex()));
+                imageData.getRelativeLastRowIndex()) + 1);
             anchor.setCol2(StyleUtil.getCellCoordinate(cell.getColumnIndex(), imageData.getLastColumnIndex(),
-                imageData.getRelativeLastColumnIndex()));
+                imageData.getRelativeLastColumnIndex()) + 1);
             if (imageData.getAnchorType() != null) {
                 anchor.setAnchorType(imageData.getAnchorType().getValue());
             }
-            drawing.createPicture(anchor, index);
+            Picture picture = drawing.createPicture(anchor, index);
+            //picture.resize(0.5, 0.5);
         }
     }
 
     protected WriteCellData<?> convert(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,
         Cell cell, Object value, ExcelContentProperty excelContentProperty) {
         // This means that the user has defined the data.
-        if (value instanceof WriteCellData) {
+        if (clazz == WriteCellData.class) {
+            if (value == null) {
+                return new WriteCellData<>(CellDataTypeEnum.EMPTY);
+            }
             WriteCellData<?> cellDataValue = (WriteCellData<?>)value;
             if (cellDataValue.getType() != null) {
                 return cellDataValue;

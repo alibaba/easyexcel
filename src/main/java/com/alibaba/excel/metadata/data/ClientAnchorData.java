@@ -102,8 +102,7 @@ public class ClientAnchorData extends CoordinateData {
 
         ClientAnchor.AnchorType value;
 
-        // disallow non-sequential enum instance creation
-        private AnchorType(ClientAnchor.AnchorType value) {
+        AnchorType(ClientAnchor.AnchorType value) {
             this.value = value;
         }
 

@@ -163,6 +163,7 @@
                         <exclude>com/alibaba/excel/event/AnalysisEventListener.java</exclude>
                         <exclude>com/alibaba/excel/metadata/DataFormatter.java</exclude>
                         <exclude>com/alibaba/excel/util/DateUtils.java</exclude>
+                        <exclude>com/alibaba/excel/util/MapUtils.java</exclude>
                         <exclude>com/alibaba/excel/metadata/format/DataFormatter.java</exclude>
                         <exclude>com/alibaba/excel/metadata/format/ExcelGeneralNumberFormat.java</exclude>
                     </excludes>

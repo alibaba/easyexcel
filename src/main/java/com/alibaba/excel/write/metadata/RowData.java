@@ -6,9 +6,13 @@ package com.alibaba.excel.write.metadata;
  * @author Jiaju Zhuang
  */
 public interface RowData {
+
     /**
      * Returns the value to which the specified key is mapped,
      * or {@code null} if this map contains no mapping for the key.
+     *
+     * @param index
+     * @return data
      */
     Object get(int index);
 

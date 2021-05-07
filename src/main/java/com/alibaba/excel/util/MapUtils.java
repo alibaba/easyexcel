@@ -27,7 +27,7 @@ public class MapUtils {
      * @return a new, empty {@code HashMap}
      */
     public static <K, V> HashMap<K, V> newHashMap() {
-        return new HashMap<>();
+        return new HashMap<>(16);
     }
 
     /**

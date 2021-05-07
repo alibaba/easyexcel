@@ -18,14 +18,13 @@ import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.util.Units;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
 /**
  * @author jipengfei
  */
 public class StyleUtil {
-
-    public static int baseCoordinate = 10000;
 
     private StyleUtil() {}
 
@@ -191,7 +190,7 @@ public class StyleUtil {
         if (coordinate == null) {
             return 0;
         }
-        return baseCoordinate * coordinate;
+        return Units.toEMU(coordinate);
     }
 
     public static int getCellCoordinate(Integer currentCoordinate, Integer absoluteCoordinate,
