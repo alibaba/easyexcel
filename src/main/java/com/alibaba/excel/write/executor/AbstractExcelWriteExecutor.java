@@ -17,6 +17,7 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import java.math.BigDecimal;
 
 /**
  * Excel write Executor
@@ -114,6 +115,11 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         try {
             cellData =
                 converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
+            if(excelContentProperty.getNumberFormatProperty() != null) {
+                cellData.setType(CellDataTypeEnum.NUMBER);
+                cellData.setNumberValue(new BigDecimal(cellData.getStringValue()));
+                cellData.setStringValue(null);
+            }
         } catch (Exception e) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
