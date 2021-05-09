@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     protected WriteContext writeContext;
-    private final static String pattern = "[0-9]*";
+    private final static String PATTERN = "[0-9]*";
     public AbstractExcelWriteExecutor(WriteContext writeContext) {
         this.writeContext = writeContext;
     }
@@ -118,7 +118,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             cellData =
                 converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
             if(excelContentProperty != null && excelContentProperty.getNumberFormatProperty() != null) {
-                if(Pattern.matches(pattern, cellData.getStringValue())){
+                if(Pattern.matches(PATTERN, cellData.getStringValue())){
                     cellData.setType(CellDataTypeEnum.NUMBER);
                     cellData.setNumberValue(new BigDecimal(cellData.getStringValue()));
                     cellData.setStringValue(null);
