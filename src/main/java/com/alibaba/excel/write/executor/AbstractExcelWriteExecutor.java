@@ -18,6 +18,8 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Excel write Executor
@@ -115,10 +117,14 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         try {
             cellData =
                 converter.convertToExcelData(value, excelContentProperty, currentWriteHolder.globalConfiguration());
-            if(excelContentProperty.getNumberFormatProperty() != null) {
-                cellData.setType(CellDataTypeEnum.NUMBER);
-                cellData.setNumberValue(new BigDecimal(cellData.getStringValue()));
-                cellData.setStringValue(null);
+            if(excelContentProperty != null && excelContentProperty.getNumberFormatProperty() != null) {
+                Pattern pattern = Pattern.compile("[0-9]*");
+                Matcher isNum = pattern.matcher(cellData.getStringValue());
+                if(isNum.matches()){
+                    cellData.setType(CellDataTypeEnum.NUMBER);
+                    cellData.setNumberValue(new BigDecimal(cellData.getStringValue()));
+                    cellData.setStringValue(null);
+                }
             }
         } catch (Exception e) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
