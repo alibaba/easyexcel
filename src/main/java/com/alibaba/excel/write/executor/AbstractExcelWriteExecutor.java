@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     protected WriteContext writeContext;
-    private final static String PATTERN = "[0-9]*";
+    private final static String PATTERN = "[0-9.]*";
     public AbstractExcelWriteExecutor(WriteContext writeContext) {
         this.writeContext = writeContext;
     }
