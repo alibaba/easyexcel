@@ -19,9 +19,9 @@ public class Issue1662Test {
 
 
     private List<List<String>> head() {
-        List<List<String>> list = new ArrayList<>();
-        List<String> head0 = new ArrayList<>();
-        List<String> head1 = new ArrayList<>();
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> head0 = new ArrayList<String>();
+        List<String> head1 = new ArrayList<String>();
         head0.add("xx");
         head0.add("日期");
         list.add(head0);
@@ -31,8 +31,8 @@ public class Issue1662Test {
     }
 
     private List<List<Object>> dataList() {
-        List<List<Object>> list = new ArrayList<>();
-        List<Object> data = new ArrayList<>();
+        List<List<Object>> list = new ArrayList<List<Object>>();
+        List<Object> data = new ArrayList<Object>();
         data.add("字符串");
         data.add(new Date());
         data.add(0.56);
