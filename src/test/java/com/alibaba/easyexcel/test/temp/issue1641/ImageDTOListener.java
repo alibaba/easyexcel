@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageDTOListener extends AnalysisEventListener<ImageDTO> {
-    private List<ImageDTO> imgExcelDTOS = new ArrayList<>();
+    private List<ImageDTO> imgExcelDTOS = new ArrayList<ImageDTO>();
 
     @Override
     public void invoke(ImageDTO imgExcelDTO, AnalysisContext analysisContext) {
