@@ -1,5 +1,9 @@
 package com.alibaba.excel.write.executor;
 
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.metadata.property.ColumnWidthProperty;
+import com.alibaba.excel.metadata.property.RowHeightProperty;
+import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -17,6 +21,10 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import org.apache.poi.util.Units;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * Excel write Executor
@@ -31,12 +39,12 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     }
 
     protected CellData converterAndSet(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
-        ExcelContentProperty excelContentProperty, Head head, Integer relativeRowIndex) {
+                                       ExcelContentProperty excelContentProperty, Head head, Integer relativeRowIndex) {
         if (value == null) {
             return new CellData(CellDataTypeEnum.EMPTY);
         }
         if (value instanceof String && currentWriteHolder.globalConfiguration().getAutoTrim()) {
-            value = ((String)value).trim();
+            value = ((String) value).trim();
         }
         CellData cellData = convert(currentWriteHolder, clazz, cell, value, excelContentProperty);
         if (cellData.getFormula() != null && cellData.getFormula()) {
@@ -64,18 +72,18 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             default:
                 throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(), cellData,
                     excelContentProperty, "Not supported data:" + value + " return type:" + cell.getCellType()
-                        + "at row:" + cell.getRow().getRowNum());
+                    + "at row:" + cell.getRow().getRowNum());
         }
     }
 
     protected CellData convert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
-        ExcelContentProperty excelContentProperty) {
+                               ExcelContentProperty excelContentProperty) {
         if (value == null) {
             return new CellData(CellDataTypeEnum.EMPTY);
         }
         // This means that the user has defined the data.
         if (value instanceof CellData) {
-            CellData cellDataValue = (CellData)value;
+            CellData cellDataValue = (CellData) value;
             if (cellDataValue.getType() != null) {
                 return cellDataValue;
             } else {
@@ -97,7 +105,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     }
 
     private CellData doConvert(WriteHolder currentWriteHolder, Class clazz, Cell cell, Object value,
-        ExcelContentProperty excelContentProperty) {
+                               ExcelContentProperty excelContentProperty) {
         Converter converter = null;
         if (excelContentProperty != null) {
             converter = excelContentProperty.getConverter();
@@ -136,10 +144,10 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         }
         CreationHelper helper = sheet.getWorkbook().getCreationHelper();
         ClientAnchor anchor = helper.createClientAnchor();
-        anchor.setDx1(0);
-        anchor.setDx2(0);
-        anchor.setDy1(0);
-        anchor.setDy2(0);
+        anchor.setDx1(Units.EMU_PER_PIXEL*5);
+        anchor.setDx2(-Units.EMU_PER_PIXEL*5);
+        anchor.setDy1(Units.EMU_PER_PIXEL*5);
+        anchor.setDy2(-Units.EMU_PER_PIXEL*5);
         anchor.setCol1(cell.getColumnIndex());
         anchor.setCol2(cell.getColumnIndex() + 1);
         anchor.setRow1(cell.getRowIndex());
