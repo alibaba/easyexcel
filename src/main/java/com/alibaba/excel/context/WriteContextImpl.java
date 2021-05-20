@@ -282,7 +282,7 @@ public class WriteContextImpl implements WriteContext {
         WriteHandlerUtils.beforeSheetCreate(this, true);
         WriteHandlerUtils.afterSheetCreate(this, true);
 
-        initHead(writeSheetHolder.excelWriteHeadProperty());
+        initHead(writeTableHolder.excelWriteHeadProperty());
     }
 
     private void initCurrentTableHolder(WriteTable writeTable) {
