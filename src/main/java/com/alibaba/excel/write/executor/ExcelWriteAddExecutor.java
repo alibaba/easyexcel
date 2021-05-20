@@ -54,13 +54,13 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         int relativeRowIndex = 0;
         for (Object oneRowData : data) {
             int n = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, sortedAllFiledMap, writeContext.writeSheetHolder().getClazz());
+            addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, sortedAllFiledMap);
             relativeRowIndex++;
         }
     }
 
     private void addOneRowOfDataToExcel(Object oneRowData, int n, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFiledMap, Class clazz) {
+        Map<Integer, Field> sortedAllFiledMap) {
         if (oneRowData == null) {
             return;
         }
@@ -70,7 +70,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         if (oneRowData instanceof List) {
             addBasicTypeToExcel((List) oneRowData, row, relativeRowIndex);
         } else {
-            addJavaObjectToExcel(oneRowData, row, relativeRowIndex, sortedAllFiledMap, clazz);
+            addJavaObjectToExcel(oneRowData, row, relativeRowIndex, sortedAllFiledMap);
         }
         WriteHandlerUtils.afterRowDispose(writeContext, row, relativeRowIndex, Boolean.FALSE);
     }
@@ -115,7 +115,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFiledMap, Class clazz) {
+        Map<Integer, Field> sortedAllFiledMap) {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
         BeanMap beanMap = BeanMap.create(oneRowData);
         Set<String> beanMapHandledSet = new HashSet<String>();
@@ -129,11 +129,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 cellIndex = entry.getKey();
                 ExcelContentProperty excelContentProperty = entry.getValue();
                 String name = excelContentProperty.getField().getName();
-                if(clazz != null && !Modifier.isStatic(clazz.getModifiers()) &&  clazz.isMemberClass()) {
-                    if ("this$0".equals(name)) {
-                        continue;
-                    }
-                }
                 if (!beanMap.containsKey(name)) {
                     continue;
                 }

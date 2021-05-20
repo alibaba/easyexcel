@@ -190,10 +190,10 @@ public class WriteContextImpl implements WriteContext {
         if (WriteTypeEnum.ADD.equals(writeType)) {
             // Initialization head
             if(writeSheetHolder.getClazz() != null && !Modifier.isStatic(writeSheetHolder.getClazz().getModifiers()) &&  writeSheetHolder.getClazz().isMemberClass()){
-                initHead(writeSheetHolder.excelWriteHeadProperty(), true);
+                initHeadSheet(writeSheetHolder.excelWriteHeadProperty(), true);
             }
             else {
-                initHead(writeSheetHolder.excelWriteHeadProperty(), false);
+                initHeadSheet(writeSheetHolder.excelWriteHeadProperty(), false);
             }
         }
         writeWorkbookHolder.getHasBeenInitializedSheetIndexMap().put(writeSheetHolder.getSheetNo(), writeSheetHolder);
@@ -213,7 +213,7 @@ public class WriteContextImpl implements WriteContext {
         return currentSheet;
     }
 
-    public void initHead(ExcelWriteHeadProperty excelWriteHeadProperty, Boolean inner) {
+    public void initHead(ExcelWriteHeadProperty excelWriteHeadProperty) {
         if (!currentWriteHolder.needHead() || !currentWriteHolder.excelWriteHeadProperty().hasHead()) {
             return;
         }
@@ -228,7 +228,7 @@ public class WriteContextImpl implements WriteContext {
             WriteHandlerUtils.beforeRowCreate(this, newRowIndex, relativeRowIndex, Boolean.TRUE);
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
             WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
-            addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex, inner);
+            addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
             WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.TRUE);
         }
     }
@@ -241,13 +241,10 @@ public class WriteContextImpl implements WriteContext {
         }
     }
 
-    private void addOneRowOfHeadDataToExcel(Row row, Map<Integer, Head> headMap, int relativeRowIndex, Boolean inner) {
+    private void addOneRowOfHeadDataToExcel(Row row, Map<Integer, Head> headMap, int relativeRowIndex) {
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Head head = entry.getValue();
             int columnIndex = entry.getKey();
-            if(inner && columnIndex == headMap.size() - 1){
-                continue;
-            }
             WriteHandlerUtils.beforeCellCreate(this, row, head, columnIndex, relativeRowIndex, Boolean.TRUE);
             Cell cell = row.createCell(columnIndex);
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
@@ -285,12 +282,7 @@ public class WriteContextImpl implements WriteContext {
         WriteHandlerUtils.beforeSheetCreate(this, true);
         WriteHandlerUtils.afterSheetCreate(this, true);
 
-        if(writeSheetHolder.getClazz() != null && !Modifier.isStatic(writeSheetHolder.getClazz().getModifiers()) &&  writeSheetHolder.getClazz().isMemberClass()){
-            initHead(writeSheetHolder.excelWriteHeadProperty(), true);
-        }
-        else {
-            initHead(writeSheetHolder.excelWriteHeadProperty(), false);
-        }
+        initHead(writeSheetHolder.excelWriteHeadProperty());
     }
 
     private void initCurrentTableHolder(WriteTable writeTable) {
@@ -299,6 +291,29 @@ public class WriteContextImpl implements WriteContext {
         currentWriteHolder = writeTableHolder;
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("CurrentConfiguration is writeTableHolder");
+        }
+    }
+
+    private void initHeadSheet(ExcelWriteHeadProperty excelWriteHeadProperty, Boolean inner) {
+        if (!currentWriteHolder.needHead() || !currentWriteHolder.excelWriteHeadProperty().hasHead()) {
+            return;
+        }
+        int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
+        newRowIndex += currentWriteHolder.relativeHeadRowIndex();
+        // Combined head
+        if (currentWriteHolder.automaticMergeHead()) {
+            addMergedRegionToCurrentSheet(excelWriteHeadProperty, newRowIndex);
+        }
+        for (int relativeRowIndex = 0, i = newRowIndex; i < excelWriteHeadProperty.getHeadRowNumber()
+            + newRowIndex; i++, relativeRowIndex++) {
+            WriteHandlerUtils.beforeRowCreate(this, newRowIndex, relativeRowIndex, Boolean.TRUE);
+            Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
+            WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
+            if(inner){
+                excelWriteHeadProperty.getHeadMap().remove(excelWriteHeadProperty.getHeadMap().size() - 1);
+            }
+            addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
+            WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.TRUE);
         }
     }
 
