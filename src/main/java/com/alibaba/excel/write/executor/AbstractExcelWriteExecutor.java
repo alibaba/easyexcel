@@ -1,9 +1,5 @@
 package com.alibaba.excel.write.executor;
 
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.alibaba.excel.metadata.property.ColumnWidthProperty;
-import com.alibaba.excel.metadata.property.RowHeightProperty;
-import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ClientAnchor;
