@@ -22,9 +22,11 @@ public class Issue1662 {
         List<List<String>> list = new ArrayList<List<String>>();
         List<String> head0 = new ArrayList<String>();
         List<String> head1 = new ArrayList<String>();
+        List<String> head2 = new ArrayList<String>();
         head0.add("xx");
         head0.add("日期");
         list.add(head0);
+//        head1.add("日期");
         head1.add("日期");
         list.add(head1);
         return list;

@@ -158,7 +158,8 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 int lastCol = i;
                 int lastRow = j;
                 for (int k = i + 1; k < headList.size(); k++) {
-                    if (headList.get(k).getHeadNameList().get(j).equals(headName) && ((j - 1 >= 0) && !headList.get(k).getHeadNameList().get(j - 1).equals(headName))) {
+                    Boolean notConnectedUp = (j - 1 >= 0) && !headList.get(k).getHeadNameList().get(j - 1).equals(headName);
+                    if (headList.get(k).getHeadNameList().get(j).equals(headName) && notConnectedUp) {
                         alreadyRangeSet.add(k + "-" + j);
                         lastCol = k;
                     } else {
