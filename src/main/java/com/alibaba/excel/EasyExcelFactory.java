@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.hutool.core.util.ReflectUtil;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.event.WriteHandler;
@@ -17,6 +18,11 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterTableBuilder;
+import com.alibaba.excel.write.handler.AbstractWorkbookWriteHandler;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
  * Reader and writer factory class
@@ -297,6 +303,27 @@ public class EasyExcelFactory {
      */
     public static ExcelWriterSheetBuilder writerSheet(String sheetName) {
         return writerSheet(null, sheetName);
+    }
+    /*
+    * 本方法使用反射的方式修改表格中标签属性
+    * 使得用户可以通过传入参数更改输出的excel表格的行数和列数
+    * 此时调用读入表格正确显示用户根据参数输入的行数
+    * */
+
+    public static ExcelWriterSheetBuilder writerSheetWithColAndRow(String sheetName, final int col, final int row){
+        return writerSheet("Sheet1").registerWriteHandler(new AbstractWorkbookWriteHandler() {
+            @Override
+            public void afterWorkbookDispose(WriteWorkbookHolder writeWorkbookHolder) {
+                super.afterWorkbookDispose(writeWorkbookHolder);
+                org.apache.poi.ss.usermodel.Sheet sheet = writeWorkbookHolder.getWorkbook().getSheetAt(0);
+                if(sheet instanceof SXSSFSheet){
+                    SXSSFSheet sh = ((SXSSFSheet) sheet);
+
+                    XSSFSheet _sh = (XSSFSheet) ReflectUtil.getFieldValue(sh,"_sh");
+                    _sh.getCTWorksheet().getDimension().setRef("A1:" + CellReference.convertNumToColString(col) + row);
+                }
+            }
+        });
     }
 
     /**
