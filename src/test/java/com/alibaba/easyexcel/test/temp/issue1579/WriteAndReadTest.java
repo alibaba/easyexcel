@@ -7,6 +7,8 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.List;
 * 即先跑write的测试再跑相应的read测试
 * 一共3组测试，共计12个测试
 * */
-
+@FixMethodOrder()
 public class WriteAndReadTest {
     /*测试数据1
     * */
