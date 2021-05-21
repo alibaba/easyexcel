@@ -10,6 +10,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +23,7 @@ import java.util.List;
 * 即先跑write的测试再跑相应的read测试
 * 一共3组测试，共计12个测试
 * */
-@FixMethodOrder()
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WriteAndReadTest {
     /*测试数据1
     * */
@@ -91,7 +92,7 @@ public class WriteAndReadTest {
      * 最终显示的读取总行数总是1
      * */
     @Test
-    public void OriginalRead() {
+    public void OriginalWriteRead() {
         String fileName = TestFileUtil.getPath() + "OriginalWrite" + "1" + ".xlsx";
         ExcelReader excelReader = null;
         try {
@@ -133,7 +134,7 @@ public class WriteAndReadTest {
      * 最终显示的读取总行数总是1
      * */
     @Test
-    public void OriginalRead2() {
+    public void OriginalWriteRead2() {
         String fileName = TestFileUtil.getPath() + "OriginalWrite" + "2" + ".xlsx";
         ExcelReader excelReader = null;
         try {
@@ -175,7 +176,7 @@ public class WriteAndReadTest {
      * 最终显示的读取总行数总是1
      * */
     @Test
-    public void OriginalRead3() {
+    public void OriginalWriteRead3() {
         String fileName = TestFileUtil.getPath() + "OriginalWrite" + "3" + ".xlsx";
         ExcelReader excelReader = null;
         try {
@@ -216,7 +217,7 @@ public class WriteAndReadTest {
      * 通过info可以查看到统计到读入excel表的总行数
      * */
     @Test
-    public void NewRead() {
+    public void WriteWithColAndRowRead() {
         String fileName = TestFileUtil.getPath() + "WriteWithColAndRow" + "1" + ".xlsx";
         ExcelReader excelReader = null;
         try {
@@ -256,7 +257,7 @@ public class WriteAndReadTest {
      * 通过info可以查看到统计到读入excel表的总行数
      * */
     @Test
-    public void NewRead2() {
+    public void WriteWithColAndRowRead2() {
         String fileName = TestFileUtil.getPath() + "WriteWithColAndRow" + "2" + ".xlsx";
         ExcelReader excelReader = null;
         try {
@@ -296,7 +297,7 @@ public class WriteAndReadTest {
      * 通过info可以查看到统计到读入excel表的总行数
      * */
     @Test
-    public void NewRead3() {
+    public void WriteWithColAndRowRead3() {
         String fileName = TestFileUtil.getPath() + "WriteWithColAndRow" + "3" + ".xlsx";
         ExcelReader excelReader = null;
         try {
