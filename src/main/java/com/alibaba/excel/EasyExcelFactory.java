@@ -319,8 +319,8 @@ public class EasyExcelFactory {
                 if(sheet instanceof SXSSFSheet){
                     SXSSFSheet sh = ((SXSSFSheet) sheet);
 
-                    XSSFSheet _sh = (XSSFSheet) ReflectUtil.getFieldValue(sh,"_sh");
-                    _sh.getCTWorksheet().getDimension().setRef("A1:" + CellReference.convertNumToColString(col) + row);
+                    XSSFSheet xsh = (XSSFSheet) ReflectUtil.getFieldValue(sh,"_sh");
+                    xsh.getCTWorksheet().getDimension().setRef("A1:" + CellReference.convertNumToColString(col) + row);
                 }
             }
         });
