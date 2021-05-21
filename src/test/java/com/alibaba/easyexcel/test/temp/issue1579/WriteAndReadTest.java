@@ -1,8 +1,6 @@
 package com.alibaba.easyexcel.test.temp.issue1579;
 
-import com.alibaba.easyexcel.test.demo.write.DemoData;
-import com.alibaba.easyexcel.test.demo.write.DemoDataListener;
-import com.alibaba.easyexcel.test.demo.write.ReadDemoData;
+
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;

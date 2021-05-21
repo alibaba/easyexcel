@@ -1,8 +1,7 @@
 package com.alibaba.easyexcel.test.temp.issue1579;
 
 
-import com.alibaba.easyexcel.test.demo.write.DemoDAO;
-import com.alibaba.easyexcel.test.demo.write.ReadDemoData;
+
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
