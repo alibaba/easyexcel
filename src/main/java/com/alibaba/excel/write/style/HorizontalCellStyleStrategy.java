@@ -3,6 +3,9 @@ package com.alibaba.excel.write.style;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -66,4 +69,8 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
         cell.setCellStyle(contentCellStyleList.get(relativeRowIndex % contentCellStyleList.size()));
     }
 
+    @Override
+    public void afterCellDisposeAuto(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+
+    }
 }
