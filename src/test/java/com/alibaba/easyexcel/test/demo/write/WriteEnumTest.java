@@ -13,6 +13,10 @@ public class WriteEnumTest {
     public static final int LENGTH =  NoticeTypeEnum.values().length;
     public static final Random RAND = new Random();
     public static final int RANDOM_SIZE = RAND.nextInt(20);
+    public static final String DIR_PATH = "/tmp/";
+    public static final String SHEET_NAME = "template";
+    public static final String EXTENSION = ".xlsx";
+
     @Test
     public void writeTestPositiveFixedEnum() {
         List<EnumData> list = new ArrayList<>();
@@ -28,8 +32,8 @@ public class WriteEnumTest {
         list.add(data1);
         list.add(data2);
         list.add(data3);
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumData.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumData.class).sheet(SHEET_NAME).doWrite(list);
     }
     @Test
     public void writeTestPositiveRandomSizeEnum() {
@@ -40,15 +44,15 @@ public class WriteEnumTest {
             data.setDoubleAmount(TEST_DOUBLE);
             list.add(data);
         }
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumData.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumData.class).sheet(SHEET_NAME).doWrite(list);
     }
 
     @Test
     public void writeTestPositiveEmptyData() {
         List<EnumData> list = new ArrayList<>();
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumData.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumData.class).sheet(SHEET_NAME).doWrite(list);
     }
 
 
@@ -67,8 +71,20 @@ public class WriteEnumTest {
         list.add(data1);
         list.add(data2);
         list.add(data3);
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumData.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumData.class).sheet(SHEET_NAME).doWrite(list);
+    }
+    @Test
+    public void writeTestPositiveSameData() {
+        List<EnumData> list = new ArrayList<>();
+        EnumData data = new EnumData();
+        data.setNotice(NoticeTypeEnum.MONTH_SETTLE);
+        data.setDoubleAmount(TEST_DOUBLE);
+        list.add(data);
+        list.add(data);
+        list.add(data);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumData.class).sheet(SHEET_NAME).doWrite(list);
     }
     @Test
     public void writeTestNegativeFixedEnum() {
@@ -78,16 +94,13 @@ public class WriteEnumTest {
         data1.setDoubleAmount(TEST_DOUBLE);
 
         EnumDataWithoutConverter data2 = new EnumDataWithoutConverter();
-        data1.setCode(2);
-        data1.setDoubleAmount(TEST_DOUBLE);
-        EnumDataWithoutConverter data3 = new EnumDataWithoutConverter();
-        data1.setCode(3);
-        data1.setDoubleAmount(TEST_DOUBLE);
+        data2.setCode(2);
+        data2.setDoubleAmount(TEST_DOUBLE);
+
         list.add(data1);
         list.add(data2);
-        list.add(data3);
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumDataWithoutConverter.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumDataWithoutConverter.class).sheet(SHEET_NAME).doWrite(list);
 
     }
     @Test
@@ -108,8 +121,8 @@ public class WriteEnumTest {
         list.add(data1);
         list.add(data2);
         list.add(data3);
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumDataWithoutConverter.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumDataWithoutConverter.class).sheet(SHEET_NAME).doWrite(list);
     }
 
 
@@ -122,15 +135,15 @@ public class WriteEnumTest {
             data.setDoubleAmount(TEST_DOUBLE);
             list.add(data);
         }
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumData.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumDataWithoutConverter.class).sheet(SHEET_NAME).doWrite(list);
     }
 
     @Test
     public void writeTestNegativeEmptyData() {
         List<EnumDataWithoutConverter> list = new ArrayList<>();
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumData.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumDataWithoutConverter.class).sheet(SHEET_NAME).doWrite(list);
     }
 
     @Test
@@ -142,21 +155,10 @@ public class WriteEnumTest {
         list.add(data);
         list.add(data);
         list.add(data);
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumData.class).sheet("template").doWrite(list);
+        String fileName = DIR_PATH + System.currentTimeMillis() + EXTENSION;
+        EasyExcel.write(fileName, EnumDataWithoutConverter.class).sheet(SHEET_NAME).doWrite(list);
     }
-    @Test
-    public void writeTestPositiveSameData() {
-        List<EnumData> list = new ArrayList<>();
-        EnumData data = new EnumData();
-        data.setNotice(NoticeTypeEnum.MONTH_SETTLE);
-        data.setDoubleAmount(TEST_DOUBLE);
-        list.add(data);
-        list.add(data);
-        list.add(data);
-        String fileName = "/tmp/"+ System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName, EnumData.class).sheet("template").doWrite(list);
-    }
+
 
 
 }
