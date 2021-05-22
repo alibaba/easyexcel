@@ -117,8 +117,23 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     }
 
     @Override
-    public void autoCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-
+    public void autoCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+                                 List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        if (isHead) {
+            Assert.assertEquals(1L, beforeCellCreate);
+            Assert.assertEquals(1L, afterCellCreate);
+            Assert.assertEquals(0L, afterCellDataConverted);
+            Assert.assertEquals(0L, afterCellDispose);
+            Assert.assertEquals(1L, beforeRowCreate);
+            Assert.assertEquals(1L, afterRowCreate);
+            Assert.assertEquals(0L, afterRowDispose);
+            Assert.assertEquals(1L, beforeSheetCreate);
+            Assert.assertEquals(1L, afterSheetCreate);
+            Assert.assertEquals(1L, beforeWorkbookCreate);
+            Assert.assertEquals(1L, afterWorkbookCreate);
+            Assert.assertEquals(0L, afterWorkbookDispose);
+            afterCellDispose++;
+        }
     }
 
     @Override
