@@ -117,6 +117,11 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     }
 
     @Override
+    public void afterCellDisposeAuto(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+
+    }
+
+    @Override
     public void beforeRowCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Integer rowIndex,
         Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
