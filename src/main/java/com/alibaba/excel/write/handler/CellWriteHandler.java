@@ -89,4 +89,7 @@ public interface CellWriteHandler extends WriteHandler {
      */
     void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
         List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead);
+
+    void afterCellDispose2(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+                          List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead);
 }
