@@ -46,9 +46,10 @@ public abstract class AbstractCellWriteHandler implements CellWriteHandler {
 
     }
 
+
     @Override
-    public void afterCellDispose2(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-                                 List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+    public void autoCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+                                List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFCellStyle textStyle = workbook.createCellStyle();
