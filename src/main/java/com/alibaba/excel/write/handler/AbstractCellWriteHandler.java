@@ -9,6 +9,10 @@ import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Abstract cell write handler
@@ -39,5 +43,18 @@ public abstract class AbstractCellWriteHandler implements CellWriteHandler {
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
         List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
 
+
+    }
+
+    @Override
+    public void afterCellDispose2(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
+                                 List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFCellStyle textStyle = workbook.createCellStyle();
+        XSSFDataFormat format = workbook.createDataFormat();
+        textStyle.setDataFormat(format.getFormat("@"));
+        XSSFSheet spreadsheet = workbook.createSheet(" test1 ");
+        cell.setCellStyle(textStyle);
     }
 }
