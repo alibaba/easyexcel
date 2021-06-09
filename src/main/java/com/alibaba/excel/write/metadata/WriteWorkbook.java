@@ -20,26 +20,26 @@ public class WriteWorkbook extends WriteBasicParameter {
     /**
      * Final output file
      * <p>
-     * If 'outputStream' and 'file' all not empty,file first
+     * If 'outputStream' and 'file' all not empty, file first
      */
     private File file;
     /**
      * Final output stream
      * <p>
-     * If 'outputStream' and 'file' all not empty,file first
+     * If 'outputStream' and 'file' all not empty, file first
      */
     private OutputStream outputStream;
     /**
      * Template input stream
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private InputStream templateInputStream;
 
     /**
      * Template file
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private File templateFile;
     /**
@@ -58,7 +58,7 @@ public class WriteWorkbook extends WriteBasicParameter {
      */
     private String password;
     /**
-     * Write excel in memory. Default false,the cache file is created and finally written to excel.
+     * Write excel in memory. Default false, the cache file is created and finally written to excel.
      * <p>
      * Comment and RichTextString are only supported in memory mode.
      */

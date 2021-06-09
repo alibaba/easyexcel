@@ -117,12 +117,12 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         } catch (Exception e) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
-                "Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(), e);
+                "Convert data:" + value + " error, at row:" + cell.getRow().getRowNum(), e);
         }
         if (cellData == null || cellData.getType() == null) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new CellData(CellDataTypeEnum.EMPTY), excelContentProperty,
-                "Convert data:" + value + " return null,at row:" + cell.getRow().getRowNum());
+                "Convert data:" + value + " return null, at row:" + cell.getRow().getRowNum());
         }
         return cellData;
     }
