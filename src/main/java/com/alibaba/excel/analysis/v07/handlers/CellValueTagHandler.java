@@ -3,6 +3,7 @@ package com.alibaba.excel.analysis.v07.handlers;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * Cell Value Handler
@@ -17,6 +18,10 @@ public class CellValueTagHandler extends AbstractCellValueTagHandler {
         CellData tempCellData = xlsxReadContext.xlsxReadSheetHolder().getTempCellData();
         switch (tempCellData.getType()) {
             case STRING:
+                // In some cases, although cell type is a string, it may be an empty tag
+                if(StringUtils.isEmpty(tempCellData.getStringValue())){
+                    break;
+                }
                 String stringValue = xlsxReadContext.readWorkbookHolder().getReadCache()
                     .get(Integer.valueOf(tempCellData.getStringValue()));
                 if (stringValue != null && xlsxReadContext.currentReadHolder().globalConfiguration().getAutoTrim()) {

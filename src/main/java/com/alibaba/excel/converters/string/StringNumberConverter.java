@@ -47,7 +47,7 @@ public class StringNumberConverter implements Converter<String> {
         }
         // Excel defines formatting
         if (cellData.getDataFormat() != null && !StringUtils.isEmpty(cellData.getDataFormatString())) {
-            return NumberDataFormatterUtils.format(cellData.getNumberValue().doubleValue(), cellData.getDataFormat(),
+            return NumberDataFormatterUtils.format(cellData.getNumberValue(), cellData.getDataFormat(),
                 cellData.getDataFormatString(), globalConfiguration);
         }
         // Default conversion number
