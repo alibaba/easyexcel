@@ -179,6 +179,7 @@ public class WriteContextImpl implements WriteContext {
                     .setCachedSheet(writeWorkbookHolder.getCachedWorkbook().getSheet(writeSheetHolder.getSheetName()));
             }
         } catch (Exception e) {
+            LOGGER.error("initSheet exception ",e);
             currentSheet = createSheet();
         }
         if (currentSheet == null) {
