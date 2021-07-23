@@ -26,9 +26,12 @@ import net.sf.cglib.beans.BeanMap;
  * @author jipengfei
  */
 public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener<Map<Integer, CellData>> {
+    private int headSize;
 
     @Override
-    public void invokeHead(Map<Integer, CellData> cellDataMap, AnalysisContext context) {}
+    public void invokeHead(Map<Integer, CellData> cellDataMap, AnalysisContext context) {
+        this.headSize = cellDataMap.size();
+    }
 
     @Override
     public void invoke(Map<Integer, CellData> cellDataMap, AnalysisContext context) {
@@ -62,7 +65,8 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                     (String)ConverterUtils.convertToJavaObject(cellData, null, null, currentReadHolder.converterMap(),
                         currentReadHolder.globalConfiguration(), context.readRowHolder().getRowIndex(), key));
             }
-            int headSize = currentReadHolder.excelReadHeadProperty().getHeadMap().size();
+            int headSize = currentReadHolder.excelReadHeadProperty().getHeadMap().size() == 0 ? this.headSize :
+                currentReadHolder.excelReadHeadProperty().getHeadMap().size();
             while (index < headSize) {
                 map.put(index, null);
                 index++;
@@ -87,7 +91,8 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
                     (String)ConverterUtils.convertToJavaObject(cellData, null, null, currentReadHolder.converterMap(),
                         currentReadHolder.globalConfiguration(), context.readRowHolder().getRowIndex(), key));
             }
-            int headSize = currentReadHolder.excelReadHeadProperty().getHeadMap().size();
+            int headSize = currentReadHolder.excelReadHeadProperty().getHeadMap().size() == 0 ? this.headSize :
+                currentReadHolder.excelReadHeadProperty().getHeadMap().size();
             while (index < headSize) {
                 list.add(null);
                 index++;
