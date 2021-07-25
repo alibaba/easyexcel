@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -215,10 +216,12 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         if (commentsTable == null) {
             return;
         }
-        Map<CellAddress, XSSFComment> cellComments = commentsTable.getCellComments();
-        for (XSSFComment xssfComment : cellComments.values()) {
-            CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.COMMENT, xssfComment.getString().toString(),
-                xssfComment.getRow(), xssfComment.getColumn());
+        Iterator<CellAddress> cellAddresses = commentsTable.getCellAddresses();
+        for (Iterator<CellAddress> it = cellAddresses; it.hasNext(); ) {
+            CellAddress cellAddress = it.next();
+            XSSFComment cellComment = commentsTable.findCellComment(cellAddress);
+            CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.COMMENT, cellComment.getString().toString(),
+                cellAddress.getRow(), cellAddress.getColumn());
             xlsxReadContext.readSheetHolder().setCellExtra(cellExtra);
             xlsxReadContext.analysisEventProcessor().extra(xlsxReadContext);
         }
