@@ -455,7 +455,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COLLECTION);
             }
             analysisCell.getVariableList().add(variable);
-            if (lastPrepareDataIndex == prefixIndex) {
+            if (lastPrepareDataIndex == prefixIndex && 0 == prefixIndex) {
                 analysisCell.getPrepareDataList().add(StringUtils.EMPTY);
             } else {
                 String data = convertPrepareData(value.substring(lastPrepareDataIndex, prefixIndex));
