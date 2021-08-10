@@ -469,7 +469,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             lastPrepareDataIndex = suffixIndex + 1;
         }
 
-        if (variableCount >= 1) {
+        if (variableCount > 1) {
             analysisCell.setOnlyOneVariable(Boolean.FALSE);
         }
 
