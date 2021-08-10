@@ -412,6 +412,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         int startIndex = 0;
         int length = value.length();
         int lastPrepareDataIndex = 0;
+        int variableCount = 0;
         out: while (startIndex < length) {
             int prefixIndex = value.indexOf(FILL_PREFIX, startIndex);
             if (prefixIndex < 0) {
@@ -442,7 +443,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             String variable = value.substring(prefixIndex + 1, suffixIndex);
             if (StringUtils.isEmpty(variable)) {
                 continue;
+            } else {
+                ++variableCount;
             }
+
             int collectPrefixIndex = variable.indexOf(COLLECTION_PREFIX);
             if (collectPrefixIndex > -1) {
                 if (collectPrefixIndex != 0) {
@@ -455,16 +459,20 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COLLECTION);
             }
             analysisCell.getVariableList().add(variable);
-            if (lastPrepareDataIndex == prefixIndex && 0 == prefixIndex) {
+            if (lastPrepareDataIndex == prefixIndex) {
                 analysisCell.getPrepareDataList().add(StringUtils.EMPTY);
             } else {
                 String data = convertPrepareData(value.substring(lastPrepareDataIndex, prefixIndex));
                 preparedData.append(data);
                 analysisCell.getPrepareDataList().add(data);
-                analysisCell.setOnlyOneVariable(Boolean.FALSE);
             }
             lastPrepareDataIndex = suffixIndex + 1;
         }
+
+        if (variableCount >= 1) {
+            analysisCell.setOnlyOneVariable(Boolean.FALSE);
+        }
+
         return dealAnalysisCell(analysisCell, value, rowIndex, lastPrepareDataIndex, length, firstRowCache,
             preparedData);
     }
