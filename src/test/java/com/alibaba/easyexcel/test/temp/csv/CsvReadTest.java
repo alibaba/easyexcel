@@ -23,7 +23,7 @@ public class CsvReadTest {
 
     @Test
     public void write() throws Exception {
-        Appendable out = new PrintWriter(TestFileUtil.createNewFile("csvWrite.csv"));
+        Appendable out = new PrintWriter(TestFileUtil.createNewFile("csvWrite1.csv"));
         CSVPrinter printer = CSVFormat.DEFAULT.withHeader("userId", "userName")
             .print(out);
         for (int i = 0; i < 10; i++) {

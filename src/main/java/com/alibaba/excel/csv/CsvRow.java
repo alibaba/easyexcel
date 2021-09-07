@@ -1,6 +1,8 @@
 package com.alibaba.excel.csv;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -15,10 +17,13 @@ import org.apache.poi.ss.usermodel.Sheet;
  */
 public class CsvRow implements Row {
 
+   public List<CsvCell> list = new ArrayList<>();
 
     @Override
     public Cell createCell(int column) {
-        return new CsvCell();
+        CsvCell cell = new CsvCell();
+        list.add(cell);
+        return cell;
     }
 
     @Override
@@ -43,7 +48,7 @@ public class CsvRow implements Row {
 
     @Override
     public Cell getCell(int cellnum) {
-        return null;
+        return list.get(cellnum);
     }
 
     @Override
@@ -58,7 +63,7 @@ public class CsvRow implements Row {
 
     @Override
     public short getLastCellNum() {
-        return 0;
+        return (short)list.size();
     }
 
     @Override

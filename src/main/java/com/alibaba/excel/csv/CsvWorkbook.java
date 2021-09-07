@@ -177,6 +177,7 @@ public class CsvWorkbook implements Workbook {
 
     @Override
     public void write(OutputStream stream) throws IOException {
+        csvSheet.flushData();
         csvSheet.csvPrinter.flush();
         csvSheet.csvPrinter.close();
     }

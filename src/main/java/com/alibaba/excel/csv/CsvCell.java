@@ -23,6 +23,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
  */
 public class CsvCell implements Cell {
 
+    private String value;
+
     @Override
     public int getColumnIndex() {
         return 0;
@@ -75,11 +77,12 @@ public class CsvCell implements Cell {
 
     @Override
     public void setCellValue(double value) {
-
+        this.value = value + "";
     }
 
     @Override
     public void setCellValue(Date value) {
+        this.value = value.toString();
 
     }
 
@@ -100,7 +103,7 @@ public class CsvCell implements Cell {
 
     @Override
     public void setCellValue(String value) {
-
+        this.value = value;
     }
 
     @Override
@@ -140,7 +143,7 @@ public class CsvCell implements Cell {
 
     @Override
     public String getStringCellValue() {
-        return null;
+        return value;
     }
 
     @Override
@@ -222,4 +225,7 @@ public class CsvCell implements Cell {
     public boolean isPartOfArrayFormulaGroup() {
         return false;
     }
+
+
+
 }

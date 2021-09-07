@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.alibaba.excel.util.ListUtils;
 
@@ -668,7 +669,9 @@ public class CsvSheet implements Sheet {
 
     public void flushData() {
         try {
-            csvPrinter.printRecord();
+            for (CsvRow row : rowCache) {
+                csvPrinter.printRecord(row.list.stream().map(CsvCell::getStringCellValue).collect(Collectors.toList()));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
