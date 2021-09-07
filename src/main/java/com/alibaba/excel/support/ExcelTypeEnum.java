@@ -17,6 +17,10 @@ import org.apache.poi.poifs.filesystem.FileMagic;
  */
 public enum ExcelTypeEnum {
     /**
+     * csv
+     */
+    CSV(".csv"),
+    /**
      * xls
      */
     XLS(".xls"),
@@ -58,6 +62,8 @@ public enum ExcelTypeEnum {
                     return XLSX;
                 } else if (fileName.endsWith(XLS.getValue())) {
                     return XLS;
+                } else if (fileName.endsWith(CSV.getValue())) {
+                    return CSV;
                 }
                 if (StringUtils.isEmpty(readWorkbook.getPassword())) {
                     try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {

@@ -164,7 +164,14 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             if (isXls) {
                 this.excelType = ExcelTypeEnum.XLS;
             } else {
-                this.excelType = ExcelTypeEnum.XLSX;
+                boolean isCsv = (file != null && file.getName().endsWith(ExcelTypeEnum.CSV.getValue()))
+                    || (writeWorkbook.getTemplateFile() != null
+                    && writeWorkbook.getTemplateFile().getName().endsWith(ExcelTypeEnum.CSV.getValue()));
+                if (isCsv) {
+                    this.excelType = ExcelTypeEnum.CSV;
+                } else {
+                    this.excelType = ExcelTypeEnum.XLSX;
+                }
             }
         } else {
             this.excelType = writeWorkbook.getExcelType();
@@ -174,8 +181,8 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.mandatoryUseInputStream = writeWorkbook.getMandatoryUseInputStream();
         }
-        this.hasBeenInitializedSheetIndexMap = new HashMap<Integer, WriteSheetHolder>();
-        this.hasBeenInitializedSheetNameMap = new HashMap<String, WriteSheetHolder>();
+        this.hasBeenInitializedSheetIndexMap = new HashMap<>();
+        this.hasBeenInitializedSheetNameMap = new HashMap<>();
         this.password = writeWorkbook.getPassword();
         if (writeWorkbook.getInMemory() == null) {
             this.inMemory = Boolean.FALSE;
@@ -188,8 +195,8 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.writeExcelOnException = writeWorkbook.getWriteExcelOnException();
         }
         this.cellStyleMap = MapUtils.newHashMap();
-        this.fontMap= MapUtils.newHashMap();
-        this.dataFormatMap=MapUtils.newHashMap();
+        this.fontMap = MapUtils.newHashMap();
+        this.dataFormatMap = MapUtils.newHashMap();
     }
 
     private void copyTemplate() throws IOException {
