@@ -19,11 +19,16 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * Workbook holder
  *
  * @author Jiaju Zhuang
  */
+@Data
+@NoArgsConstructor
 public class ReadWorkbookHolder extends AbstractReadHolder {
 
     /**
@@ -171,157 +176,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.password = readWorkbook.getPassword();
     }
 
-    public ReadWorkbook getReadWorkbook() {
-        return readWorkbook;
-    }
-
-    public void setReadWorkbook(ReadWorkbook readWorkbook) {
-        this.readWorkbook = readWorkbook;
-    }
-
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public Boolean getAutoCloseStream() {
-        return autoCloseStream;
-    }
-
-    public void setAutoCloseStream(Boolean autoCloseStream) {
-        this.autoCloseStream = autoCloseStream;
-    }
-
-    public ExcelTypeEnum getExcelType() {
-        return excelType;
-    }
-
-    public void setExcelType(ExcelTypeEnum excelType) {
-        this.excelType = excelType;
-    }
-
-    public Object getCustomObject() {
-        return customObject;
-    }
-
-    public void setCustomObject(Object customObject) {
-        this.customObject = customObject;
-    }
-
-    public Boolean getIgnoreEmptyRow() {
-        return ignoreEmptyRow;
-    }
-
-    public void setIgnoreEmptyRow(Boolean ignoreEmptyRow) {
-        this.ignoreEmptyRow = ignoreEmptyRow;
-    }
-
-    public ReadCache getReadCache() {
-        return readCache;
-    }
-
-    public void setReadCache(ReadCache readCache) {
-        this.readCache = readCache;
-    }
-
-    public ReadCacheSelector getReadCacheSelector() {
-        return readCacheSelector;
-    }
-
-    public void setReadCacheSelector(ReadCacheSelector readCacheSelector) {
-        this.readCacheSelector = readCacheSelector;
-    }
-
-    public Boolean getMandatoryUseInputStream() {
-        return mandatoryUseInputStream;
-    }
-
-    public void setMandatoryUseInputStream(Boolean mandatoryUseInputStream) {
-        this.mandatoryUseInputStream = mandatoryUseInputStream;
-    }
-
-    public File getTempFile() {
-        return tempFile;
-    }
-
-    public void setTempFile(File tempFile) {
-        this.tempFile = tempFile;
-    }
-
-    public Boolean getConvertAllFiled() {
-        return convertAllFiled;
-    }
-
-    public void setConvertAllFiled(Boolean convertAllFiled) {
-        this.convertAllFiled = convertAllFiled;
-    }
-
-    public Set<Integer> getHasReadSheet() {
-        return hasReadSheet;
-    }
-
-    public void setHasReadSheet(Set<Integer> hasReadSheet) {
-        this.hasReadSheet = hasReadSheet;
-    }
-
-    public Boolean getDefaultReturnMap() {
-        return defaultReturnMap;
-    }
-
-    public void setDefaultReturnMap(Boolean defaultReturnMap) {
-        this.defaultReturnMap = defaultReturnMap;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<CellExtraTypeEnum> getExtraReadSet() {
-        return extraReadSet;
-    }
-
-    public void setExtraReadSet(Set<CellExtraTypeEnum> extraReadSet) {
-        this.extraReadSet = extraReadSet;
-    }
-
-    public List<ReadSheet> getActualSheetDataList() {
-        return actualSheetDataList;
-    }
-
-    public void setActualSheetDataList(List<ReadSheet> actualSheetDataList) {
-        this.actualSheetDataList = actualSheetDataList;
-    }
-
-    public List<ReadSheet> getParameterSheetDataList() {
-        return parameterSheetDataList;
-    }
-
-    public void setParameterSheetDataList(List<ReadSheet> parameterSheetDataList) {
-        this.parameterSheetDataList = parameterSheetDataList;
-    }
-
-    public Boolean getReadAll() {
-        return readAll;
-    }
-
-    public void setReadAll(Boolean readAll) {
-        this.readAll = readAll;
-    }
 
     @Override
     public HolderEnum holderType() {

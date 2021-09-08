@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.temp.csv;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,10 +10,12 @@ import java.util.List;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,12 +37,31 @@ public class CsvReadTest {
     }
 
     @Test
+    public void read1() throws Exception {
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(
+            new FileReader("/Users/zhuangjiaju/IdeaProjects/easyexcel/target/test-classes/csvWrite1.csv"));
+        for (CSVRecord record : records) {
+            String lastName = record.get(0);
+            String firstName = record.get(1);
+            log.info("row:{},{}", lastName, firstName);
+        }
+
+    }
+
+    @Test
     public void csvWrite() throws Exception {
         // 写法1
         String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".csv";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
         EasyExcel.write(fileName, CsvData.class).sheet().doWrite(data());
+
+        // 读
+        List<Object> list = EasyExcel.read(fileName).sheet(0).headRowNumber(0).doReadSync();
+        log.info("数据：{}", list.size());
+        for (Object data : list) {
+            log.info("返回数据：{}", JSON.toJSONString(data));
+        }
     }
 
     @Test

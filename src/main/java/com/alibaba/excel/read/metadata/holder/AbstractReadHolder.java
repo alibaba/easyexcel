@@ -16,6 +16,7 @@ import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.ListUtils;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Read Holder
@@ -23,6 +24,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
+@NoArgsConstructor
 public abstract class AbstractReadHolder extends AbstractHolder implements ReadHolder {
     /**
      * Count the number of added heads when read sheet.

@@ -10,6 +10,7 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.ReadSheet;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * sheet holder
@@ -17,6 +18,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
+@NoArgsConstructor
 public class ReadSheetHolder extends AbstractReadHolder {
 
     /**

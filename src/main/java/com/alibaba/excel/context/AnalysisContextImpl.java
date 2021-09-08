@@ -10,6 +10,8 @@ import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.read.metadata.holder.csv.CsvReadSheetHolder;
+import com.alibaba.excel.read.metadata.holder.csv.CsvReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
@@ -57,6 +59,9 @@ public class AnalysisContextImpl implements AnalysisContext {
             case XLSX:
                 readWorkbookHolder = new XlsxReadWorkbookHolder(readWorkbook);
                 break;
+            case CSV:
+                readWorkbookHolder = new CsvReadWorkbookHolder(readWorkbook);
+                break;
             default:
                 break;
         }
@@ -75,6 +80,9 @@ public class AnalysisContextImpl implements AnalysisContext {
                 break;
             case XLSX:
                 readSheetHolder = new XlsxReadSheetHolder(readSheet, readWorkbookHolder);
+                break;
+            case CSV:
+                readSheetHolder = new CsvReadSheetHolder(readSheet, readWorkbookHolder);
                 break;
             default:
                 break;
@@ -133,7 +141,6 @@ public class AnalysisContextImpl implements AnalysisContext {
     public void readSheetList(List<ReadSheet> readSheetList) {
 
     }
-
 
     @Override
     public ExcelTypeEnum getExcelType() {
