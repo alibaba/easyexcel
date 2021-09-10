@@ -24,7 +24,7 @@ public class AnnotationDataTest {
     public static void init() {
         file07 = TestFileUtil.createNewFile("annotation07.xlsx");
         file03 = TestFileUtil.createNewFile("annotation03.xls");
-        fileCsv = TestFileUtil.createNewFile("annotation.csv");
+        fileCsv = TestFileUtil.createNewFile("annotationCsv.csv");
     }
 
     @Test
@@ -38,8 +38,8 @@ public class AnnotationDataTest {
     }
 
     @Test
-    public void t02ReadAndWriteCsv() throws Exception {
-        //readAndWrite(fileCsv);
+    public void t03ReadAndWriteCsv() throws Exception {
+        readAndWrite(fileCsv);
     }
 
     private void readAndWrite(File file) throws Exception {

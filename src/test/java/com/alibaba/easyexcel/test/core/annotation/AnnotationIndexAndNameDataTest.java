@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Annotation data test
@@ -19,11 +19,13 @@ public class AnnotationIndexAndNameDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("annotationIndexAndName07.xlsx");
         file03 = TestFileUtil.createNewFile("annotationIndexAndName03.xls");
+        fileCsv = TestFileUtil.createNewFile("annotationIndexAndNameCsv.csv");
     }
 
     @Test
@@ -34,6 +36,11 @@ public class AnnotationIndexAndNameDataTest {
     @Test
     public void t02ReadAndWrite03() {
         readAndWrite(file03);
+    }
+
+    @Test
+    public void t03ReadAndWrite03() {
+        readAndWrite(fileCsv);
     }
 
     private void readAndWrite(File file) {

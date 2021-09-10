@@ -728,8 +728,12 @@ public class CsvSheet implements Sheet, Closeable {
         try {
             for (CsvRow row : rowCache) {
                 Iterator<Cell> cellIterator = row.cellIterator();
+                int columnIndex = 0;
                 while (cellIterator.hasNext()) {
                     CsvCell csvCell = (CsvCell)cellIterator.next();
+                    while (csvCell.getColumnIndex() > columnIndex++) {
+                        csvPrinter.print(null);
+                    }
                     csvPrinter.print(buildCellValue(csvCell));
                 }
                 csvPrinter.println();
