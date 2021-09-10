@@ -7,9 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.enums.NumericCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
@@ -25,6 +25,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Footer;
 import org.apache.poi.ss.usermodel.Header;
@@ -45,7 +46,6 @@ import org.apache.poi.ss.util.PaneInformation;
  */
 @Data
 public class CsvSheet implements Sheet, Closeable {
-
     /**
      * workbook
      */
@@ -747,21 +747,40 @@ public class CsvSheet implements Sheet, Closeable {
             case FORMULA:
                 return csvCell.getStringCellValue();
             case NUMERIC:
-
-                NumberDataFormatterUtils.format()
-
+                Short dataFormat = null;
+                String dataFormatString = null;
+                if (csvCell.getCellStyle() != null) {
+                    dataFormat = csvCell.getCellStyle().getDataFormat();
+                    dataFormatString = csvCell.getCellStyle().getDataFormatString();
+                }
                 if (csvCell.getNumericCellType() == NumericCellTypeEnum.DATE) {
-                    // date
-                    if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
-                        return new WriteCellData<>(DateUtils.format(value, null));
-                    } else {
-                        return new WriteCellData<>(
-                            DateUtils.format(value, contentProperty.getDateTimeFormatProperty().getFormat()));
+                    if (csvCell.getDateValue() == null) {
+                        return null;
                     }
-
+                    // date
+                    if (dataFormat == null) {
+                        dataFormatString = DateUtils.defaultDateFormat;
+                        dataFormat = csvWorkbook.createDataFormat().getFormat(dataFormatString);
+                    }
+                    if (dataFormatString == null) {
+                        dataFormatString = csvWorkbook.createDataFormat().getFormat(dataFormat);
+                    }
+                    return NumberDataFormatterUtils.format(
+                        DateUtil.getExcelDate(csvCell.getDateValue(), csvWorkbook.getUse1904windowing()),
+                        dataFormat, dataFormatString, csvWorkbook.getUse1904windowing(), csvWorkbook.getLocale(),
+                        csvWorkbook.getUseScientificFormat());
                 } else {
+                    if (csvCell.getNumberValue() == null) {
+                        return null;
+                    }
                     //number
-
+                    if (dataFormat == null) {
+                        dataFormat = BuiltinFormats.GENERAL;
+                        dataFormatString = csvWorkbook.createDataFormat().getFormat(dataFormat);
+                    }
+                    return NumberDataFormatterUtils.format(csvCell.getNumericCellValue(), dataFormat, dataFormatString,
+                        csvWorkbook.getUse1904windowing(), csvWorkbook.getLocale(),
+                        csvWorkbook.getUseScientificFormat());
                 }
             case BOOLEAN:
                 return csvCell.getBooleanValue().toString();
@@ -771,7 +790,5 @@ public class CsvSheet implements Sheet, Closeable {
                 return null;
         }
     }
-
-    private String
 
 }

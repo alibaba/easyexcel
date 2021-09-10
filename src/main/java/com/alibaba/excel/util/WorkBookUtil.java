@@ -69,7 +69,9 @@ public class WorkBookUtil {
             case CSV:
                 CsvWorkbook csvWorkbook = new CsvWorkbook(
                     new OutputStreamWriter(writeWorkbookHolder.getOutputStream(), writeWorkbookHolder.getCharset()),
-                    writeWorkbookHolder.getGlobalConfiguration().getLocale(), writeWorkbookHolder.getGlobalConfiguration().getUse1904windowing());
+                    writeWorkbookHolder.getGlobalConfiguration().getLocale(),
+                    writeWorkbookHolder.getGlobalConfiguration().getUse1904windowing(),
+                    writeWorkbookHolder.getGlobalConfiguration().getUseScientificFormat());
                 writeWorkbookHolder.setCachedWorkbook(csvWorkbook);
                 writeWorkbookHolder.setWorkbook(csvWorkbook);
                 return;

@@ -18,7 +18,6 @@ import org.apache.poi.ss.usermodel.CellBase;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Comment;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
@@ -48,6 +47,11 @@ public class CsvCell extends CellBase {
     private CellType cellType;
 
     /**
+     * numeric cell type
+     */
+    private NumericCellTypeEnum numericCellType;
+
+    /**
      * workbook
      */
     private final CsvWorkbook csvWorkbook;
@@ -65,7 +69,7 @@ public class CsvCell extends CellBase {
     /**
      * {@link CellType#NUMERIC}
      */
-    private Double numberValue;
+    private BigDecimal numberValue;
     /**
      * {@link CellType#STRING} and {@link CellType#ERROR} {@link CellType#FORMULA}
      */
@@ -74,6 +78,11 @@ public class CsvCell extends CellBase {
      * {@link CellType#BOOLEAN}
      */
     private Boolean booleanValue;
+
+    /**
+     * {@link CellType#NUMERIC}
+     */
+    private LocalDateTime dateValue;
 
     /**
      * formula
@@ -121,25 +130,33 @@ public class CsvCell extends CellBase {
 
     @Override
     protected void setCellValueImpl(double value) {
-        this.numberValue = value;
+        numberValue = BigDecimal.valueOf(value);
         this.cellType = CellType.NUMERIC;
     }
 
     @Override
     protected void setCellValueImpl(Date value) {
-        this.numberValue = DateUtil.getExcelDate(value, csvWorkbook.getUse1904windowing());
+        if (value == null) {
+            return;
+        }
+        this.dateValue = LocalDateTime.ofInstant(value.toInstant(), ZoneId.systemDefault());
         this.cellType = CellType.NUMERIC;
+        this.numericCellType = NumericCellTypeEnum.DATE;
     }
 
     @Override
     protected void setCellValueImpl(LocalDateTime value) {
-        this.numberValue = DateUtil.getExcelDate(value, csvWorkbook.getUse1904windowing());
+        this.dateValue = value;
         this.cellType = CellType.NUMERIC;
+        this.numericCellType = NumericCellTypeEnum.DATE;
     }
 
     @Override
     protected void setCellValueImpl(Calendar value) {
-        this.numberValue = DateUtil.getExcelDate(value, csvWorkbook.getUse1904windowing());
+        if (value == null) {
+            return;
+        }
+        this.dateValue = LocalDateTime.ofInstant(value.toInstant(), ZoneId.systemDefault());
         this.cellType = CellType.NUMERIC;
     }
 
@@ -231,18 +248,15 @@ public class CsvCell extends CellBase {
 
     @Override
     public Date getDateCellValue() {
-        if (numberValue == null) {
+        if (dateValue == null) {
             return null;
         }
-        return DateUtil.getJavaDate(numberValue, csvWorkbook.getUse1904windowing());
+        return Date.from(dateValue.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     @Override
     public LocalDateTime getLocalDateTimeCellValue() {
-        if (numberValue == null) {
-            return null;
-        }
-        return DateUtil.getLocalDateTime(numberValue, csvWorkbook.getUse1904windowing());
+        return dateValue;
     }
 
     @Override
@@ -263,7 +277,7 @@ public class CsvCell extends CellBase {
 
     @Override
     public void setCellErrorValue(byte value) {
-        this.numberValue = value;
+        this.numberValue = BigDecimal.valueOf(value);
         this.cellType = CellType.ERROR;
     }
 

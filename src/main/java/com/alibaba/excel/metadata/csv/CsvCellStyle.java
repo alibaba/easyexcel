@@ -52,13 +52,17 @@ public class CsvCellStyle implements CellStyle {
 
     @Override
     public short getDataFormat() {
-        initDataFormatData();
+        if (dataFormatData == null) {
+            return 0;
+        }
         return dataFormatData.getIndex();
     }
 
     @Override
     public String getDataFormatString() {
-        initDataFormatData();
+        if (dataFormatData == null) {
+            return null;
+        }
         return dataFormatData.getFormat();
     }
 
