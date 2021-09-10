@@ -245,10 +245,15 @@ public class WriteContextImpl implements WriteContext {
             Head head = entry.getValue();
             int columnIndex = entry.getKey();
             WriteHandlerUtils.beforeCellCreate(this, row, head, columnIndex, relativeRowIndex, Boolean.TRUE);
+
             Cell cell = row.createCell(columnIndex);
+
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
-            cell.setCellValue(head.getHeadNameList().get(relativeRowIndex));
-            WriteHandlerUtils.afterCellDispose(this, (WriteCellData<?>)null, cell, head, relativeRowIndex,
+
+            WriteCellData<String> writeCellData = new WriteCellData<>(head.getHeadNameList().get(relativeRowIndex));
+            cell.setCellValue(writeCellData.getStringValue());
+
+            WriteHandlerUtils.afterCellDispose(this, writeCellData, cell, head, relativeRowIndex,
                 Boolean.TRUE);
         }
     }

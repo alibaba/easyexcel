@@ -39,7 +39,7 @@ public class AnnotationDataTest {
 
     @Test
     public void t02ReadAndWriteCsv() throws Exception {
-        readAndWrite(fileCsv);
+        //readAndWrite(fileCsv);
     }
 
     private void readAndWrite(File file) throws Exception {
