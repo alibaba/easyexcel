@@ -19,6 +19,10 @@ public class DataFormatData {
      */
     private String format;
 
+    public DataFormatData() {
+        this.index = 0;
+    }
+
     @Override
     public DataFormatData clone() {
         DataFormatData dataFormatData = new DataFormatData();

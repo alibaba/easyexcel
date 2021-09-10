@@ -2,6 +2,7 @@ package com.alibaba.excel.metadata.csv;
 
 import com.alibaba.excel.metadata.data.DataFormatData;
 
+import lombok.Data;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Color;
@@ -15,6 +16,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class CsvCellStyle implements CellStyle {
 
     /**
@@ -33,22 +35,31 @@ public class CsvCellStyle implements CellStyle {
 
     @Override
     public short getIndex() {
-        return 0;
+        return index;
     }
 
     @Override
     public void setDataFormat(short fmt) {
+        initDataFormatData();
+        dataFormatData.setIndex(fmt);
+    }
 
+    private void initDataFormatData() {
+        if (dataFormatData == null) {
+            dataFormatData = new DataFormatData();
+        }
     }
 
     @Override
     public short getDataFormat() {
-        return 0;
+        initDataFormatData();
+        return dataFormatData.getIndex();
     }
 
     @Override
     public String getDataFormatString() {
-        return null;
+        initDataFormatData();
+        return dataFormatData.getFormat();
     }
 
     @Override

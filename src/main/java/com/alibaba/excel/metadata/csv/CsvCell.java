@@ -8,6 +8,10 @@ import java.util.Date;
 
 import com.alibaba.excel.metadata.data.FormulaData;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.CellBase;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -24,16 +28,21 @@ import org.apache.poi.ss.util.CellRangeAddress;
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class CsvCell extends CellBase {
 
     /**
      * column index
      */
+    @Getter(value = AccessLevel.NONE)
+    @Setter(value = AccessLevel.NONE)
     private Integer columnIndex;
 
     /**
      * cell type
      */
+    @Getter(value = AccessLevel.NONE)
+    @Setter(value = AccessLevel.NONE)
     private CellType cellType;
     /**
      * row
@@ -130,6 +139,24 @@ public class CsvCell extends CellBase {
     @Override
     protected void setCellValueImpl(RichTextString value) {
         richTextString = value;
+    }
+
+    @Override
+    public void setCellValue(String value) {
+        if (value == null) {
+            setBlank();
+            return;
+        }
+        setCellValueImpl(value);
+    }
+
+    @Override
+    public void setCellValue(RichTextString value) {
+        if (value == null || value.getString() == null) {
+            setBlank();
+            return;
+        }
+        setCellValueImpl(value);
     }
 
     @Override

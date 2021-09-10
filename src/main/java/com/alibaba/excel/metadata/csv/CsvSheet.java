@@ -1,13 +1,7 @@
 package com.alibaba.excel.metadata.csv;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -76,22 +70,6 @@ public class CsvSheet implements Sheet, Closeable {
      * csv printer
      */
     private CSVPrinter csvPrinter;
-
-    public CsvSheet(CsvWorkbook csvWorkbook, File file, Charset charset) throws FileNotFoundException {
-        this.csvWorkbook = csvWorkbook;
-        this.out = new OutputStreamWriter(new FileOutputStream(file), charset);
-        this.rowCacheCount = 500;
-        this.csvFormat = CSVFormat.DEFAULT;
-        this.lastRowIndex = -1;
-    }
-
-    public CsvSheet(CsvWorkbook csvWorkbook, OutputStream outputStream) {
-        this.csvWorkbook = csvWorkbook;
-        this.out = new OutputStreamWriter(outputStream);
-        this.rowCacheCount = 500;
-        this.csvFormat = CSVFormat.DEFAULT;
-        this.lastRowIndex = -1;
-    }
 
     public CsvSheet(CsvWorkbook csvWorkbook, Appendable out) {
         this.csvWorkbook = csvWorkbook;

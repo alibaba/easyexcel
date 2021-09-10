@@ -66,13 +66,13 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private File file;
     /**
-     * charset of final output file
-     */
-    private Charset fileCharset;
-    /**
      * Final output stream
      */
     private OutputStream outputStream;
+    /**
+     * output charset
+     */
+    private Charset charset;
     /**
      * Template input stream
      * <p>
@@ -152,6 +152,13 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.outputStream = writeWorkbook.getOutputStream();
         }
+
+        if (writeWorkbook.getCharset() == null) {
+            this.charset = Charset.defaultCharset();
+        } else {
+            this.charset = writeWorkbook.getCharset();
+        }
+
         if (writeWorkbook.getAutoCloseStream() == null) {
             this.autoCloseStream = Boolean.TRUE;
         } else {

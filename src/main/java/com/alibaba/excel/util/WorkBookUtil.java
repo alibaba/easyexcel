@@ -1,6 +1,5 @@
 package com.alibaba.excel.util;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
@@ -68,16 +67,9 @@ public class WorkBookUtil {
                 }
                 return;
             case CSV:
-                CsvWorkbook csvWorkbook;
-                if (writeWorkbookHolder.getFile() != null) {
-                    csvWorkbook = new CsvWorkbook(
-                        new OutputStreamWriter(new FileOutputStream(writeWorkbookHolder.getFile()),
-                            writeWorkbookHolder.getFileCharset()),
-                        writeWorkbookHolder.getGlobalConfiguration().getLocale());
-                } else {
-                    csvWorkbook = new CsvWorkbook(null, writeWorkbookHolder.getGlobalConfiguration().getLocale());
-                }
-                CsvWorkbook csvWorkbook = new CsvWorkbook(writeWorkbookHolder);
+                CsvWorkbook csvWorkbook = new CsvWorkbook(
+                    new OutputStreamWriter(writeWorkbookHolder.getOutputStream(), writeWorkbookHolder.getCharset()),
+                    writeWorkbookHolder.getGlobalConfiguration().getLocale());
                 writeWorkbookHolder.setCachedWorkbook(csvWorkbook);
                 writeWorkbookHolder.setWorkbook(csvWorkbook);
                 return;

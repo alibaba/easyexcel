@@ -3,6 +3,7 @@ package com.alibaba.excel.write.metadata;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import com.alibaba.excel.support.ExcelTypeEnum;
 
@@ -31,6 +32,10 @@ public class WriteWorkbook extends WriteBasicParameter {
      * If 'outputStream' and 'file' all not empty,file first
      */
     private OutputStream outputStream;
+    /**
+     * output charset
+     */
+    private Charset charset;
     /**
      * Template input stream
      * <p>

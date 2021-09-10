@@ -3,6 +3,7 @@ package com.alibaba.excel.metadata.csv;
 import java.util.Iterator;
 import java.util.List;
 
+import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,6 +17,7 @@ import org.apache.poi.ss.usermodel.Sheet;
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class CsvRow implements Row {
 
     /**
