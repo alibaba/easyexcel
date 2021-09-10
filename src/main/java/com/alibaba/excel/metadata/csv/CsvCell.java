@@ -86,6 +86,9 @@ public class CsvCell extends CellBase {
         this.csvRow = csvRow;
         this.columnIndex = columnIndex;
         this.cellType = cellType;
+        if (this.cellType == null) {
+            this.cellType = CellType._NONE;
+        }
     }
 
     @Override
@@ -98,6 +101,7 @@ public class CsvCell extends CellBase {
         FormulaData formulaData = new FormulaData();
         formulaData.setFormulaValue(formula);
         this.formulaData = formulaData;
+        this.cellType = CellType.FORMULA;
     }
 
     @Override
@@ -108,6 +112,7 @@ public class CsvCell extends CellBase {
     @Override
     protected void setCellValueImpl(double value) {
         numberValue = BigDecimal.valueOf(value);
+        this.cellType = CellType.NUMERIC;
     }
 
     @Override
@@ -116,11 +121,13 @@ public class CsvCell extends CellBase {
             return;
         }
         this.dateValue = LocalDateTime.ofInstant(value.toInstant(), ZoneId.systemDefault());
+        this.cellType = CellType.NUMERIC;
     }
 
     @Override
     protected void setCellValueImpl(LocalDateTime value) {
         this.dateValue = value;
+        this.cellType = CellType.NUMERIC;
     }
 
     @Override
@@ -129,16 +136,19 @@ public class CsvCell extends CellBase {
             return;
         }
         this.dateValue = LocalDateTime.ofInstant(value.toInstant(), ZoneId.systemDefault());
+        this.cellType = CellType.NUMERIC;
     }
 
     @Override
     protected void setCellValueImpl(String value) {
         this.stringValue = value;
+        this.cellType = CellType.STRING;
     }
 
     @Override
     protected void setCellValueImpl(RichTextString value) {
         richTextString = value;
+        this.cellType = CellType.STRING;
     }
 
     @Override
@@ -241,11 +251,13 @@ public class CsvCell extends CellBase {
     @Override
     public void setCellValue(boolean value) {
         this.booleanValue = value;
+        this.cellType = CellType.BOOLEAN;
     }
 
     @Override
     public void setCellErrorValue(byte value) {
         this.numberValue = BigDecimal.valueOf(value);
+        this.cellType = CellType.ERROR;
     }
 
     @Override

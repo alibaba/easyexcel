@@ -269,6 +269,10 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             converter = excelContentProperty.getConverter();
         }
         if (converter == null) {
+            // csv is converted to string by default
+            if (writeContext.writeWorkbookHolder().getExcelType() == ExcelTypeEnum.CSV) {
+                targetType = CellDataTypeEnum.STRING;
+            }
             converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz, targetType));
         }
         if (converter == null) {

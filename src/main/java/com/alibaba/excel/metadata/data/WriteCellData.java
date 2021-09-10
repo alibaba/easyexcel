@@ -40,7 +40,7 @@ public class WriteCellData<T> extends CellData<T> {
      */
     private HyperlinkData hyperlinkData;
     /**
-     * sytle
+     * style
      */
     private WriteCellStyle writeCellStyle;
 

@@ -39,6 +39,6 @@ public class ConverterKeyBuild {
         if (cellDataTypeEnum == null) {
             return key;
         }
-        return key + "-" + cellDataTypeEnum.toString();
+        return key + "-" + cellDataTypeEnum;
     }
 }
