@@ -7,8 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.excel.enums.NumericCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
+import com.alibaba.excel.util.StringUtils;
 
 import lombok.Data;
 import org.apache.commons.csv.CSVFormat;
@@ -61,7 +66,8 @@ public class CsvSheet implements Sheet, Closeable {
     /**
      * last row index
      */
-    private int lastRowIndex;
+    private Integer lastRowIndex;
+
     /**
      * row cache
      */
@@ -74,7 +80,7 @@ public class CsvSheet implements Sheet, Closeable {
     public CsvSheet(CsvWorkbook csvWorkbook, Appendable out) {
         this.csvWorkbook = csvWorkbook;
         this.out = out;
-        this.rowCacheCount = 500;
+        this.rowCacheCount = 3000;
         this.csvFormat = CSVFormat.DEFAULT;
         this.lastRowIndex = -1;
     }
@@ -87,7 +93,7 @@ public class CsvSheet implements Sheet, Closeable {
         lastRowIndex++;
         assert rownum == lastRowIndex : "csv create row must be in order.";
         printData();
-        CsvRow csvRow = new CsvRow(this, rownum);
+        CsvRow csvRow = new CsvRow(csvWorkbook, this, rownum);
         rowCache.add(csvRow);
         return csvRow;
     }
@@ -724,7 +730,7 @@ public class CsvSheet implements Sheet, Closeable {
                 Iterator<Cell> cellIterator = row.cellIterator();
                 while (cellIterator.hasNext()) {
                     CsvCell csvCell = (CsvCell)cellIterator.next();
-                    csvPrinter.print(csvCell.getStringCellValue());
+                    csvPrinter.print(buildCellValue(csvCell));
                 }
                 csvPrinter.println();
             }
@@ -733,5 +739,39 @@ public class CsvSheet implements Sheet, Closeable {
             throw new ExcelGenerateException(e);
         }
     }
+
+    private String buildCellValue(CsvCell csvCell) {
+        switch (csvCell.getCellType()) {
+            case STRING:
+            case ERROR:
+            case FORMULA:
+                return csvCell.getStringCellValue();
+            case NUMERIC:
+
+                NumberDataFormatterUtils.format()
+
+                if (csvCell.getNumericCellType() == NumericCellTypeEnum.DATE) {
+                    // date
+                    if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
+                        return new WriteCellData<>(DateUtils.format(value, null));
+                    } else {
+                        return new WriteCellData<>(
+                            DateUtils.format(value, contentProperty.getDateTimeFormatProperty().getFormat()));
+                    }
+
+                } else {
+                    //number
+
+                }
+            case BOOLEAN:
+                return csvCell.getBooleanValue().toString();
+            case BLANK:
+                return StringUtils.EMPTY;
+            default:
+                return null;
+        }
+    }
+
+    private String
 
 }

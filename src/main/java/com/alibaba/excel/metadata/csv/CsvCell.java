@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.alibaba.excel.enums.NumericCellTypeEnum;
 import com.alibaba.excel.metadata.data.FormulaData;
 
 import lombok.AccessLevel;
@@ -17,6 +18,7 @@ import org.apache.poi.ss.usermodel.CellBase;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
@@ -44,6 +46,17 @@ public class CsvCell extends CellBase {
     @Getter(value = AccessLevel.NONE)
     @Setter(value = AccessLevel.NONE)
     private CellType cellType;
+
+    /**
+     * workbook
+     */
+    private final CsvWorkbook csvWorkbook;
+
+    /**
+     * sheet
+     */
+    private final CsvSheet csvSheet;
+
     /**
      * row
      */
@@ -52,7 +65,7 @@ public class CsvCell extends CellBase {
     /**
      * {@link CellType#NUMERIC}
      */
-    private BigDecimal numberValue;
+    private Double numberValue;
     /**
      * {@link CellType#STRING} and {@link CellType#ERROR} {@link CellType#FORMULA}
      */
@@ -61,11 +74,6 @@ public class CsvCell extends CellBase {
      * {@link CellType#BOOLEAN}
      */
     private Boolean booleanValue;
-
-    /**
-     * {@link CellType#NUMERIC}
-     */
-    private LocalDateTime dateValue;
 
     /**
      * formula
@@ -82,7 +90,9 @@ public class CsvCell extends CellBase {
      */
     private CellStyle cellStyle;
 
-    public CsvCell(CsvRow csvRow, Integer columnIndex, CellType cellType) {
+    public CsvCell(CsvWorkbook csvWorkbook, CsvSheet csvSheet, CsvRow csvRow, Integer columnIndex, CellType cellType) {
+        this.csvWorkbook = csvWorkbook;
+        this.csvSheet = csvSheet;
         this.csvRow = csvRow;
         this.columnIndex = columnIndex;
         this.cellType = cellType;
@@ -111,31 +121,25 @@ public class CsvCell extends CellBase {
 
     @Override
     protected void setCellValueImpl(double value) {
-        numberValue = BigDecimal.valueOf(value);
+        this.numberValue = value;
         this.cellType = CellType.NUMERIC;
     }
 
     @Override
     protected void setCellValueImpl(Date value) {
-        if (value == null) {
-            return;
-        }
-        this.dateValue = LocalDateTime.ofInstant(value.toInstant(), ZoneId.systemDefault());
+        this.numberValue = DateUtil.getExcelDate(value, csvWorkbook.getUse1904windowing());
         this.cellType = CellType.NUMERIC;
     }
 
     @Override
     protected void setCellValueImpl(LocalDateTime value) {
-        this.dateValue = value;
+        this.numberValue = DateUtil.getExcelDate(value, csvWorkbook.getUse1904windowing());
         this.cellType = CellType.NUMERIC;
     }
 
     @Override
     protected void setCellValueImpl(Calendar value) {
-        if (value == null) {
-            return;
-        }
-        this.dateValue = LocalDateTime.ofInstant(value.toInstant(), ZoneId.systemDefault());
+        this.numberValue = DateUtil.getExcelDate(value, csvWorkbook.getUse1904windowing());
         this.cellType = CellType.NUMERIC;
     }
 
@@ -227,15 +231,18 @@ public class CsvCell extends CellBase {
 
     @Override
     public Date getDateCellValue() {
-        if (dateValue == null) {
+        if (numberValue == null) {
             return null;
         }
-        return Date.from(dateValue.atZone(ZoneId.systemDefault()).toInstant());
+        return DateUtil.getJavaDate(numberValue, csvWorkbook.getUse1904windowing());
     }
 
     @Override
     public LocalDateTime getLocalDateTimeCellValue() {
-        return dateValue;
+        if (numberValue == null) {
+            return null;
+        }
+        return DateUtil.getLocalDateTime(numberValue, csvWorkbook.getUse1904windowing());
     }
 
     @Override
@@ -256,12 +263,15 @@ public class CsvCell extends CellBase {
 
     @Override
     public void setCellErrorValue(byte value) {
-        this.numberValue = BigDecimal.valueOf(value);
+        this.numberValue = value;
         this.cellType = CellType.ERROR;
     }
 
     @Override
     public boolean getBooleanCellValue() {
+        if (booleanValue == null) {
+            return false;
+        }
         return booleanValue;
     }
 

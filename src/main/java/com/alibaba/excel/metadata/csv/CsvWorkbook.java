@@ -36,6 +36,14 @@ public class CsvWorkbook implements Workbook {
      * locale
      */
     private Locale locale;
+    /**
+     * true if date uses 1904 windowing, or false if using 1900 date windowing.
+     *
+     * default is false
+     *
+     * @return
+     */
+    private Boolean use1904windowing;
 
     /**
      * data format
@@ -50,9 +58,10 @@ public class CsvWorkbook implements Workbook {
      */
     private List<CsvCellStyle> csvCellStyleList;
 
-    public CsvWorkbook(Appendable out, Locale locale) {
+    public CsvWorkbook(Appendable out, Locale locale, Boolean use1904windowing) {
         this.out = out;
         this.locale = locale;
+        this.use1904windowing = use1904windowing;
     }
 
     @Override

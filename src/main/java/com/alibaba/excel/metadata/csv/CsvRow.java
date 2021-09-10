@@ -26,9 +26,15 @@ public class CsvRow implements Row {
     private final List<CsvCell> cellList;
 
     /**
+     * workbook
+     */
+    private final CsvWorkbook csvWorkbook;
+
+    /**
      * sheet
      */
     private final CsvSheet csvSheet;
+
     /**
      * row index
      */
@@ -39,22 +45,23 @@ public class CsvRow implements Row {
      */
     private CellStyle cellStyle;
 
-    public CsvRow(CsvSheet csvSheet, Integer rowIndex) {
+    public CsvRow(CsvWorkbook csvWorkbook, CsvSheet csvSheet, Integer rowIndex) {
         cellList = Lists.newArrayList();
+        this.csvWorkbook = csvWorkbook;
         this.csvSheet = csvSheet;
         this.rowIndex = rowIndex;
     }
 
     @Override
     public Cell createCell(int column) {
-        CsvCell cell = new CsvCell(this, column, null);
+        CsvCell cell = new CsvCell(csvWorkbook, csvSheet, this, column, null);
         cellList.add(cell);
         return cell;
     }
 
     @Override
     public Cell createCell(int column, CellType type) {
-        CsvCell cell = new CsvCell(this, column, type);
+        CsvCell cell = new CsvCell(csvWorkbook, csvSheet, this, column, type);
         cellList.add(cell);
         return cell;
     }

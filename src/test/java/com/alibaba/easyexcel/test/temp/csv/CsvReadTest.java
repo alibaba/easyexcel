@@ -84,7 +84,7 @@ public class CsvReadTest {
         List<CsvData> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             CsvData data = new CsvData();
-            data.setString("字符串" + i);
+            data.setString("字符,串" + i);
             data.setDate(new Date());
             data.setDoubleData(0.56);
             data.setIgnore("忽略" + i);
