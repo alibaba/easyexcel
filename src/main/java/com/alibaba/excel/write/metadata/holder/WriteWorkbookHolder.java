@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +65,10 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * If 'outputStream' and 'file' all not empty,file first
      */
     private File file;
+    /**
+     * charset of final output file
+     */
+    private Charset fileCharset;
     /**
      * Final output stream
      */
@@ -152,11 +157,6 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.autoCloseStream = writeWorkbook.getAutoCloseStream();
         }
-        try {
-            copyTemplate();
-        } catch (IOException e) {
-            throw new ExcelGenerateException("Copy template failure.", e);
-        }
         if (writeWorkbook.getExcelType() == null) {
             boolean isXls = (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue()))
                 || (writeWorkbook.getTemplateFile() != null
@@ -175,6 +175,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             }
         } else {
             this.excelType = writeWorkbook.getExcelType();
+        }
+        try {
+            copyTemplate();
+        } catch (IOException e) {
+            throw new ExcelGenerateException("Copy template failure.", e);
         }
         if (writeWorkbook.getMandatoryUseInputStream() == null) {
             this.mandatoryUseInputStream = Boolean.FALSE;
@@ -202,6 +207,9 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     private void copyTemplate() throws IOException {
         if (writeWorkbook.getTemplateFile() == null && writeWorkbook.getTemplateInputStream() == null) {
             return;
+        }
+        if (this.excelType == ExcelTypeEnum.CSV) {
+            throw new ExcelGenerateException("csv cannot use template.");
         }
         byte[] templateFileByte = null;
         if (writeWorkbook.getTemplateFile() != null) {

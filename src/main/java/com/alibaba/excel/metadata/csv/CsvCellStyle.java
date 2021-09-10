@@ -1,4 +1,6 @@
-package com.alibaba.excel.csv;
+package com.alibaba.excel.metadata.csv;
+
+import com.alibaba.excel.metadata.data.DataFormatData;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -9,11 +11,26 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 /**
- * TODO
+ * csv cell style
  *
  * @author Jiaju Zhuang
  */
 public class CsvCellStyle implements CellStyle {
+
+    /**
+     * data format
+     */
+    private DataFormatData dataFormatData;
+
+    /**
+     * index
+     */
+    private Short index;
+
+    public CsvCellStyle(Short index) {
+        this.index = index;
+    }
+
     @Override
     public short getIndex() {
         return 0;

@@ -1,6 +1,9 @@
-package com.alibaba.excel.csv;
+package com.alibaba.excel.metadata.csv;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -9,10 +12,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.util.ListUtils;
 
+import lombok.Data;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.poi.ss.usermodel.AutoFilter;
@@ -36,62 +40,122 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.PaneInformation;
 
 /**
- * TODO
+ * csv sheet
  *
  * @author Jiaju Zhuang
  */
-public class CsvSheet implements Sheet {
+@Data
+public class CsvSheet implements Sheet, Closeable {
 
-    public static int rowCacheCount = 500;
-    public static Charset defaultCharset = Charset.defaultCharset();
+    /**
+     * workbook
+     */
+    private CsvWorkbook csvWorkbook;
+    /**
+     * output
+     */
+    private Appendable out;
+    /**
+     * row cache
+     */
+    private Integer rowCacheCount;
+    /**
+     * format
+     */
+    public CSVFormat csvFormat;
 
-    public CSVPrinter csvPrinter;
+    /**
+     * last row index
+     */
+    private int lastRowIndex;
+    /**
+     * row cache
+     */
+    private List<CsvRow> rowCache;
+    /**
+     * csv printer
+     */
+    private CSVPrinter csvPrinter;
 
-    private int lastRowNum = -1;
-
-    private List<CsvRow> rowCache = ListUtils.newArrayListWithExpectedSize(rowCacheCount);
-
-    public CsvSheet(File file) throws IOException {
-        csvPrinter = CSVFormat.DEFAULT.print(file, defaultCharset);
+    public CsvSheet(CsvWorkbook csvWorkbook, File file, Charset charset) throws FileNotFoundException {
+        this.csvWorkbook = csvWorkbook;
+        this.out = new OutputStreamWriter(new FileOutputStream(file), charset);
+        this.rowCacheCount = 500;
+        this.csvFormat = CSVFormat.DEFAULT;
+        this.lastRowIndex = -1;
     }
 
-    public CsvSheet(OutputStream outputStream) throws IOException {
-        csvPrinter = CSVFormat.DEFAULT.print(new OutputStreamWriter(outputStream));
+    public CsvSheet(CsvWorkbook csvWorkbook, OutputStream outputStream) {
+        this.csvWorkbook = csvWorkbook;
+        this.out = new OutputStreamWriter(outputStream);
+        this.rowCacheCount = 500;
+        this.csvFormat = CSVFormat.DEFAULT;
+        this.lastRowIndex = -1;
+    }
+
+    public CsvSheet(CsvWorkbook csvWorkbook, Appendable out) {
+        this.csvWorkbook = csvWorkbook;
+        this.out = out;
+        this.rowCacheCount = 500;
+        this.csvFormat = CSVFormat.DEFAULT;
+        this.lastRowIndex = -1;
     }
 
     @Override
     public Row createRow(int rownum) {
-        lastRowNum++;
-        assert rownum == lastRowNum : "csv create row must be in order.";
+        // Initialize the data when the row is first created
+        initSheet();
+
+        lastRowIndex++;
+        assert rownum == lastRowIndex : "csv create row must be in order.";
         printData();
-        CsvRow csvRow = new CsvRow();
+        CsvRow csvRow = new CsvRow(this, rownum);
         rowCache.add(csvRow);
         return csvRow;
     }
 
+    private void initSheet() {
+        if (csvPrinter != null) {
+            return;
+        }
+        rowCache = ListUtils.newArrayListWithExpectedSize(rowCacheCount);
+        try {
+            csvPrinter = csvFormat.print(out);
+        } catch (IOException e) {
+            throw new ExcelGenerateException(e);
+        }
+    }
+
     @Override
     public void removeRow(Row row) {
-
+        throw new UnsupportedOperationException("csv cannot move row.");
     }
 
     @Override
     public Row getRow(int rownum) {
-        return null;
+        int actualRowIndex = rownum - (lastRowIndex - rowCache.size()) - 1;
+        if (actualRowIndex < 0 || actualRowIndex > rowCache.size() - 1) {
+            throw new UnsupportedOperationException("The current data does not exist or has been flushed to disk\n.");
+        }
+        return rowCache.get(actualRowIndex);
     }
 
     @Override
     public int getPhysicalNumberOfRows() {
-        return 0;
+        return lastRowIndex - rowCache.size();
     }
 
     @Override
     public int getFirstRowNum() {
+        if (lastRowIndex < 0) {
+            return -1;
+        }
         return 0;
     }
 
     @Override
     public int getLastRowNum() {
-        return 0;
+        return lastRowIndex;
     }
 
     @Override
@@ -226,7 +290,7 @@ public class CsvSheet implements Sheet {
 
     @Override
     public Iterator<Row> rowIterator() {
-        return null;
+        return (Iterator<Row>)(Iterator<? extends Row>)rowCache.iterator();
     }
 
     @Override
@@ -556,7 +620,7 @@ public class CsvSheet implements Sheet {
 
     @Override
     public Workbook getWorkbook() {
-        return null;
+        return csvWorkbook;
     }
 
     @Override
@@ -657,23 +721,39 @@ public class CsvSheet implements Sheet {
 
     @Override
     public Iterator<Row> iterator() {
-        return null;
+        return rowIterator();
+    }
+
+    @Override
+    public void close() throws IOException {
+        // Avoid empty sheets
+        initSheet();
+
+        flushData();
+        csvPrinter.flush();
+        csvPrinter.close();
     }
 
     public void printData() {
         if (rowCache.size() >= rowCacheCount) {
             flushData();
-            rowCache.clear();
         }
     }
 
     public void flushData() {
         try {
             for (CsvRow row : rowCache) {
-                csvPrinter.printRecord(row.list.stream().map(CsvCell::getStringCellValue).collect(Collectors.toList()));
+                Iterator<Cell> cellIterator = row.cellIterator();
+                while (cellIterator.hasNext()) {
+                    CsvCell csvCell = (CsvCell)cellIterator.next();
+                    csvPrinter.print(csvCell.getStringCellValue());
+                }
+                csvPrinter.println();
             }
+            rowCache.clear();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ExcelGenerateException(e);
         }
     }
+
 }

@@ -1,13 +1,13 @@
-package com.alibaba.excel.csv;
+package com.alibaba.excel.metadata.csv;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.Data;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.udf.UDFFinder;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -22,21 +22,37 @@ import org.apache.poi.ss.usermodel.SheetVisibility;
 import org.apache.poi.ss.usermodel.Workbook;
 
 /**
- * TODO
+ * csv workbook
  *
  * @author Jiaju Zhuang
  */
 @Data
 public class CsvWorkbook implements Workbook {
+    /**
+     * output
+     */
+    private Appendable out;
+    /**
+     * locale
+     */
+    private Locale locale;
 
+    /**
+     * data format
+     */
+    private CsvDataFormat csvDataFormat;
+    /**
+     * sheet
+     */
     private CsvSheet csvSheet;
+    /**
+     * cell style
+     */
+    private List<CsvCellStyle> csvCellStyleList;
 
-    public CsvWorkbook(InputStream inputStream, File file) {
-        try {
-            this.csvSheet = new CsvSheet(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public CsvWorkbook(Appendable out, Locale locale) {
+        this.out = out;
+        this.locale = locale;
     }
 
     @Override
@@ -91,11 +107,15 @@ public class CsvWorkbook implements Workbook {
 
     @Override
     public Sheet createSheet() {
+        assert csvSheet == null : "CSV repeat creation is not allowed.";
+        csvSheet = new CsvSheet(this, out);
         return csvSheet;
     }
 
     @Override
     public Sheet createSheet(String sheetname) {
+        assert csvSheet == null : "CSV repeat creation is not allowed.";
+        csvSheet = new CsvSheet(this, out);
         return csvSheet;
     }
 
@@ -116,12 +136,13 @@ public class CsvWorkbook implements Workbook {
 
     @Override
     public Sheet getSheetAt(int index) {
-        return null;
+        assert index == 0 : "CSV exists only in one sheet.";
+        return csvSheet;
     }
 
     @Override
     public Sheet getSheet(String name) {
-        return null;
+        return csvSheet;
     }
 
     @Override
@@ -162,24 +183,30 @@ public class CsvWorkbook implements Workbook {
 
     @Override
     public CellStyle createCellStyle() {
-        return new CsvCellStyle();
+        if (csvCellStyleList == null) {
+            csvCellStyleList = Lists.newArrayList();
+        }
+        CsvCellStyle csvCellStyle = new CsvCellStyle((short)csvCellStyleList.size());
+        csvCellStyleList.add(csvCellStyle);
+        return csvCellStyle;
     }
 
     @Override
     public int getNumCellStyles() {
-        return 0;
+        return csvCellStyleList.size();
     }
 
     @Override
     public CellStyle getCellStyleAt(int idx) {
-        return null;
+        if (idx < 0 || idx >= csvCellStyleList.size()) {
+            return null;
+        }
+        return csvCellStyleList.get(idx);
     }
 
     @Override
     public void write(OutputStream stream) throws IOException {
-        csvSheet.flushData();
-        csvSheet.csvPrinter.flush();
-        csvSheet.csvPrinter.close();
+        csvSheet.close();
     }
 
     @Override
@@ -274,7 +301,11 @@ public class CsvWorkbook implements Workbook {
 
     @Override
     public DataFormat createDataFormat() {
-        return new CsvDataFormat();
+        if (csvDataFormat != null) {
+            return csvDataFormat;
+        }
+        csvDataFormat = new CsvDataFormat(locale);
+        return csvDataFormat;
     }
 
     @Override

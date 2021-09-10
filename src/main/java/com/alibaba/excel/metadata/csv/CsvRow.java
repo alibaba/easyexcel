@@ -1,9 +1,10 @@
-package com.alibaba.excel.csv;
+package com.alibaba.excel.metadata.csv;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -11,64 +12,98 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
 /**
- * TODO
+ * csv row
  *
  * @author Jiaju Zhuang
  */
 public class CsvRow implements Row {
 
-   public List<CsvCell> list = new ArrayList<>();
+    /**
+     * cell list
+     */
+    private final List<CsvCell> cellList;
+
+    /**
+     * sheet
+     */
+    private final CsvSheet csvSheet;
+    /**
+     * row index
+     */
+    private Integer rowIndex;
+
+    /**
+     * style
+     */
+    private CellStyle cellStyle;
+
+    public CsvRow(CsvSheet csvSheet, Integer rowIndex) {
+        cellList = Lists.newArrayList();
+        this.csvSheet = csvSheet;
+        this.rowIndex = rowIndex;
+    }
 
     @Override
     public Cell createCell(int column) {
-        CsvCell cell = new CsvCell();
-        list.add(cell);
+        CsvCell cell = new CsvCell(this, column, null);
+        cellList.add(cell);
         return cell;
     }
 
     @Override
     public Cell createCell(int column, CellType type) {
-        return null;
+        CsvCell cell = new CsvCell(this, column, type);
+        cellList.add(cell);
+        return cell;
     }
 
     @Override
     public void removeCell(Cell cell) {
-
+        cellList.remove(cell);
     }
 
     @Override
     public void setRowNum(int rowNum) {
-
+        this.rowIndex = rowNum;
     }
 
     @Override
     public int getRowNum() {
-        return 0;
+        return rowIndex;
     }
 
     @Override
     public Cell getCell(int cellnum) {
-        return list.get(cellnum);
+        if (cellnum >= cellList.size()) {
+            return null;
+        }
+        return cellList.get(cellnum - 1);
     }
 
     @Override
     public Cell getCell(int cellnum, MissingCellPolicy policy) {
-        return null;
+        return getCell(cellnum);
     }
 
     @Override
     public short getFirstCellNum() {
+        if (CollectionUtils.isEmpty(cellList)) {
+            return -1;
+        }
         return 0;
     }
 
     @Override
     public short getLastCellNum() {
-        return (short)list.size();
+        if (CollectionUtils.isEmpty(cellList)) {
+            return -1;
+        }
+        return (short)cellList.size();
     }
 
     @Override
     public int getPhysicalNumberOfCells() {
-        return 0;
+        return getRowNum();
     }
 
     @Override
@@ -108,22 +143,22 @@ public class CsvRow implements Row {
 
     @Override
     public CellStyle getRowStyle() {
-        return null;
+        return cellStyle;
     }
 
     @Override
     public void setRowStyle(CellStyle style) {
-
+        this.cellStyle = style;
     }
 
     @Override
     public Iterator<Cell> cellIterator() {
-        return null;
+        return (Iterator<Cell>)(Iterator<? extends Cell>)cellList.iterator();
     }
 
     @Override
     public Sheet getSheet() {
-        return null;
+        return csvSheet;
     }
 
     @Override
@@ -143,6 +178,6 @@ public class CsvRow implements Row {
 
     @Override
     public Iterator<Cell> iterator() {
-        return null;
+        return cellIterator();
     }
 }

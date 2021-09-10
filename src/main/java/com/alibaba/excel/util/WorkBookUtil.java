@@ -1,8 +1,10 @@
 package com.alibaba.excel.util;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
-import com.alibaba.excel.csv.CsvWorkbook;
+import com.alibaba.excel.metadata.csv.CsvWorkbook;
 import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
@@ -67,12 +69,15 @@ public class WorkBookUtil {
                 return;
             case CSV:
                 CsvWorkbook csvWorkbook;
-                if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
-                    csvWorkbook = new CsvWorkbook(writeWorkbookHolder.getTempTemplateInputStream(),
-                        writeWorkbookHolder.getFile());
+                if (writeWorkbookHolder.getFile() != null) {
+                    csvWorkbook = new CsvWorkbook(
+                        new OutputStreamWriter(new FileOutputStream(writeWorkbookHolder.getFile()),
+                            writeWorkbookHolder.getFileCharset()),
+                        writeWorkbookHolder.getGlobalConfiguration().getLocale());
                 } else {
-                    csvWorkbook = new CsvWorkbook(null, writeWorkbookHolder.getFile());
+                    csvWorkbook = new CsvWorkbook(null, writeWorkbookHolder.getGlobalConfiguration().getLocale());
                 }
+                CsvWorkbook csvWorkbook = new CsvWorkbook(writeWorkbookHolder);
                 writeWorkbookHolder.setCachedWorkbook(csvWorkbook);
                 writeWorkbookHolder.setWorkbook(csvWorkbook);
                 return;
