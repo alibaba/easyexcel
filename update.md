@@ -4,6 +4,7 @@
 * 升级cglib 到 3.3.0
 * 升级ehcache 到 3.8.1
 * 支持非驼峰的字段读写
+* 支持csv的读&写
 * 修复`CellData`可能不返回行列号 [Issue #1832](https://github.com/alibaba/easyexcel/issues/1832)
 * 优化读取性能
 * 修复部分情况下不抛出异常
