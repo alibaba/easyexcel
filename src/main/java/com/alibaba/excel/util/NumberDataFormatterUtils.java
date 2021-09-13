@@ -1,11 +1,10 @@
 package com.alibaba.excel.util;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 
-import java.math.BigDecimal;
-
-import com.alibaba.excel.metadata.format.DataFormatter;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.format.DataFormatter;
 
 /**
  * Convert number data, including date.
@@ -48,7 +47,7 @@ public class NumberDataFormatterUtils {
      * @param useScientificFormat
      * @return
      */
-    public static String format(Double data, Short dataFormat, String dataFormatString, Boolean use1904windowing,
+    public static String format(BigDecimal data, Short dataFormat, String dataFormatString, Boolean use1904windowing,
         Locale locale, Boolean useScientificFormat) {
         DataFormatter dataFormatter = DATA_FORMATTER_THREAD_LOCAL.get();
         if (dataFormatter == null) {

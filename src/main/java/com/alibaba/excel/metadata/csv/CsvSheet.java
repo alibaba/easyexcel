@@ -2,6 +2,7 @@ package com.alibaba.excel.metadata.csv;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -768,8 +769,8 @@ public class CsvSheet implements Sheet, Closeable {
                     if (dataFormatString == null) {
                         dataFormatString = csvWorkbook.createDataFormat().getFormat(dataFormat);
                     }
-                    return NumberDataFormatterUtils.format(
-                        DateUtil.getExcelDate(csvCell.getDateValue(), csvWorkbook.getUse1904windowing()),
+                    return NumberDataFormatterUtils.format(BigDecimal.valueOf(
+                            DateUtil.getExcelDate(csvCell.getDateValue(), csvWorkbook.getUse1904windowing())),
                         dataFormat, dataFormatString, csvWorkbook.getUse1904windowing(), csvWorkbook.getLocale(),
                         csvWorkbook.getUseScientificFormat());
                 } else {
@@ -784,7 +785,7 @@ public class CsvSheet implements Sheet, Closeable {
                     if (dataFormatString == null) {
                         dataFormatString = csvWorkbook.createDataFormat().getFormat(dataFormat);
                     }
-                    return NumberDataFormatterUtils.format(csvCell.getNumericCellValue(), dataFormat, dataFormatString,
+                    return NumberDataFormatterUtils.format(csvCell.getNumberValue(), dataFormat, dataFormatString,
                         csvWorkbook.getUse1904windowing(), csvWorkbook.getLocale(),
                         csvWorkbook.getUseScientificFormat());
                 }
