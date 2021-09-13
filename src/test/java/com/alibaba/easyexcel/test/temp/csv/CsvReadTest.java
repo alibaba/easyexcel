@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
@@ -38,8 +37,8 @@ public class CsvReadTest {
 
     @Test
     public void read1() throws Exception {
-        Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(
-            new FileReader("/Users/zhuangjiaju/IdeaProjects/easyexcel/target/test-classes/csvWrite1.csv"));
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withNullString("").parse(
+            new FileReader("/Users/zhuangjiaju/IdeaProjects/easyexcel/target/test-classes/t1.csv"));
         for (CSVRecord record : records) {
             String lastName = record.get(0);
             String firstName = record.get(1);
@@ -71,6 +70,8 @@ public class CsvReadTest {
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
         EasyExcel.write(fileName, CsvData.class).sheet().doWrite(data());
+
+        EasyExcel.read(fileName, CsvData.class, new CsvDataListeer()).sheet().doRead();
     }
 
     @Test
@@ -85,7 +86,7 @@ public class CsvReadTest {
         for (int i = 0; i < 10; i++) {
             CsvData data = new CsvData();
             data.setString("字符,串" + i);
-            data.setDate(new Date());
+            //data.setDate(new Date());
             data.setDoubleData(0.56);
             data.setIgnore("忽略" + i);
             list.add(data);

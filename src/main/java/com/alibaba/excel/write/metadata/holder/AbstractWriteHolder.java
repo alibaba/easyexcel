@@ -97,14 +97,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         Boolean convertAllField) {
         super(writeBasicParameter, parentAbstractWriteHolder);
 
-        if (writeBasicParameter.getUse1904windowing() == null) {
-            if (parentAbstractWriteHolder != null) {
-                getGlobalConfiguration()
-                    .setUse1904windowing(parentAbstractWriteHolder.getGlobalConfiguration().getUse1904windowing());
-            }
-        } else {
-            getGlobalConfiguration().setUse1904windowing(writeBasicParameter.getUse1904windowing());
-        }
 
         if (writeBasicParameter.getUseScientificFormat() != null) {
             throw new UnsupportedOperationException("Currently does not support setting useScientificFormat.");

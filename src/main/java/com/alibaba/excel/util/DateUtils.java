@@ -133,7 +133,7 @@ public class DateUtils {
      */
     public static String format(Date date, String dateFormat) {
         if (date == null) {
-            return "";
+            return null;
         }
         if (StringUtils.isEmpty(dateFormat)) {
             dateFormat = defaultDateFormat;

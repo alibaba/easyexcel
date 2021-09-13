@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 
 import org.junit.Assert;
@@ -28,10 +29,14 @@ public class CellDataDataListener extends AnalysisEventListener<CellDataReadData
         Assert.assertEquals(list.size(), 1);
         CellDataReadData cellDataData = list.get(0);
 
-        Assert.assertEquals(cellDataData.getDate().getData(), "2020年01月01日");
+        Assert.assertEquals("2020年01月01日", cellDataData.getDate().getData());
         Assert.assertEquals((long)cellDataData.getInteger1().getData(), 2L);
         Assert.assertEquals((long)cellDataData.getInteger2(), 2L);
-        Assert.assertEquals(cellDataData.getFormulaValue().getFormulaData().getFormulaValue(), "B2+C2");
+        if (context.readWorkbookHolder().getExcelType() != ExcelTypeEnum.CSV) {
+            Assert.assertEquals(cellDataData.getFormulaValue().getFormulaData().getFormulaValue(), "B2+C2");
+        } else {
+            Assert.assertEquals(cellDataData.getFormulaValue().getData(), "");
+        }
         LOGGER.debug("First row:{}", JSON.toJSONString(list.get(0)));
     }
 }

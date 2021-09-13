@@ -50,15 +50,6 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         Boolean convertAllFiled) {
         super(readBasicParameter, parentAbstractReadHolder);
 
-        if (readBasicParameter.getUse1904windowing() == null) {
-            if (parentAbstractReadHolder != null) {
-                getGlobalConfiguration()
-                    .setUse1904windowing(parentAbstractReadHolder.getGlobalConfiguration().getUse1904windowing());
-            }
-        } else {
-            getGlobalConfiguration().setUse1904windowing(readBasicParameter.getUse1904windowing());
-        }
-
         if (readBasicParameter.getUseScientificFormat() == null) {
             if (parentAbstractReadHolder != null) {
                 getGlobalConfiguration().setUseScientificFormat(

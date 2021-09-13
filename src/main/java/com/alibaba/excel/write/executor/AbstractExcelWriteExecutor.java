@@ -17,8 +17,10 @@ import com.alibaba.excel.metadata.data.ImageData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileTypeUtils;
 import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -231,6 +233,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             }
             WriteCellData<?> cellDataValue = (WriteCellData<?>)value;
             if (cellDataValue.getType() != null) {
+                // Configuration information may not be read here
+                fillProperty(cellDataValue, excelContentProperty);
+
                 return cellDataValue;
             } else {
                 if (cellDataValue.getData() == null) {
@@ -260,6 +265,27 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             return cellDataReturn;
         }
         return doConvert(currentWriteHolder, clazz, targetType, cell, value, excelContentProperty);
+    }
+
+    private void fillProperty(WriteCellData<?> cellDataValue, ExcelContentProperty excelContentProperty) {
+        switch (cellDataValue.getType()) {
+            case DATE:
+                String dateFormat = null;
+                if (excelContentProperty != null && excelContentProperty.getDateTimeFormatProperty() != null) {
+                    dateFormat = excelContentProperty.getDateTimeFormatProperty().getFormat();
+                }
+                WorkBookUtil.fillDataFormat(cellDataValue, dateFormat, DateUtils.defaultDateFormat);
+                return;
+            case NUMBER:
+                String numberFormat = null;
+                if (excelContentProperty != null && excelContentProperty.getNumberFormatProperty() != null) {
+                    numberFormat = excelContentProperty.getNumberFormatProperty().getFormat();
+                }
+                WorkBookUtil.fillDataFormat(cellDataValue, numberFormat, null);
+                return;
+            default:
+                return;
+        }
     }
 
     private WriteCellData<?> doConvert(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,

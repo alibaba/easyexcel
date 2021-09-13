@@ -748,7 +748,6 @@ public class CsvSheet implements Sheet, Closeable {
         switch (csvCell.getCellType()) {
             case STRING:
             case ERROR:
-            case FORMULA:
                 return csvCell.getStringCellValue();
             case NUMERIC:
                 Short dataFormat = null;
@@ -780,6 +779,9 @@ public class CsvSheet implements Sheet, Closeable {
                     //number
                     if (dataFormat == null) {
                         dataFormat = BuiltinFormats.GENERAL;
+                        dataFormatString = csvWorkbook.createDataFormat().getFormat(dataFormat);
+                    }
+                    if (dataFormatString == null) {
                         dataFormatString = csvWorkbook.createDataFormat().getFormat(dataFormat);
                     }
                     return NumberDataFormatterUtils.format(csvCell.getNumericCellValue(), dataFormat, dataFormatString,

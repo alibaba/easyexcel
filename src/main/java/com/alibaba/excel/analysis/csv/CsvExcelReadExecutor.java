@@ -20,6 +20,7 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.csv.CsvReadWorkbookHolder;
 import com.alibaba.excel.util.SheetUtils;
+import com.alibaba.excel.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
@@ -27,7 +28,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 /**
- * azz
+ * read executor
  *
  * @author zhuangjiaju
  */
@@ -66,10 +67,11 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
             csvReadContext.currentSheet(readSheet);
 
             int rowIndex = 0;
-            for (CSVRecord record : parseRecords) {
 
+            for (CSVRecord record : parseRecords) {
                 dealRecord(record, rowIndex++);
             }
+
             // The last sheet is read
             csvReadContext.analysisEventProcessor().endSheet(csvReadContext);
         }
@@ -95,8 +97,14 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
         while (cellIterator.hasNext()) {
             String cellString = cellIterator.next();
             ReadCellData<String> readCellData = new ReadCellData<>();
-            readCellData.setType(CellDataTypeEnum.STRING);
-            readCellData.setStringValue(cellString);
+
+            // csv is an empty string of whether <code>,,</code> is read or <code>,"",</code>
+            if (StringUtils.isNotBlank(cellString)) {
+                readCellData.setType(CellDataTypeEnum.STRING);
+                readCellData.setStringValue(cellString);
+            } else {
+                readCellData.setType(CellDataTypeEnum.EMPTY);
+            }
             cellMap.put(cellIndex++, readCellData);
         }
 

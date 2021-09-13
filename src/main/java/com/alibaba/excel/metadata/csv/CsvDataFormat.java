@@ -45,8 +45,8 @@ public class CsvDataFormat implements DataFormat {
         if (index != null) {
             return index;
         }
+        index = (short)(formatList.size() + BuiltinFormats.MIN_CUSTOM_DATA_FORMAT_INDEX);
         formatList.add(format);
-        index = (short)formatList.size();
         formatMap.put(format, index);
         return index;
     }
@@ -57,7 +57,7 @@ public class CsvDataFormat implements DataFormat {
             return builtinFormats[index];
         }
         int actualIndex = index - BuiltinFormats.MIN_CUSTOM_DATA_FORMAT_INDEX;
-        if (actualIndex >= 0 && actualIndex < formatList.size()) {
+        if (actualIndex < formatList.size()) {
             return formatList.get(actualIndex);
         }
         return null;
