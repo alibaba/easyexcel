@@ -2,6 +2,8 @@ package com.alibaba.excel.util;
 
 import java.util.Locale;
 
+import java.math.BigDecimal;
+
 import com.alibaba.excel.metadata.format.DataFormatter;
 import com.alibaba.excel.metadata.GlobalConfiguration;
 
@@ -26,7 +28,7 @@ public class NumberDataFormatterUtils {
      * @param globalConfiguration
      * @return
      */
-    public static String format(Double data, Short dataFormat, String dataFormatString,
+    public static String format(BigDecimal data, Short dataFormat, String dataFormatString,
         GlobalConfiguration globalConfiguration) {
         if (globalConfiguration == null) {
             return format(data, dataFormat, dataFormatString, null, null, null);

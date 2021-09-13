@@ -3,6 +3,9 @@ package com.alibaba.easyexcel.test.core.encrypt;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +20,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 /**
- *
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -27,6 +29,15 @@ public class EncryptDataTest {
     private static File file03;
     private static File file07OutputStream;
     private static File file03OutputStream;
+
+    @Test
+    public void testformat() {
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+        BigDecimal bigDecimal = new BigDecimal("0.105");
+
+        System.out.println(decimalFormat.format(bigDecimal));
+    }
 
     @BeforeClass
     public static void init() {

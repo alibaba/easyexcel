@@ -43,7 +43,7 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
                     break;
                 }
                 tempCellData.setType(CellDataTypeEnum.NUMBER);
-                tempCellData.setNumberValue(new BigDecimal(tempData.toString()));
+                tempCellData.setNumberValue(BigDecimal.valueOf(Double.parseDouble(tempDataString)));
                 break;
             default:
                 throw new IllegalStateException("Cannot set values now");

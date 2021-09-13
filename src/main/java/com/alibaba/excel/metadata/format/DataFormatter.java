@@ -642,8 +642,8 @@ public class DataFormatter {
      * @param dataFormatString
      * @return a formatted number string
      */
-    private String getFormattedNumberString(Double data, Short dataFormat, String dataFormatString) {
-        Format numberFormat = getFormat(data, dataFormat, dataFormatString);
+    private String getFormattedNumberString(BigDecimal data, Short dataFormat, String dataFormatString) {
+        Format numberFormat = getFormat(data.doubleValue(), dataFormat, dataFormatString);
         String formatted = numberFormat.format(data);
         return formatted.replaceFirst("E(\\d)", "E+$1"); // to match Excel's E-notation
     }
@@ -656,9 +656,9 @@ public class DataFormatter {
      * @param dataFormatString
      * @return
      */
-    public String format(Double data, Short dataFormat, String dataFormatString) {
+    public String format(BigDecimal data, Short dataFormat, String dataFormatString) {
         if (DateUtils.isADateFormat(dataFormat, dataFormatString)) {
-            return getFormattedDateString(data, dataFormat, dataFormatString);
+            return getFormattedDateString(data.doubleValue(), dataFormat, dataFormatString);
         }
         return getFormattedNumberString(data, dataFormat, dataFormatString);
     }

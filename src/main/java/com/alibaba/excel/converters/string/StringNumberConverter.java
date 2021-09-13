@@ -51,7 +51,7 @@ public class StringNumberConverter implements Converter<String> {
             && cellData.getDataFormatData().getIndex() != null && !StringUtils.isEmpty(
             cellData.getDataFormatData().getFormat());
         if (hasDataFormatData) {
-            return NumberDataFormatterUtils.format(cellData.getNumberValue().doubleValue(),
+            return NumberDataFormatterUtils.format(cellData.getNumberValue(),
                 cellData.getDataFormatData().getIndex(), cellData.getDataFormatData().getFormat(), globalConfiguration);
         }
         // Default conversion number

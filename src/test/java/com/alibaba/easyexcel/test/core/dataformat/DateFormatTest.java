@@ -13,6 +13,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Jiaju Zhuang
  */
@@ -44,6 +47,14 @@ public class DateFormatTest {
         List<DateFormatData> list =
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
         for (DateFormatData data : list) {
+            if (data.getDateStringCn() != null && !data.getDateStringCn().equals(data.getDate())) {
+                LOGGER.info("date:cn:{},{}", data.getDateStringCn(), data.getDate());
+            }
+            if (data.getNumberStringCn() != null && !data.getNumberStringCn().equals(data.getNumber())) {
+                LOGGER.info("number:cn{},{}", data.getNumberStringCn(), data.getNumber());
+            }
+        }
+        for (DateFormatData data : list) {
             Assert.assertEquals(data.getDateStringCn(), data.getDate());
             Assert.assertEquals(data.getNumberStringCn(), data.getNumber());
         }
@@ -52,6 +63,14 @@ public class DateFormatTest {
     private void readUs(File file) {
         List<DateFormatData> list =
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.US).sheet().doReadSync();
+        for (DateFormatData data : list) {
+            if (data.getDateStringUs() != null && !data.getDateStringUs().equals(data.getDate())) {
+                LOGGER.info("date:us:{},{}", data.getDateStringUs(), data.getDate());
+            }
+            if (data.getNumberStringUs() != null && !data.getNumberStringUs().equals(data.getNumber())) {
+                LOGGER.info("number:us{},{}", data.getNumberStringUs(), data.getNumber());
+            }
+        }
         for (DateFormatData data : list) {
             Assert.assertEquals(data.getDateStringUs(), data.getDate());
             Assert.assertEquals(data.getNumberStringUs(), data.getNumber());
