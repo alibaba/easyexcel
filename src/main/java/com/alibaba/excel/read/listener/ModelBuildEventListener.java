@@ -53,10 +53,6 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
                     index++;
                 }
                 index++;
-                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                    map.put(key, null);
-                    continue;
-                }
                 map.put(key,
                     (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
                         context, context.readRowHolder().getRowIndex(), key));
@@ -78,10 +74,6 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
                     index++;
                 }
                 index++;
-                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                    list.add(null);
-                    continue;
-                }
                 list.add(
                     (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
                         context, context.readRowHolder().getRowIndex(), key));
@@ -115,9 +107,6 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
                 continue;
             }
             ReadCellData<?> cellData = cellDataMap.get(index);
-            if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                continue;
-            }
             ExcelContentProperty excelContentProperty = contentPropertyMap.get(index);
             Object value = ConverterUtils.convertToJavaObject(cellData, excelContentProperty.getField(),
                 excelContentProperty, readSheetHolder.converterMap(), context,

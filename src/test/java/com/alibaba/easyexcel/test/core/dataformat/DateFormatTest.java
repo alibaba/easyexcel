@@ -4,21 +4,20 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
 /**
- *
  * @author Jiaju Zhuang
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DateFormatTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DateFormatTest.class);
 
     private static File file07;
     private static File file03;

@@ -301,13 +301,13 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             }
             converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz, targetType));
         }
+        if (value == null && !(converter instanceof NullableObjectConverter)) {
+            return new WriteCellData<>(CellDataTypeEnum.EMPTY);
+        }
         if (converter == null) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new WriteCellData<>(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
-        }
-        if (value == null && !(converter instanceof NullableObjectConverter)) {
-            return new WriteCellData<>(CellDataTypeEnum.EMPTY);
         }
         WriteCellData<?> cellData;
         try {

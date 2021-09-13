@@ -18,7 +18,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 /**
- *
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -26,6 +25,7 @@ public class ConverterDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
     private static File fileImage07;
     private static File fileImage03;
 
@@ -33,6 +33,7 @@ public class ConverterDataTest {
     public static void init() {
         file07 = TestFileUtil.createNewFile("converter07.xlsx");
         file03 = TestFileUtil.createNewFile("converter03.xls");
+        fileCsv = TestFileUtil.createNewFile("converterCsv.csv");
         fileImage07 = TestFileUtil.createNewFile("converterImage07.xlsx");
         fileImage03 = TestFileUtil.createNewFile("converterImage03.xls");
     }
@@ -47,35 +48,45 @@ public class ConverterDataTest {
         readAndWrite(file03);
     }
 
+    @Test
+    public void t03ReadAndWriteCsv() throws Exception {
+        readAndWrite(fileCsv);
+    }
+
     private void readAndWrite(File file) throws Exception {
         EasyExcel.write(file, ConverterWriteData.class).sheet().doWrite(data());
         EasyExcel.read(file, ConverterReadData.class, new ConverterDataListener()).sheet().doRead();
     }
 
     @Test
-    public void t03ReadAllConverter07() {
+    public void t11ReadAllConverter07() {
         readAllConverter("converter" + File.separator + "converter07.xlsx");
     }
 
     @Test
-    public void t04ReadAllConverter03() {
+    public void t12ReadAllConverter03() {
         readAllConverter("converter" + File.separator + "converter03.xls");
     }
 
     @Test
-    public void t05WriteImage07() throws Exception {
+    public void t13ReadAllConverterCsv() {
+        readAllConverter("converter" + File.separator + "converterCsv.csv");
+    }
+
+    @Test
+    public void t21WriteImage07() throws Exception {
         writeImage(fileImage07);
     }
 
     @Test
-    public void t06WriteImage03() throws Exception {
+    public void t22WriteImage03() throws Exception {
         writeImage(fileImage03);
     }
 
     private void writeImage(File file) throws Exception {
         InputStream inputStream = null;
         try {
-            List<ImageData> list = new ArrayList<ImageData>();
+            List<ImageData> list = new ArrayList<>();
             ImageData imageData = new ImageData();
             list.add(imageData);
             String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";

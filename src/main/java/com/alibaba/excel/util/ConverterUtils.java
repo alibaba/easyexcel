@@ -8,6 +8,7 @@ import java.util.Map;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.converters.NullableObjectConverter;
 import com.alibaba.excel.converters.ReadConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
@@ -131,6 +132,13 @@ public class ConverterUtils {
         if (contentProperty != null) {
             converter = contentProperty.getConverter();
         }
+
+        boolean canNotConverterEmpty = cellData.getType() == CellDataTypeEnum.EMPTY
+            && !(converter instanceof NullableObjectConverter);
+        if (canNotConverterEmpty) {
+            return null;
+        }
+
         if (converter == null) {
             converter = converterMap.get(ConverterKeyBuild.buildKey(clazz, cellData.getType()));
         }
@@ -138,6 +146,7 @@ public class ConverterUtils {
             throw new ExcelDataConvertException(rowIndex, columnIndex, cellData, contentProperty,
                 "Converter not found, convert " + cellData.getType() + " to " + clazz.getName());
         }
+
         try {
             return converter.convertToJavaData(new ReadConverterContext<>(cellData, contentProperty, context));
         } catch (Exception e) {

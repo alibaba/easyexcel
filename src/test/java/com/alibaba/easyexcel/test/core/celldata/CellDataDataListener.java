@@ -35,7 +35,7 @@ public class CellDataDataListener extends AnalysisEventListener<CellDataReadData
         if (context.readWorkbookHolder().getExcelType() != ExcelTypeEnum.CSV) {
             Assert.assertEquals(cellDataData.getFormulaValue().getFormulaData().getFormulaValue(), "B2+C2");
         } else {
-            Assert.assertEquals(cellDataData.getFormulaValue().getData(), "");
+            Assert.assertNull(cellDataData.getFormulaValue().getData());
         }
         LOGGER.debug("First row:{}", JSON.toJSONString(list.get(0)));
     }

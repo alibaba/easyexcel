@@ -1,19 +1,12 @@
 package com.alibaba.excel.write;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
-
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.util.FieldUtils;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.write.executor.ExcelWriteAddExecutor;
 import com.alibaba.excel.write.executor.ExcelWriteFillExecutor;
@@ -21,6 +14,8 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
+
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * @author jipengfei
@@ -76,6 +71,9 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         try {
             if (context.writeWorkbookHolder().getTempTemplateInputStream() == null) {
                 throw new ExcelGenerateException("Calling the 'fill' method must use a template.");
+            }
+            if (context.writeWorkbookHolder().getExcelType() == ExcelTypeEnum.CSV) {
+                throw new ExcelGenerateException("csv does not support filling data.");
             }
             context.currentSheet(writeSheet, WriteTypeEnum.FILL);
             if (excelWriteFillExecutor == null) {
