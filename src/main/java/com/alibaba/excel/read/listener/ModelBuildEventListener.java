@@ -13,11 +13,10 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
+import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.MapUtils;
-
-import net.sf.cglib.beans.BeanMap;
 
 /**
  * Convert to the object the user needs
@@ -115,7 +114,7 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
                 map.put(FieldUtils.resolveCglibFieldName(excelContentProperty.getField()), value);
             }
         }
-        BeanMap.create(resultModel).putAll(map);
+        BeanMapUtils.create(resultModel).putAll(map);
         return resultModel;
     }
 

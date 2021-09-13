@@ -10,12 +10,12 @@ import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
-import net.sf.cglib.beans.BeanMap;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class Wirte {
     public void simpleWrite1() {
         LargeData ss = new LargeData();
         ss.setStr23("ttt");
-        Map map = BeanMap.create(ss);
+        Map map = BeanMapUtils.create(ss);
         System.out.println(map.containsKey("str23"));
         System.out.println(map.containsKey("str22"));
         System.out.println(map.get("str23"));

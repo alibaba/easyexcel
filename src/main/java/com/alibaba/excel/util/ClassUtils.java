@@ -27,7 +27,7 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
  **/
 public class ClassUtils {
 
-    private static final Map<Class<?>, SoftReference<FieldCache>> FIELD_CACHE = new ConcurrentHashMap<>();
+    public static final Map<Class<?>, SoftReference<FieldCache>> FIELD_CACHE = new ConcurrentHashMap<>();
 
     public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap,
         Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, Boolean convertAllFiled,

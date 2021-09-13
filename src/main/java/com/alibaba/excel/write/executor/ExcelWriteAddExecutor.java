@@ -13,6 +13,7 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.WorkBookUtil;
@@ -120,7 +121,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex,
         Map<Integer, Field> sortedAllFiledMap) {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
-        BeanMap beanMap = BeanMap.create(oneRowData);
+        BeanMap beanMap = BeanMapUtils.create(oneRowData);
         Set<String> beanMapHandledSet = new HashSet<String>();
         int cellIndex;
         // If it's a class it needs to be cast by type

@@ -16,6 +16,7 @@ import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
@@ -24,7 +25,6 @@ import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
-import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -186,7 +186,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (oneRowData instanceof Map) {
             dataMap = (Map)oneRowData;
         } else {
-            dataMap = BeanMap.create(oneRowData);
+            dataMap = BeanMapUtils.create(oneRowData);
         }
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         Map<String, ExcelContentProperty> fieldNameContentPropertyMap =
