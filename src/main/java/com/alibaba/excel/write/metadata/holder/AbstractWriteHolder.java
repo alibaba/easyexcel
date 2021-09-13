@@ -96,10 +96,9 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder,
         Boolean convertAllField) {
         super(writeBasicParameter, parentAbstractWriteHolder);
+
         if (writeBasicParameter.getUse1904windowing() == null) {
-            if (parentAbstractWriteHolder == null) {
-                getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
-            } else {
+            if (parentAbstractWriteHolder != null) {
                 getGlobalConfiguration()
                     .setUse1904windowing(parentAbstractWriteHolder.getGlobalConfiguration().getUse1904windowing());
             }
@@ -210,7 +209,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
     }
 
-
     protected void initAnnotationConfig(List<WriteHandler> handlerList, WriteBasicParameter writeBasicParameter) {
         if (!HeadKindEnum.CLASS.equals(getExcelWriteHeadProperty().getHeadKind())) {
             return;
@@ -310,7 +308,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         handlerList.add(columnWidthStyleStrategy);
     }
 
-
     protected Map<Class<? extends WriteHandler>, List<WriteHandler>> sortAndClearUpAllHandler(
         List<WriteHandler> handlerList, Map<Class<? extends WriteHandler>, List<WriteHandler>> parentHandlerMap) {
         // add
@@ -330,7 +327,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         for (WriteHandler handler : handlerList) {
             int order = Integer.MIN_VALUE;
             if (handler instanceof Order) {
-                order = ((Order) handler).order();
+                order = ((Order)handler).order();
             }
             if (orderExcelWriteHandlerMap.containsKey(order)) {
                 orderExcelWriteHandlerMap.get(order).add(handler);
@@ -346,7 +343,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         for (Map.Entry<Integer, List<WriteHandler>> entry : orderExcelWriteHandlerMap.entrySet()) {
             for (WriteHandler handler : entry.getValue()) {
                 if (handler instanceof NotRepeatExecutor) {
-                    String uniqueValue = ((NotRepeatExecutor) handler).uniqueValue();
+                    String uniqueValue = ((NotRepeatExecutor)handler).uniqueValue();
                     if (alreadyExistedHandlerSet.contains(uniqueValue)) {
                         continue;
                     }

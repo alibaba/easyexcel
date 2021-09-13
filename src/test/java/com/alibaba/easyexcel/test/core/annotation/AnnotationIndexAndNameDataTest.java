@@ -39,7 +39,7 @@ public class AnnotationIndexAndNameDataTest {
     }
 
     @Test
-    public void t03ReadAndWrite03() {
+    public void t03ReadAndWriteCsv() {
         readAndWrite(fileCsv);
     }
 

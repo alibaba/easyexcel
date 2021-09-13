@@ -49,19 +49,20 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     public AbstractReadHolder(ReadBasicParameter readBasicParameter, AbstractReadHolder parentAbstractReadHolder,
         Boolean convertAllFiled) {
         super(readBasicParameter, parentAbstractReadHolder);
-        if (readBasicParameter.getUse1904windowing() == null && parentAbstractReadHolder != null) {
-            getGlobalConfiguration()
-                .setUse1904windowing(parentAbstractReadHolder.getGlobalConfiguration().getUse1904windowing());
+
+        if (readBasicParameter.getUse1904windowing() == null) {
+            if (parentAbstractReadHolder != null) {
+                getGlobalConfiguration()
+                    .setUse1904windowing(parentAbstractReadHolder.getGlobalConfiguration().getUse1904windowing());
+            }
         } else {
             getGlobalConfiguration().setUse1904windowing(readBasicParameter.getUse1904windowing());
         }
 
         if (readBasicParameter.getUseScientificFormat() == null) {
-            if (parentAbstractReadHolder == null) {
-                getGlobalConfiguration().setUseScientificFormat(Boolean.FALSE);
-            } else {
-                getGlobalConfiguration()
-                    .setUseScientificFormat(parentAbstractReadHolder.getGlobalConfiguration().getUseScientificFormat());
+            if (parentAbstractReadHolder != null) {
+                getGlobalConfiguration().setUseScientificFormat(
+                    parentAbstractReadHolder.getGlobalConfiguration().getUseScientificFormat());
             }
         } else {
             getGlobalConfiguration().setUseScientificFormat(readBasicParameter.getUseScientificFormat());
@@ -113,7 +114,6 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             }
         }
     }
-
 
     @Override
     public List<ReadListener<?>> readListenerList() {

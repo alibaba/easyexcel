@@ -25,11 +25,14 @@ public class CellDataDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
+
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("cellData07.xlsx");
         file03 = TestFileUtil.createNewFile("cellData03.xls");
+        fileCsv = TestFileUtil.createNewFile("cellDataCsv.csv");
     }
 
     @Test
@@ -41,6 +44,12 @@ public class CellDataDataTest {
     public void t02ReadAndWrite03() throws Exception {
         readAndWrite(file03);
     }
+
+    @Test
+    public void t03ReadAndWriteCsv() throws Exception {
+        readAndWrite(fileCsv);
+    }
+
 
     private void readAndWrite(File file) throws Exception {
         EasyExcel.write(file, CellDataWriteData.class).sheet().doWrite(data());
