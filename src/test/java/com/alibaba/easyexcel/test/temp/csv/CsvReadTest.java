@@ -2,7 +2,9 @@ package com.alibaba.easyexcel.test.temp.csv;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,8 @@ public class CsvReadTest {
 
     @Test
     public void write() throws Exception {
-        Appendable out = new PrintWriter(TestFileUtil.createNewFile("csvWrite1.csv"));
+        Appendable out = new PrintWriter(
+            new OutputStreamWriter(new FileOutputStream(TestFileUtil.createNewFile("csvWrite1.csv"))));
         CSVPrinter printer = CSVFormat.DEFAULT.withHeader("userId", "userName")
             .print(out);
         for (int i = 0; i < 10; i++) {

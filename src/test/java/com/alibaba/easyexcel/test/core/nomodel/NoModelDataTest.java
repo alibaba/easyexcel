@@ -23,15 +23,20 @@ public class NoModelDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
     private static File fileRepeat07;
     private static File fileRepeat03;
+    private static File fileRepeatCsv;
+
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("noModel07.xlsx");
         file03 = TestFileUtil.createNewFile("noModel03.xls");
+        fileCsv = TestFileUtil.createNewFile("noModelCsv.csv");
         fileRepeat07 = TestFileUtil.createNewFile("noModelRepeat07.xlsx");
         fileRepeat03 = TestFileUtil.createNewFile("noModelRepeat03.xls");
+        fileRepeatCsv = TestFileUtil.createNewFile("noModelRepeatCsv.csv");
     }
 
     @Test
@@ -42,6 +47,11 @@ public class NoModelDataTest {
     @Test
     public void t02ReadAndWrite03() throws Exception {
         readAndWrite(file03, fileRepeat03);
+    }
+
+    @Test
+    public void t03ReadAndWriteCsv() throws Exception {
+        readAndWrite(fileCsv, fileRepeatCsv);
     }
 
     private void readAndWrite(File file, File fileRepeat) throws Exception {

@@ -40,7 +40,7 @@ public class StyleDataTest {
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("style07.xlsx");
-        file03 = TestFileUtil.createNewFile("style03.xls");
+        file03 = TestFileUtil.createNewFile("style03.csv");
     }
 
     @Test

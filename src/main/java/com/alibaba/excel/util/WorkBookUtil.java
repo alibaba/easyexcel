@@ -2,6 +2,7 @@ package com.alibaba.excel.util;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 import com.alibaba.excel.metadata.csv.CsvWorkbook;
 import com.alibaba.excel.metadata.data.DataFormatData;
@@ -67,8 +68,8 @@ public class WorkBookUtil {
                 }
                 return;
             case CSV:
-                CsvWorkbook csvWorkbook = new CsvWorkbook(
-                    new OutputStreamWriter(writeWorkbookHolder.getOutputStream(), writeWorkbookHolder.getCharset()),
+                CsvWorkbook csvWorkbook = new CsvWorkbook(new PrintWriter(
+                    new OutputStreamWriter(writeWorkbookHolder.getOutputStream(), writeWorkbookHolder.getCharset())),
                     writeWorkbookHolder.getGlobalConfiguration().getLocale(),
                     writeWorkbookHolder.getGlobalConfiguration().getUse1904windowing(),
                     writeWorkbookHolder.getGlobalConfiguration().getUseScientificFormat());
