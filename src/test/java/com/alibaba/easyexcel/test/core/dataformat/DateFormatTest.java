@@ -7,19 +7,18 @@ import java.util.Locale;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Slf4j
 public class DateFormatTest {
 
     private static File file07;
@@ -48,10 +47,10 @@ public class DateFormatTest {
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
         for (DateFormatData data : list) {
             if (data.getDateStringCn() != null && !data.getDateStringCn().equals(data.getDate())) {
-                LOGGER.info("date:cn:{},{}", data.getDateStringCn(), data.getDate());
+                log.info("date:cn:{},{}", data.getDateStringCn(), data.getDate());
             }
             if (data.getNumberStringCn() != null && !data.getNumberStringCn().equals(data.getNumber())) {
-                LOGGER.info("number:cn{},{}", data.getNumberStringCn(), data.getNumber());
+                log.info("number:cn{},{}", data.getNumberStringCn(), data.getNumber());
             }
         }
         for (DateFormatData data : list) {
@@ -65,10 +64,10 @@ public class DateFormatTest {
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.US).sheet().doReadSync();
         for (DateFormatData data : list) {
             if (data.getDateStringUs() != null && !data.getDateStringUs().equals(data.getDate())) {
-                LOGGER.info("date:us:{},{}", data.getDateStringUs(), data.getDate());
+                log.info("date:us:{},{}", data.getDateStringUs(), data.getDate());
             }
             if (data.getNumberStringUs() != null && !data.getNumberStringUs().equals(data.getNumber())) {
-                LOGGER.info("number:us{},{}", data.getNumberStringUs(), data.getNumber());
+                log.info("number:us{},{}", data.getNumberStringUs(), data.getNumber());
             }
         }
         for (DateFormatData data : list) {
