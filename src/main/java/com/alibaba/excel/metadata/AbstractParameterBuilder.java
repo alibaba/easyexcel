@@ -1,10 +1,10 @@
 package com.alibaba.excel.metadata;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.util.ListUtils;
 
 /**
  * ExcelBuilder
@@ -29,7 +29,7 @@ public abstract class AbstractParameterBuilder<T extends AbstractParameterBuilde
      * @param clazz
      * @return
      */
-    public T head(Class clazz) {
+    public T head(Class<?> clazz) {
         parameter().setClazz(clazz);
         return self();
     }
@@ -40,9 +40,9 @@ public abstract class AbstractParameterBuilder<T extends AbstractParameterBuilde
      * @param converter
      * @return
      */
-    public T registerConverter(Converter converter) {
+    public T registerConverter(Converter<?> converter) {
         if (parameter().getCustomConverterList() == null) {
-            parameter().setCustomConverterList(new ArrayList<Converter>());
+            parameter().setCustomConverterList(ListUtils.newArrayList());
         }
         parameter().getCustomConverterList().add(converter);
         return self();

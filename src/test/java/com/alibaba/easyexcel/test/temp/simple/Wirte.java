@@ -5,11 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.core.large.LargeData;
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
@@ -19,7 +14,12 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.fastjson.JSON;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.beans.BeanMap;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 测试poi
@@ -27,6 +27,7 @@ import net.sf.cglib.beans.BeanMap;
  * @author Jiaju Zhuang
  **/
 @Ignore
+@Slf4j
 public class Wirte {
     private static final Logger LOGGER = LoggerFactory.getLogger(Wirte.class);
 
@@ -43,6 +44,7 @@ public class Wirte {
 
     @Test
     public void simpleWrite() {
+        log.info("t5");
         // 写法1
         String fileName = TestFileUtil.getPath() + "t22" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
@@ -56,7 +58,18 @@ public class Wirte {
         String fileName = TestFileUtil.getPath() + "t22" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
-        EasyExcel.write(fileName, WriteData.class).sheet("模板").registerWriteHandler(new WriteHandler()).doWrite(data1());
+        EasyExcel.write(fileName, WriteData.class).sheet("模板").registerWriteHandler(new WriteHandler()).doWrite(
+            data1());
+    }
+
+    @Test
+    public void simpleWrite3() {
+        // 写法1
+        String fileName = TestFileUtil.getPath() + "t33" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        EasyExcel.write(fileName).head(head()).inMemory(true).sheet("模板").registerWriteHandler(new WriteCellHandler()).doWrite(
+            data1());
     }
 
     @Test
@@ -125,7 +138,7 @@ public class Wirte {
         List<WriteData> list = new ArrayList<WriteData>();
         for (int i = 0; i < 10; i++) {
             WriteData data = new WriteData();
-            data.setF(300.35f);
+            data.setDd(new Date());
             data.setF1(33f);
             list.add(data);
         }

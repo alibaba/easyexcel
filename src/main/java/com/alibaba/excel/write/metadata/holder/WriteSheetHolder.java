@@ -3,21 +3,27 @@ package com.alibaba.excel.write.metadata.holder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.enums.WriteLastRowTypeEnum;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
  * sheet holder
  *
  * @author Jiaju Zhuang
  */
+@Data
+@NoArgsConstructor
 public class WriteSheetHolder extends AbstractWriteHolder {
     /**
      * current param
@@ -65,6 +71,11 @@ public class WriteSheetHolder extends AbstractWriteHolder {
      */
     private WriteLastRowTypeEnum writeLastRowTypeEnum;
 
+    /**
+     * last row index
+     */
+    private Integer lastRowIndex;
+
     public WriteSheetHolder(WriteSheet writeSheet, WriteWorkbookHolder writeWorkbookHolder) {
         super(writeSheet, writeWorkbookHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
         this.writeSheet = writeSheet;
@@ -75,76 +86,13 @@ public class WriteSheetHolder extends AbstractWriteHolder {
         }
         this.sheetName = writeSheet.getSheetName();
         this.parentWriteWorkbookHolder = writeWorkbookHolder;
-        this.hasBeenInitializedTable = new HashMap<Integer, WriteTableHolder>();
+        this.hasBeenInitializedTable = new HashMap<>();
         if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
             writeLastRowTypeEnum = WriteLastRowTypeEnum.TEMPLATE_EMPTY;
         } else {
             writeLastRowTypeEnum = WriteLastRowTypeEnum.COMMON_EMPTY;
         }
-    }
-
-    public WriteSheet getWriteSheet() {
-        return writeSheet;
-    }
-
-    public void setWriteSheet(WriteSheet writeSheet) {
-        this.writeSheet = writeSheet;
-    }
-
-    public Sheet getSheet() {
-        return sheet;
-    }
-
-    public void setSheet(Sheet sheet) {
-        this.sheet = sheet;
-    }
-
-    public Integer getSheetNo() {
-        return sheetNo;
-    }
-
-    public Sheet getCachedSheet() {
-        return cachedSheet;
-    }
-
-    public void setCachedSheet(Sheet cachedSheet) {
-        this.cachedSheet = cachedSheet;
-    }
-
-    public void setSheetNo(Integer sheetNo) {
-        this.sheetNo = sheetNo;
-    }
-
-    public String getSheetName() {
-        return sheetName;
-    }
-
-    public void setSheetName(String sheetName) {
-        this.sheetName = sheetName;
-    }
-
-    public WriteWorkbookHolder getParentWriteWorkbookHolder() {
-        return parentWriteWorkbookHolder;
-    }
-
-    public void setParentWriteWorkbookHolder(WriteWorkbookHolder parentWriteWorkbookHolder) {
-        this.parentWriteWorkbookHolder = parentWriteWorkbookHolder;
-    }
-
-    public Map<Integer, WriteTableHolder> getHasBeenInitializedTable() {
-        return hasBeenInitializedTable;
-    }
-
-    public void setHasBeenInitializedTable(Map<Integer, WriteTableHolder> hasBeenInitializedTable) {
-        this.hasBeenInitializedTable = hasBeenInitializedTable;
-    }
-
-    public WriteLastRowTypeEnum getWriteLastRowTypeEnum() {
-        return writeLastRowTypeEnum;
-    }
-
-    public void setWriteLastRowTypeEnum(WriteLastRowTypeEnum writeLastRowTypeEnum) {
-        this.writeLastRowTypeEnum = writeLastRowTypeEnum;
+        lastRowIndex = 0;
     }
 
     /**

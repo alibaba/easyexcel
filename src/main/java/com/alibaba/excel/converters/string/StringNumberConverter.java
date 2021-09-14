@@ -2,17 +2,18 @@ package com.alibaba.excel.converters.string;
 
 import java.math.BigDecimal;
 
-import org.apache.poi.ss.usermodel.DateUtil;
-
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.NumberUtils;
 import com.alibaba.excel.util.StringUtils;
+
+import org.apache.poi.ss.usermodel.DateUtil;
 
 /**
  * String and number converter
@@ -22,7 +23,7 @@ import com.alibaba.excel.util.StringUtils;
 public class StringNumberConverter implements Converter<String> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return String.class;
     }
 
@@ -32,7 +33,7 @@ public class StringNumberConverter implements Converter<String> {
     }
 
     @Override
-    public String convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public String convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         // If there are "DateTimeFormat", read as date
         if (contentProperty != null && contentProperty.getDateTimeFormatProperty() != null) {
@@ -46,17 +47,20 @@ public class StringNumberConverter implements Converter<String> {
             return NumberUtils.format(cellData.getNumberValue(), contentProperty);
         }
         // Excel defines formatting
-        if (cellData.getDataFormat() != null && !StringUtils.isEmpty(cellData.getDataFormatString())) {
-            return NumberDataFormatterUtils.format(cellData.getNumberValue(), cellData.getDataFormat(),
-                cellData.getDataFormatString(), globalConfiguration);
+        boolean hasDataFormatData = cellData.getDataFormatData() != null
+            && cellData.getDataFormatData().getIndex() != null && !StringUtils.isEmpty(
+            cellData.getDataFormatData().getFormat());
+        if (hasDataFormatData) {
+            return NumberDataFormatterUtils.format(cellData.getNumberValue(),
+                cellData.getDataFormatData().getIndex(), cellData.getDataFormatData().getFormat(), globalConfiguration);
         }
         // Default conversion number
         return NumberUtils.format(cellData.getNumberValue(), contentProperty);
     }
 
     @Override
-    public CellData convertToExcelData(String value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(String value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(new BigDecimal(value));
+        return new WriteCellData<>(new BigDecimal(value));
     }
 }

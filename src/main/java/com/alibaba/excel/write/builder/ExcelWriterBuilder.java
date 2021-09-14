@@ -6,7 +6,6 @@ import java.io.OutputStream;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
 /**
@@ -18,7 +17,7 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     /**
      * Workbook
      */
-    private WriteWorkbook writeWorkbook;
+    private final WriteWorkbook writeWorkbook;
 
     public ExcelWriterBuilder() {
         this.writeWorkbook = new WriteWorkbook();
@@ -115,16 +114,6 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
         return withTemplate(new File(pathName));
     }
 
-    /**
-     * Write handler
-     *
-     * @deprecated please use {@link WriteHandler}
-     */
-    @Deprecated
-    public ExcelWriterBuilder registerWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
-        writeWorkbook.setWriteHandler(writeHandler);
-        return this;
-    }
 
     public ExcelWriter build() {
         return new ExcelWriter(writeWorkbook);

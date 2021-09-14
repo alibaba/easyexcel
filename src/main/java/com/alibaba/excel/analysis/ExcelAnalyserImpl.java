@@ -3,17 +3,12 @@ package com.alibaba.excel.analysis;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
-import org.apache.poi.poifs.crypt.Decryptor;
-import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.util.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.alibaba.excel.analysis.csv.CsvExcelReadExecutor;
 import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.context.csv.CsvReadContext;
+import com.alibaba.excel.context.csv.DefaultCsvReadContext;
 import com.alibaba.excel.context.xls.DefaultXlsReadContext;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.context.xlsx.DefaultXlsxReadContext;
@@ -26,11 +21,19 @@ import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
+import org.apache.poi.poifs.crypt.Decryptor;
+import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author jipengfei
@@ -97,6 +100,11 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                 XlsxReadContext xlsxReadContext = new DefaultXlsxReadContext(readWorkbook, ExcelTypeEnum.XLSX);
                 analysisContext = xlsxReadContext;
                 excelReadExecutor = new XlsxSaxAnalyser(xlsxReadContext, null);
+                break;
+            case CSV:
+                CsvReadContext csvReadContext = new DefaultCsvReadContext(readWorkbook, ExcelTypeEnum.CSV);
+                analysisContext = csvReadContext;
+                excelReadExecutor = new CsvExcelReadExecutor(csvReadContext);
                 break;
             default:
                 break;

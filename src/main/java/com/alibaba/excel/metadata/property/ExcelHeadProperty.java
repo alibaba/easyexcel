@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
@@ -21,15 +18,20 @@ import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.util.ClassUtils;
-import com.alibaba.excel.util.CollectionUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
+
+import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Define the header attribute of excel
  *
  * @author jipengfei
  */
+@Data
 public class ExcelHeadProperty {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExcelHeadProperty.class);
@@ -122,9 +124,9 @@ public class ExcelHeadProperty {
         Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
 
         boolean needIgnore = (holder instanceof AbstractWriteHolder) && (
-            !CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getExcludeColumnFiledNames()) || !CollectionUtils
+            !CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getExcludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(((AbstractWriteHolder) holder).getExcludeColumnIndexes()) || !CollectionUtils
-                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnFiledNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnIndexes()));
         ClassUtils.declaredFields(headClazz, sortedAllFiledMap, indexFiledMap, ignoreMap, convertAllFiled, needIgnore,
             holder);
@@ -181,63 +183,8 @@ public class ExcelHeadProperty {
         fieldNameContentPropertyMap.put(field.getName(), excelContentProperty);
     }
 
-    public Class getHeadClazz() {
-        return headClazz;
-    }
-
-    public void setHeadClazz(Class headClazz) {
-        this.headClazz = headClazz;
-    }
-
-    public HeadKindEnum getHeadKind() {
-        return headKind;
-    }
-
-    public void setHeadKind(HeadKindEnum headKind) {
-        this.headKind = headKind;
-    }
-
     public boolean hasHead() {
         return headKind != HeadKindEnum.NONE;
     }
 
-    public int getHeadRowNumber() {
-        return headRowNumber;
-    }
-
-    public void setHeadRowNumber(int headRowNumber) {
-        this.headRowNumber = headRowNumber;
-    }
-
-    public Map<Integer, Head> getHeadMap() {
-        return headMap;
-    }
-
-    public void setHeadMap(Map<Integer, Head> headMap) {
-        this.headMap = headMap;
-    }
-
-    public Map<Integer, ExcelContentProperty> getContentPropertyMap() {
-        return contentPropertyMap;
-    }
-
-    public void setContentPropertyMap(Map<Integer, ExcelContentProperty> contentPropertyMap) {
-        this.contentPropertyMap = contentPropertyMap;
-    }
-
-    public Map<String, ExcelContentProperty> getFieldNameContentPropertyMap() {
-        return fieldNameContentPropertyMap;
-    }
-
-    public void setFieldNameContentPropertyMap(Map<String, ExcelContentProperty> fieldNameContentPropertyMap) {
-        this.fieldNameContentPropertyMap = fieldNameContentPropertyMap;
-    }
-
-    public Map<String, Field> getIgnoreMap() {
-        return ignoreMap;
-    }
-
-    public void setIgnoreMap(Map<String, Field> ignoreMap) {
-        this.ignoreMap = ignoreMap;
-    }
 }

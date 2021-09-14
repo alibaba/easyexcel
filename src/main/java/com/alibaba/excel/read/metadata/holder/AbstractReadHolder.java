@@ -1,11 +1,7 @@
 package com.alibaba.excel.read.metadata.holder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
@@ -17,15 +13,19 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadBasicParameter;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
+import com.alibaba.excel.util.ListUtils;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Read Holder
  *
  * @author Jiaju Zhuang
  */
+@Data
+@NoArgsConstructor
 public abstract class AbstractReadHolder extends AbstractHolder implements ReadHolder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReadHolder.class);
-
     /**
      * Count the number of added heads when read sheet.
      *
@@ -44,24 +44,16 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
     /**
      * Read listener
      */
-    private List<ReadListener> readListenerList;
+    private List<ReadListener<?>> readListenerList;
 
     public AbstractReadHolder(ReadBasicParameter readBasicParameter, AbstractReadHolder parentAbstractReadHolder,
         Boolean convertAllFiled) {
         super(readBasicParameter, parentAbstractReadHolder);
-        if (readBasicParameter.getUse1904windowing() == null && parentAbstractReadHolder != null) {
-            getGlobalConfiguration()
-                .setUse1904windowing(parentAbstractReadHolder.getGlobalConfiguration().getUse1904windowing());
-        } else {
-            getGlobalConfiguration().setUse1904windowing(readBasicParameter.getUse1904windowing());
-        }
 
         if (readBasicParameter.getUseScientificFormat() == null) {
-            if (parentAbstractReadHolder == null) {
-                getGlobalConfiguration().setUseScientificFormat(Boolean.FALSE);
-            } else {
-                getGlobalConfiguration()
-                    .setUseScientificFormat(parentAbstractReadHolder.getGlobalConfiguration().getUseScientificFormat());
+            if (parentAbstractReadHolder != null) {
+                getGlobalConfiguration().setUseScientificFormat(
+                    parentAbstractReadHolder.getGlobalConfiguration().getUseScientificFormat());
             }
         } else {
             getGlobalConfiguration().setUseScientificFormat(readBasicParameter.getUseScientificFormat());
@@ -84,9 +76,9 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         }
 
         if (parentAbstractReadHolder == null) {
-            this.readListenerList = new ArrayList<ReadListener>();
+            this.readListenerList = ListUtils.newArrayList();
         } else {
-            this.readListenerList = new ArrayList<ReadListener>(parentAbstractReadHolder.getReadListenerList());
+            this.readListenerList = ListUtils.newArrayList(parentAbstractReadHolder.getReadListenerList());
         }
         if (HolderEnum.WORKBOOK.equals(holderType())) {
             Boolean useDefaultListener = ((ReadWorkbook)readBasicParameter).getUseDefaultListener();
@@ -102,11 +94,11 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         if (parentAbstractReadHolder == null) {
             setConverterMap(DefaultConverterLoader.loadDefaultReadConverter());
         } else {
-            setConverterMap(new HashMap<String, Converter>(parentAbstractReadHolder.getConverterMap()));
+            setConverterMap(new HashMap<>(parentAbstractReadHolder.getConverterMap()));
         }
         if (readBasicParameter.getCustomConverterList() != null
             && !readBasicParameter.getCustomConverterList().isEmpty()) {
-            for (Converter converter : readBasicParameter.getCustomConverterList()) {
+            for (Converter<?> converter : readBasicParameter.getCustomConverterList()) {
                 getConverterMap().put(
                     ConverterKeyBuild.buildKey(converter.supportJavaTypeKey(), converter.supportExcelTypeKey()),
                     converter);
@@ -114,32 +106,8 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         }
     }
 
-    public List<ReadListener> getReadListenerList() {
-        return readListenerList;
-    }
-
-    public void setReadListenerList(List<ReadListener> readListenerList) {
-        this.readListenerList = readListenerList;
-    }
-
-    public ExcelReadHeadProperty getExcelReadHeadProperty() {
-        return excelReadHeadProperty;
-    }
-
-    public void setExcelReadHeadProperty(ExcelReadHeadProperty excelReadHeadProperty) {
-        this.excelReadHeadProperty = excelReadHeadProperty;
-    }
-
-    public Integer getHeadRowNumber() {
-        return headRowNumber;
-    }
-
-    public void setHeadRowNumber(Integer headRowNumber) {
-        this.headRowNumber = headRowNumber;
-    }
-
     @Override
-    public List<ReadListener> readListenerList() {
+    public List<ReadListener<?>> readListenerList() {
         return getReadListenerList();
     }
 
