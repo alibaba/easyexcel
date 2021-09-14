@@ -3,6 +3,7 @@ package com.alibaba.excel.converters.url;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.metadata.GlobalConfiguration;
@@ -27,8 +28,11 @@ public class UrlImageConverter implements Converter<URL> {
         GlobalConfiguration globalConfiguration) throws IOException {
         InputStream inputStream = null;
         try {
-            inputStream = value.openStream();
-            byte[] bytes = IoUtils.toByteArray(inputStream);
+            URLConnection conn = value.openConnection();
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(5000);
+            inputStream = con.getInputStream();
+            byte[] bytes = IoUtils.toByteArray(inputStream);    
             return new WriteCellData<>(bytes);
         } finally {
             if (inputStream != null) {
