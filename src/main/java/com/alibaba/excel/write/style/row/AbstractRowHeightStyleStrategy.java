@@ -1,46 +1,25 @@
 package com.alibaba.excel.write.style.row;
 
-import org.apache.poi.ss.usermodel.Row;
-
-import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.write.handler.RowWriteHandler;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
+
+import org.apache.poi.ss.usermodel.Row;
 
 /**
  * Set the row height strategy
  *
  * @author Jiaju Zhuang
  */
-public abstract class AbstractRowHeightStyleStrategy implements RowWriteHandler, NotRepeatExecutor {
-
+public abstract class AbstractRowHeightStyleStrategy implements RowWriteHandler {
     @Override
-    public String uniqueValue() {
-        return "RowHighStyleStrategy";
-    }
-
-    @Override
-    public void beforeRowCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Integer rowIndex,
-        Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterRowCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterRowDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Integer relativeRowIndex, Boolean isHead) {
-        if (isHead == null) {
+    public void afterRowDispose(RowWriteHandlerContext context) {
+        if (context.getHead() == null) {
             return;
         }
-        if (isHead) {
-            setHeadColumnHeight(row, relativeRowIndex);
+        if (context.getHead()) {
+            setHeadColumnHeight(context.getRow(), context.getRelativeRowIndex());
         } else {
-            setContentColumnHeight(row, relativeRowIndex);
+            setContentColumnHeight(context.getRow(), context.getRelativeRowIndex());
         }
     }
 

@@ -23,7 +23,7 @@ public @interface ExcelProperty {
      * <p>
      * write: It automatically merges when you have more than one head
      * <p>
-     * read: When you have multiple heads, take the first one
+     * read: When you have multiple heads, take the last one
      *
      * @return The name of the sheet header
      */

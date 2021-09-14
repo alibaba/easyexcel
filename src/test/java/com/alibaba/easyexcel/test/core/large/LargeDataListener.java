@@ -1,12 +1,13 @@
 package com.alibaba.easyexcel.test.core.large;
 
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.fastjson.JSON;
+
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.fastjson.JSON;
 
 /**
  * @author Jiaju Zhuang
@@ -22,13 +23,17 @@ public class LargeDataListener extends AnalysisEventListener<LargeData> {
         }
         count++;
         if (count % 100000 == 0) {
-            LOGGER.info("Already read:{}", count);
+            LOGGER.info("Already read:{},{}", count, JSON.toJSONString(data));
         }
     }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         LOGGER.info("Large row count:{}", count);
-        Assert.assertEquals(count, 464509);
+        if (context.readWorkbookHolder().getExcelType() != ExcelTypeEnum.CSV) {
+            Assert.assertEquals(count, 464509);
+        } else {
+            Assert.assertEquals(count, 499999);
+        }
     }
 }

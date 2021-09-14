@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
@@ -15,7 +16,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
  */
 public class BooleanNumberConverter implements Converter<Boolean> {
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Boolean.class;
     }
 
@@ -25,7 +26,7 @@ public class BooleanNumberConverter implements Converter<Boolean> {
     }
 
     @Override
-    public Boolean convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Boolean convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (BigDecimal.ONE.compareTo(cellData.getNumberValue()) == 0) {
             return Boolean.TRUE;
@@ -34,12 +35,12 @@ public class BooleanNumberConverter implements Converter<Boolean> {
     }
 
     @Override
-    public CellData convertToExcelData(Boolean value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Boolean value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (value) {
-            return new CellData(BigDecimal.ONE);
+            return new WriteCellData<>(BigDecimal.ONE);
         }
-        return new CellData(BigDecimal.ZERO);
+        return new WriteCellData<>(BigDecimal.ZERO);
     }
 
 }

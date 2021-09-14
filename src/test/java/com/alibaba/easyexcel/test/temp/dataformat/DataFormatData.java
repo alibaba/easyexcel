@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.temp.dataformat;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 
 import lombok.Data;
 
@@ -11,6 +12,6 @@ import lombok.Data;
  **/
 @Data
 public class DataFormatData {
-    private CellData<String> date;
-    private CellData<String> num;
+    private ReadCellData<String> date;
+    private ReadCellData<String> num;
 }

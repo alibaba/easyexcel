@@ -3,13 +3,14 @@ package com.alibaba.excel.converters.date;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.apache.poi.ss.usermodel.DateUtil;
-
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+
+import org.apache.poi.ss.usermodel.DateUtil;
 
 /**
  * Date and number converter
@@ -19,7 +20,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 public class DateNumberConverter implements Converter<Date> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Date.class;
     }
 
@@ -29,7 +30,7 @@ public class DateNumberConverter implements Converter<Date> {
     }
 
     @Override
-    public Date convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Date convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
             return DateUtil.getJavaDate(cellData.getNumberValue().doubleValue(),
@@ -41,13 +42,13 @@ public class DateNumberConverter implements Converter<Date> {
     }
 
     @Override
-    public CellData convertToExcelData(Date value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Date value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
-            return new CellData(
+            return new WriteCellData<>(
                 BigDecimal.valueOf(DateUtil.getExcelDate(value, globalConfiguration.getUse1904windowing())));
         } else {
-            return new CellData(BigDecimal.valueOf(
+            return new WriteCellData<>(BigDecimal.valueOf(
                 DateUtil.getExcelDate(value, contentProperty.getDateTimeFormatProperty().getUse1904windowing())));
         }
     }

@@ -6,14 +6,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
 
 /**
  * @author Jiaju Zhuang
@@ -23,15 +23,19 @@ public class SortDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
     private static File sortNoHead07;
     private static File sortNoHead03;
+    private static File sortNoHeadCsv;
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("sort.xlsx");
         file03 = TestFileUtil.createNewFile("sort.xls");
+        fileCsv = TestFileUtil.createNewFile("sort.csv");
         sortNoHead07 = TestFileUtil.createNewFile("sortNoHead.xlsx");
         sortNoHead03 = TestFileUtil.createNewFile("sortNoHead.xls");
+        sortNoHeadCsv = TestFileUtil.createNewFile("sortNoHead.csv");
     }
 
     @Test
@@ -45,15 +49,24 @@ public class SortDataTest {
     }
 
     @Test
-    public void t03ReadAndWriteNoHead07() {
+    public void t03ReadAndWriteCsv() {
+        readAndWrite(fileCsv);
+    }
+
+    @Test
+    public void t11ReadAndWriteNoHead07() {
         readAndWriteNoHead(sortNoHead07);
     }
 
     @Test
-    public void t04ReadAndWriteNoHead03() {
+    public void t12ReadAndWriteNoHead03() {
         readAndWriteNoHead(sortNoHead03);
     }
 
+    @Test
+    public void t13ReadAndWriteNoHeadCsv() {
+        readAndWriteNoHead(sortNoHeadCsv);
+    }
 
     private void readAndWrite(File file) {
         EasyExcel.write(file, SortData.class).sheet().doWrite(data());
@@ -94,7 +107,6 @@ public class SortDataTest {
         head.add(Collections.singletonList("column6"));
         return head;
     }
-
 
     private List<SortData> data() {
         List<SortData> list = new ArrayList<SortData>();

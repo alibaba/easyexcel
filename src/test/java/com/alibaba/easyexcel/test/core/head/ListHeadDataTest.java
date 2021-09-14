@@ -5,26 +5,32 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.DateUtils;
+
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  *
  * @author Jiaju Zhuang
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ListHeadDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
+
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("listHead07.xlsx");
         file03 = TestFileUtil.createNewFile("listHead03.xls");
+        fileCsv = TestFileUtil.createNewFile("listHeadCsv.csv");
     }
 
     @Test
@@ -35,6 +41,11 @@ public class ListHeadDataTest {
     @Test
     public void t02ReadAndWrite03() throws Exception {
         readAndWrite(file03);
+    }
+
+    @Test
+    public void t03ReadAndWriteCsv() throws Exception {
+        readAndWrite(fileCsv);
     }
 
     private void readAndWrite(File file) throws Exception {

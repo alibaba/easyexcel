@@ -3,8 +3,8 @@ package com.alibaba.excel.event;
 import java.util.Map;
 
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.CellExtra;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ConverterUtils;
 
@@ -16,7 +16,7 @@ import com.alibaba.excel.util.ConverterUtils;
 public abstract class AnalysisEventListener<T> implements ReadListener<T> {
 
     @Override
-    public void invokeHead(Map<Integer, CellData> headMap, AnalysisContext context) {
+    public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context) {
         invokeHeadMap(ConverterUtils.convertToStringMap(headMap, context), context);
     }
 
