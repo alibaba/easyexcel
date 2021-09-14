@@ -16,6 +16,7 @@
 * 写入支持Collection [Issue #1834](https://github.com/alibaba/easyexcel/issues/1834)
 * `Converter`支持null转换 [Issue #1776](https://github.com/alibaba/easyexcel/issues/1776)
 * cglib 新增命名策略，防止和`spring`的冲突  [Issue #2064](https://github.com/alibaba/easyexcel/issues/2064)
+* 修改填充可能填充错误的bug  [Issue #2035](https://github.com/alibaba/easyexcel/issues/2035)
 
 # 2.2.10
 * 修复读取的时候用string接收数字 可能四舍五入不一致的bug
