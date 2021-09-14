@@ -1,11 +1,5 @@
-# 2.2.10
-* 修复读取的时候用string接收数字 可能四舍五入不一致的bug
-
-# 2.2.9
-* 修复读取的时候用string接收数字 可能四舍五入不一致的bug
-
 # 3.0.0-beta1
-* 升级jdk8 不再支持jdk6 jdk7 
+* 升级jdk8 不再支持jdk6 jdk7
 * 升级poi 到 4.1.2
 * 升级cglib 到 3.3.0
 * 升级ehcache 到 3.8.1
@@ -21,6 +15,13 @@
 * 修改读的关闭流无效 [Issue #1840](https://github.com/alibaba/easyexcel/issues/1840)
 * 写入支持Collection [Issue #1834](https://github.com/alibaba/easyexcel/issues/1834)
 * `Converter`支持null转换 [Issue #1776](https://github.com/alibaba/easyexcel/issues/1776)
+* cglib 新增命名策略，防止和`spring`的冲突  [Issue #2064](https://github.com/alibaba/easyexcel/issues/2064)
+
+# 2.2.10
+* 修复读取的时候用string接收数字 可能四舍五入不一致的bug
+
+# 2.2.9
+* 修复读取的时候用string接收数字 可能四舍五入不一致的bug
 
 # 2.2.8
 * 兼容07在特殊的excel的情况下，读取数据异常

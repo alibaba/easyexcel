@@ -18,6 +18,9 @@ import com.alibaba.excel.util.IoUtils;
  * @since 2.1.1
  */
 public class UrlImageConverter implements Converter<URL> {
+    public static int urlConnectTimeout = 1000;
+    public static int urlReadTimeout = 5000;
+
     @Override
     public Class<?> supportJavaTypeKey() {
         return URL.class;
@@ -28,11 +31,11 @@ public class UrlImageConverter implements Converter<URL> {
         GlobalConfiguration globalConfiguration) throws IOException {
         InputStream inputStream = null;
         try {
-            URLConnection conn = value.openConnection();
-            conn.setConnectTimeout(1000);
-            conn.setReadTimeout(5000);
-            inputStream = con.getInputStream();
-            byte[] bytes = IoUtils.toByteArray(inputStream);    
+            URLConnection urlConnection = value.openConnection();
+            urlConnection.setConnectTimeout(urlConnectTimeout);
+            urlConnection.setReadTimeout(urlReadTimeout);
+            inputStream = urlConnection.getInputStream();
+            byte[] bytes = IoUtils.toByteArray(inputStream);
             return new WriteCellData<>(bytes);
         } finally {
             if (inputStream != null) {

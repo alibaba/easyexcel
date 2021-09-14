@@ -95,6 +95,7 @@ public class WriteTest {
     @Test
     public void excludeOrIncludeWrite() {
         String fileName = TestFileUtil.getPath() + "excludeOrIncludeWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里需要注意 在使用ExcelProperty注解的使用，如果想不空列则需要加入order字段，而不是index,order会忽略空列，然后继续往后，而index，不会忽略空列，在第几列就是第几列。
 
         // 根据用户传入字段 假设我们要忽略 date
         Set<String> excludeColumnFiledNames = new HashSet<String>();
