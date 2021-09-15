@@ -60,9 +60,10 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     @Override
     protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
-        if (contentCellStyleList == null || contentCellStyleList.isEmpty()) {
+        if (contentCellStyleList == null || contentCellStyleList.isEmpty() || relativeRowIndex == null) {
             return;
         }
+
         cell.setCellStyle(contentCellStyleList.get(relativeRowIndex % contentCellStyleList.size()));
     }
 
