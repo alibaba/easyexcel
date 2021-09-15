@@ -367,9 +367,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             return analysisCellList;
         }
         Sheet sheet = writeContext.writeSheetHolder().getCachedSheet();
-        if (sheet.getLastRowNum() == 0) {
-            throw new ExcelCommonException(sheet.getSheetName() + " not exists in the excel to be written");
-        }
         Map<String, Set<Integer>> firstRowCache = MapUtils.newHashMapWithExpectedSize(8);
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
