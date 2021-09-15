@@ -2,11 +2,14 @@ package com.alibaba.excel.metadata;
 
 import java.util.Locale;
 
+import lombok.Data;
+
 /**
  * Global configuration
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class GlobalConfiguration {
     /**
      * Automatic trim includes sheet name and content
@@ -32,35 +35,10 @@ public class GlobalConfiguration {
      */
     private Boolean useScientificFormat;
 
-    public Boolean getUse1904windowing() {
-        return use1904windowing;
-    }
-
-    public void setUse1904windowing(Boolean use1904windowing) {
-        this.use1904windowing = use1904windowing;
-    }
-
-    public Boolean getAutoTrim() {
-        return autoTrim;
-    }
-
-    public void setAutoTrim(Boolean autoTrim) {
-        this.autoTrim = autoTrim;
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
-    public Boolean getUseScientificFormat() {
-        return useScientificFormat;
-    }
-
-    public void setUseScientificFormat(Boolean useScientificFormat) {
-        this.useScientificFormat = useScientificFormat;
+    public GlobalConfiguration() {
+        this.autoTrim = Boolean.TRUE;
+        this.use1904windowing = Boolean.FALSE;
+        this.locale = Locale.getDefault();
+        this.useScientificFormat = Boolean.FALSE;
     }
 }

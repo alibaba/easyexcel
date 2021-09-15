@@ -5,15 +5,16 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelCommonException;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.fastjson.JSON;
+
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Jiaju Zhuang
@@ -61,10 +62,14 @@ public class ReadAllConverterDataListener extends AnalysisEventListener<ReadAllC
         Assert.assertEquals((long)data.getShortBoolean(), 1L);
         Assert.assertEquals((long)data.getShortNumber(), 1L);
         Assert.assertEquals((long)data.getShortString(), 1L);
-        Assert.assertEquals(data.getStringBoolean(), "true");
+        Assert.assertEquals(data.getStringBoolean().toLowerCase(), "true");
         Assert.assertEquals(data.getStringString(), "测试");
         Assert.assertEquals(data.getStringError(), "#VALUE!");
-        Assert.assertEquals("2020-1-1 1:01", data.getStringNumberDate());
+        if (context.readWorkbookHolder().getExcelType() != ExcelTypeEnum.CSV) {
+            Assert.assertEquals("2020-1-1 1:01", data.getStringNumberDate());
+        } else {
+            Assert.assertEquals("2020-01-01 01:01:01", data.getStringNumberDate());
+        }
         double doubleStringFormulaNumber = new BigDecimal(data.getStringFormulaNumber()).doubleValue();
         Assert.assertEquals(doubleStringFormulaNumber, 2.0, 0.0);
         Assert.assertEquals(data.getStringFormulaString(), "1测试");

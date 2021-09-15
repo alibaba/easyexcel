@@ -1,19 +1,18 @@
 package com.alibaba.easyexcel.test.demo.read;
 
-import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.CellExtra;
 import com.alibaba.fastjson.JSON;
 
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 读取单元格的批注
  *
- * @author: kaiux
- * @date: 2019-10-23 14:10
+ * @author Jiaju Zhuang
  **/
 public class DemoExtraListener extends AnalysisEventListener<DemoExtraData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoDataListener.class);

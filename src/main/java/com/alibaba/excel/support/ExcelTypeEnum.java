@@ -5,17 +5,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import org.apache.poi.poifs.filesystem.FileMagic;
-
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.util.StringUtils;
 
+import org.apache.poi.poifs.filesystem.FileMagic;
+
 /**
  * @author jipengfei
  */
 public enum ExcelTypeEnum {
+    /**
+     * csv
+     */
+    CSV(".csv"),
     /**
      * xls
      */
@@ -48,11 +52,8 @@ public enum ExcelTypeEnum {
                 }
                 // If there is a password, use the FileMagic first
                 if (!StringUtils.isEmpty(readWorkbook.getPassword())) {
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-                    try {
+                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
                         return recognitionExcelType(bufferedInputStream);
-                    } finally {
-                        bufferedInputStream.close();
                     }
                 }
                 // Use the name to determine the type
@@ -61,13 +62,12 @@ public enum ExcelTypeEnum {
                     return XLSX;
                 } else if (fileName.endsWith(XLS.getValue())) {
                     return XLS;
+                } else if (fileName.endsWith(CSV.getValue())) {
+                    return CSV;
                 }
                 if (StringUtils.isEmpty(readWorkbook.getPassword())) {
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-                    try {
+                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
                         return recognitionExcelType(bufferedInputStream);
-                    } finally {
-                        bufferedInputStream.close();
                     }
                 }
             }
@@ -77,8 +77,6 @@ public enum ExcelTypeEnum {
             }
             return recognitionExcelType(inputStream);
         } catch (ExcelCommonException e) {
-            throw e;
-        } catch (ExcelAnalysisException e) {
             throw e;
         } catch (Exception e) {
             throw new ExcelCommonException(

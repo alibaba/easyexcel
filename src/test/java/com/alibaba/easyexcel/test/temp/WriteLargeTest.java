@@ -3,18 +3,7 @@ package com.alibaba.easyexcel.test.temp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.core.large.LargeData;
-import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -22,6 +11,13 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 临时测试
@@ -59,8 +55,8 @@ public class WriteLargeTest {
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
             new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
 
-
-        ExcelWriter excelWriter = EasyExcel.write(fileName,LargeData.class).registerWriteHandler(horizontalCellStyleStrategy).build();
+        ExcelWriter excelWriter = EasyExcel.write(fileName, LargeData.class).registerWriteHandler(
+            horizontalCellStyleStrategy).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
         for (int j = 0; j < 100; j++) {
             excelWriter.write(data(), writeSheet);
@@ -70,39 +66,32 @@ public class WriteLargeTest {
 
     }
 
+    @Test
+    public void test2() throws Exception {
+        // 方法2 如果写到不同的sheet 同一个对象
+        String fileName = TestFileUtil.getPath() + "large" + System.currentTimeMillis() + ".xlsx";
 
-    private List<LargeData> data() {
-        List<LargeData> list = new ArrayList<LargeData>();
-        int size = i + 5000;
-        for (; i < size; i++) {
-            LargeData largeData = new LargeData();
-            list.add(largeData);
-            largeData.setStr1("str1-" + i);
-            largeData.setStr2("str2-" + i);
-            largeData.setStr3("str3-" + i);
-            largeData.setStr4("str4-" + i);
-            largeData.setStr5("str5-" + i);
-            largeData.setStr6("str6-" + i);
-            largeData.setStr7("str7-" + i);
-            largeData.setStr8("str8-" + i);
-            largeData.setStr9("str9-" + i);
-            largeData.setStr10("str10-" + i);
-            largeData.setStr11("str11-" + i);
-            largeData.setStr12("str12-" + i);
-            largeData.setStr13("str13-" + i);
-            largeData.setStr14("str14-" + i);
-            largeData.setStr15("str15-" + i);
-            largeData.setStr16("str16-" + i);
-            largeData.setStr17("str17-" + i);
-            largeData.setStr18("str18-" + i);
-            largeData.setStr19("str19-" + i);
-            largeData.setStr20("str20-" + i);
-            largeData.setStr21("str21-" + i);
-            largeData.setStr22("str22-" + i);
-            largeData.setStr23("str23-" + i);
-            largeData.setStr24("str24-" + i);
-            largeData.setStr25("str25-" + i);
+        ExcelWriter excelWriter = EasyExcel.write(fileName, LargeData.class).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet().build();
+        for (int j = 0; j < 100; j++) {
+            excelWriter.write(data(), writeSheet);
+            LOGGER.info("{} fill success.", j);
         }
+        excelWriter.finish();
+
+    }
+
+    private List<List<String>> data() {
+        List<List<String>> list = new ArrayList<>();
+
+        for (int j = 0; j < 10000; j++) {
+            List<String> oneRow = new ArrayList<>();
+            for (int i = 0; i < 150; i++) {
+                oneRow.add("这是测试字段" + i);
+            }
+            list.add(oneRow);
+        }
+
         return list;
     }
 }

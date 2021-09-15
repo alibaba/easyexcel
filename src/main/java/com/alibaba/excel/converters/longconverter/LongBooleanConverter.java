@@ -2,8 +2,9 @@ package com.alibaba.excel.converters.longconverter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
@@ -16,7 +17,7 @@ public class LongBooleanConverter implements Converter<Long> {
     private static final Long ZERO = 0L;
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<Long> supportJavaTypeKey() {
         return Long.class;
     }
 
@@ -26,7 +27,7 @@ public class LongBooleanConverter implements Converter<Long> {
     }
 
     @Override
-    public Long convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Long convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (cellData.getBooleanValue()) {
             return ONE;
@@ -35,12 +36,12 @@ public class LongBooleanConverter implements Converter<Long> {
     }
 
     @Override
-    public CellData convertToExcelData(Long value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Long value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (ONE.equals(value)) {
-            return new CellData(Boolean.TRUE);
+            return new WriteCellData<>(Boolean.TRUE);
         }
-        return new CellData(Boolean.FALSE);
+        return new WriteCellData<>(Boolean.FALSE);
     }
 
 }

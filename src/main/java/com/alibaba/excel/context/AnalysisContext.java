@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.ReadHolder;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
@@ -91,15 +90,6 @@ public interface AnalysisContext {
      * @param readSheetList
      */
     void readSheetList(List<ReadSheet> readSheetList);
-
-    /**
-     * get current sheet
-     *
-     * @return current analysis sheet
-     * @deprecated please use {@link #readSheetHolder()}
-     */
-    @Deprecated
-    Sheet getCurrentSheet();
 
     /**
      *
