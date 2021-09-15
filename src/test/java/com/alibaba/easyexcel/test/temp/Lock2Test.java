@@ -5,14 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.poi.hssf.util.CellReference;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -20,6 +12,15 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.fastjson.JSON;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 临时测试
@@ -33,12 +34,12 @@ public class Lock2Test {
 
     @Test
     public void test() throws Exception {
-//        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
-        File file = new File("/Users/zhuangjiaju/Downloads/1.xlsx");
+        File file = TestFileUtil.readUserHomeFile("test/test4.xlsx");
 
-        List<Object> list = EasyExcel.read(file).sheet(0).headRowNumber(0).doReadSync();
+        List<Object> list = EasyExcel.read(file).sheet(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (Object data : list) {
+            LOGGER.info("返回数据：{}", CollectionUtils.size(data));
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }
     }
@@ -60,7 +61,7 @@ public class Lock2Test {
         // 背景设置为红色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short) 20);
+        headWriteFont.setFontHeightInPoints((short)20);
         headWriteCellStyle.setWriteFont(headWriteFont);
         // 内容的策略
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
@@ -70,7 +71,7 @@ public class Lock2Test {
         contentWriteCellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
         WriteFont contentWriteFont = new WriteFont();
         // 字体大小
-        contentWriteFont.setFontHeightInPoints((short) 20);
+        contentWriteFont.setFontHeightInPoints((short)20);
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
