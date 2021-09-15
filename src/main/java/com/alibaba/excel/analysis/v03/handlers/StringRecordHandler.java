@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.context.xls.XlsReadContext;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
 
 /**
@@ -23,7 +23,7 @@ public class StringRecordHandler extends AbstractXlsRecordHandler implements Ign
         // String for formula
         StringRecord srec = (StringRecord)record;
         XlsReadSheetHolder xlsReadSheetHolder = xlsReadContext.xlsReadSheetHolder();
-        CellData tempCellData = xlsReadSheetHolder.getTempCellData();
+        CellData<?>tempCellData = xlsReadSheetHolder.getTempCellData();
         if (tempCellData == null) {
             LOGGER.warn("String type formula but no value found.");
             return;

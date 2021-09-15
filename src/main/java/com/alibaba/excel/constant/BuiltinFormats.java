@@ -1,6 +1,9 @@
 package com.alibaba.excel.constant;
 
 import java.util.Locale;
+import java.util.Map;
+
+import com.alibaba.excel.util.MapUtils;
 
 /**
  * Excel's built-in format conversion.Currently only supports Chinese.
@@ -17,7 +20,9 @@ import java.util.Locale;
  **/
 public class BuiltinFormats {
 
-    private static final String[] BUILTIN_FORMATS_CN = {
+    public static short GENERAL = 0;
+
+    public static final String[] BUILTIN_FORMATS_CN = {
         // 0
         "General",
         // 1
@@ -189,7 +194,7 @@ public class BuiltinFormats {
         // end
     };
 
-    private static final String[] BUILTIN_FORMATS_US = {
+    public static final String[] BUILTIN_FORMATS_US = {
         // 0
         "General",
         // 1
@@ -361,7 +366,11 @@ public class BuiltinFormats {
         // end
     };
 
-    public static String getBuiltinFormat(Integer index, String defaultFormat, Locale locale) {
+    public static final Map<String, Short> BUILTIN_FORMATS_MAP_CN = buildMap(BUILTIN_FORMATS_CN);
+    public static final Map<String, Short> BUILTIN_FORMATS_MAP_US = buildMap(BUILTIN_FORMATS_US);
+    public static final short MIN_CUSTOM_DATA_FORMAT_INDEX = 82;
+
+    public static String getBuiltinFormat(Short index, String defaultFormat, Locale locale) {
         String[] builtinFormat = switchBuiltinFormats(locale);
         if (index == null || index < 0 || index >= builtinFormat.length) {
             return defaultFormat;
@@ -369,11 +378,26 @@ public class BuiltinFormats {
         return builtinFormat[index];
     }
 
-    private static String[] switchBuiltinFormats(Locale locale) {
+    public static String[] switchBuiltinFormats(Locale locale) {
         if (locale != null && Locale.US.getCountry().equals(locale.getCountry())) {
             return BUILTIN_FORMATS_US;
         }
         return BUILTIN_FORMATS_CN;
+    }
+
+    public static Map<String, Short> switchBuiltinFormatsMap(Locale locale) {
+        if (locale != null && Locale.US.getCountry().equals(locale.getCountry())) {
+            return BUILTIN_FORMATS_MAP_US;
+        }
+        return BUILTIN_FORMATS_MAP_CN;
+    }
+
+    private static Map<String, Short> buildMap(String[] builtinFormats) {
+        Map<String, Short> map = MapUtils.newHashMapWithExpectedSize(builtinFormats.length);
+        for (int i = 0; i < builtinFormats.length; i++) {
+            map.put(builtinFormats[i], (short)i);
+        }
+        return map;
     }
 
 }

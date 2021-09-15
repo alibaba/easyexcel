@@ -37,11 +37,17 @@ public enum CellDataTypeEnum {
      */
     ERROR,
     /**
-     * Images are currently supported only when writing
+     * date. Support only when writing.
      */
-    IMAGE;
+    DATE,
+    /**
+     * rich text string.Support only when writing.
+     */
+    RICH_TEXT_STRING,
+    ;
 
     private static final Map<String, CellDataTypeEnum> TYPE_ROUTING_MAP = new HashMap<String, CellDataTypeEnum>(16);
+
     static {
         TYPE_ROUTING_MAP.put("s", STRING);
         TYPE_ROUTING_MAP.put("str", DIRECT_STRING);

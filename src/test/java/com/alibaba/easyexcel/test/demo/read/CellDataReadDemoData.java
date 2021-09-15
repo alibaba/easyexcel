@@ -2,7 +2,7 @@ package com.alibaba.easyexcel.test.demo.read;
 
 import java.util.Date;
 
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 
 import lombok.Data;
 

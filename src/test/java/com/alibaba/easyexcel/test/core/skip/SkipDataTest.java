@@ -4,22 +4,21 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-
 import com.alibaba.easyexcel.test.core.simple.SimpleData;
-import com.alibaba.easyexcel.test.core.simple.SimpleDataListener;
-import com.alibaba.easyexcel.test.core.simple.SimpleDataSheetNameListener;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.event.SyncReadListener;
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.write.metadata.WriteSheet;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  * @author Jiaju Zhuang
@@ -29,11 +28,13 @@ public class SkipDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("skip.xlsx");
         file03 = TestFileUtil.createNewFile("skip.xls");
+        fileCsv = TestFileUtil.createNewFile("skip.csv");
     }
 
     @Test
@@ -44,6 +45,11 @@ public class SkipDataTest {
     @Test
     public void t02ReadAndWrite03() {
         readAndWrite(file03);
+    }
+
+    @Test
+    public void t03ReadAndWriteCsv() {
+        Assert.assertThrows(ExcelGenerateException.class, () -> readAndWrite(fileCsv));
     }
 
     private void readAndWrite(File file) {
@@ -70,11 +76,10 @@ public class SkipDataTest {
         excelReader.read(readSheet1, readSheet3);
         List<Object> syncList = syncReadListener.getList();
         Assert.assertEquals(2, syncList.size());
-        Assert.assertEquals("name2", ((SkipData) syncList.get(0)).getName());
-        Assert.assertEquals("name4", ((SkipData) syncList.get(1)).getName());
+        Assert.assertEquals("name2", ((SkipData)syncList.get(0)).getName());
+        Assert.assertEquals("name4", ((SkipData)syncList.get(1)).getName());
         excelReader.finish();
     }
-
 
     private List<SkipData> data(String name) {
         List<SkipData> list = new ArrayList<SkipData>();

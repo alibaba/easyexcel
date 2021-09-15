@@ -1,24 +1,20 @@
 package com.alibaba.excel.read.listener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
-import com.alibaba.excel.event.AbstractIgnoreExceptionReadListener;
 import com.alibaba.excel.exception.ExcelDataConvertException;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.read.metadata.holder.ReadHolder;
+import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
+import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.ConverterUtils;
-
-import net.sf.cglib.beans.BeanMap;
+import com.alibaba.excel.util.FieldUtils;
+import com.alibaba.excel.util.MapUtils;
 
 /**
  * Convert to the object the user needs
@@ -34,17 +30,17 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
     }
 
     @Override
-    public void invoke(Map<Integer, CellData> cellDataMap, AnalysisContext context) {
-        ReadHolder currentReadHolder = context.currentReadHolder();
-        if (HeadKindEnum.CLASS.equals(currentReadHolder.excelReadHeadProperty().getHeadKind())) {
+    public void invoke(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {
+        ReadSheetHolder readSheetHolder = context.readSheetHolder();
+        if (HeadKindEnum.CLASS.equals(readSheetHolder.excelReadHeadProperty().getHeadKind())) {
             context.readRowHolder()
-                .setCurrentRowAnalysisResult(buildUserModel(cellDataMap, currentReadHolder, context));
+                .setCurrentRowAnalysisResult(buildUserModel(cellDataMap, readSheetHolder, context));
             return;
         }
-        context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(cellDataMap, currentReadHolder, context));
+        context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(cellDataMap, readSheetHolder, context));
     }
 
-    private Object buildStringList(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder,
+    private Object buildStringList(Map<Integer, ReadCellData<?>> cellDataMap, ReadSheetHolder readSheetHolder,
         AnalysisContext context) {
         int index = 0;
         if (context.readWorkbookHolder().getDefaultReturnMap()) {
@@ -99,40 +95,38 @@ public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener
             }
             return list;
         }
+        return map;
     }
 
-    private Object buildUserModel(Map<Integer, CellData> cellDataMap, ReadHolder currentReadHolder,
+    private Object buildUserModel(Map<Integer, ReadCellData<?>> cellDataMap, ReadSheetHolder readSheetHolder,
         AnalysisContext context) {
-        ExcelReadHeadProperty excelReadHeadProperty = currentReadHolder.excelReadHeadProperty();
+        ExcelReadHeadProperty excelReadHeadProperty = readSheetHolder.excelReadHeadProperty();
         Object resultModel;
         try {
             resultModel = excelReadHeadProperty.getHeadClazz().newInstance();
         } catch (Exception e) {
             throw new ExcelDataConvertException(context.readRowHolder().getRowIndex(), 0,
-                new CellData(CellDataTypeEnum.EMPTY), null,
+                new ReadCellData<>(CellDataTypeEnum.EMPTY), null,
                 "Can not instance class: " + excelReadHeadProperty.getHeadClazz().getName(), e);
         }
         Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();
-        Map<String, Object> map = new HashMap<String, Object>(headMap.size() * 4 / 3 + 1);
+        Map<String, Object> map = MapUtils.newHashMapWithExpectedSize(headMap.size());
         Map<Integer, ExcelContentProperty> contentPropertyMap = excelReadHeadProperty.getContentPropertyMap();
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Integer index = entry.getKey();
             if (!cellDataMap.containsKey(index)) {
                 continue;
             }
-            CellData cellData = cellDataMap.get(index);
-            if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                continue;
-            }
+            ReadCellData<?> cellData = cellDataMap.get(index);
             ExcelContentProperty excelContentProperty = contentPropertyMap.get(index);
             Object value = ConverterUtils.convertToJavaObject(cellData, excelContentProperty.getField(),
-                excelContentProperty, currentReadHolder.converterMap(), currentReadHolder.globalConfiguration(),
+                excelContentProperty, readSheetHolder.converterMap(), context,
                 context.readRowHolder().getRowIndex(), index);
             if (value != null) {
-                map.put(excelContentProperty.getField().getName(), value);
+                map.put(FieldUtils.resolveCglibFieldName(excelContentProperty.getField()), value);
             }
         }
-        BeanMap.create(resultModel).putAll(map);
+        BeanMapUtils.create(resultModel).putAll(map);
         return resultModel;
     }
 

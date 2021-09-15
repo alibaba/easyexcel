@@ -2,8 +2,9 @@ package com.alibaba.excel.converters.byteconverter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
@@ -16,7 +17,7 @@ public class ByteBooleanConverter implements Converter<Byte> {
     private static final Byte ZERO = (byte)0;
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Byte.class;
     }
 
@@ -26,7 +27,7 @@ public class ByteBooleanConverter implements Converter<Byte> {
     }
 
     @Override
-    public Byte convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Byte convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (cellData.getBooleanValue()) {
             return ONE;
@@ -35,12 +36,12 @@ public class ByteBooleanConverter implements Converter<Byte> {
     }
 
     @Override
-    public CellData convertToExcelData(Byte value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Byte value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (ONE.equals(value)) {
-            return new CellData(Boolean.TRUE);
+            return new WriteCellData<>(Boolean.TRUE);
         }
-        return new CellData(Boolean.FALSE);
+        return new WriteCellData<>(Boolean.FALSE);
     }
 
 }

@@ -2,7 +2,7 @@ package com.alibaba.excel.analysis.v07.handlers;
 
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.util.StringUtils;
 
 /**

@@ -9,11 +9,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import org.apache.poi.util.DefaultTempFileCreationStrategy;
-import org.apache.poi.util.TempFile;
-
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelCommonException;
+
+import org.apache.poi.util.DefaultTempFileCreationStrategy;
+import org.apache.poi.util.TempFile;
 
 /**
  *
@@ -100,10 +100,21 @@ public class FileUtils {
     /**
      * Write inputStream to file
      *
-     * @param file
-     * @param inputStream
+     * @param file file
+     * @param inputStream inputStream
      */
     public static void writeToFile(File file, InputStream inputStream) {
+        writeToFile(file, inputStream, true);
+    }
+
+    /**
+     * Write inputStream to file
+     *
+     * @param file file
+     * @param inputStream inputStream
+     * @param closeInputStream closeInputStream
+     */
+    public static void writeToFile(File file, InputStream inputStream, boolean closeInputStream) {
         OutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(file);
@@ -122,7 +133,7 @@ public class FileUtils {
                     throw new ExcelAnalysisException("Can not close 'outputStream'!", e);
                 }
             }
-            if (inputStream != null) {
+            if (inputStream != null && closeInputStream) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
@@ -131,6 +142,7 @@ public class FileUtils {
             }
         }
     }
+
 
     public static void createPoiFilesDirectory() {
         File poiFilesPathFile = new File(poiFilesPath);
