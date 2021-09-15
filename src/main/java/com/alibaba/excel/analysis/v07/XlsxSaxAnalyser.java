@@ -233,8 +233,8 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             return;
         }
         Iterator<CellAddress> cellAddresses = commentsTable.getCellAddresses();
-        for (Iterator<CellAddress> it = cellAddresses; it.hasNext(); ) {
-            CellAddress cellAddress = it.next();
+        while (cellAddresses.hasNext()) {
+            CellAddress cellAddress = cellAddresses.next();
             XSSFComment cellComment = commentsTable.findCellComment(cellAddress);
             CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.COMMENT, cellComment.getString().toString(),
                 cellAddress.getRow(), cellAddress.getColumn());
