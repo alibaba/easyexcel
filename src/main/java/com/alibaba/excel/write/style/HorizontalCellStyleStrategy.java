@@ -1,18 +1,15 @@
 package com.alibaba.excel.write.style;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Workbook;
-
-import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 /**
- *
  * Use the same style for the row
  *
  * @author Jiaju Zhuang
@@ -22,9 +19,6 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
     private WriteCellStyle headWriteCellStyle;
     private List<WriteCellStyle> contentWriteCellStyleList;
 
-    private CellStyle headCellStyle;
-    private List<CellStyle> contentCellStyleList;
-
     public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle,
         List<WriteCellStyle> contentWriteCellStyleList) {
         this.headWriteCellStyle = headWriteCellStyle;
@@ -33,37 +27,37 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle, WriteCellStyle contentWriteCellStyle) {
         this.headWriteCellStyle = headWriteCellStyle;
-        contentWriteCellStyleList = new ArrayList<WriteCellStyle>();
-        contentWriteCellStyleList.add(contentWriteCellStyle);
-    }
-
-    @Override
-    protected void initCellStyle(Workbook workbook) {
-        if (headWriteCellStyle != null) {
-            headCellStyle = StyleUtil.buildHeadCellStyle(workbook, headWriteCellStyle);
-        }
-        if (contentWriteCellStyleList != null && !contentWriteCellStyleList.isEmpty()) {
-            contentCellStyleList = new ArrayList<CellStyle>();
-            for (WriteCellStyle writeCellStyle : contentWriteCellStyleList) {
-                contentCellStyleList.add(StyleUtil.buildContentCellStyle(workbook, writeCellStyle));
-            }
+        if (contentWriteCellStyle != null) {
+            this.contentWriteCellStyleList = ListUtils.newArrayList(contentWriteCellStyle);
         }
     }
 
     @Override
-    protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
-        if (headCellStyle == null) {
+    protected void setHeadCellStyle(CellWriteHandlerContext context) {
+        if (stopProcessing(context) || headWriteCellStyle == null) {
             return;
         }
-        cell.setCellStyle(headCellStyle);
+        WriteCellData<?> cellData = context.getCellDataList().get(0);
+        cellData.setWriteCellStyle(headWriteCellStyle);
     }
 
     @Override
-    protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
-        if (contentCellStyleList == null || contentCellStyleList.isEmpty()) {
+    protected void setContentCellStyle(CellWriteHandlerContext context) {
+        if (stopProcessing(context) || CollectionUtils.isEmpty(contentWriteCellStyleList)) {
             return;
         }
-        cell.setCellStyle(contentCellStyleList.get(relativeRowIndex % contentCellStyleList.size()));
+        WriteCellData<?> cellData = context.getCellDataList().get(0);
+        if (context.getRelativeRowIndex() == null || context.getRelativeRowIndex() <= 0) {
+            cellData.setWriteCellStyle(contentWriteCellStyleList.get(0));
+        } else {
+            cellData.setWriteCellStyle(
+                contentWriteCellStyleList.get(context.getRelativeRowIndex() % contentWriteCellStyleList.size()));
+        }
+    }
+
+    protected boolean stopProcessing(CellWriteHandlerContext context) {
+        List<WriteCellData<?>> cellDataList = context.getCellDataList();
+        return CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1;
     }
 
 }

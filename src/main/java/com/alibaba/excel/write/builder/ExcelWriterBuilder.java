@@ -6,7 +6,6 @@ import java.io.OutputStream;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
 /**
@@ -18,7 +17,7 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     /**
      * Workbook
      */
-    private WriteWorkbook writeWorkbook;
+    private final WriteWorkbook writeWorkbook;
 
     public ExcelWriterBuilder() {
         this.writeWorkbook = new WriteWorkbook();
@@ -49,7 +48,7 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     }
 
     /**
-     * Write excel in memory. Default false,the cache file is created and finally written to excel.
+     * Write excel in memory. Default false, the cache file is created and finally written to excel.
      * <p>
      * Comment and RichTextString are only supported in memory mode.
      */
@@ -66,21 +65,6 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
         return this;
     }
 
-    /**
-     * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
-     * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
-     * <p>
-     * Default true
-     *
-     * @param convertAllFiled
-     * @return
-     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
-     */
-    @Deprecated
-    public ExcelWriterBuilder convertAllFiled(Boolean convertAllFiled) {
-        writeWorkbook.setConvertAllFiled(convertAllFiled);
-        return this;
-    }
 
     public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
         writeWorkbook.setExcelType(excelType);
@@ -115,16 +99,6 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
         return withTemplate(new File(pathName));
     }
 
-    /**
-     * Write handler
-     *
-     * @deprecated please use {@link WriteHandler}
-     */
-    @Deprecated
-    public ExcelWriterBuilder registerWriteHandler(com.alibaba.excel.event.WriteHandler writeHandler) {
-        writeWorkbook.setWriteHandler(writeHandler);
-        return this;
-    }
 
     public ExcelWriter build() {
         return new ExcelWriter(writeWorkbook);

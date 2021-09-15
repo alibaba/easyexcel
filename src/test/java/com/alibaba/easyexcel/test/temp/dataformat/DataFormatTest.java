@@ -9,6 +9,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import com.alibaba.easyexcel.test.core.dataformat.DateFormatData;
+import com.alibaba.easyexcel.test.temp.Lock2Test;
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSON;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -20,12 +26,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.easyexcel.test.core.dataformat.DateFormatData;
-import com.alibaba.easyexcel.test.temp.Lock2Test;
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSON;
 
 /**
  * 格式测试
@@ -44,9 +44,9 @@ public class DataFormatTest {
             EasyExcel.read(file, DataFormatData.class, null).sheet().headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (DataFormatData data : list) {
-            Integer dataFormat = data.getDate().getDataFormat();
+            Short dataFormat = data.getDate().getDataFormatData().getIndex();
 
-            String dataFormatString = data.getDate().getDataFormatString();
+            String dataFormatString = data.getDate().getFormulaData().getFormulaValue();
 
             if (dataFormat == null || dataFormatString == null) {
 
@@ -67,9 +67,9 @@ public class DataFormatTest {
             EasyExcel.read(file, DataFormatData.class, null).sheet().headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (DataFormatData data : list) {
-            Integer dataFormat = data.getDate().getDataFormat();
+            Short dataFormat = data.getDate().getDataFormatData().getIndex();
 
-            String dataFormatString = data.getDate().getDataFormatString();
+            String dataFormatString = data.getDate().getFormulaData().getFormulaValue();
 
             if (dataFormat == null || dataFormatString == null) {
 

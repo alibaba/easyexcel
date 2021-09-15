@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
@@ -17,9 +16,6 @@ import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadStyle;
 import com.alibaba.excel.annotation.write.style.OnceAbsoluteMerge;
-import com.alibaba.excel.converters.ConverterKeyBuild;
-import com.alibaba.excel.converters.DefaultConverterLoader;
-import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
@@ -44,23 +40,23 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
     private RowHeightProperty contentRowHeightProperty;
     private OnceAbsoluteMergeProperty onceAbsoluteMergeProperty;
 
-    public ExcelWriteHeadProperty(Holder holder, Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
-        super(holder, headClazz, head, convertAllFiled);
+    public ExcelWriteHeadProperty(Holder holder, Class headClazz, List<List<String>> head) {
+        super(holder, headClazz, head);
         if (getHeadKind() != HeadKindEnum.CLASS) {
             return;
         }
         this.headRowHeightProperty =
-            RowHeightProperty.build((HeadRowHeight) headClazz.getAnnotation(HeadRowHeight.class));
+            RowHeightProperty.build((HeadRowHeight)headClazz.getAnnotation(HeadRowHeight.class));
         this.contentRowHeightProperty =
-            RowHeightProperty.build((ContentRowHeight) headClazz.getAnnotation(ContentRowHeight.class));
+            RowHeightProperty.build((ContentRowHeight)headClazz.getAnnotation(ContentRowHeight.class));
         this.onceAbsoluteMergeProperty =
-            OnceAbsoluteMergeProperty.build((OnceAbsoluteMerge) headClazz.getAnnotation(OnceAbsoluteMerge.class));
+            OnceAbsoluteMergeProperty.build((OnceAbsoluteMerge)headClazz.getAnnotation(OnceAbsoluteMerge.class));
 
-        ColumnWidth parentColumnWidth = (ColumnWidth) headClazz.getAnnotation(ColumnWidth.class);
-        HeadStyle parentHeadStyle = (HeadStyle) headClazz.getAnnotation(HeadStyle.class);
-        HeadFontStyle parentHeadFontStyle = (HeadFontStyle) headClazz.getAnnotation(HeadFontStyle.class);
-        ContentStyle parentContentStyle = (ContentStyle) headClazz.getAnnotation(ContentStyle.class);
-        ContentFontStyle parentContentFontStyle = (ContentFontStyle) headClazz.getAnnotation(ContentFontStyle.class);
+        ColumnWidth parentColumnWidth = (ColumnWidth)headClazz.getAnnotation(ColumnWidth.class);
+        HeadStyle parentHeadStyle = (HeadStyle)headClazz.getAnnotation(HeadStyle.class);
+        HeadFontStyle parentHeadFontStyle = (HeadFontStyle)headClazz.getAnnotation(HeadFontStyle.class);
+        ContentStyle parentContentStyle = (ContentStyle)headClazz.getAnnotation(ContentStyle.class);
+        ContentFontStyle parentContentFontStyle = (ContentFontStyle)headClazz.getAnnotation(ContentFontStyle.class);
 
         for (Map.Entry<Integer, ExcelContentProperty> entry : getContentPropertyMap().entrySet()) {
             Integer index = entry.getKey();
@@ -102,14 +98,6 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             headData.setContentFontProperty(FontProperty.build(contentFontStyle));
 
             headData.setLoopMergeProperty(LoopMergeProperty.build(field.getAnnotation(ContentLoopMerge.class)));
-            // If have @NumberFormat, 'NumberStringConverter' is specified by default
-            if (excelContentPropertyData.getConverter() == null) {
-                NumberFormat numberFormat = field.getAnnotation(NumberFormat.class);
-                if (numberFormat != null) {
-                    excelContentPropertyData.setConverter(DefaultConverterLoader.loadAllConverter()
-                        .get(ConverterKeyBuild.buildKey(field.getType(), CellDataTypeEnum.STRING)));
-                }
-            }
         }
     }
 
@@ -158,18 +146,21 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 int lastCol = i;
                 int lastRow = j;
                 for (int k = i + 1; k < headList.size(); k++) {
-                    if ((headList.get(k).getHeadNameList().get(j) == null ? "" : headList.get(k).getHeadNameList().get(j)).equals(headName)) {
-                        alreadyRangeSet.add(k + "-" + j);
+                    String key = k + "-" + j;
+                    if (headList.get(k).getHeadNameList().get(j).equals(headName) && !alreadyRangeSet.contains(key)) {
+                        alreadyRangeSet.add(key);
                         lastCol = k;
                     } else {
                         break;
                     }
                 }
-                Set<String> tempAlreadyRangeSet = new HashSet<String>();
+                Set<String> tempAlreadyRangeSet = new HashSet<>();
                 outer:
                 for (int k = j + 1; k < headNameList.size(); k++) {
                     for (int l = i; l <= lastCol; l++) {
-                        if (headList.get(l).getHeadNameList().get(k).equals(headName)) {
+                        String key = l + "-" + k;
+                        if (headList.get(l).getHeadNameList().get(k).equals(headName) && !alreadyRangeSet.contains(
+                            key)) {
                             tempAlreadyRangeSet.add(l + "-" + k);
                         } else {
                             break outer;

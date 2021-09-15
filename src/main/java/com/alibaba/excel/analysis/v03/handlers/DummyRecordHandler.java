@@ -2,17 +2,17 @@ package com.alibaba.excel.analysis.v03.handlers;
 
 import java.util.LinkedHashMap;
 
-import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
-import org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord;
-import org.apache.poi.hssf.record.Record;
-
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.Cell;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
+
+import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
+import org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord;
+import org.apache.poi.hssf.record.Record;
 
 /**
  * Record handler
@@ -35,7 +35,7 @@ public class DummyRecordHandler extends AbstractXlsRecordHandler implements Igno
         } else if (record instanceof MissingCellDummyRecord) {
             MissingCellDummyRecord mcdr = (MissingCellDummyRecord)record;
             xlsReadSheetHolder.getCellMap().put(mcdr.getColumn(),
-                CellData.newEmptyInstance(mcdr.getRow(), mcdr.getColumn()));
+                ReadCellData.newEmptyInstance(mcdr.getRow(), mcdr.getColumn()));
         }
     }
 }

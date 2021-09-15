@@ -1,6 +1,14 @@
 package com.alibaba.excel.util;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
+import com.alibaba.excel.metadata.csv.CsvWorkbook;
+import com.alibaba.excel.metadata.data.DataFormatData;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -13,53 +21,65 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
-
 /**
- *
  * @author jipengfei
  */
 public class WorkBookUtil {
 
-    private static final int ROW_ACCESS_WINDOW_SIZE = 500;
+    public static final int ROW_ACCESS_WINDOW_SIZE = 500;
 
     private WorkBookUtil() {}
 
     public static void createWorkBook(WriteWorkbookHolder writeWorkbookHolder) throws IOException {
-        if (ExcelTypeEnum.XLSX.equals(writeWorkbookHolder.getExcelType())) {
-            if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
-                XSSFWorkbook xssfWorkbook = new XSSFWorkbook(writeWorkbookHolder.getTempTemplateInputStream());
-                writeWorkbookHolder.setCachedWorkbook(xssfWorkbook);
+        switch (writeWorkbookHolder.getExcelType()) {
+            case XLSX:
+                if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
+                    XSSFWorkbook xssfWorkbook = new XSSFWorkbook(writeWorkbookHolder.getTempTemplateInputStream());
+                    writeWorkbookHolder.setCachedWorkbook(xssfWorkbook);
+                    if (writeWorkbookHolder.getInMemory()) {
+                        writeWorkbookHolder.setWorkbook(xssfWorkbook);
+                    } else {
+                        writeWorkbookHolder.setWorkbook(new SXSSFWorkbook(xssfWorkbook, ROW_ACCESS_WINDOW_SIZE));
+                    }
+                    return;
+                }
+                Workbook workbook;
                 if (writeWorkbookHolder.getInMemory()) {
-                    writeWorkbookHolder.setWorkbook(xssfWorkbook);
+                    workbook = new XSSFWorkbook();
                 } else {
-                    writeWorkbookHolder.setWorkbook(new SXSSFWorkbook(xssfWorkbook, ROW_ACCESS_WINDOW_SIZE));
+                    workbook = new SXSSFWorkbook(ROW_ACCESS_WINDOW_SIZE);
+                }
+                writeWorkbookHolder.setCachedWorkbook(workbook);
+                writeWorkbookHolder.setWorkbook(workbook);
+                return;
+            case XLS:
+                HSSFWorkbook hssfWorkbook;
+                if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
+                    hssfWorkbook = new HSSFWorkbook(
+                        new POIFSFileSystem(writeWorkbookHolder.getTempTemplateInputStream()));
+                } else {
+                    hssfWorkbook = new HSSFWorkbook();
+                }
+                writeWorkbookHolder.setCachedWorkbook(hssfWorkbook);
+                writeWorkbookHolder.setWorkbook(hssfWorkbook);
+                if (writeWorkbookHolder.getPassword() != null) {
+                    Biff8EncryptionKey.setCurrentUserPassword(writeWorkbookHolder.getPassword());
+                    hssfWorkbook.writeProtectWorkbook(writeWorkbookHolder.getPassword(), StringUtils.EMPTY);
                 }
                 return;
-            }
-            Workbook workbook = null;
-            if (writeWorkbookHolder.getInMemory()) {
-                workbook = new XSSFWorkbook();
-            } else {
-                workbook = new SXSSFWorkbook(ROW_ACCESS_WINDOW_SIZE);
-            }
-            writeWorkbookHolder.setCachedWorkbook(workbook);
-            writeWorkbookHolder.setWorkbook(workbook);
-            return;
+            case CSV:
+                CsvWorkbook csvWorkbook = new CsvWorkbook(new PrintWriter(
+                    new OutputStreamWriter(writeWorkbookHolder.getOutputStream(), writeWorkbookHolder.getCharset())),
+                    writeWorkbookHolder.getGlobalConfiguration().getLocale(),
+                    writeWorkbookHolder.getGlobalConfiguration().getUse1904windowing(),
+                    writeWorkbookHolder.getGlobalConfiguration().getUseScientificFormat());
+                writeWorkbookHolder.setCachedWorkbook(csvWorkbook);
+                writeWorkbookHolder.setWorkbook(csvWorkbook);
+                return;
+            default:
+                throw new UnsupportedOperationException("Wrong excel type.");
         }
-        HSSFWorkbook hssfWorkbook;
-        if (writeWorkbookHolder.getTempTemplateInputStream() != null) {
-            hssfWorkbook = new HSSFWorkbook(new POIFSFileSystem(writeWorkbookHolder.getTempTemplateInputStream()));
-        } else {
-            hssfWorkbook = new HSSFWorkbook();
-        }
-        writeWorkbookHolder.setCachedWorkbook(hssfWorkbook);
-        writeWorkbookHolder.setWorkbook(hssfWorkbook);
-        if (writeWorkbookHolder.getPassword() != null) {
-            Biff8EncryptionKey.setCurrentUserPassword(writeWorkbookHolder.getPassword());
-            hssfWorkbook.writeProtectWorkbook(writeWorkbookHolder.getPassword(), StringUtils.EMPTY);
-        }
+
     }
 
     public static Sheet createSheet(Workbook workbook, String sheetName) {
@@ -90,5 +110,21 @@ public class WorkBookUtil {
         Cell cell = row.createCell(colNum);
         cell.setCellValue(cellValue);
         return cell;
+    }
+
+    public static void fillDataFormat(WriteCellData<?> cellData, String format, String defaultFormat) {
+        if (cellData.getWriteCellStyle() == null) {
+            cellData.setWriteCellStyle(new WriteCellStyle());
+        }
+        if (cellData.getWriteCellStyle().getDataFormatData() == null) {
+            cellData.getWriteCellStyle().setDataFormatData(new DataFormatData());
+        }
+        if (cellData.getWriteCellStyle().getDataFormatData().getFormat() == null) {
+            if (format == null) {
+                cellData.getWriteCellStyle().getDataFormatData().setFormat(defaultFormat);
+            } else {
+                cellData.getWriteCellStyle().getDataFormatData().setFormat(format);
+            }
+        }
     }
 }

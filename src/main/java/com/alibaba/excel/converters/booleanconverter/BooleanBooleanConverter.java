@@ -2,8 +2,9 @@ package com.alibaba.excel.converters.booleanconverter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
@@ -14,7 +15,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 public class BooleanBooleanConverter implements Converter<Boolean> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Boolean.class;
     }
 
@@ -24,15 +25,15 @@ public class BooleanBooleanConverter implements Converter<Boolean> {
     }
 
     @Override
-    public Boolean convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Boolean convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getBooleanValue();
     }
 
     @Override
-    public CellData convertToExcelData(Boolean value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Boolean value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return new CellData(value);
+        return new WriteCellData<>(value);
     }
 
 }

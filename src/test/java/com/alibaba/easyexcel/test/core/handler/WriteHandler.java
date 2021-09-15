@@ -2,12 +2,8 @@ package com.alibaba.easyexcel.test.core.handler;
 
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.junit.Assert;
-
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
@@ -16,9 +12,11 @@ import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.junit.Assert;
+
 /**
- *
- *
  * @author JiaJu Zhuang
  **/
 public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, RowWriteHandler, CellWriteHandler {
@@ -35,7 +33,6 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     private long beforeWorkbookCreate = 0L;
     private long afterWorkbookCreate = 0L;
     private long afterWorkbookDispose = 0L;
-
 
     @Override
     public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
@@ -80,7 +77,7 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
 
     @Override
     public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        CellData cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        WriteCellData<?> cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         Assert.assertEquals(1L, beforeCellCreate);
         Assert.assertEquals(1L, afterCellCreate);
         Assert.assertEquals(0L, afterCellDataConverted);
@@ -98,7 +95,7 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
 
     @Override
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+        List<WriteCellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
             Assert.assertEquals(1L, beforeCellCreate);
             Assert.assertEquals(1L, afterCellCreate);

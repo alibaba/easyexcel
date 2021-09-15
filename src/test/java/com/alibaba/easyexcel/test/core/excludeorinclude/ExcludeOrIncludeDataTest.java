@@ -2,22 +2,19 @@ package com.alibaba.easyexcel.test.core.excludeorinclude;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
-import com.alibaba.easyexcel.test.core.sort.SortData;
-import com.alibaba.easyexcel.test.core.sort.SortDataListener;
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
 
 /**
  * @author Jiaju Zhuang
@@ -27,23 +24,31 @@ public class ExcludeOrIncludeDataTest {
 
     private static File excludeIndex07;
     private static File excludeIndex03;
+    private static File excludeIndexCsv;
     private static File excludeFiledName07;
     private static File excludeFiledName03;
+    private static File excludeFiledNameCsv;
     private static File includeIndex07;
     private static File includeIndex03;
+    private static File includeIndexCsv;
     private static File includeFiledName07;
     private static File includeFiledName03;
+    private static File includeFiledNameCsv;
 
     @BeforeClass
     public static void init() {
         excludeIndex07 = TestFileUtil.createNewFile("excludeIndex.xlsx");
         excludeIndex03 = TestFileUtil.createNewFile("excludeIndex.xls");
+        excludeIndexCsv = TestFileUtil.createNewFile("excludeIndex.csv");
         excludeFiledName07 = TestFileUtil.createNewFile("excludeFiledName.xlsx");
         excludeFiledName03 = TestFileUtil.createNewFile("excludeFiledName.xls");
+        excludeFiledNameCsv = TestFileUtil.createNewFile("excludeFiledName.csv");
         includeIndex07 = TestFileUtil.createNewFile("includeIndex.xlsx");
         includeIndex03 = TestFileUtil.createNewFile("includeIndex.xls");
+        includeIndexCsv = TestFileUtil.createNewFile("includeIndex.csv");
         includeFiledName07 = TestFileUtil.createNewFile("includeFiledName.xlsx");
         includeFiledName03 = TestFileUtil.createNewFile("includeFiledName.xls");
+        includeFiledNameCsv = TestFileUtil.createNewFile("includeFiledName.csv");
     }
 
     @Test
@@ -52,41 +57,60 @@ public class ExcludeOrIncludeDataTest {
     }
 
     @Test
-    public void t02ExcludeIndex07() {
+    public void t02ExcludeIndex03() {
         excludeIndex(excludeIndex03);
     }
 
     @Test
-    public void t03ExcludeFiledName07() {
+    public void t03ExcludeIndexCsv() {
+        excludeIndex(excludeIndexCsv);
+    }
+
+    @Test
+    public void t11ExcludeFiledName07() {
         excludeFiledName(excludeFiledName07);
     }
 
     @Test
-    public void t04ExcludeFiledName07() {
+    public void t12ExcludeFiledName03() {
         excludeFiledName(excludeFiledName03);
+    }
+
+    @Test
+    public void t13ExcludeFiledNameCsv() {
+        excludeFiledName(excludeFiledNameCsv);
     }
 
 
     @Test
-    public void t05IncludeIndex07() {
+    public void t21IncludeIndex07() {
         includeIndex(includeIndex07);
     }
 
     @Test
-    public void t06IncludeIndex07() {
+    public void t22IncludeIndex03() {
         includeIndex(includeIndex03);
     }
 
     @Test
-    public void t07IncludeFiledName07() {
+    public void t23IncludeIndexCsv() {
+        includeIndex(includeIndexCsv);
+    }
+
+    @Test
+    public void t31IncludeFiledName07() {
         includeFiledName(includeFiledName07);
     }
 
     @Test
-    public void t08IncludeFiledName07() {
+    public void t32IncludeFiledName03() {
         includeFiledName(includeFiledName03);
     }
 
+    @Test
+    public void t33IncludeFiledNameCsv() {
+        includeFiledName(includeFiledNameCsv);
+    }
 
     private void excludeIndex(File file) {
         Set<Integer> excludeColumnIndexes = new HashSet<Integer>();
@@ -146,7 +170,6 @@ public class ExcludeOrIncludeDataTest {
         Assert.assertEquals("column2", record.get(0));
         Assert.assertEquals("column3", record.get(1));
     }
-
 
     private List<ExcludeOrIncludeData> data() {
         List<ExcludeOrIncludeData> list = new ArrayList<ExcludeOrIncludeData>();

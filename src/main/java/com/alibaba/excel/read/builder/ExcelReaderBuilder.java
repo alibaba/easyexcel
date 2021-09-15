@@ -41,7 +41,7 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     /**
      * Read InputStream
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     public ExcelReaderBuilder file(InputStream inputStream) {
         readWorkbook.setInputStream(inputStream);
@@ -51,7 +51,7 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     /**
      * Read file
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     public ExcelReaderBuilder file(File file) {
         readWorkbook.setFile(file);
@@ -61,7 +61,7 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     /**
      * Read file
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     public ExcelReaderBuilder file(String pathName) {
         return file(new File(pathName));
@@ -70,7 +70,7 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     /**
      * Mandatory use 'inputStream' .Default is false.
      * <p>
-     * if false,Will transfer 'inputStream' to temporary files to improve efficiency
+     * if false, Will transfer 'inputStream' to temporary files to improve efficiency
      */
     public ExcelReaderBuilder mandatoryUseInputStream(Boolean mandatoryUseInputStream) {
         readWorkbook.setMandatoryUseInputStream(mandatoryUseInputStream);

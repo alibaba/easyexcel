@@ -7,26 +7,36 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
+import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.IoUtils;
+import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
+
+import lombok.Data;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Workbook holder
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
      * Current poi Workbook.This is only for writing, and there may be no data in version 07 when template data needs to
@@ -52,7 +62,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     /**
      * Final output file
      * <p>
-     * If 'outputStream' and 'file' all not empty,file first
+     * If 'outputStream' and 'file' all not empty, file first
      */
     private File file;
     /**
@@ -60,15 +70,19 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private OutputStream outputStream;
     /**
+     * output charset
+     */
+    private Charset charset;
+    /**
      * Template input stream
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private InputStream templateInputStream;
     /**
      * Template file
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private File templateFile;
     /**
@@ -102,7 +116,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private String password;
     /**
-     * Write excel in memory. Default false,the cache file is created and finally written to excel.
+     * Write excel in memory. Default false, the cache file is created and finally written to excel.
      * <p>
      * Comment and RichTextString are only supported in memory mode.
      */
@@ -112,9 +126,21 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private Boolean writeExcelOnException;
 
+    /**
+     * Used to cell style.
+     */
+    private Map<WriteCellStyle, CellStyle> cellStyleMap;
+    /**
+     * Used to font.
+     */
+    private Map<WriteFont, Font> fontMap;
+    /**
+     * Used to data format.
+     */
+    private Map<DataFormatData, Short> dataFormatMap;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
-        super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
+        super(writeWorkbook, null);
         this.writeWorkbook = writeWorkbook;
         this.file = writeWorkbook.getFile();
         if (file != null) {
@@ -126,35 +152,49 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.outputStream = writeWorkbook.getOutputStream();
         }
+
+        if (writeWorkbook.getCharset() == null) {
+            this.charset = Charset.defaultCharset();
+        } else {
+            this.charset = writeWorkbook.getCharset();
+        }
+
         if (writeWorkbook.getAutoCloseStream() == null) {
             this.autoCloseStream = Boolean.TRUE;
         } else {
             this.autoCloseStream = writeWorkbook.getAutoCloseStream();
+        }
+        if (writeWorkbook.getExcelType() == null) {
+            boolean isXls = (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue()))
+                || (writeWorkbook.getTemplateFile() != null
+                && writeWorkbook.getTemplateFile().getName().endsWith(ExcelTypeEnum.XLS.getValue()));
+            if (isXls) {
+                this.excelType = ExcelTypeEnum.XLS;
+            } else {
+                boolean isCsv = (file != null && file.getName().endsWith(ExcelTypeEnum.CSV.getValue()))
+                    || (writeWorkbook.getTemplateFile() != null
+                    && writeWorkbook.getTemplateFile().getName().endsWith(ExcelTypeEnum.CSV.getValue()));
+                if (isCsv) {
+                    this.excelType = ExcelTypeEnum.CSV;
+                } else {
+                    this.excelType = ExcelTypeEnum.XLSX;
+                }
+            }
+        } else {
+            this.excelType = writeWorkbook.getExcelType();
         }
         try {
             copyTemplate();
         } catch (IOException e) {
             throw new ExcelGenerateException("Copy template failure.", e);
         }
-        if (writeWorkbook.getExcelType() == null) {
-            boolean isXls = (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue()))
-                || (writeWorkbook.getTemplateFile() != null
-                    && writeWorkbook.getTemplateFile().getName().endsWith(ExcelTypeEnum.XLS.getValue()));
-            if (isXls) {
-                this.excelType = ExcelTypeEnum.XLS;
-            } else {
-                this.excelType = ExcelTypeEnum.XLSX;
-            }
-        } else {
-            this.excelType = writeWorkbook.getExcelType();
-        }
         if (writeWorkbook.getMandatoryUseInputStream() == null) {
             this.mandatoryUseInputStream = Boolean.FALSE;
         } else {
             this.mandatoryUseInputStream = writeWorkbook.getMandatoryUseInputStream();
         }
-        this.hasBeenInitializedSheetIndexMap = new HashMap<Integer, WriteSheetHolder>();
-        this.hasBeenInitializedSheetNameMap = new HashMap<String, WriteSheetHolder>();
+        this.hasBeenInitializedSheetIndexMap = new HashMap<>();
+        this.hasBeenInitializedSheetNameMap = new HashMap<>();
         this.password = writeWorkbook.getPassword();
         if (writeWorkbook.getInMemory() == null) {
             this.inMemory = Boolean.FALSE;
@@ -166,11 +206,17 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.writeExcelOnException = writeWorkbook.getWriteExcelOnException();
         }
+        this.cellStyleMap = MapUtils.newHashMap();
+        this.fontMap = MapUtils.newHashMap();
+        this.dataFormatMap = MapUtils.newHashMap();
     }
 
     private void copyTemplate() throws IOException {
         if (writeWorkbook.getTemplateFile() == null && writeWorkbook.getTemplateInputStream() == null) {
             return;
+        }
+        if (this.excelType == ExcelTypeEnum.CSV) {
+            throw new ExcelGenerateException("csv cannot use template.");
         }
         byte[] templateFileByte = null;
         if (writeWorkbook.getTemplateFile() != null) {
@@ -187,136 +233,59 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         this.tempTemplateInputStream = new ByteArrayInputStream(templateFileByte);
     }
 
-    public Workbook getWorkbook() {
-        return workbook;
-    }
-
-    public void setWorkbook(Workbook workbook) {
-        this.workbook = workbook;
-    }
-
-    public Workbook getCachedWorkbook() {
-        return cachedWorkbook;
-    }
-
-    public void setCachedWorkbook(Workbook cachedWorkbook) {
-        this.cachedWorkbook = cachedWorkbook;
-    }
-
-    public Map<Integer, WriteSheetHolder> getHasBeenInitializedSheetIndexMap() {
-        return hasBeenInitializedSheetIndexMap;
-    }
-
-    public void setHasBeenInitializedSheetIndexMap(Map<Integer, WriteSheetHolder> hasBeenInitializedSheetIndexMap) {
-        this.hasBeenInitializedSheetIndexMap = hasBeenInitializedSheetIndexMap;
-    }
-
-    public Map<String, WriteSheetHolder> getHasBeenInitializedSheetNameMap() {
-        return hasBeenInitializedSheetNameMap;
-    }
-
-    public void setHasBeenInitializedSheetNameMap(Map<String, WriteSheetHolder> hasBeenInitializedSheetNameMap) {
-        this.hasBeenInitializedSheetNameMap = hasBeenInitializedSheetNameMap;
-    }
-
-    public WriteWorkbook getWriteWorkbook() {
-        return writeWorkbook;
-    }
-
-    public void setWriteWorkbook(WriteWorkbook writeWorkbook) {
-        this.writeWorkbook = writeWorkbook;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public OutputStream getOutputStream() {
-        return outputStream;
-    }
-
-    public void setOutputStream(OutputStream outputStream) {
-        this.outputStream = outputStream;
-    }
-
-    public InputStream getTemplateInputStream() {
-        return templateInputStream;
-    }
-
-    public void setTemplateInputStream(InputStream templateInputStream) {
-        this.templateInputStream = templateInputStream;
-    }
-
-    public InputStream getTempTemplateInputStream() {
-        return tempTemplateInputStream;
-    }
-
-    public void setTempTemplateInputStream(InputStream tempTemplateInputStream) {
-        this.tempTemplateInputStream = tempTemplateInputStream;
-    }
-
-    public File getTemplateFile() {
-        return templateFile;
-    }
-
-    public void setTemplateFile(File templateFile) {
-        this.templateFile = templateFile;
-    }
-
-    public Boolean getAutoCloseStream() {
-        return autoCloseStream;
-    }
-
-    public void setAutoCloseStream(Boolean autoCloseStream) {
-        this.autoCloseStream = autoCloseStream;
-    }
-
-    public ExcelTypeEnum getExcelType() {
-        return excelType;
-    }
-
-    public void setExcelType(ExcelTypeEnum excelType) {
-        this.excelType = excelType;
-    }
-
-    public Boolean getMandatoryUseInputStream() {
-        return mandatoryUseInputStream;
-    }
-
-    public void setMandatoryUseInputStream(Boolean mandatoryUseInputStream) {
-        this.mandatoryUseInputStream = mandatoryUseInputStream;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Boolean getInMemory() {
-        return inMemory;
-    }
-
-    public void setInMemory(Boolean inMemory) {
-        this.inMemory = inMemory;
-    }
-
-    public Boolean getWriteExcelOnException() {
-        return writeExcelOnException;
-    }
-
-    public void setWriteExcelOnException(Boolean writeExcelOnException) {
-        this.writeExcelOnException = writeExcelOnException;
-    }
-
     @Override
     public HolderEnum holderType() {
         return HolderEnum.WORKBOOK;
     }
+
+    /**
+     * create a cell style.
+     *
+     * @param writeCellStyle
+     * @return
+     */
+    public CellStyle createCellStyle(WriteCellStyle writeCellStyle) {
+        CellStyle cellStyle = cellStyleMap.get(writeCellStyle);
+        if (cellStyle != null) {
+            return cellStyle;
+        }
+        cellStyle = StyleUtil.buildCellStyle(workbook, writeCellStyle);
+        cellStyle.setDataFormat(createDataFormat(writeCellStyle.getDataFormatData()));
+        cellStyle.setFont(createFont(writeCellStyle.getWriteFont()));
+        cellStyleMap.put(writeCellStyle, cellStyle);
+        return cellStyle;
+    }
+
+    /**
+     * create a font.
+     *
+     * @param writeFont
+     * @return
+     */
+    public Font createFont(WriteFont writeFont) {
+        Font font = fontMap.get(writeFont);
+        if (font != null) {
+            return font;
+        }
+        font = StyleUtil.buildFont(workbook, writeFont);
+        fontMap.put(writeFont, font);
+        return font;
+    }
+
+    /**
+     * create a data format.
+     *
+     * @param dataFormatData
+     * @return
+     */
+    public Short createDataFormat(DataFormatData dataFormatData) {
+        Short dataFormat = dataFormatMap.get(dataFormatData);
+        if (dataFormat != null) {
+            return dataFormat;
+        }
+        dataFormat = StyleUtil.buildDataFormat(workbook, dataFormatData);
+        dataFormatMap.put(dataFormatData, dataFormat);
+        return dataFormat;
+    }
+
 }
