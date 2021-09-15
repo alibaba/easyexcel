@@ -77,7 +77,7 @@ public class WriteSheetHolder extends AbstractWriteHolder {
     private Integer lastRowIndex;
 
     public WriteSheetHolder(WriteSheet writeSheet, WriteWorkbookHolder writeWorkbookHolder) {
-        super(writeSheet, writeWorkbookHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
+        super(writeSheet, writeWorkbookHolder);
         this.writeSheet = writeSheet;
         if (writeSheet.getSheetNo() == null && StringUtils.isEmpty(writeSheet.getSheetName())) {
             this.sheetNo = 0;

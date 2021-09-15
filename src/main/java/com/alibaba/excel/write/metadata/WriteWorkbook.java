@@ -74,15 +74,4 @@ public class WriteWorkbook extends WriteBasicParameter {
      * Excel is also written in the event of an exception being thrown.The default false.
      */
     private Boolean writeExcelOnException;
-    /**
-     * The default is all excel objects.Default is true.
-     * <p>
-     * if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
-     * <p>
-     * if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
-     *
-     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
-     */
-    @Deprecated
-    private Boolean convertAllFiled;
 }

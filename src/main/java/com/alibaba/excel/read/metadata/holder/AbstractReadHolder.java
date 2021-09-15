@@ -46,8 +46,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
      */
     private List<ReadListener<?>> readListenerList;
 
-    public AbstractReadHolder(ReadBasicParameter readBasicParameter, AbstractReadHolder parentAbstractReadHolder,
-        Boolean convertAllFiled) {
+    public AbstractReadHolder(ReadBasicParameter readBasicParameter, AbstractReadHolder parentAbstractReadHolder) {
         super(readBasicParameter, parentAbstractReadHolder);
 
         if (readBasicParameter.getUseScientificFormat() == null) {
@@ -60,7 +59,7 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
         }
 
         // Initialization property
-        this.excelReadHeadProperty = new ExcelReadHeadProperty(this, getClazz(), getHead(), convertAllFiled);
+        this.excelReadHeadProperty = new ExcelReadHeadProperty(this, getClazz(), getHead());
         if (readBasicParameter.getHeadRowNumber() == null) {
             if (parentAbstractReadHolder == null) {
                 if (excelReadHeadProperty.hasHead()) {

@@ -107,27 +107,12 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     private Boolean readAll;
 
     /**
-     * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
-     * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
-     *
-     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
-     */
-    @Deprecated
-    private Boolean convertAllFiled;
-
-    /**
-     * List is returned by default, now map is returned by default
-     */
-    @Deprecated
-    private Boolean defaultReturnMap;
-
-    /**
      * Prevent repeating sheet
      */
     private Set<Integer> hasReadSheet;
 
     public ReadWorkbookHolder(ReadWorkbook readWorkbook) {
-        super(readWorkbook, null, readWorkbook.getConvertAllFiled());
+        super(readWorkbook, null);
         this.readWorkbook = readWorkbook;
         if (readWorkbook.getInputStream() != null) {
             this.inputStream = readWorkbook.getInputStream();
@@ -161,11 +146,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             } else {
                 this.readCacheSelector = readWorkbook.getReadCacheSelector();
             }
-        }
-        if (readWorkbook.getDefaultReturnMap() == null) {
-            this.defaultReturnMap = Boolean.TRUE;
-        } else {
-            this.defaultReturnMap = readWorkbook.getDefaultReturnMap();
         }
         if (readWorkbook.getExtraReadSet() == null) {
             this.extraReadSet = new HashSet<CellExtraTypeEnum>();

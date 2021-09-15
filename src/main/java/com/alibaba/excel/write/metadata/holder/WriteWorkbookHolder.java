@@ -140,7 +140,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     private Map<DataFormatData, Short> dataFormatMap;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
-        super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
+        super(writeWorkbook, null);
         this.writeWorkbook = writeWorkbook;
         this.file = writeWorkbook.getFile();
         if (file != null) {

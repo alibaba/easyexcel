@@ -59,7 +59,7 @@ public class ReadSheetHolder extends AbstractReadHolder {
     private ReadCellData<?> tempCellData;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
-        super(readSheet, readWorkbookHolder, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
+        super(readSheet, readWorkbookHolder);
         this.readSheet = readSheet;
         this.parentReadWorkbookHolder = readWorkbookHolder;
         this.sheetNo = readSheet.getSheetNo();

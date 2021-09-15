@@ -291,7 +291,7 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void initCurrentTableHolder(WriteTable writeTable) {
-        writeTableHolder = new WriteTableHolder(writeTable, writeSheetHolder, writeWorkbookHolder);
+        writeTableHolder = new WriteTableHolder(writeTable, writeSheetHolder);
         writeSheetHolder.getHasBeenInitializedTable().put(writeTable.getTableNo(), writeTableHolder);
         currentWriteHolder = writeTableHolder;
         if (LOGGER.isDebugEnabled()) {

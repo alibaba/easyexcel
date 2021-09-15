@@ -183,8 +183,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 .isEmpty(writeWorkbookHolder.getExcludeColumnIndexes()) || !CollectionUtils
                 .isEmpty(writeWorkbookHolder.getIncludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(writeWorkbookHolder.getIncludeColumnIndexes());
-        ClassUtils.declaredFields(clazz, sortedAllFiledMap,
-            writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled(), needIgnore, writeWorkbookHolder);
+        ClassUtils.declaredFields(clazz, sortedAllFiledMap, needIgnore, writeWorkbookHolder);
     }
 
 }

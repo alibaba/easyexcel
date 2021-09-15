@@ -65,21 +65,6 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
         return this;
     }
 
-    /**
-     * The default is all excel objects.if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a
-     * field. if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
-     * <p>
-     * Default true
-     *
-     * @param convertAllFiled
-     * @return
-     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
-     */
-    @Deprecated
-    public ExcelWriterBuilder convertAllFiled(Boolean convertAllFiled) {
-        writeWorkbook.setConvertAllFiled(convertAllFiled);
-        return this;
-    }
 
     public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
         writeWorkbook.setExcelType(excelType);

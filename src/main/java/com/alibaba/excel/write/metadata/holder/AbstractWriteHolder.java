@@ -93,10 +93,8 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      */
     private Collection<String> includeColumnFieldNames;
 
-    public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder,
-        Boolean convertAllField) {
+    public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder) {
         super(writeBasicParameter, parentAbstractWriteHolder);
-
 
         if (writeBasicParameter.getUseScientificFormat() != null) {
             throw new UnsupportedOperationException("Currently does not support setting useScientificFormat.");
@@ -164,7 +162,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
 
         // Initialization property
-        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllField);
+        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead());
 
         // Set writeHandlerMap
         List<WriteHandler> handlerList = new ArrayList<WriteHandler>();

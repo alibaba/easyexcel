@@ -30,9 +30,8 @@ public class ClassUtils {
     public static final Map<Class<?>, SoftReference<FieldCache>> FIELD_CACHE = new ConcurrentHashMap<>();
 
     public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap,
-        Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, Boolean convertAllFiled,
-        Boolean needIgnore, Holder holder) {
-        FieldCache fieldCache = getFieldCache(clazz, convertAllFiled);
+        Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, Boolean needIgnore, Holder holder) {
+        FieldCache fieldCache = getFieldCache(clazz);
         if (fieldCache == null) {
             return;
         }
@@ -68,12 +67,12 @@ public class ClassUtils {
         }
     }
 
-    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap, Boolean convertAllFiled,
-        Boolean needIgnore, WriteHolder writeHolder) {
-        declaredFields(clazz, sortedAllFiledMap, null, null, convertAllFiled, needIgnore, writeHolder);
+    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap, Boolean needIgnore,
+        WriteHolder writeHolder) {
+        declaredFields(clazz, sortedAllFiledMap, null, null, needIgnore, writeHolder);
     }
 
-    private static FieldCache getFieldCache(Class<?> clazz, Boolean convertAllFiled) {
+    private static FieldCache getFieldCache(Class<?> clazz) {
         if (clazz == null) {
             return null;
         }
@@ -86,12 +85,12 @@ public class ClassUtils {
             if (fieldCacheSoftReference != null && fieldCacheSoftReference.get() != null) {
                 return fieldCacheSoftReference.get();
             }
-            declaredFields(clazz, convertAllFiled);
+            declaredFields(clazz);
         }
         return FIELD_CACHE.get(clazz).get();
     }
 
-    private static void declaredFields(Class<?> clazz, Boolean convertAllFiled) {
+    private static void declaredFields(Class<?> clazz) {
         List<Field> tempFieldList = new ArrayList<>();
         Class<?> tempClass = clazz;
         // When the parent class is null, it indicates that the parent class (Object class) has reached the top
@@ -108,7 +107,7 @@ public class ClassUtils {
 
         ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
         for (Field field : tempFieldList) {
-            declaredOneField(field, orderFiledMap, indexFiledMap, ignoreMap, excelIgnoreUnannotated, convertAllFiled);
+            declaredOneField(field, orderFiledMap, indexFiledMap, ignoreMap, excelIgnoreUnannotated);
         }
         FIELD_CACHE.put(clazz, new SoftReference<FieldCache>(
             new FieldCache(buildSortedAllFiledMap(orderFiledMap, indexFiledMap), indexFiledMap, ignoreMap)));
@@ -138,16 +137,16 @@ public class ClassUtils {
     }
 
     private static void declaredOneField(Field field, Map<Integer, List<Field>> orderFiledMap,
-        Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, ExcelIgnoreUnannotated excelIgnoreUnannotated,
-        Boolean convertAllFiled) {
+        Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap,
+        ExcelIgnoreUnannotated excelIgnoreUnannotated) {
+
         ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
         if (excelIgnore != null) {
             ignoreMap.put(field.getName(), field);
             return;
         }
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-        boolean noExcelProperty = excelProperty == null
-            && ((convertAllFiled != null && !convertAllFiled) || excelIgnoreUnannotated != null);
+        boolean noExcelProperty = excelProperty == null && excelIgnoreUnannotated != null;
         if (noExcelProperty) {
             ignoreMap.put(field.getName(), field);
             return;
