@@ -2,7 +2,7 @@ package com.alibaba.excel.write.style;
 
 import java.util.List;
 
-import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -14,7 +14,7 @@ import org.apache.commons.collections4.CollectionUtils;
  *
  * @author Jiaju Zhuang
  */
-public class HorizontalCellStyleStrategy extends AbstractVerticalCellStyleStrategy {
+public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     private WriteCellStyle headWriteCellStyle;
     private List<WriteCellStyle> contentWriteCellStyleList;
@@ -33,16 +33,34 @@ public class HorizontalCellStyleStrategy extends AbstractVerticalCellStyleStrate
     }
 
     @Override
-    protected WriteCellStyle headCellStyle(Head head) {
-        return headWriteCellStyle;
+    protected void setHeadCellStyle(CellWriteHandlerContext context) {
+        if (!continueProcessing(context) || headWriteCellStyle == null) {
+            return;
+        }
+        WriteCellData<?> cellData = context.getCellDataList().get(0);
+        cellData.setWriteCellStyle(headWriteCellStyle);
     }
 
     @Override
-    protected WriteCellStyle contentCellStyle(CellWriteHandlerContext context) {
-        if (CollectionUtils.isEmpty(contentWriteCellStyleList)) {
-            return null;
+    protected void setContentCellStyle(CellWriteHandlerContext context) {
+        if (!continueProcessing(context) || CollectionUtils.isEmpty(contentWriteCellStyleList)) {
+            return;
         }
-        return contentWriteCellStyleList.get(context.getRelativeRowIndex() % contentWriteCellStyleList.size());
+        WriteCellData<?> cellData = context.getCellDataList().get(0);
+        if (context.getRelativeRowIndex() == null || context.getRelativeRowIndex() <= 0) {
+            cellData.setWriteCellStyle(contentWriteCellStyleList.get(0));
+        } else {
+            cellData.setWriteCellStyle(
+                contentWriteCellStyleList.get(context.getRelativeRowIndex() % contentWriteCellStyleList.size()));
+        }
+    }
+
+    protected boolean continueProcessing(CellWriteHandlerContext context) {
+        List<WriteCellData<?>> cellDataList = context.getCellDataList();
+        if (CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1) {
+            return false;
+        }
+        return true;
     }
 
 }
