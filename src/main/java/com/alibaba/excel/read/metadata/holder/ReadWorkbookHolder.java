@@ -33,19 +33,19 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     /**
      * Read InputStream
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private InputStream inputStream;
     /**
      * Read file
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private File file;
     /**
      * Mandatory use 'inputStream' .Default is false.
      * <p>
-     * if false,Will transfer 'inputStream' to temporary files to improve efficiency
+     * if false, Will transfer 'inputStream' to temporary files to improve efficiency
      */
     private Boolean mandatoryUseInputStream;
     /**

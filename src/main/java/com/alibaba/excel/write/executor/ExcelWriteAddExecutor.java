@@ -48,7 +48,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
             newRowIndex += writeContext.currentWriteHolder().relativeHeadRowIndex();
         }
-        // BeanMap is out of order,so use sortedAllFiledMap
+        // BeanMap is out of order, so use sortedAllFiledMap
         Map<Integer, Field> sortedAllFiledMap = new TreeMap<Integer, Field>();
         int relativeRowIndex = 0;
         for (Object oneRowData : data) {

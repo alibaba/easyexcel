@@ -58,7 +58,7 @@ public class CompatibilityDataTest {
         generateParam.setOutputStream(out);
         generateParam.setClazz(null);
         ExcelWriter writer = new ExcelWriter(generateParam);
-        // sheet1 width,string head,string data
+        // sheet1 width, string head, string data
         Sheet sheet1 = new Sheet(1, 3);
         sheet1.setSheetName("第一个sheet");
         Map columnWidth = new HashMap();
@@ -68,7 +68,7 @@ public class CompatibilityDataTest {
         sheet1.setHead(head());
         writer.write1(listData(), sheet1);
 
-        // sheet2 style,class head
+        // sheet2 style, class head
         Sheet sheet2 = new Sheet(2, 3, CompatibilityData.class, "第二个sheet", null);
         sheet2.setStartRow(5);
         sheet2.setTableStyle(style());
