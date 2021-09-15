@@ -29,13 +29,13 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         xlsxReadSheetHolder.setColumnIndex(PositionUtils.getCol(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_R),
             xlsxReadSheetHolder.getColumnIndex()));
 
-        // t="s" ,it's means String
-        // t="str" ,it's means String,but does not need to be read in the 'sharedStrings.xml'
-        // t="inlineStr" ,it's means String
-        // t="b" ,it's means Boolean
-        // t="e" ,it's means Error
-        // t="n" ,it's means Number
-        // t is null ,it's means Empty or Number
+        // t="s" ,it means String
+        // t="str" ,it means String,but does not need to be read in the 'sharedStrings.xml'
+        // t="inlineStr" ,it means String
+        // t="b" ,it means Boolean
+        // t="e" ,it means Error
+        // t="n" ,it means Number
+        // t is null ,it means Empty or Number
         CellDataTypeEnum type = CellDataTypeEnum.buildFromCellType(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_T));
         xlsxReadSheetHolder.setTempCellData(new ReadCellData<>(type));
         xlsxReadSheetHolder.setTempData(new StringBuilder());
