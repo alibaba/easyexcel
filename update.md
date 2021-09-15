@@ -22,6 +22,7 @@
 * 修复填充调用横向样式策略报错 [Issue #1651](https://github.com/alibaba/easyexcel/issues/1651)
 * 修复不自动行高的问题 [Issue #1869](https://github.com/alibaba/easyexcel/issues/1869)
 * 新增头的非空校验 [Issue #1765](https://github.com/alibaba/easyexcel/issues/1765)
+* 修复某些特殊的excel读取失败的问题 [Issue #1595](https://github.com/alibaba/easyexcel/issues/1595)
 
 
 # 2.2.10

@@ -30,7 +30,7 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
                 tempCellData.setStringValue(tempData.toString());
                 break;
             case BOOLEAN:
-                if(StringUtils.isEmpty(tempDataString)){
+                if (StringUtils.isEmpty(tempDataString)) {
                     tempCellData.setType(CellDataTypeEnum.EMPTY);
                     break;
                 }
@@ -38,12 +38,18 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
                 break;
             case NUMBER:
             case EMPTY:
-                if(StringUtils.isEmpty(tempDataString)){
+                if (StringUtils.isEmpty(tempDataString)) {
                     tempCellData.setType(CellDataTypeEnum.EMPTY);
                     break;
                 }
-                tempCellData.setType(CellDataTypeEnum.NUMBER);
-                tempCellData.setNumberValue(BigDecimal.valueOf(Double.parseDouble(tempDataString)));
+                // fix https://github.com/alibaba/easyexcel/issues/1595
+                if (StringUtils.isNumeric(tempDataString)) {
+                    tempCellData.setType(CellDataTypeEnum.NUMBER);
+                    tempCellData.setNumberValue(BigDecimal.valueOf(Double.parseDouble(tempDataString)));
+                } else {
+                    tempCellData.setType(CellDataTypeEnum.STRING);
+                    tempCellData.setStringValue(tempData.toString());
+                }
                 break;
             default:
                 throw new IllegalStateException("Cannot set values now");
