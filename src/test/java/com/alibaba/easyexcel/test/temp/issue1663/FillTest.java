@@ -1,5 +1,11 @@
 package com.alibaba.easyexcel.test.temp.issue1663;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.easyexcel.test.demo.fill.FillData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -8,21 +14,18 @@ import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+@Ignore
 public class FillTest {
     @Test
     public void TestFillNullPoint(){
         String templateFileName =
-            TestFileUtil.getPath() + "issue1663" + File.separator + "template.xlsx";
+            TestFileUtil.getPath() + "temp/issue1663" + File.separator + "template.xlsx";
 
-        String fileName = TestFileUtil.getPath() + "issue1663" + File.separator + "issue1663.xlsx";
+        String fileName = TestFileUtil.getPath() + "temp/issue1663" + File.separator + "issue1663.xlsx";
         ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
         FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.VERTICAL).build();
