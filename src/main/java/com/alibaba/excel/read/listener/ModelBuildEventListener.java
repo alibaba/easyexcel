@@ -21,10 +21,13 @@ import com.alibaba.excel.util.MapUtils;
  *
  * @author jipengfei
  */
-public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCellData<?>>> {
+public class ModelBuildEventListener extends AbstractIgnoreExceptionReadListener<Map<Integer, CellData>> {
+    private int headSize;
 
     @Override
-    public void invokeHead(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {}
+    public void invokeHead(Map<Integer, CellData> cellDataMap, AnalysisContext context) {
+        this.headSize = cellDataMap.size();
+    }
 
     @Override
     public void invoke(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {
@@ -40,23 +43,57 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
     private Object buildStringList(Map<Integer, ReadCellData<?>> cellDataMap, ReadSheetHolder readSheetHolder,
         AnalysisContext context) {
         int index = 0;
-        Map<Integer, String> map = MapUtils.newLinkedHashMapWithExpectedSize(cellDataMap.size());
-        for (Map.Entry<Integer, ReadCellData<?>> entry : cellDataMap.entrySet()) {
-            Integer key = entry.getKey();
-            ReadCellData<?> cellData = entry.getValue();
-            while (index < key) {
+        if (context.readWorkbookHolder().getDefaultReturnMap()) {
+            Map<Integer, String> map = new LinkedHashMap<Integer, String>(cellDataMap.size() * 4 / 3 + 1);
+            for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
+                Integer key = entry.getKey();
+                CellData cellData = entry.getValue();
+                while (index < key) {
+                    map.put(index, null);
+                    index++;
+                }
+                index++;
+                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
+                    map.put(key, null);
+                    continue;
+                }
+                map.put(key,
+                    (String)ConverterUtils.convertToJavaObject(cellData, null, null, currentReadHolder.converterMap(),
+                        currentReadHolder.globalConfiguration(), context.readRowHolder().getRowIndex(), key));
+            }
+            int headSize = currentReadHolder.excelReadHeadProperty().getHeadMap().size() == 0
+                ? this.headSize : currentReadHolder.excelReadHeadProperty().getHeadMap().size();
+            while (index < headSize) {
                 map.put(index, null);
                 index++;
             }
-            index++;
-            map.put(key,
-                (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
-                    context, context.readRowHolder().getRowIndex(), key));
-        }
-        int headSize = readSheetHolder.excelReadHeadProperty().getHeadMap().size();
-        while (index < headSize) {
-            map.put(index, null);
-            index++;
+            return map;
+        } else {
+            // Compatible with the old code the old code returns a list
+            List<String> list = new ArrayList<String>();
+            for (Map.Entry<Integer, CellData> entry : cellDataMap.entrySet()) {
+                Integer key = entry.getKey();
+                CellData cellData = entry.getValue();
+                while (index < key) {
+                    list.add(null);
+                    index++;
+                }
+                index++;
+                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
+                    list.add(null);
+                    continue;
+                }
+                list.add(
+                    (String)ConverterUtils.convertToJavaObject(cellData, null, null, currentReadHolder.converterMap(),
+                        currentReadHolder.globalConfiguration(), context.readRowHolder().getRowIndex(), key));
+            }
+            int headSize = currentReadHolder.excelReadHeadProperty().getHeadMap().size() == 0
+                ? this.headSize : currentReadHolder.excelReadHeadProperty().getHeadMap().size();
+            while (index < headSize) {
+                list.add(null);
+                index++;
+            }
+            return list;
         }
         return map;
     }
