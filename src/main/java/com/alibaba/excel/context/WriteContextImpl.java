@@ -437,7 +437,7 @@ public class WriteContextImpl implements WriteContext {
         if (writeWorkbookHolder.getFile() != null) {
             return false;
         }
-        File tempXlsx = FileUtils.createTmpFile(UUID.randomUUID().toString() + ".xlsx");
+        File tempXlsx = FileUtils.createTmpFile(UUID.randomUUID() + ".xlsx");
         FileOutputStream tempFileOutputStream = new FileOutputStream(tempXlsx);
         try {
             writeWorkbookHolder.getWorkbook().write(tempFileOutputStream);
@@ -483,19 +483,6 @@ public class WriteContextImpl implements WriteContext {
         POIFSFileSystem fileSystem = new POIFSFileSystem();
         Encryptor encryptor = new EncryptionInfo(EncryptionMode.standard).getEncryptor();
         encryptor.confirmPassword(writeWorkbookHolder.getPassword());
-        OPCPackage opcPackage = null;
-        OutputStream outputStream = null;
-        try {
-            opcPackage = OPCPackage.open(file, PackageAccess.READ_WRITE);
-            outputStream = encryptor.getDataStream(fileSystem);
-            opcPackage.save(outputStream);
-        } finally {
-            if (opcPackage != null) {
-                opcPackage.close();
-            }
-            if (outputStream != null) {
-                outputStream.close();
-            }
         try (OPCPackage opcPackage = OPCPackage.open(file, PackageAccess.READ_WRITE);
              OutputStream outputStream = encryptor.getDataStream(fileSystem)) {
             opcPackage.save(outputStream);
