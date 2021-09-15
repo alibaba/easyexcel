@@ -18,6 +18,8 @@
 * cglib 新增命名策略，防止和`spring`的冲突  [Issue #2064](https://github.com/alibaba/easyexcel/issues/2064)
 * 修改填充可能填充错误的bug  [Issue #2035](https://github.com/alibaba/easyexcel/issues/2035)
 * 修复无对象读 返回map的size可能会头的size不一致 [Issue #2014](https://github.com/alibaba/easyexcel/issues/2014)
+* 修复合并头可能异常的bug [Issue #1662](https://github.com/alibaba/easyexcel/issues/1662)
+
 
 # 2.2.10
 * 修复读取的时候用string接收数字 可能四舍五入不一致的bug

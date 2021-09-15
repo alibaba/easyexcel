@@ -146,19 +146,21 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 int lastCol = i;
                 int lastRow = j;
                 for (int k = i + 1; k < headList.size(); k++) {
-                    boolean flag = (j - 1 >= 0) && !headList.get(k).getHeadNameList().get(j - 1).equals(headName);
-                    if (headList.get(k).getHeadNameList().get(j).equals(headName) && flag) {
-                        alreadyRangeSet.add(k + "-" + j);
+                    String key = k + "-" + j;
+                    if (headList.get(k).getHeadNameList().get(j).equals(headName) && !alreadyRangeSet.contains(key)) {
+                        alreadyRangeSet.add(key);
                         lastCol = k;
                     } else {
                         break;
                     }
                 }
-                Set<String> tempAlreadyRangeSet = new HashSet<String>();
+                Set<String> tempAlreadyRangeSet = new HashSet<>();
                 outer:
                 for (int k = j + 1; k < headNameList.size(); k++) {
                     for (int l = i; l <= lastCol; l++) {
-                        if (headList.get(l).getHeadNameList().get(k).equals(headName)) {
+                        String key = l + "-" + k;
+                        if (headList.get(l).getHeadNameList().get(k).equals(headName) && !alreadyRangeSet.contains(
+                            key)) {
                             tempAlreadyRangeSet.add(l + "-" + k);
                         } else {
                             break outer;
