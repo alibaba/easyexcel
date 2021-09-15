@@ -1,14 +1,16 @@
 package com.alibaba.easyexcel.test.temp.issue1662;
 
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import org.junit.Test;
-
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+@Ignore
 public class Issue1662Test {
     @Test
     public void test1662() {

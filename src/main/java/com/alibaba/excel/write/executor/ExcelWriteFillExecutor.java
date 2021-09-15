@@ -28,6 +28,7 @@ import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.hssf.usermodel.PoiHssfUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -322,6 +323,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         AnalysisCell analysisCell, boolean isOriginalCell) {
         Row row = sheet.getRow(lastRowIndex);
         if (row != null) {
+            checkRowHeight(analysisCell, fillConfig, isOriginalCell, row);
             return row;
         }
         row = cachedSheet.getRow(lastRowIndex);
@@ -351,7 +353,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (!analysisCell.getFirstRow() || !WriteDirectionEnum.VERTICAL.equals(fillConfig.getDirection())) {
             return;
         }
-        if (isOriginalCell) {
+        // fix https://github.com/alibaba/easyexcel/issues/1869
+        if (isOriginalCell && PoiHssfUtils.customHeight(row)) {
             collectionRowHeightCache.put(currentUniqueDataFlag, row.getHeight());
             return;
         }
@@ -391,9 +394,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     /**
      * To prepare data
      *
-     * @param cell cell
-     * @param rowIndex row index
-     * @param columnIndex column index
+     * @param cell          cell
+     * @param rowIndex      row index
+     * @param columnIndex   column index
      * @param firstRowCache first row cache
      * @return Returns the data that the cell needs to replace
      */
