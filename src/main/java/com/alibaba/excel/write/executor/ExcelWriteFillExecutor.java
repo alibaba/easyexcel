@@ -28,7 +28,7 @@ import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.poi.hssf.usermodel.PoiHssfUtils;
+import org.apache.poi.hssf.usermodel.PoiUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -354,7 +354,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             return;
         }
         // fix https://github.com/alibaba/easyexcel/issues/1869
-        if (isOriginalCell && PoiHssfUtils.customHeight(row)) {
+        if (isOriginalCell && PoiUtils.customHeight(row)) {
             collectionRowHeightCache.put(currentUniqueDataFlag, row.getHeight());
             return;
         }

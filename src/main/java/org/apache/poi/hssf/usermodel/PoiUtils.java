@@ -10,7 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
  *
  * @author Jiaju Zhuang
  */
-public class PoiHssfUtils {
+public class PoiUtils {
 
     /**
      * Whether to customize the height
