@@ -53,7 +53,6 @@ public @interface HeadStyle {
     /**
      * Set whether the text should be wrapped. Setting this flag to <code>true</code> make all content visible within a
      * cell by displaying it on multiple lines
-     *
      */
     boolean wrapped() default true;
 
@@ -108,7 +107,6 @@ public @interface HeadStyle {
      * Set the color to use for the right border
      *
      * @see IndexedColors
-     *
      */
     short rightBorderColor() default -1;
 
@@ -116,7 +114,6 @@ public @interface HeadStyle {
      * Set the color to use for the top border
      *
      * @see IndexedColors
-     *
      */
     short topBorderColor() default -1;
 
@@ -124,7 +121,6 @@ public @interface HeadStyle {
      * Set the color to use for the bottom border
      *
      * @see IndexedColors
-     *
      */
     short bottomBorderColor() default -1;
 
@@ -139,7 +135,6 @@ public @interface HeadStyle {
      * Set the background fill color.
      *
      * @see IndexedColors
-     *
      */
     short fillBackgroundColor() default -1;
 
@@ -147,7 +142,6 @@ public @interface HeadStyle {
      * Set the foreground fill color <i>Note: Ensure Foreground color is set prior to background color.</i>
      *
      * @see IndexedColors
-     *
      */
     short fillForegroundColor() default -1;
 

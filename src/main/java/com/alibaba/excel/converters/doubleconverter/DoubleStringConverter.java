@@ -4,8 +4,9 @@ import java.text.ParseException;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.NumberUtils;
 
@@ -17,7 +18,7 @@ import com.alibaba.excel.util.NumberUtils;
 public class DoubleStringConverter implements Converter<Double> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Double.class;
     }
 
@@ -27,14 +28,14 @@ public class DoubleStringConverter implements Converter<Double> {
     }
 
     @Override
-    public Double convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Double convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws ParseException {
         return NumberUtils.parseDouble(cellData.getStringValue(), contentProperty);
     }
 
     @Override
-    public CellData convertToExcelData(Double value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Double value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

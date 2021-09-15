@@ -2,8 +2,9 @@ package com.alibaba.excel.converters.floatconverter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
@@ -16,7 +17,7 @@ public class FloatBooleanConverter implements Converter<Float> {
     private static final Float ZERO = (float)0.0;
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Float.class;
     }
 
@@ -26,7 +27,7 @@ public class FloatBooleanConverter implements Converter<Float> {
     }
 
     @Override
-    public Float convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Float convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (cellData.getBooleanValue()) {
             return ONE;
@@ -35,12 +36,12 @@ public class FloatBooleanConverter implements Converter<Float> {
     }
 
     @Override
-    public CellData convertToExcelData(Float value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(Float value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (ONE.equals(value)) {
-            return new CellData(Boolean.TRUE);
+            return new WriteCellData<>(Boolean.TRUE);
         }
-        return new CellData(Boolean.FALSE);
+        return new WriteCellData<>(Boolean.FALSE);
     }
 
 }

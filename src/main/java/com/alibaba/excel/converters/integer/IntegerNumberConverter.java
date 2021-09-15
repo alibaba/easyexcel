@@ -1,12 +1,13 @@
 package com.alibaba.excel.converters.integer;
 
-import java.math.BigDecimal;
-
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.WriteConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.NumberUtils;
 
 /**
  * Integer and number converter
@@ -16,7 +17,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 public class IntegerNumberConverter implements Converter<Integer> {
 
     @Override
-    public Class supportJavaTypeKey() {
+    public Class<?> supportJavaTypeKey() {
         return Integer.class;
     }
 
@@ -26,15 +27,14 @@ public class IntegerNumberConverter implements Converter<Integer> {
     }
 
     @Override
-    public Integer convertToJavaData(CellData cellData, ExcelContentProperty contentProperty,
+    public Integer convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         return cellData.getNumberValue().intValue();
     }
 
     @Override
-    public CellData convertToExcelData(Integer value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
-        return new CellData(new BigDecimal(Integer.toString(value)));
+    public WriteCellData<?> convertToExcelData(WriteConverterContext<Integer> context) {
+        return NumberUtils.formatToCellData(context.getValue(), context.getContentProperty());
     }
 
 }

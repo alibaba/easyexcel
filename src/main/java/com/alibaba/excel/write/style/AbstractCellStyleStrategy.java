@@ -1,88 +1,44 @@
 package com.alibaba.excel.write.style;
 
-import java.util.List;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-
-import com.alibaba.excel.event.NotRepeatExecutor;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.constant.OrderConstant;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.write.handler.CellWriteHandler;
-import com.alibaba.excel.write.handler.SheetWriteHandler;
-import com.alibaba.excel.write.handler.WorkbookWriteHandler;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
-import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
+
+import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * Cell style strategy
  *
  * @author Jiaju Zhuang
  */
-public abstract class AbstractCellStyleStrategy implements CellWriteHandler, WorkbookWriteHandler, NotRepeatExecutor {
-
-    boolean hasInitialized = false;
+public abstract class AbstractCellStyleStrategy implements CellWriteHandler {
 
     @Override
-    public String uniqueValue() {
-        return "CellStyleStrategy";
+    public int order() {
+        return OrderConstant.DEFINE_STYLE;
     }
 
     @Override
-    public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
-        Head head, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        CellData cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-
-    }
-
-    @Override
-    public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        if (isHead == null) {
+    public void afterCellDispose(CellWriteHandlerContext context) {
+        if (context.getHead() == null) {
             return;
         }
-        if (isHead) {
-            setHeadCellStyle(cell, head, relativeRowIndex);
+        if (context.getHead()) {
+            setHeadCellStyle(context);
         } else {
-            setContentCellStyle(cell, head, relativeRowIndex);
+            setContentCellStyle(context);
         }
-    }
-
-    @Override
-    public void beforeWorkbookCreate() {
-
-    }
-
-    @Override
-    public void afterWorkbookCreate(WriteWorkbookHolder writeWorkbookHolder) {
-        initCellStyle(writeWorkbookHolder.getWorkbook());
-        hasInitialized = true;
-    }
-
-    @Override
-    public void afterWorkbookDispose(WriteWorkbookHolder writeWorkbookHolder) {
-
     }
 
     /**
-     * Initialization cell style
+     * Sets the cell style of header
      *
-     * @param workbook
+     * @param context
      */
-    protected abstract void initCellStyle(Workbook workbook);
+    protected void setHeadCellStyle(CellWriteHandlerContext context) {
+        setHeadCellStyle(context.getCell(), context.getHeadData(), context.getRelativeRowIndex());
+    }
 
     /**
      * Sets the cell style of header
@@ -91,7 +47,18 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex);
+    protected void setHeadCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        throw new UnsupportedOperationException("Custom styles must override the setHeadCellStyle method.");
+    }
+
+    /**
+     * Sets the cell style of content
+     *
+     * @param context
+     */
+    protected void setContentCellStyle(CellWriteHandlerContext context) {
+        setContentCellStyle(context.getCell(), context.getHeadData(), context.getRelativeRowIndex());
+    }
 
     /**
      * Sets the cell style of content
@@ -100,6 +67,8 @@ public abstract class AbstractCellStyleStrategy implements CellWriteHandler, Wor
      * @param head
      * @param relativeRowIndex
      */
-    protected abstract void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex);
+    protected void setContentCellStyle(Cell cell, Head head, Integer relativeRowIndex) {
+        throw new UnsupportedOperationException("Custom styles must override the setContentCellStyle method.");
+    }
 
 }

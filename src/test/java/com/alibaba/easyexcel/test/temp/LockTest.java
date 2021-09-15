@@ -1,17 +1,16 @@
 package com.alibaba.easyexcel.test.temp;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSON;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSON;
 
 /**
  * 临时测试
@@ -24,9 +23,8 @@ public class LockTest {
 
     @Test
     public void test() throws Exception {
-
         List<Object> list =
-            EasyExcel.read(new FileInputStream("/Users/zhuangjiaju/Downloads/点位配置表 (1).xlsx")).doReadAllSync();
+            EasyExcel.read(new FileInputStream("/Users/zhuangjiaju/test/pic.xls")).doReadAllSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }

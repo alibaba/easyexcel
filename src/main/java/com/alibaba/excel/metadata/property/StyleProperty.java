@@ -1,5 +1,11 @@
 package com.alibaba.excel.metadata.property;
 
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
+import com.alibaba.excel.metadata.data.DataFormatData;
+import com.alibaba.excel.write.metadata.style.WriteFont;
+
+import lombok.Data;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -8,20 +14,17 @@ import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
-import com.alibaba.excel.annotation.write.style.ContentStyle;
-import com.alibaba.excel.annotation.write.style.HeadStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
-
 /**
  * Configuration from annotations
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class StyleProperty {
     /**
      * Set the data format (must be a valid format). Built in formats are defined at {@link BuiltinFormats}.
      */
-    private Short dataFormat;
+    private DataFormatData dataFormatData;
     /**
      * Set the font for this style
      */
@@ -48,7 +51,6 @@ public class StyleProperty {
     /**
      * Set whether the text should be wrapped. Setting this flag to <code>true</code> make all content visible within a
      * cell by displaying it on multiple lines
-     *
      */
     private Boolean wrapped;
     /**
@@ -96,7 +98,6 @@ public class StyleProperty {
      * Set the color to use for the right border
      *
      * @see IndexedColors
-     *
      */
     private Short rightBorderColor;
 
@@ -104,14 +105,12 @@ public class StyleProperty {
      * Set the color to use for the top border
      *
      * @see IndexedColors
-     *
      */
     private Short topBorderColor;
     /**
      * Set the color to use for the bottom border
      *
      * @see IndexedColors
-     *
      */
     private Short bottomBorderColor;
     /**
@@ -125,7 +124,6 @@ public class StyleProperty {
      * Set the background fill color.
      *
      * @see IndexedColors
-     *
      */
     private Short fillBackgroundColor;
 
@@ -133,7 +131,6 @@ public class StyleProperty {
      * Set the foreground fill color <i>Note: Ensure Foreground color is set prior to background color.</i>
      *
      * @see IndexedColors
-     *
      */
     private Short fillForegroundColor;
     /**
@@ -146,7 +143,9 @@ public class StyleProperty {
             return null;
         }
         StyleProperty styleProperty = new StyleProperty();
-        styleProperty.setDataFormat(headStyle.dataFormat());
+        DataFormatData dataFormatData = new DataFormatData();
+        dataFormatData.setIndex(headStyle.dataFormat());
+        styleProperty.setDataFormatData(dataFormatData);
         styleProperty.setHidden(headStyle.hidden());
         styleProperty.setLocked(headStyle.locked());
         styleProperty.setQuotePrefix(headStyle.quotePrefix());
@@ -175,7 +174,9 @@ public class StyleProperty {
             return null;
         }
         StyleProperty styleProperty = new StyleProperty();
-        styleProperty.setDataFormat(contentStyle.dataFormat());
+        DataFormatData dataFormatData = new DataFormatData();
+        dataFormatData.setIndex(contentStyle.dataFormat());
+        styleProperty.setDataFormatData(dataFormatData);
         styleProperty.setHidden(contentStyle.hidden());
         styleProperty.setLocked(contentStyle.locked());
         styleProperty.setQuotePrefix(contentStyle.quotePrefix());
@@ -197,181 +198,5 @@ public class StyleProperty {
         styleProperty.setFillForegroundColor(contentStyle.fillForegroundColor());
         styleProperty.setShrinkToFit(contentStyle.shrinkToFit());
         return styleProperty;
-    }
-
-    public Short getDataFormat() {
-        return dataFormat;
-    }
-
-    public void setDataFormat(Short dataFormat) {
-        this.dataFormat = dataFormat;
-    }
-
-    public WriteFont getWriteFont() {
-        return writeFont;
-    }
-
-    public void setWriteFont(WriteFont writeFont) {
-        this.writeFont = writeFont;
-    }
-
-    public Boolean getHidden() {
-        return hidden;
-    }
-
-    public void setHidden(Boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    public Boolean getLocked() {
-        return locked;
-    }
-
-    public void setLocked(Boolean locked) {
-        this.locked = locked;
-    }
-
-    public Boolean getQuotePrefix() {
-        return quotePrefix;
-    }
-
-    public void setQuotePrefix(Boolean quotePrefix) {
-        this.quotePrefix = quotePrefix;
-    }
-
-    public HorizontalAlignment getHorizontalAlignment() {
-        return horizontalAlignment;
-    }
-
-    public void setHorizontalAlignment(HorizontalAlignment horizontalAlignment) {
-        this.horizontalAlignment = horizontalAlignment;
-    }
-
-    public Boolean getWrapped() {
-        return wrapped;
-    }
-
-    public void setWrapped(Boolean wrapped) {
-        this.wrapped = wrapped;
-    }
-
-    public VerticalAlignment getVerticalAlignment() {
-        return verticalAlignment;
-    }
-
-    public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
-        this.verticalAlignment = verticalAlignment;
-    }
-
-    public Short getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(Short rotation) {
-        this.rotation = rotation;
-    }
-
-    public Short getIndent() {
-        return indent;
-    }
-
-    public void setIndent(Short indent) {
-        this.indent = indent;
-    }
-
-    public BorderStyle getBorderLeft() {
-        return borderLeft;
-    }
-
-    public void setBorderLeft(BorderStyle borderLeft) {
-        this.borderLeft = borderLeft;
-    }
-
-    public BorderStyle getBorderRight() {
-        return borderRight;
-    }
-
-    public void setBorderRight(BorderStyle borderRight) {
-        this.borderRight = borderRight;
-    }
-
-    public BorderStyle getBorderTop() {
-        return borderTop;
-    }
-
-    public void setBorderTop(BorderStyle borderTop) {
-        this.borderTop = borderTop;
-    }
-
-    public BorderStyle getBorderBottom() {
-        return borderBottom;
-    }
-
-    public void setBorderBottom(BorderStyle borderBottom) {
-        this.borderBottom = borderBottom;
-    }
-
-    public Short getLeftBorderColor() {
-        return leftBorderColor;
-    }
-
-    public void setLeftBorderColor(Short leftBorderColor) {
-        this.leftBorderColor = leftBorderColor;
-    }
-
-    public Short getRightBorderColor() {
-        return rightBorderColor;
-    }
-
-    public void setRightBorderColor(Short rightBorderColor) {
-        this.rightBorderColor = rightBorderColor;
-    }
-
-    public Short getTopBorderColor() {
-        return topBorderColor;
-    }
-
-    public void setTopBorderColor(Short topBorderColor) {
-        this.topBorderColor = topBorderColor;
-    }
-
-    public Short getBottomBorderColor() {
-        return bottomBorderColor;
-    }
-
-    public void setBottomBorderColor(Short bottomBorderColor) {
-        this.bottomBorderColor = bottomBorderColor;
-    }
-
-    public FillPatternType getFillPatternType() {
-        return fillPatternType;
-    }
-
-    public void setFillPatternType(FillPatternType fillPatternType) {
-        this.fillPatternType = fillPatternType;
-    }
-
-    public Short getFillBackgroundColor() {
-        return fillBackgroundColor;
-    }
-
-    public void setFillBackgroundColor(Short fillBackgroundColor) {
-        this.fillBackgroundColor = fillBackgroundColor;
-    }
-
-    public Short getFillForegroundColor() {
-        return fillForegroundColor;
-    }
-
-    public void setFillForegroundColor(Short fillForegroundColor) {
-        this.fillForegroundColor = fillForegroundColor;
-    }
-
-    public Boolean getShrinkToFit() {
-        return shrinkToFit;
-    }
-
-    public void setShrinkToFit(Boolean shrinkToFit) {
-        this.shrinkToFit = shrinkToFit;
     }
 }

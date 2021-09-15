@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.usermodel.Cell;
-
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.util.CollectionUtils;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * Take the width of the longest column as the width.
@@ -24,10 +25,11 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
 
     private static final int MAX_COLUMN_WIDTH = 255;
 
-    private Map<Integer, Map<Integer, Integer>> cache = new HashMap<Integer, Map<Integer, Integer>>(8);
+    private final Map<Integer, Map<Integer, Integer>> cache = MapUtils.newHashMapWithExpectedSize(8);
 
     @Override
-    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell, Head head,
+    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<WriteCellData<?>> cellDataList, Cell cell,
+        Head head,
         Integer relativeRowIndex, Boolean isHead) {
         boolean needSetWidth = isHead || !CollectionUtils.isEmpty(cellDataList);
         if (!needSetWidth) {
@@ -52,11 +54,11 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
         }
     }
 
-    private Integer dataLength(List<CellData> cellDataList, Cell cell, Boolean isHead) {
+    private Integer dataLength(List<WriteCellData<?>> cellDataList, Cell cell, Boolean isHead) {
         if (isHead) {
             return cell.getStringCellValue().getBytes().length;
         }
-        CellData cellData = cellDataList.get(0);
+        WriteCellData<?> cellData = cellDataList.get(0);
         CellDataTypeEnum type = cellData.getType();
         if (type == null) {
             return -1;
