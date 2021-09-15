@@ -399,7 +399,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
      * @return Returns the data that the cell needs to replace
      */
     private String prepareData(Cell cell, int rowIndex, int columnIndex, Map<String, Set<Integer>> firstRowCache) {
-        if (!CellType.STRING.equals(cell.getCellTypeEnum())) {
+        if (!CellType.STRING.equals(cell.getCellType())) {
             return null;
         }
         String value = cell.getStringCellValue();
