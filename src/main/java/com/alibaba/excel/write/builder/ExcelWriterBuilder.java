@@ -48,7 +48,7 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     }
 
     /**
-     * Write excel in memory. Default false,the cache file is created and finally written to excel.
+     * Write excel in memory. Default false, the cache file is created and finally written to excel.
      * <p>
      * Comment and RichTextString are only supported in memory mode.
      */

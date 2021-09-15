@@ -39,7 +39,7 @@ public class WriteFont {
      */
     private Short color;
     /**
-     * Set normal,super or subscript.
+     * Set normal, super or subscript.
      *
      * @see Font#SS_NONE
      * @see Font#SS_SUPER

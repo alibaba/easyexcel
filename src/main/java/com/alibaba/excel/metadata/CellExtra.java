@@ -20,19 +20,19 @@ public class CellExtra extends AbstractCell {
      */
     private String text;
     /**
-     * First row index,if this object is an interval
+     * First row index, if this object is an interval
      */
     private Integer firstRowIndex;
     /**
-     * Last row index,if this object is an interval
+     * Last row index, if this object is an interval
      */
     private Integer lastRowIndex;
     /**
-     * First column index,if this object is an interval
+     * First column index, if this object is an interval
      */
     private Integer firstColumnIndex;
     /**
-     * Last column index,if this object is an interval
+     * Last column index, if this object is an interval
      */
     private Integer lastColumnIndex;
 
