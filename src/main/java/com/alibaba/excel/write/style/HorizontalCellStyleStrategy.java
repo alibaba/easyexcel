@@ -34,7 +34,7 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     @Override
     protected void setHeadCellStyle(CellWriteHandlerContext context) {
-        if (!continueProcessing(context) || headWriteCellStyle == null) {
+        if (stopProcessing(context) || headWriteCellStyle == null) {
             return;
         }
         WriteCellData<?> cellData = context.getCellDataList().get(0);
@@ -43,7 +43,7 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     @Override
     protected void setContentCellStyle(CellWriteHandlerContext context) {
-        if (!continueProcessing(context) || CollectionUtils.isEmpty(contentWriteCellStyleList)) {
+        if (stopProcessing(context) || CollectionUtils.isEmpty(contentWriteCellStyleList)) {
             return;
         }
         WriteCellData<?> cellData = context.getCellDataList().get(0);
@@ -55,12 +55,9 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
         }
     }
 
-    protected boolean continueProcessing(CellWriteHandlerContext context) {
+    protected boolean stopProcessing(CellWriteHandlerContext context) {
         List<WriteCellData<?>> cellDataList = context.getCellDataList();
-        if (CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1) {
-            return false;
-        }
-        return true;
+        return CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1;
     }
 
 }

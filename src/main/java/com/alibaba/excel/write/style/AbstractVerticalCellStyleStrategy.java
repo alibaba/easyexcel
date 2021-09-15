@@ -18,7 +18,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
 
     @Override
     protected void setHeadCellStyle(CellWriteHandlerContext context) {
-        if (!continueProcessing(context)) {
+        if (stopProcessing(context)) {
             return;
         }
         WriteCellData<?> cellData = context.getCellDataList().get(0);
@@ -27,7 +27,7 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
 
     @Override
     protected void setContentCellStyle(CellWriteHandlerContext context) {
-        if (!continueProcessing(context)) {
+        if (stopProcessing(context)) {
             return;
         }
         WriteCellData<?> cellData = context.getCellDataList().get(0);
@@ -64,11 +64,11 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
                 + "'contentCellStyle(Head head)' must be implemented.");
     }
 
-    protected boolean continueProcessing(CellWriteHandlerContext context) {
+    protected boolean stopProcessing(CellWriteHandlerContext context) {
         List<WriteCellData<?>> cellDataList = context.getCellDataList();
         if (CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1) {
-            return false;
+            return true;
         }
-        return context.getHeadData() != null;
+        return context.getHeadData() == null;
     }
 }
