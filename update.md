@@ -21,6 +21,7 @@
 * 修复合并头可能异常的bug [Issue #1662](https://github.com/alibaba/easyexcel/issues/1662)
 * 修复填充调用横向样式策略报错 [Issue #1651](https://github.com/alibaba/easyexcel/issues/1651)
 * 修复不自动行高的问题 [Issue #1869](https://github.com/alibaba/easyexcel/issues/1869)
+* 新增头的非空校验 [Issue #1765](https://github.com/alibaba/easyexcel/issues/1765)
 
 
 # 2.2.10
