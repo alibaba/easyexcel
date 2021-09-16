@@ -1,5 +1,13 @@
 package com.alibaba.excel.util;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.exception.ExcelCommonException;
+import com.alibaba.excel.metadata.BaseRowModel;
+import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
+
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -12,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
@@ -44,25 +53,32 @@ public class ClassUtils {
         }
         tempIndexFildMap.putAll(fieldCache.getIndexFiledMap());
 
+        Map<Integer, Field> originSortedAllFiledMap = fieldCache.getSortedAllFiledMap();
         if (!needIgnore) {
-            sortedAllFiledMap.putAll(fieldCache.getSortedAllFiledMap());
+            sortedAllFiledMap.putAll(originSortedAllFiledMap);
             return;
         }
 
-        int index = 0;
-        for (Map.Entry<Integer, Field> entry : fieldCache.getSortedAllFiledMap().entrySet()) {
-            Field field = entry.getValue();
-            if (((WriteHolder)holder).ignore(entry.getValue().getName(), entry.getKey())) {
-                if (ignoreMap != null) {
-                    ignoreMap.put(field.getName(), field);
+        // 获取到属性字段的最大index
+        int maxIndex = -1;
+        for (Integer filedIndex : originSortedAllFiledMap.keySet()) {
+            maxIndex = Math.max(filedIndex, maxIndex);
+        }
+        // 被忽略的属性数量
+        int ignoreNum = 0;
+        // 当有属性被忽略时，需要将其后面的所有属性 index 前移
+        for (int index = 0; index <= maxIndex; index++) {
+            Field field = originSortedAllFiledMap.get(index);
+            String name = field == null? null: field.getName();
+            if (((WriteHolder) holder).ignore(name, index)) {
+                if (ignoreMap != null && name != null) {
+                    ignoreMap.put(name, field);
                 }
-                while (tempIndexFildMap.containsKey(index)) {
-                    tempIndexFildMap.remove(index);
-                    index++;
-                }
-            } else {
-                sortedAllFiledMap.put(index, field);
-                index++;
+                tempIndexFildMap.remove(index);
+                ignoreNum++;
+            } else if(field != null){
+                int finalIndex = index - ignoreNum;
+                sortedAllFiledMap.put(finalIndex, field);
             }
         }
     }
