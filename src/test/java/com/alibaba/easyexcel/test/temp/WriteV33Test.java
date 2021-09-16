@@ -12,9 +12,11 @@ import com.alibaba.easyexcel.test.temp.data.HeadType;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
+import lombok.Data;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -86,12 +88,15 @@ public class WriteV33Test {
     @Test
     public void indexWrite() {
         String fileName = TestFileUtil.getPath() + "indexWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName, IndexData.class)
-            .excludeColumnIndexes(Collections.singleton(0))
-            .sheet("模板")
-            .excludeColumnIndexes(Collections.singleton(1))
-            .doWrite(indexData());
+
+        Man man = new Man();
+        man.setAddr("武汉");
+        man.setName("张三");
+        ExcelWriter excelWriter = EasyExcel.write(fileName, Humen.class).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet("test").build();
+        excelWriter.write(Collections.singletonList(man), writeSheet);
+        // 千万别忘记finish 会帮忙关闭流
+        excelWriter.finish();
     }
 
     private List<IndexData> indexData() {
@@ -105,4 +110,18 @@ public class WriteV33Test {
         }
         return list;
     }
+
+    @Data
+    static  class Humen{
+        @ExcelProperty("名字")
+        private String name;
+    }
+
+    @Data
+    static
+    class Man extends Humen{
+        @ExcelProperty("地址")
+        private String addr;
+    }
+
 }

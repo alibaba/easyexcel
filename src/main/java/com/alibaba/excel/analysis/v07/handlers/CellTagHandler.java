@@ -1,5 +1,7 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
+import java.math.BigDecimal;
+
 import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
@@ -7,6 +9,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
+import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
 
@@ -31,7 +34,7 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
 
         // t="s" ,it means String
         // t="str" ,it means String,but does not need to be read in the 'sharedStrings.xml'
-        // t="inlineStr" ,it means String
+        // t="inlineStr" ,it means String,but does not need to be read in the 'sharedStrings.xml'
         // t="b" ,it means Boolean
         // t="e" ,it means Error
         // t="n" ,it means Number
@@ -61,4 +64,54 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         xlsxReadSheetHolder.getTempCellData().setDataFormatData(dataFormatData);
     }
 
+    @Override
+    public void endElement(XlsxReadContext xlsxReadContext, String name) {
+        XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
+        ReadCellData<?> tempCellData = xlsxReadSheetHolder.getTempCellData();
+        StringBuilder tempData = xlsxReadSheetHolder.getTempData();
+        String tempDataString = tempData.toString();
+        CellDataTypeEnum oldType = tempCellData.getType();
+        switch (oldType) {
+            case STRING:
+                // In some cases, although cell type is a string, it may be an empty tag
+                if (StringUtils.isEmpty(tempCellData.getStringValue())) {
+                    break;
+                }
+                String stringValue = xlsxReadContext.readWorkbookHolder().getReadCache()
+                    .get(Integer.valueOf(tempCellData.getStringValue()));
+                tempCellData.setStringValue(stringValue);
+                break;
+            case DIRECT_STRING:
+            case ERROR:
+                tempCellData.setStringValue(tempData.toString());
+                tempCellData.setType(CellDataTypeEnum.STRING);
+                break;
+            case BOOLEAN:
+                if (StringUtils.isEmpty(tempDataString)) {
+                    tempCellData.setType(CellDataTypeEnum.EMPTY);
+                    break;
+                }
+                tempCellData.setBooleanValue(BooleanUtils.valueOf(tempData.toString()));
+                break;
+            case NUMBER:
+            case EMPTY:
+                if (StringUtils.isEmpty(tempDataString)) {
+                    tempCellData.setType(CellDataTypeEnum.EMPTY);
+                    break;
+                }
+                tempCellData.setType(CellDataTypeEnum.NUMBER);
+                tempCellData.setNumberValue(BigDecimal.valueOf(Double.parseDouble(tempDataString)));
+                break;
+            default:
+                throw new IllegalStateException("Cannot set values now");
+        }
+
+        if (tempCellData.getStringValue() != null
+            && xlsxReadContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
+            tempCellData.setStringValue(tempCellData.getStringValue().trim());
+        }
+
+        tempCellData.checkEmpty();
+        xlsxReadSheetHolder.getCellMap().put(xlsxReadSheetHolder.getColumnIndex(), tempCellData);
+    }
 }

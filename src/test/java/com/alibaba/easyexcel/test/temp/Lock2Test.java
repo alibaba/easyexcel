@@ -36,7 +36,7 @@ public class Lock2Test {
     public void test() throws Exception {
         File file = TestFileUtil.readUserHomeFile("test/test4.xlsx");
 
-        List<Object> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/olay的副本.xlsx").sheet(0).doReadSync();
+        List<Object> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/olay (1).xlsx").sheet(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (Object data : list) {
             LOGGER.info("返回数据：{}", CollectionUtils.size(data));
