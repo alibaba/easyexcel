@@ -87,14 +87,11 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             }
             cellIndex = entry.getKey();
             Head head = entry.getValue();
-            doAddBasicTypeToExcel(oneRowData, head, row, relativeRowIndex, dataIndex++, cellIndex);
+            doAddBasicTypeToExcel(oneRowData, head, row, relativeRowIndex, dataIndex++, cellIndex++);
         }
         // Finish
         if (dataIndex >= oneRowData.size()) {
             return;
-        }
-        if (cellIndex != 0) {
-            cellIndex++;
         }
         int size = oneRowData.size() - dataIndex;
         for (int i = 0; i < size; i++) {
