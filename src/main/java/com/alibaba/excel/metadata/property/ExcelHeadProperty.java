@@ -120,14 +120,15 @@ public class ExcelHeadProperty {
             return;
         }
         // Declared fields
-        Map<Integer, Field> sortedAllFiledMap = new TreeMap<Integer, Field>();
-        Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
+        Map<Integer, Field> sortedAllFiledMap = MapUtils.newTreeMap();
+        Map<Integer, Field> indexFiledMap = MapUtils.newTreeMap();
 
         boolean needIgnore = (holder instanceof AbstractWriteHolder) && (
             !CollectionUtils.isEmpty(((AbstractWriteHolder)holder).getExcludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(((AbstractWriteHolder)holder).getExcludeColumnIndexes()) || !CollectionUtils
                 .isEmpty(((AbstractWriteHolder)holder).getIncludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(((AbstractWriteHolder)holder).getIncludeColumnIndexes()));
+
         ClassUtils.declaredFields(headClazz, sortedAllFiledMap, indexFiledMap, ignoreMap, needIgnore, holder);
 
         for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {

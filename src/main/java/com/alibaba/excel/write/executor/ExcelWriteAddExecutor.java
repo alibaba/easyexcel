@@ -1,6 +1,5 @@
 package com.alibaba.excel.write.executor;
 
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,22 +18,16 @@ import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
-import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
-
+import com.alibaba.excel.write.metadata.CollectionRowData;
+import com.alibaba.excel.write.metadata.MapRowData;
+import com.alibaba.excel.write.metadata.RowData;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+
 import net.sf.cglib.beans.BeanMap;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
 
 /**
  * Add the data into excel
@@ -190,16 +183,13 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             return;
         }
 
-        // 获取当前的使用的 holder
-        WriteHolder holder = writeContext.currentWriteHolder();
-        boolean needIgnore = (holder instanceof AbstractWriteHolder) && (
-            !CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getExcludeColumnFiledNames()) || !CollectionUtils
-                .isEmpty(((AbstractWriteHolder) holder).getExcludeColumnIndexes()) || !CollectionUtils
-                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnFiledNames()) || !CollectionUtils
-                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnIndexes()));
-
-        ClassUtils.declaredFields(clazz, sortedAllFiledMap,
-            writeContext.writeWorkbookHolder().getWriteWorkbook().getConvertAllFiled(), needIgnore, holder);
+        WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
+        boolean needIgnore =
+            !CollectionUtils.isEmpty(writeSheetHolder.getExcludeColumnFieldNames()) || !CollectionUtils
+                .isEmpty(writeSheetHolder.getExcludeColumnIndexes()) || !CollectionUtils
+                .isEmpty(writeSheetHolder.getIncludeColumnFieldNames()) || !CollectionUtils
+                .isEmpty(writeSheetHolder.getIncludeColumnIndexes());
+        ClassUtils.declaredFields(clazz, sortedAllFiledMap, needIgnore, writeSheetHolder);
     }
 
 }

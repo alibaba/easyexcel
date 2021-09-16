@@ -1,13 +1,5 @@
 package com.alibaba.excel.util;
 
-import com.alibaba.excel.annotation.ExcelIgnore;
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.exception.ExcelCommonException;
-import com.alibaba.excel.metadata.BaseRowModel;
-import com.alibaba.excel.metadata.Holder;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
-
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -20,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
@@ -38,6 +29,16 @@ public class ClassUtils {
 
     public static final Map<Class<?>, SoftReference<FieldCache>> FIELD_CACHE = new ConcurrentHashMap<>();
 
+    /**
+     * Parsing filed in the class
+     *
+     * @param clazz             Need to parse the class
+     * @param sortedAllFiledMap Complete the map of sorts
+     * @param indexFiledMap     Use the index to sort fields
+     * @param ignoreMap         You want to ignore field map
+     * @param needIgnore        If you want to ignore fields need to ignore
+     * @param holder            holder
+     */
     public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap,
         Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, Boolean needIgnore, Holder holder) {
         FieldCache fieldCache = getFieldCache(clazz);
@@ -47,11 +48,11 @@ public class ClassUtils {
         if (ignoreMap != null) {
             ignoreMap.putAll(fieldCache.getIgnoreMap());
         }
-        Map<Integer, Field> tempIndexFildMap = indexFiledMap;
-        if (tempIndexFildMap == null) {
-            tempIndexFildMap = new TreeMap<Integer, Field>();
+        Map<Integer, Field> tempIndexFieldMap = indexFiledMap;
+        if (tempIndexFieldMap == null) {
+            tempIndexFieldMap = MapUtils.newTreeMap();
         }
-        tempIndexFildMap.putAll(fieldCache.getIndexFiledMap());
+        tempIndexFieldMap.putAll(fieldCache.getIndexFiledMap());
 
         Map<Integer, Field> originSortedAllFiledMap = fieldCache.getSortedAllFiledMap();
         if (!needIgnore) {
@@ -59,26 +60,29 @@ public class ClassUtils {
             return;
         }
 
-        // 获取到属性字段的最大index
-        int maxIndex = -1;
-        for (Integer filedIndex : originSortedAllFiledMap.keySet()) {
-            maxIndex = Math.max(filedIndex, maxIndex);
-        }
-        // 被忽略的属性数量
-        int ignoreNum = 0;
-        // 当有属性被忽略时，需要将其后面的所有属性 index 前移
-        for (int index = 0; index <= maxIndex; index++) {
-            Field field = originSortedAllFiledMap.get(index);
-            String name = field == null? null: field.getName();
-            if (((WriteHolder) holder).ignore(name, index)) {
-                if (ignoreMap != null && name != null) {
-                    ignoreMap.put(name, field);
+        int index = 0;
+        for (Map.Entry<Integer, Field> entry : originSortedAllFiledMap.entrySet()) {
+            Integer key = entry.getKey();
+            Field field = entry.getValue();
+
+            // The current field needs to be ignored
+            if (((WriteHolder)holder).ignore(entry.getValue().getName(), entry.getKey())) {
+                if (ignoreMap != null) {
+                    ignoreMap.put(field.getName(), field);
                 }
-                tempIndexFildMap.remove(index);
-                ignoreNum++;
-            } else if(field != null){
-                int finalIndex = index - ignoreNum;
-                sortedAllFiledMap.put(finalIndex, field);
+                tempIndexFieldMap.remove(index);
+            } else {
+                // Mandatory sorted fields
+                if (tempIndexFieldMap.containsKey(key)) {
+                    sortedAllFiledMap.put(key, field);
+                } else {
+                    // Need to reorder automatically
+                    // Check whether the current key is already in use
+                    while (sortedAllFiledMap.containsKey(index)) {
+                        index++;
+                    }
+                    sortedAllFiledMap.put(index++, field);
+                }
             }
         }
     }
@@ -187,19 +191,15 @@ public class ClassUtils {
         if (excelProperty != null) {
             order = excelProperty.order();
         }
-        List<Field> orderFiledList = orderFiledMap.get(order);
-        if (orderFiledList == null) {
-            orderFiledList = new ArrayList<Field>();
-            orderFiledMap.put(order, orderFiledList);
-        }
+        List<Field> orderFiledList = orderFiledMap.computeIfAbsent(order, key -> ListUtils.newArrayList());
         orderFiledList.add(field);
     }
 
     private static class FieldCache {
 
-        private Map<Integer, Field> sortedAllFiledMap;
-        private Map<Integer, Field> indexFiledMap;
-        private Map<String, Field> ignoreMap;
+        private final Map<Integer, Field> sortedAllFiledMap;
+        private final Map<Integer, Field> indexFiledMap;
+        private final Map<String, Field> ignoreMap;
 
         public FieldCache(Map<Integer, Field> sortedAllFiledMap, Map<Integer, Field> indexFiledMap,
             Map<String, Field> ignoreMap) {
