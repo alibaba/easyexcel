@@ -23,6 +23,7 @@
 * 修复不自动行高的问题 [Issue #1869](https://github.com/alibaba/easyexcel/issues/1869)
 * 新增头的非空校验 [Issue #1765](https://github.com/alibaba/easyexcel/issues/1765)
 * 修复某些特殊的excel读取失败的问题 [Issue #1595](https://github.com/alibaba/easyexcel/issues/1595)
+* 修复不创建对象写入数据异常 [Issue #1702](https://github.com/alibaba/easyexcel/issues/1702)
 
 
 # 2.2.10

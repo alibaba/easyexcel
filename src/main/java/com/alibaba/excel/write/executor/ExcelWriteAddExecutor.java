@@ -92,12 +92,14 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             }
             cellIndex = entry.getKey();
             Head head = entry.getValue();
-            doAddBasicTypeToExcel(oneRowData, head, row, relativeRowIndex, dataIndex++, cellIndex++);
+            doAddBasicTypeToExcel(oneRowData, head, row, relativeRowIndex, dataIndex++, cellIndex);
         }
         // Finish
         if (dataIndex >= oneRowData.size()) {
             return;
         }
+        // fix https://github.com/alibaba/easyexcel/issues/1702
+        // If there is data, it is written to the next cell
         if (dataIndex != 0) {
             cellIndex++;
         }

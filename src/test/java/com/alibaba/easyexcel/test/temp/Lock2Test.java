@@ -95,10 +95,6 @@ public class Lock2Test {
         head0.add("表头");
 
         list.add(head0);
-        List<String> head1 = new ArrayList<String>();
-        head1.add("表头2");
-
-        list.add(head1);
         return list;
     }
 
@@ -107,7 +103,7 @@ public class Lock2Test {
         List<Object> data = new ArrayList<Object>();
         data.add("字符串");
         data.add(new Date());
-        //data.add(0.56);
+        data.add(0.56);
         list.add(data);
         return list;
     }
