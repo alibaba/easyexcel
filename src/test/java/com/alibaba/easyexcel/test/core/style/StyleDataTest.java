@@ -40,13 +40,11 @@ public class StyleDataTest {
 
     private static File file07;
     private static File file03;
-    private static File file02_07;
+
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("style07.xlsx");
         file03 = TestFileUtil.createNewFile("style03.xls");
-        file02_07 = TestFileUtil.createNewFile("style02_07.xlsx");
-        file03 = TestFileUtil.createNewFile("style03.csv");
     }
 
     @Test
@@ -119,7 +117,7 @@ public class StyleDataTest {
             .doWrite(data());
     }
     @Test
-    public void t03AbstractVerticalCellStyleStrategy02() {
+    public void t04AbstractVerticalCellStyleStrategy02() {
         final StyleProperty styleProperty = StyleProperty.build(StyleData.class.getAnnotation(HeadStyle.class));
         final FontProperty fontProperty = FontProperty.build(StyleData.class.getAnnotation(HeadFontStyle.class));
         AbstractVerticalCellStyleStrategy verticalCellStyleStrategy = new AbstractVerticalCellStyleStrategy() {
@@ -154,11 +152,12 @@ public class StyleDataTest {
                 return writeCellStyle;
             }
         };
-        EasyExcel.write(file02_07, StyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
+        EasyExcel.write(file07, StyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
             .doWrite(data());
     }
+
     @Test
-    public void t04LoopMergeStrategy() {
+    public void t05LoopMergeStrategy() {
         EasyExcel.write(file07, StyleData.class).sheet().registerWriteHandler(new LoopMergeStrategy(2, 1))
             .doWrite(data10());
     }
