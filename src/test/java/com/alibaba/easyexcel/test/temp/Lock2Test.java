@@ -5,14 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.poi.hssf.util.CellReference;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -20,6 +12,14 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.fastjson.JSON;
+
+import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 临时测试
@@ -34,7 +34,7 @@ public class Lock2Test {
     @Test
     public void test() throws Exception {
 //        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
-        File file = new File("/Users/zhuangjiaju/test/签到金模板-0507-v5.xlsx");
+        File file = new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/src/test/resources/converter/converter07.xlsx");
 
         List<Object> list = EasyExcel.read(file).sheet(0).headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
