@@ -1,16 +1,20 @@
 package com.alibaba.excel.metadata;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Write/read holder
  *
  * @author Jiaju Zhuang
  */
+@Data
+@NoArgsConstructor
 public abstract class AbstractHolder implements ConfigurationHolder {
     /**
      * Record whether it's new or from cache
@@ -23,7 +27,7 @@ public abstract class AbstractHolder implements ConfigurationHolder {
     /**
      * You can only choose one of the {@link AbstractHolder#head} and {@link AbstractHolder#clazz}
      */
-    private Class clazz;
+    private Class<?> clazz;
     /**
      * Some global variables
      */
@@ -34,7 +38,7 @@ public abstract class AbstractHolder implements ConfigurationHolder {
      * <p>
      * Write key:
      */
-    private Map<String, Converter> converterMap;
+    private Map<String, Converter<?>> converterMap;
 
     public AbstractHolder(BasicParameter basicParameter, AbstractHolder prentAbstractHolder) {
         this.newInitialization = Boolean.TRUE;
@@ -50,68 +54,34 @@ public abstract class AbstractHolder implements ConfigurationHolder {
         }
         this.globalConfiguration = new GlobalConfiguration();
         if (basicParameter.getAutoTrim() == null) {
-            if (prentAbstractHolder == null) {
-                globalConfiguration.setAutoTrim(Boolean.TRUE);
-            } else {
+            if (prentAbstractHolder != null) {
                 globalConfiguration.setAutoTrim(prentAbstractHolder.getGlobalConfiguration().getAutoTrim());
             }
         } else {
             globalConfiguration.setAutoTrim(basicParameter.getAutoTrim());
         }
 
+        if (basicParameter.getUse1904windowing() == null) {
+            if (prentAbstractHolder != null) {
+                globalConfiguration.setUse1904windowing(
+                    prentAbstractHolder.getGlobalConfiguration().getUse1904windowing());
+            }
+        } else {
+            globalConfiguration.setUse1904windowing(basicParameter.getUse1904windowing());
+        }
+
         if (basicParameter.getLocale() == null) {
-            if (prentAbstractHolder == null) {
-                globalConfiguration.setLocale(Locale.getDefault());
-            } else {
+            if (prentAbstractHolder != null) {
                 globalConfiguration.setLocale(prentAbstractHolder.getGlobalConfiguration().getLocale());
             }
         } else {
             globalConfiguration.setLocale(basicParameter.getLocale());
         }
-    }
 
-    public Boolean getNewInitialization() {
-        return newInitialization;
-    }
-
-    public void setNewInitialization(Boolean newInitialization) {
-        this.newInitialization = newInitialization;
-    }
-
-    public List<List<String>> getHead() {
-        return head;
-    }
-
-    public void setHead(List<List<String>> head) {
-        this.head = head;
-    }
-
-    public Class getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(Class clazz) {
-        this.clazz = clazz;
-    }
-
-    public GlobalConfiguration getGlobalConfiguration() {
-        return globalConfiguration;
-    }
-
-    public void setGlobalConfiguration(GlobalConfiguration globalConfiguration) {
-        this.globalConfiguration = globalConfiguration;
-    }
-
-    public Map<String, Converter> getConverterMap() {
-        return converterMap;
-    }
-
-    public void setConverterMap(Map<String, Converter> converterMap) {
-        this.converterMap = converterMap;
     }
 
     @Override
-    public Map<String, Converter> converterMap() {
+    public Map<String, Converter<?>> converterMap() {
         return getConverterMap();
     }
 

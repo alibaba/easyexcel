@@ -9,12 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -24,6 +18,15 @@ import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.data.CommentData;
+import com.alibaba.excel.metadata.data.FormulaData;
+import com.alibaba.excel.metadata.data.HyperlinkData;
+import com.alibaba.excel.metadata.data.HyperlinkData.HyperlinkType;
+import com.alibaba.excel.metadata.data.ImageData;
+import com.alibaba.excel.metadata.data.ImageData.ImageType;
+import com.alibaba.excel.metadata.data.RichTextStringData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
@@ -33,6 +36,12 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
  * 写的常见写法
  *
@@ -40,6 +49,7 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
  */
 @Ignore
 public class WriteTest {
+
     /**
      * 最简单的写
      * <p>
@@ -58,11 +68,17 @@ public class WriteTest {
         // 写法2
         fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写
-        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
-        excelWriter.write(data(), writeSheet);
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
+        ExcelWriter excelWriter = null;
+        try {
+            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+            excelWriter.write(data(), writeSheet);
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
+        }
     }
 
     /**
@@ -79,6 +95,7 @@ public class WriteTest {
     @Test
     public void excludeOrIncludeWrite() {
         String fileName = TestFileUtil.getPath() + "excludeOrIncludeWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里需要注意 在使用ExcelProperty注解的使用，如果想不空列则需要加入order字段，而不是index,order会忽略空列，然后继续往后，而index，不会忽略空列，在第几列就是第几列。
 
         // 根据用户传入字段 假设我们要忽略 date
         Set<String> excludeColumnFiledNames = new HashSet<String>();
@@ -141,48 +158,65 @@ public class WriteTest {
     public void repeatedWrite() {
         // 方法1 如果写到同一个sheet
         String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 需要指定写用哪个class去写
-        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-        // 这里注意 如果同一个sheet只要创建一次
-        WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
-        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
-        for (int i = 0; i < 5; i++) {
-            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
-            List<DemoData> data = data();
-            excelWriter.write(data, writeSheet);
+        ExcelWriter excelWriter = null;
+        try {
+            // 这里 需要指定写用哪个class去写
+            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+            // 这里注意 如果同一个sheet只要创建一次
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
+            for (int i = 0; i < 5; i++) {
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                excelWriter.write(data, writeSheet);
+            }
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
         }
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
 
         // 方法2 如果写到不同的sheet 同一个对象
         fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 指定文件
-        excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
-        for (int i = 0; i < 5; i++) {
-            // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
-            writeSheet = EasyExcel.writerSheet(i, "模板" + i).build();
-            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
-            List<DemoData> data = data();
-            excelWriter.write(data, writeSheet);
+        try {
+            // 这里 指定文件
+            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+            for (int i = 0; i < 5; i++) {
+                // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
+                WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).build();
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                excelWriter.write(data, writeSheet);
+            }
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
         }
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
 
         // 方法3 如果写到不同的sheet 不同的对象
         fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里 指定文件
-        excelWriter = EasyExcel.write(fileName).build();
-        // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
-        for (int i = 0; i < 5; i++) {
-            // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样。这里注意DemoData.class 可以每次都变，我这里为了方便 所以用的同一个class 实际上可以一直变
-            writeSheet = EasyExcel.writerSheet(i, "模板" + i).head(DemoData.class).build();
-            // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
-            List<DemoData> data = data();
-            excelWriter.write(data, writeSheet);
+        try {
+            // 这里 指定文件
+            excelWriter = EasyExcel.write(fileName).build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+            for (int i = 0; i < 5; i++) {
+                // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样。这里注意DemoData.class 可以每次都变，我这里为了方便 所以用的同一个class
+                // 实际上可以一直变
+                WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).head(DemoData.class).build();
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                excelWriter.write(data, writeSheet);
+            }
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
         }
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
     }
 
     /**
@@ -204,7 +238,7 @@ public class WriteTest {
     /**
      * 图片导出
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link ImageData}
+     * 1. 创建excel对应的实体对象 参照{@link ImageDemoData}
      * <p>
      * 2. 直接写即可
      */
@@ -214,24 +248,111 @@ public class WriteTest {
         // 如果使用流 记得关闭
         InputStream inputStream = null;
         try {
-            List<ImageData> list = new ArrayList<ImageData>();
-            ImageData imageData = new ImageData();
-            list.add(imageData);
+            List<ImageDemoData> list = new ArrayList<>();
+            ImageDemoData imageDemoData = new ImageDemoData();
+            list.add(imageDemoData);
             String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
             // 放入五种类型的图片 实际使用只要选一种即可
-            imageData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
-            imageData.setFile(new File(imagePath));
-            imageData.setString(imagePath);
+            imageDemoData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
+            imageDemoData.setFile(new File(imagePath));
+            imageDemoData.setString(imagePath);
             inputStream = FileUtils.openInputStream(new File(imagePath));
-            imageData.setInputStream(inputStream);
-            imageData.setUrl(new URL(
+            imageDemoData.setInputStream(inputStream);
+            imageDemoData.setUrl(new URL(
                 "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
-            EasyExcel.write(fileName, ImageData.class).sheet().doWrite(list);
+
+            // 这里演示 图片 不想顶格放 且占用2个单元格的情况
+            WriteCellData<Void> writeCellData = new WriteCellData<>();
+            imageDemoData.setWriteCellDataFile(writeCellData);
+            // 设置为空 代表当前单元格不需要写图片以外的数据
+            writeCellData.setType(CellDataTypeEnum.EMPTY);
+            // 可以放入多个图片
+            List<ImageData> imageDataList = new ArrayList<>();
+            ImageData imageData = new ImageData();
+            imageDataList.add(imageData);
+            writeCellData.setImageDataList(imageDataList);
+            // 放入2进制图片
+            imageData.setImage(FileUtils.readFileToByteArray(new File(imagePath)));
+            // 图片类型
+            imageData.setImageType(ImageType.PICTURE_TYPE_PNG);
+            // 上 右 下 左 需要留空
+            // 这里实测 不能设置太大 超过单元格原始大小后 打开会提示修复。暂时未找到很好的解法。
+            imageData.setTop(5);
+            imageData.setRight(5);
+            imageData.setBottom(5);
+            imageData.setLeft(5);
+            // 设置图片的位置 假设 现在目标 是 覆盖 当前单元格 和当前单元格右边的单元格
+            // 起点相对于当前单元格为0 当然可以不写
+            imageData.setRelativeFirstRowIndex(0);
+            imageData.setRelativeFirstColumnIndex(0);
+            imageData.setRelativeLastRowIndex(0);
+            // 前面3个可以不写  下面这个需要写 也就是 结尾 需要相对当前单元格 往右移动一格
+            imageData.setRelativeLastColumnIndex(1);
+
+            // 写入数据
+            EasyExcel.write(fileName, ImageDemoData.class).sheet().doWrite(list);
         } finally {
             if (inputStream != null) {
                 inputStream.close();
             }
         }
+    }
+
+    /**
+     * 超链接、备注、公式、指定单个单元格的样式
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link WriteCellDemoData}
+     * <p>
+     * 2. 直接写即可
+     */
+    @Test
+    public void writeCellDataWrite() throws Exception {
+        String fileName = TestFileUtil.getPath() + "writeCellDataWrite" + System.currentTimeMillis() + ".xlsx";
+        WriteCellDemoData writeCellDemoData = new WriteCellDemoData();
+
+        // 设置超链接
+        WriteCellData<String> hyperlink = new WriteCellData<>("官方网站");
+        writeCellDemoData.setHyperlink(hyperlink);
+        HyperlinkData hyperlinkData = new HyperlinkData();
+        hyperlink.setHyperlinkData(hyperlinkData);
+        hyperlinkData.setAddress("https://github.com/alibaba/easyexcel");
+        hyperlinkData.setHyperlinkType(HyperlinkType.URL);
+
+        // 设置备注
+        WriteCellData<String> comment = new WriteCellData<>("备注的单元格信息");
+        writeCellDemoData.setCommentData(comment);
+        CommentData commentData = new CommentData();
+        comment.setCommentData(commentData);
+        commentData.setAuthor("Jiaju Zhuang");
+        commentData.setRichTextStringData(new RichTextStringData("这是一个备注"));
+        // 备注的默认大小是按照单元格的大小 这里想调整到4个单元格那么大 所以向后 向下 各额外占用了一个单元格
+        commentData.setRelativeLastColumnIndex(1);
+        commentData.setRelativeLastRowIndex(1);
+
+
+        // 设置公式
+        WriteCellData<String> formula = new WriteCellData<>();
+        writeCellDemoData.setFormulaData(formula);
+        FormulaData formulaData = new FormulaData();
+        formula.setFormulaData(formulaData);
+        // 将 123456789 中的第一个数字替换成 2
+        // 这里只是例子 如果真的涉及到公式 能内存算好尽量内存算好 公式能不用尽量不用
+        formulaData.setFormulaValue("REPLACE(123456789,1,1,2)");
+
+
+        // 设置单个单元格的样式 当然样式 很多的话 也可以用注解等方式。
+        WriteCellData<String> writeCellStyle = new WriteCellData<>("单元格样式");
+        writeCellDemoData.setWriteCellStyle(writeCellStyle);
+        WriteCellStyle writeCellStyleData = new WriteCellStyle();
+        writeCellStyle.setWriteCellStyle(writeCellStyleData);
+        // 这里需要指定 FillPatternType 为FillPatternType.SOLID_FOREGROUND 不然无法显示背景颜色.
+        writeCellStyleData.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
+        // 背景绿色
+        writeCellStyleData.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+
+        List<WriteCellDemoData> data = new ArrayList<>();
+        data.add(writeCellDemoData);
+        EasyExcel.write(fileName, WriteCellDemoData.class).inMemory(true).sheet("模板").doWrite(data);
     }
 
     /**
@@ -362,18 +483,24 @@ public class WriteTest {
         String fileName = TestFileUtil.getPath() + "tableWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里直接写多个table的案例了，如果只有一个 也可以直一行代码搞定，参照其他案例
         // 这里 需要指定写用哪个class去写
-        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build();
-        // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
-        WriteSheet writeSheet = EasyExcel.writerSheet("模板").needHead(Boolean.FALSE).build();
-        // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
-        WriteTable writeTable0 = EasyExcel.writerTable(0).needHead(Boolean.TRUE).build();
-        WriteTable writeTable1 = EasyExcel.writerTable(1).needHead(Boolean.TRUE).build();
-        // 第一次写入会创建头
-        excelWriter.write(data(), writeSheet, writeTable0);
-        // 第二次写如也会创建头，然后在第一次的后面写入数据
-        excelWriter.write(data(), writeSheet, writeTable1);
-        /// 千万别忘记finish 会帮忙关闭流
-        excelWriter.finish();
+        ExcelWriter excelWriter = null;
+        try {
+            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+            // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").needHead(Boolean.FALSE).build();
+            // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
+            WriteTable writeTable0 = EasyExcel.writerTable(0).needHead(Boolean.TRUE).build();
+            WriteTable writeTable1 = EasyExcel.writerTable(1).needHead(Boolean.TRUE).build();
+            // 第一次写入会创建头
+            excelWriter.write(data(), writeSheet, writeTable0);
+            // 第二次写如也会创建头，然后在第一次的后面写入数据
+            excelWriter.write(data(), writeSheet, writeTable1);
+        } finally {
+            // 千万别忘记finish 会帮忙关闭流
+            if (excelWriter != null) {
+                excelWriter.finish();
+            }
+        }
     }
 
     /**
@@ -399,8 +526,8 @@ public class WriteTest {
     /**
      * 自动列宽(不太精确)
      * <p>
-     * 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照
-     * {@link LongestMatchColumnWidthStyleStrategy}重新实现.
+     * 这个目前不是很好用，比如有数字就会导致换行。而且长度也不是刚好和实际长度一致。 所以需要精确到刚好列宽的慎用。 当然也可以自己参照 {@link LongestMatchColumnWidthStyleStrategy}
+     * 重新实现.
      * <p>
      * poi 自带{@link SXSSFSheet#autoSizeColumn(int)} 对中文支持也不太好。目前没找到很好的算法。 有的话可以推荐下。
      *

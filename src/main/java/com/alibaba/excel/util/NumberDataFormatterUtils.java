@@ -1,7 +1,10 @@
 package com.alibaba.excel.util;
 
-import com.alibaba.excel.metadata.DataFormatter;
+import java.math.BigDecimal;
+import java.util.Locale;
+
 import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.format.DataFormatter;
 
 /**
  * Convert number data, including date.
@@ -9,6 +12,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
  * @author Jiaju Zhuang
  **/
 public class NumberDataFormatterUtils {
+
     /**
      * Cache DataFormatter.
      */
@@ -18,26 +22,39 @@ public class NumberDataFormatterUtils {
      * Format number data.
      *
      * @param data
-     * @param dataFormat
-     *            Not null.
+     * @param dataFormat          Not null.
      * @param dataFormatString
      * @param globalConfiguration
      * @return
      */
-    public static String format(Double data, Integer dataFormat, String dataFormatString,
+    public static String format(BigDecimal data, Short dataFormat, String dataFormatString,
         GlobalConfiguration globalConfiguration) {
+        if (globalConfiguration == null) {
+            return format(data, dataFormat, dataFormatString, null, null, null);
+        }
+        return format(data, dataFormat, dataFormatString, globalConfiguration.getUse1904windowing(),
+            globalConfiguration.getLocale(), globalConfiguration.getUseScientificFormat());
+    }
+
+    /**
+     * Format number data.
+     *
+     * @param data
+     * @param dataFormat          Not null.
+     * @param dataFormatString
+     * @param use1904windowing
+     * @param locale
+     * @param useScientificFormat
+     * @return
+     */
+    public static String format(BigDecimal data, Short dataFormat, String dataFormatString, Boolean use1904windowing,
+        Locale locale, Boolean useScientificFormat) {
         DataFormatter dataFormatter = DATA_FORMATTER_THREAD_LOCAL.get();
         if (dataFormatter == null) {
-            if (globalConfiguration != null) {
-                dataFormatter =
-                    new DataFormatter(globalConfiguration.getLocale(), globalConfiguration.getUse1904windowing());
-            } else {
-                dataFormatter = new DataFormatter();
-            }
+            dataFormatter = new DataFormatter(use1904windowing, locale, useScientificFormat);
             DATA_FORMATTER_THREAD_LOCAL.set(dataFormatter);
         }
         return dataFormatter.format(data, dataFormat, dataFormatString);
-
     }
 
     public static void removeThreadLocalCache() {

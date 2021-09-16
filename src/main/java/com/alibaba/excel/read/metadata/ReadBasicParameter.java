@@ -6,11 +6,14 @@ import java.util.List;
 import com.alibaba.excel.metadata.BasicParameter;
 import com.alibaba.excel.read.listener.ReadListener;
 
+import lombok.Data;
+
 /**
  * Read basic parameter
  *
  * @author Jiaju Zhuang
  **/
+@Data
 public class ReadBasicParameter extends BasicParameter {
     /**
      * Count the number of added heads when read sheet.
@@ -26,21 +29,9 @@ public class ReadBasicParameter extends BasicParameter {
     /**
      * Custom type listener run after default
      */
-    private List<ReadListener> customReadListenerList = new ArrayList<ReadListener>();
+    private List<ReadListener<?>> customReadListenerList;
 
-    public Integer getHeadRowNumber() {
-        return headRowNumber;
-    }
-
-    public void setHeadRowNumber(Integer headRowNumber) {
-        this.headRowNumber = headRowNumber;
-    }
-
-    public List<ReadListener> getCustomReadListenerList() {
-        return customReadListenerList;
-    }
-
-    public void setCustomReadListenerList(List<ReadListener> customReadListenerList) {
-        this.customReadListenerList = customReadListenerList;
+    public ReadBasicParameter() {
+        customReadListenerList = new ArrayList<>();
     }
 }

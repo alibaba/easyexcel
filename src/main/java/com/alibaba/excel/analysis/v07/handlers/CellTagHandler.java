@@ -1,16 +1,18 @@
 package com.alibaba.excel.analysis.v07.handlers;
 
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.xml.sax.Attributes;
-
 import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.DataFormatData;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
+
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.xml.sax.Attributes;
 
 /**
  * Cell Handler
@@ -27,15 +29,15 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         xlsxReadSheetHolder.setColumnIndex(PositionUtils.getCol(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_R),
             xlsxReadSheetHolder.getColumnIndex()));
 
-        // t="s" ,it's means String
-        // t="str" ,it's means String,but does not need to be read in the 'sharedStrings.xml'
-        // t="inlineStr" ,it's means String
-        // t="b" ,it's means Boolean
-        // t="e" ,it's means Error
-        // t="n" ,it's means Number
-        // t is null ,it's means Empty or Number
+        // t="s" ,it means String
+        // t="str" ,it means String,but does not need to be read in the 'sharedStrings.xml'
+        // t="inlineStr" ,it means String
+        // t="b" ,it means Boolean
+        // t="e" ,it means Error
+        // t="n" ,it means Number
+        // t is null ,it means Empty or Number
         CellDataTypeEnum type = CellDataTypeEnum.buildFromCellType(attributes.getValue(ExcelXmlConstants.ATTRIBUTE_T));
-        xlsxReadSheetHolder.setTempCellData(new CellData(type));
+        xlsxReadSheetHolder.setTempCellData(new ReadCellData<>(type));
         xlsxReadSheetHolder.setTempData(new StringBuilder());
 
         // Put in data transformation information
@@ -46,12 +48,17 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         } else {
             dateFormatIndexInteger = Integer.parseInt(dateFormatIndex);
         }
-        XSSFCellStyle xssfCellStyle =
-            xlsxReadContext.xlsxReadWorkbookHolder().getStylesTable().getStyleAt(dateFormatIndexInteger);
-        int dataFormat = xssfCellStyle.getDataFormat();
-        xlsxReadSheetHolder.getTempCellData().setDataFormat(dataFormat);
-        xlsxReadSheetHolder.getTempCellData().setDataFormatString(BuiltinFormats.getBuiltinFormat(dataFormat,
+        StylesTable stylesTable = xlsxReadContext.xlsxReadWorkbookHolder().getStylesTable();
+        if (stylesTable == null) {
+            return;
+        }
+        XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+        short dataFormat = xssfCellStyle.getDataFormat();
+        DataFormatData dataFormatData = new DataFormatData();
+        dataFormatData.setIndex(dataFormat);
+        dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormat,
             xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));
+        xlsxReadSheetHolder.getTempCellData().setDataFormatData(dataFormatData);
     }
 
 }

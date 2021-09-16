@@ -1,5 +1,7 @@
 package com.alibaba.easyexcel.test.temp.simple;
 
+import java.util.Date;
+
 import com.alibaba.excel.annotation.write.style.ContentStyle;
 
 import lombok.Data;
@@ -11,6 +13,8 @@ import lombok.Data;
  **/
 @Data
 public class WriteData {
-    @ContentStyle(locked = true)
-    private float f;
+//    @ContentStyle(locked = true)
+    private Date dd;
+//    @ContentStyle(locked = false)
+    private float f1;
 }

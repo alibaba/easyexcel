@@ -13,6 +13,7 @@ import com.alibaba.easyexcel.test.temp.fill.FillData2;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
 /**
@@ -33,16 +34,21 @@ public class FillTempTest {
     public void complexFill() {
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
         // {} 代表普通变量 {.} 代表是list的变量
-        String templateFileName = "D:\\test\\simple.xlsx";
+        OnceAbsoluteMergeStrategy onceAbsoluteMergeStrategy = new OnceAbsoluteMergeStrategy(2, 2, 0, 1);
 
         String fileName = TestFileUtil.getPath() + "complexFill" + System.currentTimeMillis() + ".xlsx";
-        ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        excelWriter.fill(teamp(), writeSheet);
+        ExcelWriter excelWriter = EasyExcel.write(fileName).registerWriteHandler(onceAbsoluteMergeStrategy).withTemplate(TestFileUtil.readUserHomeFile("test/simple.xlsx")).build();
+        WriteSheet writeSheet0 = EasyExcel.writerSheet(0).build();
+        WriteSheet writeSheet1 = EasyExcel.writerSheet(1).build();
+
+        excelWriter.fill(teamp(), writeSheet0);
+        excelWriter.fill(teamp(), writeSheet1);
+
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("date", "2019年10月9日13:28:28");
         map.put("total", 1000);
-        excelWriter.fill(map, writeSheet);
+        excelWriter.fill(map, writeSheet0);
+
         excelWriter.finish();
     }
 

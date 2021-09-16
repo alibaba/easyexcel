@@ -1,10 +1,9 @@
 package com.alibaba.excel.read.builder;
 
-import java.util.ArrayList;
-
 import com.alibaba.excel.metadata.AbstractParameterBuilder;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadBasicParameter;
+import com.alibaba.excel.util.ListUtils;
 
 /**
  * Build ExcelBuilder
@@ -32,14 +31,27 @@ public abstract class AbstractExcelReaderParameterBuilder<T extends AbstractExce
     }
 
     /**
+     * Whether to use scientific Format.
+     *
+     * default is false
+     *
+     * @param useScientificFormat
+     * @return
+     */
+    public T useScientificFormat(Boolean useScientificFormat) {
+        parameter().setUseScientificFormat(useScientificFormat);
+        return self();
+    }
+
+    /**
      * Custom type listener run after default
      *
      * @param readListener
      * @return
      */
-    public T registerReadListener(ReadListener readListener) {
+    public T registerReadListener(ReadListener<?> readListener) {
         if (parameter().getCustomReadListenerList() == null) {
-            parameter().setCustomReadListenerList(new ArrayList<ReadListener>());
+            parameter().setCustomReadListenerList(ListUtils.newArrayList());
         }
         parameter().getCustomReadListenerList().add(readListener);
         return self();

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
@@ -17,9 +16,6 @@ import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadStyle;
 import com.alibaba.excel.annotation.write.style.OnceAbsoluteMerge;
-import com.alibaba.excel.converters.ConverterKeyBuild;
-import com.alibaba.excel.converters.DefaultConverterLoader;
-import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
@@ -39,12 +35,13 @@ import com.alibaba.excel.metadata.property.StyleProperty;
  * @author jipengfei
  */
 public class ExcelWriteHeadProperty extends ExcelHeadProperty {
+
     private RowHeightProperty headRowHeightProperty;
     private RowHeightProperty contentRowHeightProperty;
     private OnceAbsoluteMergeProperty onceAbsoluteMergeProperty;
 
-    public ExcelWriteHeadProperty(Holder holder, Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
-        super(holder, headClazz, head, convertAllFiled);
+    public ExcelWriteHeadProperty(Holder holder, Class headClazz, List<List<String>> head) {
+        super(holder, headClazz, head);
         if (getHeadKind() != HeadKindEnum.CLASS) {
             return;
         }
@@ -64,6 +61,10 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
         for (Map.Entry<Integer, ExcelContentProperty> entry : getContentPropertyMap().entrySet()) {
             Integer index = entry.getKey();
             ExcelContentProperty excelContentPropertyData = entry.getValue();
+            if (excelContentPropertyData == null) {
+                throw new IllegalArgumentException(
+                    "Passing in the class and list the head, the two must be the same size.");
+            }
             Field field = excelContentPropertyData.getField();
             Head headData = getHeadMap().get(index);
             ColumnWidth columnWidth = field.getAnnotation(ColumnWidth.class);
@@ -97,14 +98,6 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             headData.setContentFontProperty(FontProperty.build(contentFontStyle));
 
             headData.setLoopMergeProperty(LoopMergeProperty.build(field.getAnnotation(ContentLoopMerge.class)));
-            // If have @NumberFormat, 'NumberStringConverter' is specified by default
-            if (excelContentPropertyData.getConverter() == null) {
-                NumberFormat numberFormat = field.getAnnotation(NumberFormat.class);
-                if (numberFormat != null) {
-                    excelContentPropertyData.setConverter(DefaultConverterLoader.loadAllConverter()
-                        .get(ConverterKeyBuild.buildKey(field.getType(), CellDataTypeEnum.STRING)));
-                }
-            }
         }
     }
 
@@ -153,18 +146,21 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 int lastCol = i;
                 int lastRow = j;
                 for (int k = i + 1; k < headList.size(); k++) {
-                    if (headList.get(k).getHeadNameList().get(j).equals(headName)) {
-                        alreadyRangeSet.add(k + "-" + j);
+                    String key = k + "-" + j;
+                    if (headList.get(k).getHeadNameList().get(j).equals(headName) && !alreadyRangeSet.contains(key)) {
+                        alreadyRangeSet.add(key);
                         lastCol = k;
                     } else {
                         break;
                     }
                 }
-                Set<String> tempAlreadyRangeSet = new HashSet<String>();
+                Set<String> tempAlreadyRangeSet = new HashSet<>();
                 outer:
                 for (int k = j + 1; k < headNameList.size(); k++) {
                     for (int l = i; l <= lastCol; l++) {
-                        if (headList.get(l).getHeadNameList().get(k).equals(headName)) {
+                        String key = l + "-" + k;
+                        if (headList.get(l).getHeadNameList().get(k).equals(headName) && !alreadyRangeSet.contains(
+                            key)) {
                             tempAlreadyRangeSet.add(l + "-" + k);
                         } else {
                             break outer;
@@ -176,7 +172,8 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                 if (j == lastRow && i == lastCol) {
                     continue;
                 }
-                cellRangeList.add(new CellRange(j, lastRow, i, lastCol));
+                cellRangeList
+                    .add(new CellRange(j, lastRow, head.getColumnIndex(), headList.get(lastCol).getColumnIndex()));
             }
         }
         return cellRangeList;

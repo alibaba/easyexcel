@@ -3,16 +3,16 @@ package com.alibaba.easyexcel.test.core.multiplesheets;
 import java.io.File;
 import java.util.List;
 
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.read.metadata.ReadSheet;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.read.metadata.ReadSheet;
 
 /**
  *
@@ -57,7 +57,7 @@ public class MultipleSheetsDataTest {
         int count = 1;
         for (ReadSheet readSheet : sheets) {
             excelReader.read(readSheet);
-            Assert.assertEquals((long)multipleSheetsListener.getList().size(), (long)count);
+            Assert.assertEquals(multipleSheetsListener.getList().size(), count);
             count++;
         }
         excelReader.finish();

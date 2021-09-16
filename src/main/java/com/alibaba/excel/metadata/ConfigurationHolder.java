@@ -32,5 +32,5 @@ public interface ConfigurationHolder extends Holder {
      *
      * @return Converter
      */
-    Map<String, Converter> converterMap();
+    Map<String, Converter<?>> converterMap();
 }

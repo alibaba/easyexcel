@@ -2,8 +2,6 @@ package com.alibaba.excel.analysis.v07.handlers;
 
 import java.util.LinkedHashMap;
 
-import org.xml.sax.Attributes;
-
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
@@ -11,6 +9,9 @@ import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.PositionUtils;
+
+import org.apache.commons.collections4.MapUtils;
+import org.xml.sax.Attributes;
 
 /**
  * Cell Handler
@@ -39,11 +40,12 @@ public class RowTagHandler extends AbstractXlsxTagHandler {
     @Override
     public void endElement(XlsxReadContext xlsxReadContext, String name) {
         XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
-        xlsxReadContext.readRowHolder(new ReadRowHolder(xlsxReadSheetHolder.getRowIndex(), RowTypeEnum.DATA,
+        RowTypeEnum rowType = MapUtils.isEmpty(xlsxReadSheetHolder.getCellMap()) ? RowTypeEnum.EMPTY : RowTypeEnum.DATA;
+        xlsxReadContext.readRowHolder(new ReadRowHolder(xlsxReadSheetHolder.getRowIndex(), rowType,
             xlsxReadSheetHolder.getGlobalConfiguration(), xlsxReadSheetHolder.getCellMap()));
         xlsxReadContext.analysisEventProcessor().endRow(xlsxReadContext);
         xlsxReadSheetHolder.setColumnIndex(null);
-        xlsxReadSheetHolder.setCellMap(new LinkedHashMap<Integer, Cell>());
+        xlsxReadSheetHolder.setCellMap(new LinkedHashMap<>());
     }
 
 }

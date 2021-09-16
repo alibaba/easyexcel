@@ -4,6 +4,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
+import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.StyleProperty;
+import com.alibaba.excel.metadata.data.DataFormatData;
+import com.alibaba.excel.write.merge.LoopMergeStrategy;
+import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
+import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
+import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
@@ -15,24 +32,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.annotation.write.style.HeadFontStyle;
-import com.alibaba.excel.annotation.write.style.HeadStyle;
-import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.property.FontProperty;
-import com.alibaba.excel.metadata.property.StyleProperty;
-import com.alibaba.excel.write.merge.LoopMergeStrategy;
-import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
-import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
-import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
-
 /**
- *
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -46,6 +46,7 @@ public class StyleDataTest {
         file07 = TestFileUtil.createNewFile("style07.xlsx");
         file03 = TestFileUtil.createNewFile("style03.xls");
         file02_07 = TestFileUtil.createNewFile("style02_07.xlsx");
+        file03 = TestFileUtil.createNewFile("style03.csv");
     }
 
     @Test
@@ -65,7 +66,9 @@ public class StyleDataTest {
             protected WriteCellStyle headCellStyle(Head head) {
                 WriteCellStyle writeCellStyle = new WriteCellStyle();
                 writeCellStyle.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
-                writeCellStyle.setDataFormat((short)0);
+                DataFormatData dataFormatData = new DataFormatData();
+                dataFormatData.setIndex((short)0);
+                writeCellStyle.setDataFormatData(dataFormatData);
                 writeCellStyle.setHidden(false);
                 writeCellStyle.setLocked(true);
                 writeCellStyle.setQuotePrefix(true);

@@ -4,9 +4,10 @@ import java.math.BigDecimal;
 
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.BooleanUtils;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * Cell Value Handler
@@ -18,8 +19,9 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
     @Override
     public void endElement(XlsxReadContext xlsxReadContext, String name) {
         XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
-        CellData tempCellData = xlsxReadSheetHolder.getTempCellData();
+        ReadCellData<?> tempCellData = xlsxReadSheetHolder.getTempCellData();
         StringBuilder tempData = xlsxReadSheetHolder.getTempData();
+        String tempDataString = tempData.toString();
         CellDataTypeEnum oldType = tempCellData.getType();
         switch (oldType) {
             case DIRECT_STRING:
@@ -28,12 +30,26 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
                 tempCellData.setStringValue(tempData.toString());
                 break;
             case BOOLEAN:
+                if (StringUtils.isEmpty(tempDataString)) {
+                    tempCellData.setType(CellDataTypeEnum.EMPTY);
+                    break;
+                }
                 tempCellData.setBooleanValue(BooleanUtils.valueOf(tempData.toString()));
                 break;
             case NUMBER:
             case EMPTY:
-                tempCellData.setType(CellDataTypeEnum.NUMBER);
-                tempCellData.setNumberValue(new BigDecimal(tempData.toString()));
+                if (StringUtils.isEmpty(tempDataString)) {
+                    tempCellData.setType(CellDataTypeEnum.EMPTY);
+                    break;
+                }
+                // fix https://github.com/alibaba/easyexcel/issues/1595
+                if (StringUtils.isNumeric(tempDataString)) {
+                    tempCellData.setType(CellDataTypeEnum.NUMBER);
+                    tempCellData.setNumberValue(BigDecimal.valueOf(Double.parseDouble(tempDataString)));
+                } else {
+                    tempCellData.setType(CellDataTypeEnum.STRING);
+                    tempCellData.setStringValue(tempData.toString());
+                }
                 break;
             default:
                 throw new IllegalStateException("Cannot set values now");
@@ -44,7 +60,7 @@ public abstract class AbstractCellValueTagHandler extends AbstractXlsxTagHandler
 
         if (tempCellData.getStringValue() != null
             && xlsxReadContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
-            tempCellData.setStringValue(tempCellData.getStringValue());
+            tempCellData.setStringValue(tempCellData.getStringValue().trim());
         }
 
         tempCellData.checkEmpty();

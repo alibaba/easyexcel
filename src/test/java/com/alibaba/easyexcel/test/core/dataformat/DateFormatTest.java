@@ -4,21 +4,22 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
 /**
- *
  * @author Jiaju Zhuang
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Slf4j
 public class DateFormatTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DateFormatTest.class);
 
     private static File file07;
     private static File file03;
@@ -45,6 +46,14 @@ public class DateFormatTest {
         List<DateFormatData> list =
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
         for (DateFormatData data : list) {
+            if (data.getDateStringCn() != null && !data.getDateStringCn().equals(data.getDate())) {
+                log.info("date:cn:{},{}", data.getDateStringCn(), data.getDate());
+            }
+            if (data.getNumberStringCn() != null && !data.getNumberStringCn().equals(data.getNumber())) {
+                log.info("number:cn{},{}", data.getNumberStringCn(), data.getNumber());
+            }
+        }
+        for (DateFormatData data : list) {
             Assert.assertEquals(data.getDateStringCn(), data.getDate());
             Assert.assertEquals(data.getNumberStringCn(), data.getNumber());
         }
@@ -53,6 +62,14 @@ public class DateFormatTest {
     private void readUs(File file) {
         List<DateFormatData> list =
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.US).sheet().doReadSync();
+        for (DateFormatData data : list) {
+            if (data.getDateStringUs() != null && !data.getDateStringUs().equals(data.getDate())) {
+                log.info("date:us:{},{}", data.getDateStringUs(), data.getDate());
+            }
+            if (data.getNumberStringUs() != null && !data.getNumberStringUs().equals(data.getNumber())) {
+                log.info("number:us{},{}", data.getNumberStringUs(), data.getNumber());
+            }
+        }
         for (DateFormatData data : list) {
             Assert.assertEquals(data.getDateStringUs(), data.getDate());
             Assert.assertEquals(data.getNumberStringUs(), data.getNumber());
