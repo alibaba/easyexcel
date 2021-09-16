@@ -4,31 +4,34 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- *
  * @author Jiaju Zhuang
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LargeDataTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(LargeDataTest.class);
     private static File fileFill07;
     private static File template07;
+    private static File fileCsv;
     private int i = 0;
 
     @BeforeClass
     public static void init() {
         fileFill07 = TestFileUtil.createNewFile("largefill07.xlsx");
         template07 = TestFileUtil.readFile("large" + File.separator + "fill.xlsx");
+        fileCsv = TestFileUtil.createNewFile("largefileCsv.csv");
     }
 
     @Test
@@ -50,8 +53,27 @@ public class LargeDataTest {
         excelWriter.finish();
     }
 
+    @Test
+    public void t03ReadAndWriteCsv() {
+        // write
+        long start = System.currentTimeMillis();
+        ExcelWriter excelWriter = EasyExcel.write(fileCsv).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet().build();
+        for (int j = 0; j < 100; j++) {
+            excelWriter.write(data(), writeSheet);
+            LOGGER.info("{} write success.", j);
+        }
+        excelWriter.finish();
+        LOGGER.info("CSV large data total time spent:{}", System.currentTimeMillis() - start);
+
+        //  read
+        start = System.currentTimeMillis();
+        EasyExcel.read(fileCsv, LargeData.class, new LargeDataListener()).sheet().doRead();
+        LOGGER.info("CSV large data total time spent:{}", System.currentTimeMillis() - start);
+    }
+
     private List<LargeData> data() {
-        List<LargeData> list = new ArrayList<LargeData>();
+        List<LargeData> list = new ArrayList<>();
         int size = i + 5000;
         for (; i < size; i++) {
             LargeData largeData = new LargeData();

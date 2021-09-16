@@ -2,31 +2,34 @@ package com.alibaba.excel.write.style.column;
 
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-
-import com.alibaba.excel.event.NotRepeatExecutor;
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.write.handler.AbstractCellWriteHandler;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+
+import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * Column width style strategy
  *
  * @author Jiaju Zhuang
  */
-public abstract class AbstractColumnWidthStyleStrategy extends AbstractCellWriteHandler implements NotRepeatExecutor {
+public abstract class AbstractColumnWidthStyleStrategy implements CellWriteHandler {
 
     @Override
-    public String uniqueValue() {
-        return "ColumnWidthStyleStrategy";
+    public void afterCellDispose(CellWriteHandlerContext context) {
+        setColumnWidth(context);
     }
 
-    @Override
-    public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
-        List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        setColumnWidth(writeSheetHolder, cellDataList, cell, head, relativeRowIndex, isHead);
+    /**
+     * Sets the column width when head create
+     *
+     * @param context
+     */
+    protected void setColumnWidth(CellWriteHandlerContext context) {
+        setColumnWidth(context.getWriteSheetHolder(), context.getCellDataList(), context.getCell(),
+            context.getHeadData(), context.getRelativeRowIndex(), context.getHead());
     }
 
     /**
@@ -39,7 +42,9 @@ public abstract class AbstractColumnWidthStyleStrategy extends AbstractCellWrite
      * @param relativeRowIndex
      * @param isHead
      */
-    protected abstract void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell,
-        Head head, Integer relativeRowIndex, Boolean isHead);
+    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<WriteCellData<?>> cellDataList, Cell cell,
+        Head head, Integer relativeRowIndex, Boolean isHead) {
+        throw new UnsupportedOperationException("Custom styles must override the setColumnWidth method.");
+    }
 
 }

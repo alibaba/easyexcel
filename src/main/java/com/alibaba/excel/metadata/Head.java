@@ -3,6 +3,7 @@ package com.alibaba.excel.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.property.ColumnWidthProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
@@ -64,9 +65,15 @@ public class Head {
         this.columnIndex = columnIndex;
         this.fieldName = fieldName;
         if (headNameList == null) {
-            headNameList = new ArrayList<String>();
+            this.headNameList = new ArrayList<>();
+        } else {
+            this.headNameList = headNameList;
+            for (String headName : headNameList) {
+                if (headName == null) {
+                    throw new ExcelGenerateException("head name can not be null.");
+                }
+            }
         }
-        this.headNameList = headNameList;
         this.forceIndex = forceIndex;
         this.forceName = forceName;
     }

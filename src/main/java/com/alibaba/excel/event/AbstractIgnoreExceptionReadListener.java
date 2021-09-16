@@ -8,7 +8,9 @@ import com.alibaba.excel.read.listener.ReadListener;
  * Receives the return of each piece of data parsed
  *
  * @author jipengfei
+ * @deprecated Use directly {@link ReadListener}
  */
+@Deprecated
 public abstract class AbstractIgnoreExceptionReadListener<T> implements ReadListener<T> {
 
     /**
@@ -24,10 +26,8 @@ public abstract class AbstractIgnoreExceptionReadListener<T> implements ReadList
     /**
      * The current method is called when extra information is returned
      *
-     * @param extra
-     *            extra information
-     * @param context
-     *            analysis context
+     * @param extra   extra information
+     * @param context analysis context
      */
     @Override
     public void extra(CellExtra extra, AnalysisContext context) {}

@@ -14,11 +14,14 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
+import lombok.Data;
+
 /**
  * Workbook
  *
  * @author Jiaju Zhuang
  **/
+@Data
 public class ReadWorkbook extends ReadBasicParameter {
     /**
      * Excel type
@@ -27,19 +30,19 @@ public class ReadWorkbook extends ReadBasicParameter {
     /**
      * Read InputStream
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private InputStream inputStream;
     /**
      * Read file
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private File file;
     /**
      * Mandatory use 'inputStream' .Default is false.
      * <p>
-     * if false,Will transfer 'inputStream' to temporary files to improve efficiency
+     * if false, Will transfer 'inputStream' to temporary files to improve efficiency
      */
     private Boolean mandatoryUseInputStream;
     /**
@@ -91,141 +94,4 @@ public class ReadWorkbook extends ReadBasicParameter {
      * @see CellExtraTypeEnum
      */
     private Set<CellExtraTypeEnum> extraReadSet;
-    /**
-     * The default is all excel objects.Default is true.
-     * <p>
-     * if true , you can use {@link com.alibaba.excel.annotation.ExcelIgnore} ignore a field.
-     * <p>
-     * if false , you must use {@link com.alibaba.excel.annotation.ExcelProperty} to use a filed.
-     *
-     * @deprecated Just to be compatible with historical data, The default is always going to be convert all filed.
-     */
-    @Deprecated
-    private Boolean convertAllFiled;
-
-    /**
-     * List is returned by default, now map is returned by default
-     */
-    @Deprecated
-    private Boolean defaultReturnMap;
-
-    public ExcelTypeEnum getExcelType() {
-        return excelType;
-    }
-
-    public void setExcelType(ExcelTypeEnum excelType) {
-        this.excelType = excelType;
-    }
-
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public Boolean getAutoCloseStream() {
-        return autoCloseStream;
-    }
-
-    public void setAutoCloseStream(Boolean autoCloseStream) {
-        this.autoCloseStream = autoCloseStream;
-    }
-
-    public Object getCustomObject() {
-        return customObject;
-    }
-
-    public void setCustomObject(Object customObject) {
-        this.customObject = customObject;
-    }
-
-    public Boolean getMandatoryUseInputStream() {
-        return mandatoryUseInputStream;
-    }
-
-    public void setMandatoryUseInputStream(Boolean mandatoryUseInputStream) {
-        this.mandatoryUseInputStream = mandatoryUseInputStream;
-    }
-
-    public ReadCache getReadCache() {
-        return readCache;
-    }
-
-    public void setReadCache(ReadCache readCache) {
-        this.readCache = readCache;
-    }
-
-    public Boolean getConvertAllFiled() {
-        return convertAllFiled;
-    }
-
-    public void setConvertAllFiled(Boolean convertAllFiled) {
-        this.convertAllFiled = convertAllFiled;
-    }
-
-    public Boolean getDefaultReturnMap() {
-        return defaultReturnMap;
-    }
-
-    public void setDefaultReturnMap(Boolean defaultReturnMap) {
-        this.defaultReturnMap = defaultReturnMap;
-    }
-
-    public Boolean getIgnoreEmptyRow() {
-        return ignoreEmptyRow;
-    }
-
-    public void setIgnoreEmptyRow(Boolean ignoreEmptyRow) {
-        this.ignoreEmptyRow = ignoreEmptyRow;
-    }
-
-    public ReadCacheSelector getReadCacheSelector() {
-        return readCacheSelector;
-    }
-
-    public void setReadCacheSelector(ReadCacheSelector readCacheSelector) {
-        this.readCacheSelector = readCacheSelector;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getXlsxSAXParserFactoryName() {
-        return xlsxSAXParserFactoryName;
-    }
-
-    public void setXlsxSAXParserFactoryName(String xlsxSAXParserFactoryName) {
-        this.xlsxSAXParserFactoryName = xlsxSAXParserFactoryName;
-    }
-
-    public Boolean getUseDefaultListener() {
-        return useDefaultListener;
-    }
-
-    public void setUseDefaultListener(Boolean useDefaultListener) {
-        this.useDefaultListener = useDefaultListener;
-    }
-
-    public Set<CellExtraTypeEnum> getExtraReadSet() {
-        return extraReadSet;
-    }
-
-    public void setExtraReadSet(Set<CellExtraTypeEnum> extraReadSet) {
-        this.extraReadSet = extraReadSet;
-    }
 }

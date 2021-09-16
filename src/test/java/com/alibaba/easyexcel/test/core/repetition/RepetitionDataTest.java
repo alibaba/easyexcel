@@ -4,11 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
@@ -17,8 +12,12 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
 /**
- *
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -26,15 +25,19 @@ public class RepetitionDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
     private static File fileTable07;
     private static File fileTable03;
+    private static File fileTableCsv;
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("repetition07.xlsx");
         file03 = TestFileUtil.createNewFile("repetition03.xls");
+        fileCsv = TestFileUtil.createNewFile("repetitionCsv.csv");
         fileTable07 = TestFileUtil.createNewFile("repetitionTable07.xlsx");
         fileTable03 = TestFileUtil.createNewFile("repetitionTable03.xls");
+        fileTableCsv = TestFileUtil.createNewFile("repetitionTableCsv.csv");
     }
 
     @Test
@@ -47,6 +50,11 @@ public class RepetitionDataTest {
         readAndWrite(file03);
     }
 
+    @Test
+    public void t03ReadAndWriteCsv() {
+        readAndWrite(fileCsv);
+    }
+
     private void readAndWrite(File file) {
         ExcelWriter excelWriter = EasyExcel.write(file, RepetitionData.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet(0).build();
@@ -57,13 +65,18 @@ public class RepetitionDataTest {
     }
 
     @Test
-    public void t03ReadAndWriteTable07() {
+    public void t11ReadAndWriteTable07() {
         readAndWriteTable(fileTable07);
     }
 
     @Test
-    public void t04ReadAndWriteTable03() {
+    public void t12ReadAndWriteTable03() {
         readAndWriteTable(fileTable03);
+    }
+
+    @Test
+    public void t13ReadAndWriteTableCsv() {
+        readAndWriteTable(fileTableCsv);
     }
 
     private void readAndWriteTable(File file) {
