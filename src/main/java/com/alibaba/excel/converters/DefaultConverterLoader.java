@@ -117,7 +117,6 @@ public class DefaultConverterLoader {
         putWriteConverter(new ByteArrayImageConverter());
         putWriteConverter(new BoxingByteArrayImageConverter());
         putWriteConverter(new UrlImageConverter());
-        putWriteConverter(new BigIntegerStringConverter());
 
         // In some cases, it must be converted to string
         putWriteStringConverter(new BigDecimalStringConverter());
@@ -130,6 +129,7 @@ public class DefaultConverterLoader {
         putWriteStringConverter(new LongStringConverter());
         putWriteStringConverter(new ShortStringConverter());
         putWriteStringConverter(new StringStringConverter());
+        putWriteStringConverter(new BigIntegerStringConverter());
     }
 
     /**
