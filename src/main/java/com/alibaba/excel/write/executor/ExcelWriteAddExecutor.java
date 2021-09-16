@@ -98,7 +98,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         if (dataIndex >= oneRowData.size()) {
             return;
         }
-        if (cellIndex != 0) {
+        if (dataIndex != 0) {
             cellIndex++;
         }
         int size = oneRowData.size() - dataIndex;
