@@ -82,6 +82,36 @@ public class Lock2Test {
             .doWrite(data());
     }
 
+    @Test
+    public void simpleWrite() {
+        String fileName = TestFileUtil.getPath() + System.currentTimeMillis() + ".xlsx";
+        System.out.println(fileName);
+        EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
+    }
+
+    private List<List<String>> head() {
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> head0 = new ArrayList<String>();
+        head0.add("表头");
+
+        list.add(head0);
+        List<String> head1 = new ArrayList<String>();
+        head1.add("表头2");
+
+        list.add(head1);
+        return list;
+    }
+
+    private List<List<Object>> dataList() {
+        List<List<Object>> list = new ArrayList<List<Object>>();
+        List<Object> data = new ArrayList<Object>();
+        data.add("字符串");
+        data.add(new Date());
+        //data.add(0.56);
+        list.add(data);
+        return list;
+    }
+
     private List<DemoData> data() {
         List<DemoData> list = new ArrayList<DemoData>();
         for (int i = 0; i < 10; i++) {

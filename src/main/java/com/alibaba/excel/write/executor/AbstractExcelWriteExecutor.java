@@ -75,6 +75,10 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         // Fill in style information
         fillStyle(cell, cellData.getWriteCellStyle());
 
+        // Fill index
+        cellData.setRowIndex(cell.getRowIndex());
+        cellData.setColumnIndex(cell.getColumnIndex());
+
         if (cellData.getType() == null) {
             cellData.setType(CellDataTypeEnum.EMPTY);
         }
