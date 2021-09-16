@@ -5,6 +5,7 @@ import java.util.Map;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalBooleanConverter;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalNumberConverter;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalStringConverter;
+import com.alibaba.excel.converters.biginteger.BigIntegerStringConverter;
 import com.alibaba.excel.converters.booleanconverter.BooleanBooleanConverter;
 import com.alibaba.excel.converters.booleanconverter.BooleanNumberConverter;
 import com.alibaba.excel.converters.booleanconverter.BooleanStringConverter;
@@ -95,6 +96,8 @@ public class DefaultConverterLoader {
         putAllConverter(new StringNumberConverter());
         putAllConverter(new StringStringConverter());
         putAllConverter(new StringErrorConverter());
+
+        putAllConverter(new BigIntegerStringConverter());
     }
 
     private static void initDefaultWriteConverter() {
@@ -114,6 +117,7 @@ public class DefaultConverterLoader {
         putWriteConverter(new ByteArrayImageConverter());
         putWriteConverter(new BoxingByteArrayImageConverter());
         putWriteConverter(new UrlImageConverter());
+        putWriteConverter(new BigIntegerStringConverter());
 
         // In some cases, it must be converted to string
         putWriteStringConverter(new BigDecimalStringConverter());
