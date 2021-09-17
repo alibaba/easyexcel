@@ -33,6 +33,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
+          key: m2
+          restore-keys: m2
       - name: Chmod
         run:  chmod +x mvnw
       - name: Maven Build
