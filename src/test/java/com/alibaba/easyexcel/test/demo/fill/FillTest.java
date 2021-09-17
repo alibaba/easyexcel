@@ -72,6 +72,7 @@ public class FillTest {
         EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(data());
 
         // 方案2 分多次 填充 会使用文件缓存（省内存） jdk8
+        // since: 3.0.0-beta1
         fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
         EasyExcel.write(fileName)
             .withTemplate(templateFileName)

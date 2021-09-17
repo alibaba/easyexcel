@@ -17,7 +17,7 @@ public class BeanMapUtils {
      * <code>BeanMap.Generator</code> instead of this static method.
      *
      * Custom naming policy to prevent null pointer exceptions.
-     * <url>https://github.com/alibaba/easyexcel/issues/2064</url>
+     * see: https://github.com/alibaba/easyexcel/issues/2064
      *
      * @param bean the JavaBean underlying the map
      * @return a new <code>BeanMap</code> instance

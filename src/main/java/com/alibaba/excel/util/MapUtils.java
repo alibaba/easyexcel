@@ -17,9 +17,9 @@ public class MapUtils {
     /**
      * Creates a <i>mutable</i>, empty {@code HashMap} instance.
      *
-     * <p><b>Note:</b> if mutability is not required, use {@link ImmutableMap#of()} instead.
+     * <p><b>Note:</b> if mutability is not required, use ImmutableMap.of() instead.
      *
-     * <p><b>Note:</b> if {@code K} is an {@code enum} type, use {@link #newEnumMap} instead.
+     * <p><b>Note:</b> if {@code K} is an {@code enum} type, use newEnumMap instead.
      *
      * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and should be treated as
      * deprecated. Instead, use the {@code HashMap} constructor directly, taking advantage of the new
@@ -35,7 +35,7 @@ public class MapUtils {
      * Creates a <i>mutable</i>, empty {@code TreeMap} instance using the natural ordering of its
      * elements.
      *
-     * <p><b>Note:</b> if mutability is not required, use {@link ImmutableSortedMap#of()} instead.
+     * <p><b>Note:</b> if mutability is not required, use ImmutableSortedMap.of() instead.
      *
      * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and should be treated as
      * deprecated. Instead, use the {@code TreeMap} constructor directly, taking advantage of the new
