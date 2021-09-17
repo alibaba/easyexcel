@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.core.converter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public class ReadAllConverterDataListener extends AnalysisEventListener<ReadAllC
         Assert.assertEquals(data.getBigDecimalBoolean().doubleValue(), BigDecimal.ONE.doubleValue(), 0.0);
         Assert.assertEquals(data.getBigDecimalNumber().doubleValue(), BigDecimal.ONE.doubleValue(), 0.0);
         Assert.assertEquals(data.getBigDecimalString().doubleValue(), BigDecimal.ONE.doubleValue(), 0.0);
+        Assert.assertEquals(data.getBigIntegerBoolean().intValue(), BigInteger.ONE.intValue(), 0.0);
+        Assert.assertEquals(data.getBigIntegerNumber().intValue(), BigInteger.ONE.intValue(), 0.0);
+        Assert.assertEquals(data.getBigIntegerString().intValue(), BigInteger.ONE.intValue(), 0.0);
         Assert.assertTrue(data.getBooleanBoolean());
         Assert.assertTrue(data.getBooleanNumber());
         Assert.assertTrue(data.getBooleanString());
@@ -47,6 +51,8 @@ public class ReadAllConverterDataListener extends AnalysisEventListener<ReadAllC
         } catch (ParseException e) {
             throw new ExcelCommonException("Test Exception", e);
         }
+        Assert.assertEquals(data.getLocalDateTimeNumber(), DateUtils.parseLocalDateTime("2020-01-01 01:01:01", null, null));
+        Assert.assertEquals(data.getLocalDateTimeString(), DateUtils.parseLocalDateTime("2020-01-01 01:01:01", null, null));
         Assert.assertEquals(data.getDoubleBoolean(), 1.0, 0.0);
         Assert.assertEquals(data.getDoubleNumber(), 1.0, 0.0);
         Assert.assertEquals(data.getDoubleString(), 1.0, 0.0);

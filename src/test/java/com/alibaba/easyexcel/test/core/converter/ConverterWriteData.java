@@ -1,6 +1,8 @@
 package com.alibaba.easyexcel.test.core.converter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -15,10 +17,14 @@ import lombok.Data;
 public class ConverterWriteData {
     @ExcelProperty("日期")
     private Date date;
+    @ExcelProperty("本地日期")
+    private LocalDateTime localDateTime;
     @ExcelProperty("布尔")
     private Boolean booleanData;
     @ExcelProperty("大数")
     private BigDecimal bigDecimal;
+    @ExcelProperty("大整数")
+    private BigInteger bigInteger;
     @ExcelProperty("长整型")
     private long longData;
     @ExcelProperty("整型")

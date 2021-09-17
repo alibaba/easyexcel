@@ -3,6 +3,7 @@ package com.alibaba.easyexcel.test.core.converter;
 import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,8 +113,10 @@ public class ConverterDataTest {
         List<ConverterWriteData> list = new ArrayList<ConverterWriteData>();
         ConverterWriteData converterWriteData = new ConverterWriteData();
         converterWriteData.setDate(DateUtils.parseDate("2020-01-01 01:01:01"));
+        converterWriteData.setLocalDateTime(DateUtils.parseLocalDateTime("2020-01-01 01:01:01", null, null));
         converterWriteData.setBooleanData(Boolean.TRUE);
         converterWriteData.setBigDecimal(BigDecimal.ONE);
+        converterWriteData.setBigInteger(BigInteger.ONE);
         converterWriteData.setLongData(1L);
         converterWriteData.setIntegerData(1);
         converterWriteData.setShortData((short)1);

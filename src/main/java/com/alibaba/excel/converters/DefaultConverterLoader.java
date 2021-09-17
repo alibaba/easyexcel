@@ -5,6 +5,8 @@ import java.util.Map;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalBooleanConverter;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalNumberConverter;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalStringConverter;
+import com.alibaba.excel.converters.biginteger.BigIntegerBooleanConverter;
+import com.alibaba.excel.converters.biginteger.BigIntegerNumberConverter;
 import com.alibaba.excel.converters.biginteger.BigIntegerStringConverter;
 import com.alibaba.excel.converters.booleanconverter.BooleanBooleanConverter;
 import com.alibaba.excel.converters.booleanconverter.BooleanNumberConverter;
@@ -28,6 +30,9 @@ import com.alibaba.excel.converters.inputstream.InputStreamImageConverter;
 import com.alibaba.excel.converters.integer.IntegerBooleanConverter;
 import com.alibaba.excel.converters.integer.IntegerNumberConverter;
 import com.alibaba.excel.converters.integer.IntegerStringConverter;
+import com.alibaba.excel.converters.localdatetime.LocalDateNumberConverter;
+import com.alibaba.excel.converters.localdatetime.LocalDateTimeDateConverter;
+import com.alibaba.excel.converters.localdatetime.LocalDateTimeStringConverter;
 import com.alibaba.excel.converters.longconverter.LongBooleanConverter;
 import com.alibaba.excel.converters.longconverter.LongNumberConverter;
 import com.alibaba.excel.converters.longconverter.LongStringConverter;
@@ -61,6 +66,10 @@ public class DefaultConverterLoader {
         putAllConverter(new BigDecimalNumberConverter());
         putAllConverter(new BigDecimalStringConverter());
 
+        putAllConverter(new BigIntegerBooleanConverter());
+        putAllConverter(new BigIntegerNumberConverter());
+        putAllConverter(new BigIntegerStringConverter());
+
         putAllConverter(new BooleanBooleanConverter());
         putAllConverter(new BooleanNumberConverter());
         putAllConverter(new BooleanStringConverter());
@@ -71,6 +80,9 @@ public class DefaultConverterLoader {
 
         putAllConverter(new DateNumberConverter());
         putAllConverter(new DateStringConverter());
+
+        putAllConverter(new LocalDateNumberConverter());
+        putAllConverter(new LocalDateTimeStringConverter());
 
         putAllConverter(new DoubleBooleanConverter());
         putAllConverter(new DoubleNumberConverter());
@@ -103,9 +115,11 @@ public class DefaultConverterLoader {
     private static void initDefaultWriteConverter() {
         defaultWriteConverter = MapUtils.newHashMapWithExpectedSize(40);
         putWriteConverter(new BigDecimalNumberConverter());
+        putWriteConverter(new BigIntegerNumberConverter());
         putWriteConverter(new BooleanBooleanConverter());
         putWriteConverter(new ByteNumberConverter());
         putWriteConverter(new DateDateConverter());
+        putWriteConverter(new LocalDateTimeDateConverter());
         putWriteConverter(new DoubleNumberConverter());
         putWriteConverter(new FloatNumberConverter());
         putWriteConverter(new IntegerNumberConverter());
@@ -120,9 +134,11 @@ public class DefaultConverterLoader {
 
         // In some cases, it must be converted to string
         putWriteStringConverter(new BigDecimalStringConverter());
+        putWriteStringConverter(new BigIntegerStringConverter());
         putWriteStringConverter(new BooleanStringConverter());
         putWriteStringConverter(new ByteStringConverter());
         putWriteStringConverter(new DateStringConverter());
+        putWriteStringConverter(new LocalDateTimeStringConverter());
         putWriteStringConverter(new DoubleStringConverter());
         putWriteStringConverter(new FloatStringConverter());
         putWriteStringConverter(new IntegerStringConverter());
