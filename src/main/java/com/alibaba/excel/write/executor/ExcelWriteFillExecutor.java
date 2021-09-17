@@ -473,7 +473,12 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             }
             lastPrepareDataIndex = suffixIndex + 1;
         }
-
+        // fix https://github.com/alibaba/easyexcel/issues/1552
+        // When read template, XLSX data may be in `is` labels, and set the time set in `v` label, lead to can't set
+        // up successfully, so all data format to empty first.
+        if (analysisCell != null && CollectionUtils.isNotEmpty(analysisCell.getVariableList())) {
+            cell.setBlank();
+        }
         return dealAnalysisCell(analysisCell, value, rowIndex, lastPrepareDataIndex, length, firstRowCache,
             preparedData);
     }

@@ -27,6 +27,7 @@
 * 修复不创建对象写入数据异常 [Issue #1702](https://github.com/alibaba/easyexcel/issues/1702)
 * 修复头和数据对象不一致会覆盖的问题 [Issue #1870](https://github.com/alibaba/easyexcel/issues/1870)
 * 修复忽略字段后可能排序不一致的问题
+* 修改填充时，无法使用生成的模板 [Issue #1552](https://github.com/alibaba/easyexcel/issues/1552)
 
 
 # 2.2.11
