@@ -39,7 +39,9 @@ public class PoiTest {
         SXSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
         LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
         SXSSFRow row = xssfSheet.getRow(0);
+        LOGGER.info("dd{}",row.getCell(0).getColumnIndex());
         Date date = row.getCell(1).getDateCellValue();
+
 
     }
 
@@ -51,6 +53,9 @@ public class PoiTest {
         XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
         LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
         XSSFRow row = xssfSheet.getRow(0);
+        LOGGER.info("dd{}",row.getCell(0).getRow().getRowNum());
+        LOGGER.info("dd{}",xssfSheet.getLastRowNum());
+
         Date date = row.getCell(1).getDateCellValue();
         LOGGER.info("date{}",date);
     }
