@@ -29,6 +29,9 @@
 * 修复忽略字段后可能排序不一致的问题
 
 
+# 2.2.11
+* 修复有些xlsx解析失败的bug [Issue #1595](https://github.com/alibaba/easyexcel/issues/1595)
+
 # 2.2.10
 
 * 修复读取的时候用string接收数字 可能四舍五入不一致的bug
