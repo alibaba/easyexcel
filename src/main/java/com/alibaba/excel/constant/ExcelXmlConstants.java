@@ -54,4 +54,23 @@ public class ExcelXmlConstants {
      */
     public static final String CELL_RANGE_SPLIT = ":";
 
+    /**
+     * A image's cell anchor parameters
+     */
+    public static final String IMAGE_ANCHOR_FROM = "xdr:from";
+    public static final String IMAGE_ANCHOR_TO = "xdr:to";
+    public static final String IMAGE_ANCHOR_COL = "xdr:col";
+    public static final String IMAGE_ANCHOR_COLOFF = "xdr:colOff";
+    public static final String IMAGE_ANCHOR_ROW = "xdr:row";
+    public static final String IMAGE_ANCHOR_ROWOFF = "xdr:rowOff";
+
+    /**
+     * Relationship ID between a worksheet and it's one image
+     */
+    public static final String IMAGE_REF_ID = "a:blip";
+
+    public static final String SHEET_TAG = "sheet";
+
+    public static final String IMAGE_EMBED_TAG ="r:embed";
+
 }
