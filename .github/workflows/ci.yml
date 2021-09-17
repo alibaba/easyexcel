@@ -30,9 +30,9 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Cache Maven
-          uses: actions/cache@v2.1.6
-          with:
-            path: ~/.m2
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.m2
       - name: CI
         run: ./mvnw install -B -V -Dmaven.test.skip=true
       - name: Java Doc
