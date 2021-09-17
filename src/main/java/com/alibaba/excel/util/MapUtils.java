@@ -65,7 +65,7 @@ public class MapUtils {
     /**
      * Creates a <i>mutable</i>, empty, insertion-ordered {@code LinkedHashMap} instance.
      *
-     * <p><b>Note:</b> if mutability is not required, use {@link ImmutableMap#of()} instead.
+     * <p><b>Note:</b> if mutability is not required, use  ImmutableMap.of() instead.
      *
      * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and should be treated as
      * deprecated. Instead, use the {@code LinkedHashMap} constructor directly, taking advantage of
