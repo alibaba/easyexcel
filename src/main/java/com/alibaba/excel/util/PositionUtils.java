@@ -14,6 +14,7 @@ public class PositionUtils {
     private static final Pattern CELL_REF_PATTERN = Pattern.compile("(\\$?[A-Z]+)?" + "(\\$?[0-9]+)?",
         Pattern.CASE_INSENSITIVE);
     private static final char SHEET_NAME_DELIMITER = '!';
+    private static final char REDUNDANT_CHARACTERS = '$';
 
     private PositionUtils() {}
 
@@ -63,7 +64,7 @@ public class PositionUtils {
             }
             String col = matcher.group(1);
 
-            if (col.length() > 0 && col.charAt(0) == '$') {
+            if (col.length() > 0 && col.charAt(0) == REDUNDANT_CHARACTERS) {
                 col = col.substring(1);
             }
             if (col.length() == 0) {
