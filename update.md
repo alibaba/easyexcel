@@ -30,7 +30,7 @@
 * 修改填充时，无法使用生成的模板 [Issue #1552](https://github.com/alibaba/easyexcel/issues/1552)
 * 修改填充可以不自动继承样式 [Issue #1710](https://github.com/alibaba/easyexcel/issues/1710)
 * 修复填充数据不能为空的问题 [Issue #1703](https://github.com/alibaba/easyexcel/issues/1703)
-
+* 新增部分jdk8特性
 
 # 2.2.11
 * 修复有些xlsx解析失败的bug [Issue #1595](https://github.com/alibaba/easyexcel/issues/1595)
