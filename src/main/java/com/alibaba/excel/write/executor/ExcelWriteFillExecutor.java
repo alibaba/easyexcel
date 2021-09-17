@@ -84,7 +84,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             data = new HashMap<String, Object>(16);
         }
         if (fillConfig == null) {
-            fillConfig = FillConfig.builder().build(true);
+            fillConfig = FillConfig.builder().build();
         }
         fillConfig.init();
 
@@ -301,9 +301,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (isOriginalCell) {
             collectionFieldStyleMap.put(analysisCell, cell.getCellStyle());
         } else {
-            CellStyle cellStyle = collectionFieldStyleMap.get(analysisCell);
-            if (cellStyle != null) {
-                cell.setCellStyle(cellStyle);
+            if (fillConfig.getAutoStyle()) {
+                CellStyle cellStyle = collectionFieldStyleMap.get(analysisCell);
+                if (cellStyle != null) {
+                    cell.setCellStyle(cellStyle);
+                }
             }
         }
         return cell;
@@ -359,9 +361,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             collectionRowHeightCache.put(currentUniqueDataFlag, row.getHeight());
             return;
         }
-        Short rowHeight = collectionRowHeightCache.get(currentUniqueDataFlag);
-        if (rowHeight != null) {
-            row.setHeight(rowHeight);
+        if (fillConfig.getAutoStyle()) {
+            Short rowHeight = collectionRowHeightCache.get(currentUniqueDataFlag);
+            if (rowHeight != null) {
+                row.setHeight(rowHeight);
+            }
         }
     }
 

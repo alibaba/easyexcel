@@ -32,12 +32,11 @@ public class Lock2Test {
 
     @Test
     public void test() throws Exception {
-        assert 1 != 1;
         // File file = TestFileUtil.readUserHomeFile("test/test4.xlsx");
         //        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
         File file = new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/src/test/resources/converter/converter07.xlsx");
 
-        List<Object> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/olay (1).xlsx").sheet(0).doReadSync();
+        List<Object> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/1 (2).xlsx").sheet(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (Object data : list) {
             LOGGER.info("返回数据：{}", CollectionUtils.size(data));
