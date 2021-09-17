@@ -1,28 +1,26 @@
 package com.alibaba.easyexcel.test.temp;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.poi.hssf.util.CellReference;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
+import com.alibaba.easyexcel.test.demo.write.DemoData;
+import com.alibaba.easyexcel.test.demo.write.IndexData;
+import com.alibaba.easyexcel.test.temp.data.DataType;
+import com.alibaba.easyexcel.test.temp.data.HeadType;
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
+import com.alibaba.excel.write.metadata.WriteSheet;
+
+import lombok.Data;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.easyexcel.test.demo.write.DemoData;
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.alibaba.fastjson.JSON;
 
 /**
  * 临时测试
@@ -41,7 +39,8 @@ public class WriteV33Test {
         OnceAbsoluteMergeStrategy onceAbsoluteMergeStrategy = new OnceAbsoluteMergeStrategy(2, 2, 0, 1);
 
         // 这里 指定文件
-        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).registerWriteHandler(onceAbsoluteMergeStrategy).build();
+        ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).registerWriteHandler(
+            onceAbsoluteMergeStrategy).build();
         WriteSheet writeSheet1 = EasyExcel.writerSheet(1, "模板1").build();
         WriteSheet writeSheet2 = EasyExcel.writerSheet(2, "模板2").build();
         WriteSheet writeSheet3 = EasyExcel.writerSheet(3, "模板3").build();
@@ -62,6 +61,67 @@ public class WriteV33Test {
             list.add(data);
         }
         return list;
+    }
+
+    @Test
+    public void test33() throws Exception {
+        List<DataType> data = getData();
+        String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+
+        ExcelWriter excelWriter = null;
+        excelWriter = EasyExcel.write(fileName).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet(1, "test")
+            .head(HeadType.class)
+            .build();
+        excelWriter.write(data, writeSheet);
+        excelWriter.finish();
+    }
+
+    private List<DataType> getData() {
+        DataType vo = new DataType();
+        vo.setId(738);
+        vo.setFirstRemark("1222");
+        vo.setSecRemark("22222");
+        return Collections.singletonList(vo);
+    }
+
+    @Test
+    public void indexWrite() {
+        String fileName = TestFileUtil.getPath() + "indexWrite" + System.currentTimeMillis() + ".xlsx";
+
+        Man man = new Man();
+        man.setAddr("武汉");
+        man.setName("张三");
+        ExcelWriter excelWriter = EasyExcel.write(fileName, Humen.class).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet("test").build();
+        excelWriter.write(Collections.singletonList(man), writeSheet);
+        // 千万别忘记finish 会帮忙关闭流
+        excelWriter.finish();
+    }
+
+    private List<IndexData> indexData() {
+        List<IndexData> list = new ArrayList<IndexData>();
+        for (int i = 0; i < 10; i++) {
+            IndexData data = new IndexData();
+            data.setString("字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(0.56);
+            list.add(data);
+        }
+        return list;
+    }
+
+    @Data
+    static  class Humen{
+        @ExcelProperty("名字")
+        private String name;
+    }
+
+    @Data
+    static
+    class Man extends Humen{
+        @ExcelProperty("地址")
+        private String addr;
     }
 
 }

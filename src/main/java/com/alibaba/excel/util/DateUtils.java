@@ -3,8 +3,11 @@ package com.alibaba.excel.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -17,16 +20,16 @@ public class DateUtils {
     /**
      * Is a cache of dates
      */
-    private static final ThreadLocal<Map<Integer, Boolean>> DATE_THREAD_LOCAL =
-        new ThreadLocal<Map<Integer, Boolean>>();
+    private static final ThreadLocal<Map<Short, Boolean>> DATE_THREAD_LOCAL =
+        new ThreadLocal<>();
     /**
      * Is a cache of dates
      */
     private static final ThreadLocal<Map<String, SimpleDateFormat>> DATE_FORMAT_THREAD_LOCAL =
-        new ThreadLocal<Map<String, SimpleDateFormat>>();
+        new ThreadLocal<>();
 
     /**
-     * The following patterns are used in {@link #isADateFormat(Integer, String)}
+     * The following patterns are used in {@link #isADateFormat(Short, String)}
      */
     private static final Pattern date_ptrn1 = Pattern.compile("^\\[\\$\\-.*?\\]");
     private static final Pattern date_ptrn2 = Pattern.compile("^\\[[a-zA-Z]+\\]");
@@ -43,10 +46,14 @@ public class DateUtils {
 
     public static final String DATE_FORMAT_10 = "yyyy-MM-dd";
     public static final String DATE_FORMAT_14 = "yyyyMMddHHmmss";
+    public static final String DATE_FORMAT_16 = "yyyy-MM-dd HH:mm";
+    public static final String DATE_FORMAT_16_FORWARD_SLASH = "yyyy/MM/dd HH:mm";
     public static final String DATE_FORMAT_17 = "yyyyMMdd HH:mm:ss";
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
     private static final String MINUS = "-";
+
+    public static String defaultDateFormat = DATE_FORMAT_19;
 
     private DateUtils() {}
 
@@ -69,6 +76,25 @@ public class DateUtils {
      * convert string to date
      *
      * @param dateString
+     * @param dateFormat
+     * @param local
+     * @return
+     */
+    public static LocalDateTime parseLocalDateTime(String dateString, String dateFormat, Locale local) {
+        if (StringUtils.isEmpty(dateFormat)) {
+            dateFormat = switchDateFormat(dateString);
+        }
+        if (local == null) {
+            return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat));
+        } else {
+            return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, local));
+        }
+    }
+
+    /**
+     * convert string to date
+     *
+     * @param dateString
      * @return
      * @throws ParseException
      */
@@ -82,7 +108,7 @@ public class DateUtils {
      * @param dateString
      * @return
      */
-    private static String switchDateFormat(String dateString) {
+    public static String switchDateFormat(String dateString) {
         int length = dateString.length();
         switch (length) {
             case 19:
@@ -90,6 +116,12 @@ public class DateUtils {
                     return DATE_FORMAT_19;
                 } else {
                     return DATE_FORMAT_19_FORWARD_SLASH;
+                }
+            case 16:
+                if (dateString.contains(MINUS)) {
+                    return DATE_FORMAT_16;
+                } else {
+                    return DATE_FORMAT_16_FORWARD_SLASH;
                 }
             case 17:
                 return DATE_FORMAT_17;
@@ -123,12 +155,33 @@ public class DateUtils {
      */
     public static String format(Date date, String dateFormat) {
         if (date == null) {
-            return "";
+            return null;
         }
         if (StringUtils.isEmpty(dateFormat)) {
-            dateFormat = DATE_FORMAT_19;
+            dateFormat = defaultDateFormat;
         }
         return getCacheDateFormat(dateFormat).format(date);
+    }
+
+    /**
+     * Format date
+     *
+     * @param date
+     * @param dateFormat
+     * @return
+     */
+    public static String format(LocalDateTime date, String dateFormat, Locale local) {
+        if (date == null) {
+            return null;
+        }
+        if (StringUtils.isEmpty(dateFormat)) {
+            dateFormat = defaultDateFormat;
+        }
+        if (local == null) {
+            return date.format(DateTimeFormatter.ofPattern(dateFormat));
+        } else {
+            return date.format(DateTimeFormatter.ofPattern(dateFormat, local));
+        }
     }
 
     private static DateFormat getCacheDateFormat(String dateFormat) {
@@ -154,13 +207,13 @@ public class DateUtils {
      * @param formatString
      * @return
      */
-    public static boolean isADateFormat(Integer formatIndex, String formatString) {
+    public static boolean isADateFormat(Short formatIndex, String formatString) {
         if (formatIndex == null) {
             return false;
         }
-        Map<Integer, Boolean> isDateCache = DATE_THREAD_LOCAL.get();
+        Map<Short, Boolean> isDateCache = DATE_THREAD_LOCAL.get();
         if (isDateCache == null) {
-            isDateCache = new HashMap<Integer, Boolean>();
+            isDateCache = MapUtils.newHashMap();
             DATE_THREAD_LOCAL.set(isDateCache);
         } else {
             Boolean isDateCachedData = isDateCache.get(formatIndex);
@@ -180,7 +233,7 @@ public class DateUtils {
      * @param formatString
      * @return
      */
-    public static boolean isADateFormatUncached(Integer formatIndex, String formatString) {
+    public static boolean isADateFormatUncached(Short formatIndex, String formatString) {
         // First up, is this an internal date format?
         if (isInternalDateFormat(formatIndex)) {
             return true;
@@ -256,9 +309,9 @@ public class DateUtils {
     /**
      * Given a format ID this will check whether the format represents an internal excel date format or not.
      *
-     * @see #isADateFormat(Integer, String)
+     * @see #isADateFormat(Short, String)
      */
-    public static boolean isInternalDateFormat(int format) {
+    public static boolean isInternalDateFormat(short format) {
         switch (format) {
             // Internal Date Formats as described on page 427 in
             // Microsoft Excel Dev's Kit...

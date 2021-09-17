@@ -9,20 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.util.CollectionUtils;
+import com.alibaba.excel.util.BeanMapUtils;
+import com.alibaba.excel.util.FieldUtils;
+import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
@@ -30,7 +27,13 @@ import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
-import net.sf.cglib.beans.BeanMap;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.hssf.usermodel.PoiUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  * Fill the data into excel
@@ -48,32 +51,25 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     /**
      * Fields to replace in the template
      */
-    private final Map<String, List<AnalysisCell>> templateAnalysisCache = new HashMap<String, List<AnalysisCell>>(8);
+    private final Map<String, List<AnalysisCell>> templateAnalysisCache = MapUtils.newHashMap();
     /**
      * Collection fields to replace in the template
      */
-    private final Map<String, List<AnalysisCell>> templateCollectionAnalysisCache =
-        new HashMap<String, List<AnalysisCell>>(8);
+    private final Map<String, List<AnalysisCell>> templateCollectionAnalysisCache = MapUtils.newHashMap();
     /**
      * Style cache for collection fields
      */
-    private final Map<String, Map<AnalysisCell, CellStyle>> collectionFieldStyleCache =
-        new HashMap<String, Map<AnalysisCell, CellStyle>>(8);
+    private final Map<String, Map<AnalysisCell, CellStyle>> collectionFieldStyleCache = MapUtils.newHashMap();
     /**
      * Row height cache for collection
      */
-    private final Map<String, Short> collectionRowHeightCache = new HashMap<String, Short>(8);
+    private final Map<String, Short> collectionRowHeightCache = MapUtils.newHashMap();
     /**
      * Last index cache for collection fields
      */
-    private final Map<String, Map<AnalysisCell, Integer>> collectionLastIndexCache =
-        new HashMap<String, Map<AnalysisCell, Integer>>(8);
+    private final Map<String, Map<AnalysisCell, Integer>> collectionLastIndexCache = MapUtils.newHashMap();
 
-    private final Map<String, Integer> relativeRowIndexMap = new HashMap<String, Integer>(8);
-    /**
-     * The data prefix that is populated this time
-     */
-    private String currentDataPrefix;
+    private final Map<String, Integer> relativeRowIndexMap = MapUtils.newHashMap();
     /**
      * The unique data encoding for this fill
      */
@@ -88,13 +84,16 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             data = new HashMap<String, Object>(16);
         }
         if (fillConfig == null) {
-            fillConfig = FillConfig.builder().build(true);
+            fillConfig = FillConfig.builder().build();
         }
         fillConfig.init();
 
         Object realData;
+        // The data prefix that is populated this time
+        String currentDataPrefix;
+
         if (data instanceof FillWrapper) {
-            FillWrapper fillWrapper = (FillWrapper) data;
+            FillWrapper fillWrapper = (FillWrapper)data;
             currentDataPrefix = fillWrapper.getName();
             realData = fillWrapper.getCollectionData();
         } else {
@@ -106,11 +105,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         // processing data
         if (realData instanceof Collection) {
             List<AnalysisCell> analysisCellList = readTemplateData(templateCollectionAnalysisCache);
-            Collection collectionData = (Collection) realData;
+            Collection<?> collectionData = (Collection<?>)realData;
             if (CollectionUtils.isEmpty(collectionData)) {
                 return;
             }
-            Iterator iterator = collectionData.iterator();
+            Iterator<?> iterator = collectionData.iterator();
             if (WriteDirectionEnum.VERTICAL.equals(fillConfig.getDirection()) && fillConfig.getForceNewRow()) {
                 shiftRows(collectionData.size(), analysisCellList);
             }
@@ -179,15 +178,19 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
     private void doFill(List<AnalysisCell> analysisCellList, Object oneRowData, FillConfig fillConfig,
         Integer relativeRowIndex) {
-        Map dataMap;
+        if (CollectionUtils.isEmpty(analysisCellList) || oneRowData == null) {
+            return;
+        }
+        Map<?, ?> dataMap;
         if (oneRowData instanceof Map) {
-            dataMap = (Map) oneRowData;
+            dataMap = (Map<?, ?>)oneRowData;
         } else {
-            dataMap = BeanMap.create(oneRowData);
+            dataMap = BeanMapUtils.create(oneRowData);
         }
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         Map<String, ExcelContentProperty> fieldNameContentPropertyMap =
             writeContext.currentWriteHolder().excelWriteHeadProperty().getFieldNameContentPropertyMap();
+
         for (AnalysisCell analysisCell : analysisCellList) {
             Cell cell = getOneCell(analysisCell, fillConfig);
             if (analysisCell.getOnlyOneVariable()) {
@@ -196,21 +199,22 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     continue;
                 }
                 Object value = dataMap.get(variable);
-                CellData cellData = converterAndSet(writeSheetHolder, value == null ? null : value.getClass(), cell,
-                    value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
+                WriteCellData<?> cellData = converterAndSet(writeSheetHolder,
+                    FieldUtils.getFieldClass(dataMap, variable),
+                    null, cell, value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();
                 int index = 0;
-                List<CellData> cellDataList = new ArrayList<CellData>();
+                List<WriteCellData<?>> cellDataList = new ArrayList<>();
                 for (String variable : analysisCell.getVariableList()) {
                     cellValueBuild.append(analysisCell.getPrepareDataList().get(index++));
                     if (!dataMap.containsKey(variable)) {
                         continue;
                     }
                     Object value = dataMap.get(variable);
-                    CellData cellData = convert(writeSheetHolder, value == null ? null : value.getClass(), cell, value,
-                        fieldNameContentPropertyMap.get(variable));
+                    WriteCellData<?> cellData = convert(writeSheetHolder, value == null ? null : value.getClass(),
+                        CellDataTypeEnum.STRING, cell, value, fieldNameContentPropertyMap.get(variable));
                     cellDataList.add(cellData);
                     CellDataTypeEnum type = cellData.getType();
                     if (type != null) {
@@ -255,11 +259,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
         Sheet sheet = writeContext.writeSheetHolder().getSheet();
 
-        Map<AnalysisCell, Integer> collectionLastIndexMap = collectionLastIndexCache.get(currentUniqueDataFlag);
-        if (collectionLastIndexMap == null) {
-            collectionLastIndexMap = new HashMap<AnalysisCell, Integer>(16);
-            collectionLastIndexCache.put(currentUniqueDataFlag, collectionLastIndexMap);
-        }
+        Map<AnalysisCell, Integer> collectionLastIndexMap = collectionLastIndexCache
+            .computeIfAbsent(currentUniqueDataFlag, key -> MapUtils.newHashMap());
+
         boolean isOriginalCell = false;
         Integer lastRowIndex;
         Integer lastColumnIndex;
@@ -291,19 +293,19 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
 
         Row row = createRowIfNecessary(sheet, cachedSheet, lastRowIndex, fillConfig, analysisCell, isOriginalCell);
-        Cell cell = createCellIfNecessary(row,lastColumnIndex);
+        Cell cell = createCellIfNecessary(row, lastColumnIndex);
 
-        Map<AnalysisCell, CellStyle> collectionFieldStyleMap = collectionFieldStyleCache.get(currentUniqueDataFlag);
-        if (collectionFieldStyleMap == null) {
-            collectionFieldStyleMap = new HashMap<AnalysisCell, CellStyle>(16);
-            collectionFieldStyleCache.put(currentUniqueDataFlag, collectionFieldStyleMap);
-        }
+        Map<AnalysisCell, CellStyle> collectionFieldStyleMap = collectionFieldStyleCache.computeIfAbsent(
+            currentUniqueDataFlag, key -> MapUtils.newHashMap());
+
         if (isOriginalCell) {
             collectionFieldStyleMap.put(analysisCell, cell.getCellStyle());
         } else {
-            CellStyle cellStyle = collectionFieldStyleMap.get(analysisCell);
-            if (cellStyle != null) {
-                cell.setCellStyle(cellStyle);
+            if (fillConfig.getAutoStyle()) {
+                CellStyle cellStyle = collectionFieldStyleMap.get(analysisCell);
+                if (cellStyle != null) {
+                    cell.setCellStyle(cellStyle);
+                }
             }
         }
         return cell;
@@ -324,6 +326,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         AnalysisCell analysisCell, boolean isOriginalCell) {
         Row row = sheet.getRow(lastRowIndex);
         if (row != null) {
+            checkRowHeight(analysisCell, fillConfig, isOriginalCell, row);
             return row;
         }
         row = cachedSheet.getRow(lastRowIndex);
@@ -333,7 +336,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 row = cachedSheet.createRow(lastRowIndex);
             } else {
                 // The last row of the middle disk inside empty rows, resulting in cachedSheet can not get inside.
-                // Will throw Attempting to write a row[" + rownum + "] " + "in the range [0," + this._sh.getLastRowNum() + "] that is already written to disk.
+                // Will throw Attempting to write a row[" + rownum + "] " + "in the range [0," + this._sh
+                // .getLastRowNum() + "] that is already written to disk.
                 try {
                     row = sheet.createRow(lastRowIndex);
                 } catch (IllegalArgumentException ignore) {
@@ -352,13 +356,16 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (!analysisCell.getFirstRow() || !WriteDirectionEnum.VERTICAL.equals(fillConfig.getDirection())) {
             return;
         }
-        if (isOriginalCell) {
+        // fix https://github.com/alibaba/easyexcel/issues/1869
+        if (isOriginalCell && PoiUtils.customHeight(row)) {
             collectionRowHeightCache.put(currentUniqueDataFlag, row.getHeight());
             return;
         }
-        Short rowHeight = collectionRowHeightCache.get(currentUniqueDataFlag);
-        if (rowHeight != null) {
-            row.setHeight(rowHeight);
+        if (fillConfig.getAutoStyle()) {
+            Short rowHeight = collectionRowHeightCache.get(currentUniqueDataFlag);
+            if (rowHeight != null) {
+                row.setHeight(rowHeight);
+            }
         }
     }
 
@@ -368,7 +375,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             return analysisCellList;
         }
         Sheet sheet = writeContext.writeSheetHolder().getCachedSheet();
-        Map<String, Set<Integer>> firstRowCache = new HashMap<String, Set<Integer>>(8);
+        Map<String, Set<Integer>> firstRowCache = MapUtils.newHashMapWithExpectedSize(8);
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
             if (row == null) {
@@ -392,14 +399,14 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     /**
      * To prepare data
      *
-     * @param cell
-     * @param rowIndex
-     * @param columnIndex
-     * @param firstRowCache
+     * @param cell          cell
+     * @param rowIndex      row index
+     * @param columnIndex   column index
+     * @param firstRowCache first row cache
      * @return Returns the data that the cell needs to replace
      */
     private String prepareData(Cell cell, int rowIndex, int columnIndex, Map<String, Set<Integer>> firstRowCache) {
-        if (!CellType.STRING.equals(cell.getCellTypeEnum())) {
+        if (!CellType.STRING.equals(cell.getCellType())) {
             return null;
         }
         String value = cell.getStringCellValue();
@@ -412,10 +419,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         int startIndex = 0;
         int length = value.length();
         int lastPrepareDataIndex = 0;
-        out: while (startIndex < length) {
+        out:
+        while (startIndex < length) {
             int prefixIndex = value.indexOf(FILL_PREFIX, startIndex);
             if (prefixIndex < 0) {
-                break out;
+                break;
             }
             if (prefixIndex != 0) {
                 char prefixPrefixChar = value.charAt(prefixIndex - 1);
@@ -457,6 +465,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             analysisCell.getVariableList().add(variable);
             if (lastPrepareDataIndex == prefixIndex) {
                 analysisCell.getPrepareDataList().add(StringUtils.EMPTY);
+                // fix https://github.com/alibaba/easyexcel/issues/2035
+                if (lastPrepareDataIndex != 0) {
+                    analysisCell.setOnlyOneVariable(Boolean.FALSE);
+                }
             } else {
                 String data = convertPrepareData(value.substring(lastPrepareDataIndex, prefixIndex));
                 preparedData.append(data);
@@ -464,6 +476,12 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 analysisCell.setOnlyOneVariable(Boolean.FALSE);
             }
             lastPrepareDataIndex = suffixIndex + 1;
+        }
+        // fix https://github.com/alibaba/easyexcel/issues/1552
+        // When read template, XLSX data may be in `is` labels, and set the time set in `v` label, lead to can't set
+        // up successfully, so all data format to empty first.
+        if (analysisCell != null && CollectionUtils.isNotEmpty(analysisCell.getVariableList())) {
+            cell.setBlank();
         }
         return dealAnalysisCell(analysisCell, value, rowIndex, lastPrepareDataIndex, length, firstRowCache,
             preparedData);
@@ -480,28 +498,21 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             }
             String uniqueDataFlag = uniqueDataFlag(writeContext.writeSheetHolder(), analysisCell.getPrefix());
             if (WriteTemplateAnalysisCellTypeEnum.COMMON.equals(analysisCell.getCellType())) {
-                List<AnalysisCell> analysisCellList = templateAnalysisCache.get(uniqueDataFlag);
-                if (analysisCellList == null) {
-                    analysisCellList = new ArrayList<AnalysisCell>();
-                    templateAnalysisCache.put(uniqueDataFlag, analysisCellList);
-                }
+                List<AnalysisCell> analysisCellList = templateAnalysisCache.computeIfAbsent(uniqueDataFlag,
+                    key -> ListUtils.newArrayList());
                 analysisCellList.add(analysisCell);
             } else {
-                Set<Integer> uniqueFirstRowCache = firstRowCache.get(uniqueDataFlag);
-                if (uniqueFirstRowCache == null) {
-                    uniqueFirstRowCache = new HashSet<Integer>();
-                    firstRowCache.put(uniqueDataFlag, uniqueFirstRowCache);
-                }
+                Set<Integer> uniqueFirstRowCache = firstRowCache.computeIfAbsent(uniqueDataFlag,
+                    key -> new HashSet<>());
+
                 if (!uniqueFirstRowCache.contains(rowIndex)) {
                     analysisCell.setFirstRow(Boolean.TRUE);
                     uniqueFirstRowCache.add(rowIndex);
                 }
 
-                List<AnalysisCell> collectionAnalysisCellList = templateCollectionAnalysisCache.get(uniqueDataFlag);
-                if (collectionAnalysisCellList == null) {
-                    collectionAnalysisCellList = new ArrayList<AnalysisCell>();
-                    templateCollectionAnalysisCache.put(uniqueDataFlag, collectionAnalysisCellList);
-                }
+                List<AnalysisCell> collectionAnalysisCellList = templateCollectionAnalysisCache.computeIfAbsent(
+                    uniqueDataFlag, key -> ListUtils.newArrayList());
+
                 collectionAnalysisCellList.add(analysisCell);
             }
             return preparedData.toString();
@@ -514,9 +525,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         analysisCell.setRowIndex(rowIndex);
         analysisCell.setColumnIndex(columnIndex);
         analysisCell.setOnlyOneVariable(Boolean.TRUE);
-        List<String> variableList = new ArrayList<String>();
+        List<String> variableList = ListUtils.newArrayList();
         analysisCell.setVariableList(variableList);
-        List<String> prepareDataList = new ArrayList<String>();
+        List<String> prepareDataList = ListUtils.newArrayList();
         analysisCell.setPrepareDataList(prepareDataList);
         analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COMMON);
         analysisCell.setFirstRow(Boolean.FALSE);
@@ -534,7 +545,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (writeSheetHolder.getSheetNo() != null) {
             prefix = writeSheetHolder.getSheetNo().toString();
         } else {
-            prefix = writeSheetHolder.getSheetName().toString();
+            prefix = writeSheetHolder.getSheetName();
         }
         if (StringUtils.isEmpty(wrapperName)) {
             return prefix + "-";

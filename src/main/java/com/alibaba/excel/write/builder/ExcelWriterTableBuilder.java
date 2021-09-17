@@ -1,6 +1,7 @@
 package com.alibaba.excel.write.builder;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.function.Supplier;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.exception.ExcelGenerateException;
@@ -47,12 +48,16 @@ public class ExcelWriterTableBuilder extends AbstractExcelWriterParameterBuilder
         return writeTable;
     }
 
-    public void doWrite(List data) {
+    public void doWrite(Collection<?> data) {
         if (excelWriter == null) {
             throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet().table()' to call this method");
         }
         excelWriter.write(data, writeSheet, build());
         excelWriter.finish();
+    }
+
+    public void doWrite(Supplier<Collection<?>> supplier) {
+        doWrite(supplier.get());
     }
 
     @Override

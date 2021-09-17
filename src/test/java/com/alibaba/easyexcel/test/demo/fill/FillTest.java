@@ -2,12 +2,10 @@ package com.alibaba.easyexcel.test.demo.fill;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.Ignore;
-import org.junit.Test;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -17,11 +15,14 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 /**
  * 写的填充写法
  *
- * @since 2.1.1
  * @author Jiaju Zhuang
+ * @since 2.1.1
  */
 @Ignore
 public class FillTest {
@@ -70,7 +71,18 @@ public class FillTest {
         // 这里 会填充到第一个sheet， 然后文件流会自动关闭
         EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(data());
 
-        // 方案2 分多次 填充 会使用文件缓存（省内存）
+        // 方案2 分多次 填充 会使用文件缓存（省内存） jdk8
+        // since: 3.0.0-beta1
+        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+        EasyExcel.write(fileName)
+            .withTemplate(templateFileName)
+            .sheet()
+            .doFill(() -> {
+                // 分页查询数据
+                return data();
+            });
+
+        // 方案3 分多次 填充 会使用文件缓存（省内存）
         fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
         ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
@@ -205,7 +217,9 @@ public class FillTest {
         excelWriter.fill(new FillWrapper("data3", data()), writeSheet);
 
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("date", "2019年10月9日13:28:28");
+        //map.put("date", "2019年10月9日13:28:28");
+        map.put("date", new Date());
+
         excelWriter.fill(map, writeSheet);
 
         // 别忘记关闭流

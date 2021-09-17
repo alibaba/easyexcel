@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.metadata.CellData;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.fastjson.JSON;
 
 /**

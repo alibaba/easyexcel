@@ -3,11 +3,13 @@ package com.alibaba.easyexcel.test.temp.poi;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
+
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.util.FileUtils;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellCopyPolicy;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFRow;
@@ -21,11 +23,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelReader;
-import com.alibaba.excel.util.FileUtils;
-
 /**
  * 测试poi
  *
@@ -37,27 +34,30 @@ public class PoiTest {
 
     @Test
     public void lastRowNum() throws IOException {
-        String file = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String file = "/Users/zhuangjiaju/test/test3.xlsx";
         SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
         SXSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
         LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
         SXSSFRow row = xssfSheet.getRow(0);
-        LOGGER.info("第一行数据:{}", row);
-        xssfSheet.createRow(20);
-        LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
+        LOGGER.info("dd{}",row.getCell(0).getColumnIndex());
+        Date date = row.getCell(1).getDateCellValue();
+
+
     }
 
     @Test
     public void lastRowNumXSSF() throws IOException {
-        String file = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
+        String file = "/Users/zhuangjiaju/test/test3.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         LOGGER.info("一共:{}个sheet", xssfWorkbook.getNumberOfSheets());
         XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
         LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
         XSSFRow row = xssfSheet.getRow(0);
-        LOGGER.info("第一行数据:{}", row);
-        xssfSheet.createRow(20);
-        LOGGER.info("一共行数:{}", xssfSheet.getLastRowNum());
+        LOGGER.info("dd{}",row.getCell(0).getRow().getRowNum());
+        LOGGER.info("dd{}",xssfSheet.getLastRowNum());
+
+        Date date = row.getCell(1).getDateCellValue();
+        LOGGER.info("date{}",date);
     }
 
     @Test

@@ -4,6 +4,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
+import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.StyleProperty;
+import com.alibaba.excel.metadata.data.DataFormatData;
+import com.alibaba.excel.write.merge.LoopMergeStrategy;
+import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
+import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
+import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
@@ -15,20 +32,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.write.merge.LoopMergeStrategy;
-import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
-import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
-import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
-
 /**
- *
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -60,7 +64,9 @@ public class StyleDataTest {
             protected WriteCellStyle headCellStyle(Head head) {
                 WriteCellStyle writeCellStyle = new WriteCellStyle();
                 writeCellStyle.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
-                writeCellStyle.setDataFormat((short)0);
+                DataFormatData dataFormatData = new DataFormatData();
+                dataFormatData.setIndex((short)0);
+                writeCellStyle.setDataFormatData(dataFormatData);
                 writeCellStyle.setHidden(false);
                 writeCellStyle.setLocked(true);
                 writeCellStyle.setQuotePrefix(true);
@@ -110,9 +116,48 @@ public class StyleDataTest {
         EasyExcel.write(file07, StyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
             .doWrite(data());
     }
+    @Test
+    public void t04AbstractVerticalCellStyleStrategy02() {
+        final StyleProperty styleProperty = StyleProperty.build(StyleData.class.getAnnotation(HeadStyle.class));
+        final FontProperty fontProperty = FontProperty.build(StyleData.class.getAnnotation(HeadFontStyle.class));
+        AbstractVerticalCellStyleStrategy verticalCellStyleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            protected WriteCellStyle headCellStyle(Head head) {
+                WriteCellStyle writeCellStyle = WriteCellStyle.build(styleProperty, fontProperty);
+
+                if (head.getColumnIndex() == 0) {
+                    writeCellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+                    WriteFont writeFont = new WriteFont();
+                    writeFont.setItalic(true);
+                    writeFont.setStrikeout(true);
+                    writeFont.setTypeOffset(Font.SS_NONE);
+                    writeFont.setUnderline(Font.U_DOUBLE);
+                    writeFont.setBold(true);
+                    writeFont.setCharset((int)Font.DEFAULT_CHARSET);
+                } else {
+                    writeCellStyle.setFillForegroundColor(IndexedColors.BLUE.getIndex());
+                }
+                return writeCellStyle;
+            }
+
+            @Override
+            protected WriteCellStyle contentCellStyle(Head head) {
+                WriteCellStyle writeCellStyle = new WriteCellStyle();
+                writeCellStyle.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
+                if (head.getColumnIndex() == 0) {
+                    writeCellStyle.setFillForegroundColor(IndexedColors.DARK_GREEN.getIndex());
+                } else {
+                    writeCellStyle.setFillForegroundColor(IndexedColors.PINK.getIndex());
+                }
+                return writeCellStyle;
+            }
+        };
+        EasyExcel.write(file07, StyleData.class).registerWriteHandler(verticalCellStyleStrategy).sheet()
+            .doWrite(data());
+    }
 
     @Test
-    public void t04LoopMergeStrategy() {
+    public void t05LoopMergeStrategy() {
         EasyExcel.write(file07, StyleData.class).sheet().registerWriteHandler(new LoopMergeStrategy(2, 1))
             .doWrite(data10());
     }

@@ -2,11 +2,11 @@ package com.alibaba.excel.write.style.column;
 
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-
-import com.alibaba.excel.metadata.CellData;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
+
+import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * Returns the column width according to each column header
@@ -16,7 +16,7 @@ import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColumnWidthStyleStrategy {
 
     @Override
-    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell, Head head,
+    protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<WriteCellData<?>> cellDataList, Cell cell, Head head,
         Integer relativeRowIndex, Boolean isHead) {
         boolean needSetWidth = relativeRowIndex != null && (isHead || relativeRowIndex == 0);
         if (!needSetWidth) {
@@ -33,7 +33,7 @@ public abstract class AbstractHeadColumnWidthStyleStrategy extends AbstractColum
      * Returns the column width corresponding to each column head.
      *
      * <p>
-     * if return null,ignore
+     * if return null, ignore
      *
      * @param head
      *            Nullable.
