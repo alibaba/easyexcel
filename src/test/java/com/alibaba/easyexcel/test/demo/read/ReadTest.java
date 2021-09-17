@@ -45,7 +45,7 @@ public class ReadTest {
      */
     @Test
     public void simpleRead() {
-        // 写法1：JDK8+ ,不用额外写一个ReadListener
+        // 写法1：JDK8+ ,不用额外写一个DemoDataListener
         // since: 3.0.0-beta1
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
@@ -57,7 +57,7 @@ public class ReadTest {
         })).sheet().doRead();
 
         // 写法2：
-        // 匿名内部类 不用额外写一个ReadListener
+        // 匿名内部类 不用额外写一个DemoDataListener
         fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
         EasyExcel.read(fileName, DemoData.class, new ReadListener<DemoData>() {
