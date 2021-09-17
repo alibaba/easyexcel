@@ -33,7 +33,9 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/.m2
-      - name: CI
+      - name: Chmod
+        run:  chmod +x mvnw
+      - name: Maven Build
         run: ./mvnw install -B -V -Dmaven.test.skip=true
       - name: Java Doc
         run: ./mvnw javadoc:javadoc
