@@ -17,9 +17,6 @@ import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.xml.sax.Attributes;
 
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.xml.sax.Attributes;
-
 /**
  * Cell Handler
  *
@@ -48,7 +45,7 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
 
         // Put in data transformation information
         String dateFormatIndex = attributes.getValue(ExcelXmlConstants.ATTRIBUTE_S);
-        Integer dateFormatIndexInteger;
+        int dateFormatIndexInteger;
         if (StringUtils.isEmpty(dateFormatIndex)) {
             dateFormatIndexInteger = DEFAULT_FORMAT_INDEX;
         } else {
@@ -71,53 +68,6 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
     public void endElement(XlsxReadContext xlsxReadContext, String name) {
         XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
         ReadCellData<?> tempCellData = xlsxReadSheetHolder.getTempCellData();
-        StringBuilder tempData = xlsxReadSheetHolder.getTempData();
-        String tempDataString = tempData.toString();
-        CellDataTypeEnum oldType = tempCellData.getType();
-        switch (oldType) {
-            case STRING:
-                // In some cases, although cell type is a string, it may be an empty tag
-                if (StringUtils.isEmpty(tempCellData.getStringValue())) {
-                    break;
-                }
-                String stringValue = xlsxReadContext.readWorkbookHolder().getReadCache()
-                    .get(Integer.valueOf(tempCellData.getStringValue()));
-                tempCellData.setStringValue(stringValue);
-                break;
-            case DIRECT_STRING:
-            case ERROR:
-                tempCellData.setStringValue(tempData.toString());
-                tempCellData.setType(CellDataTypeEnum.STRING);
-                break;
-            case BOOLEAN:
-                if (StringUtils.isEmpty(tempDataString)) {
-                    tempCellData.setType(CellDataTypeEnum.EMPTY);
-                    break;
-                }
-                tempCellData.setBooleanValue(BooleanUtils.valueOf(tempData.toString()));
-                break;
-            case NUMBER:
-            case EMPTY:
-                if (StringUtils.isEmpty(tempDataString)) {
-                    tempCellData.setType(CellDataTypeEnum.EMPTY);
-                    break;
-                }
-                tempCellData.setType(CellDataTypeEnum.NUMBER);
-                tempCellData.setNumberValue(BigDecimal.valueOf(Double.parseDouble(tempDataString)));
-                break;
-            default:
-                throw new IllegalStateException("Cannot set values now");
-        }
-
-        if (tempCellData.getStringValue() != null
-            && xlsxReadContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
-            tempCellData.setStringValue(tempCellData.getStringValue().trim());
-        }
-
-    @Override
-    public void endElement(XlsxReadContext xlsxReadContext, String name) {
-        XlsxReadSheetHolder xlsxReadSheetHolder = xlsxReadContext.xlsxReadSheetHolder();
-        CellData tempCellData = xlsxReadSheetHolder.getTempCellData();
         StringBuilder tempData = xlsxReadSheetHolder.getTempData();
         String tempDataString = tempData.toString();
         CellDataTypeEnum oldType = tempCellData.getType();
@@ -158,12 +108,9 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
 
         if (tempCellData.getStringValue() != null
             && xlsxReadContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
-            tempCellData.setStringValue(tempCellData.getStringValue());
+            tempCellData.setStringValue(tempCellData.getStringValue().trim());
         }
 
-        tempCellData.checkEmpty();
-        xlsxReadSheetHolder.getCellMap().put(xlsxReadSheetHolder.getColumnIndex(), tempCellData);
-    }
         tempCellData.checkEmpty();
         xlsxReadSheetHolder.getCellMap().put(xlsxReadSheetHolder.getColumnIndex(), tempCellData);
     }
