@@ -139,7 +139,7 @@ public class WriteContextImpl implements WriteContext {
             return false;
         }
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Sheet:{} is already existed", writeSheet.getSheetNo());
+            LOGGER.debug("Sheet:{},{} is already existed", writeSheet.getSheetNo(), writeSheet.getSheetName());
         }
         writeSheetHolder.setNewInitialization(Boolean.FALSE);
         writeTableHolder = null;

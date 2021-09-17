@@ -17,23 +17,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.alibaba.easyexcel.test.demo.write.DemoData;
-import com.alibaba.easyexcel.test.util.TestFileUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.alibaba.fastjson.JSON;
-
-import org.apache.poi.hssf.util.CellReference;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,15 +26,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
 public class Lock2Test {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Lock2Test.class);
 
     @Test
     public void test() throws Exception {
-       // File file = TestFileUtil.readUserHomeFile("test/test4.xlsx");
-//        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
+        assert 1 != 1;
+        // File file = TestFileUtil.readUserHomeFile("test/test4.xlsx");
+        //        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
         File file = new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/src/test/resources/converter/converter07.xlsx");
 
         List<Object> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/olay (1).xlsx").sheet(0).doReadSync();
