@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.alibaba.excel.metadata.*;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 
@@ -18,10 +19,6 @@ import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.event.Order;
-import com.alibaba.excel.metadata.AbstractHolder;
-import com.alibaba.excel.metadata.Font;
-import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.TableStyle;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
@@ -325,6 +322,11 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
     private void dealStyle(List<WriteHandler> handlerList) {
         WriteHandler styleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            public void afterCellDisposeAuto(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, List<CellData> cellDataList, org.apache.poi.ss.usermodel.Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
+
+            }
+
             @Override
             protected WriteCellStyle headCellStyle(Head head) {
                 return WriteCellStyle.build(head.getHeadStyleProperty(), head.getHeadFontProperty());

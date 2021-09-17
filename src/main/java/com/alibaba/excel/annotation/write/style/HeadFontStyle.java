@@ -29,7 +29,7 @@ public @interface HeadFontStyle {
     /**
      * Height in the familiar unit of measure - points
      */
-    short fontHeightInPoints() default 14;
+    short fontHeightInPoints() default 11;
 
     /**
      * Whether to use italics or not

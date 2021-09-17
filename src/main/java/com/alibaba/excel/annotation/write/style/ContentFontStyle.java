@@ -24,12 +24,12 @@ public @interface ContentFontStyle {
     /**
      * The name for the font (i.e. Arial)
      */
-    String fontName() default "";
+    String fontName() default "宋体";
 
     /**
      * Height in the familiar unit of measure - points
      */
-    short fontHeightInPoints() default -1;
+    short fontHeightInPoints() default 11;
 
     /**
      * Whether to use italics or not
