@@ -178,7 +178,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
     private void doFill(List<AnalysisCell> analysisCellList, Object oneRowData, FillConfig fillConfig,
         Integer relativeRowIndex) {
-        if (CollectionUtils.isEmpty(analysisCellList)) {
+        if (CollectionUtils.isEmpty(analysisCellList) || oneRowData == null) {
             return;
         }
         Map<?, ?> dataMap;
