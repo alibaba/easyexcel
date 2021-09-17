@@ -59,13 +59,24 @@ public class WriteTest {
      */
     @Test
     public void simpleWrite() {
-        // 写法1
+        // 写法1 JDK8+
         String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        EasyExcel.write(fileName, DemoData.class)
+            .sheet("模板")
+            .doWrite(() -> {
+                // 分页查询数据
+                return data();
+            });
+
+        // 写法2
+        fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
         EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
 
-        // 写法2
+        // 写法3
         fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = null;
@@ -329,7 +340,6 @@ public class WriteTest {
         commentData.setRelativeLastColumnIndex(1);
         commentData.setRelativeLastRowIndex(1);
 
-
         // 设置公式
         WriteCellData<String> formula = new WriteCellData<>();
         writeCellDemoData.setFormulaData(formula);
@@ -338,7 +348,6 @@ public class WriteTest {
         // 将 123456789 中的第一个数字替换成 2
         // 这里只是例子 如果真的涉及到公式 能内存算好尽量内存算好 公式能不用尽量不用
         formulaData.setFormulaValue("REPLACE(123456789,1,1,2)");
-
 
         // 设置单个单元格的样式 当然样式 很多的话 也可以用注解等方式。
         WriteCellData<String> writeCellStyle = new WriteCellData<>("单元格样式");

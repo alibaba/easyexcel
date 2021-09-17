@@ -1,6 +1,7 @@
 package com.alibaba.excel;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.write.ExcelBuilder;
@@ -41,10 +42,8 @@ public class ExcelWriter {
     /**
      * Write data to a sheet
      *
-     * @param data
-     *            Data to be written
-     * @param writeSheet
-     *            Write to this sheet
+     * @param data       Data to be written
+     * @param writeSheet Write to this sheet
      * @return this current writer
      */
     public ExcelWriter write(Collection<?> data, WriteSheet writeSheet) {
@@ -52,18 +51,39 @@ public class ExcelWriter {
     }
 
     /**
+     * Write data to a sheet
+     *
+     * @param supplier   Data to be written
+     * @param writeSheet Write to this sheet
+     * @return this current writer
+     */
+    public ExcelWriter write(Supplier<Collection<?>> supplier, WriteSheet writeSheet) {
+        return write(supplier.get(), writeSheet, null);
+    }
+
+    /**
      * Write value to a sheet
      *
-     * @param data
-     *            Data to be written
-     * @param writeSheet
-     *            Write to this sheet
-     * @param writeTable
-     *            Write to this table
+     * @param data       Data to be written
+     * @param writeSheet Write to this sheet
+     * @param writeTable Write to this table
      * @return this
      */
     public ExcelWriter write(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable) {
         excelBuilder.addContent(data, writeSheet, writeTable);
+        return this;
+    }
+
+    /**
+     * Write value to a sheet
+     *
+     * @param supplier   Data to be written
+     * @param writeSheet Write to this sheet
+     * @param writeTable Write to this table
+     * @return this
+     */
+    public ExcelWriter write(Supplier<Collection<?>> supplier, WriteSheet writeSheet, WriteTable writeTable) {
+        excelBuilder.addContent(supplier.get(), writeSheet, writeTable);
         return this;
     }
 
@@ -92,6 +112,30 @@ public class ExcelWriter {
     }
 
     /**
+     * Fill value to a sheet
+     *
+     * @param supplier
+     * @param writeSheet
+     * @return
+     */
+    public ExcelWriter fill(Supplier<Object> supplier, WriteSheet writeSheet) {
+        return fill(supplier.get(), null, writeSheet);
+    }
+
+    /**
+     * Fill value to a sheet
+     *
+     * @param supplier
+     * @param fillConfig
+     * @param writeSheet
+     * @return
+     */
+    public ExcelWriter fill(Supplier<Object> supplier, FillConfig fillConfig, WriteSheet writeSheet) {
+        excelBuilder.fill(supplier.get(), fillConfig, writeSheet);
+        return this;
+    }
+
+    /**
      * Close IO
      */
     public void finish() {
@@ -102,7 +146,6 @@ public class ExcelWriter {
 
     /**
      * Prevents calls to {@link #finish} from freeing the cache
-     *
      */
     @Override
     protected void finalize() {

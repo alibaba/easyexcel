@@ -1,6 +1,7 @@
 package com.alibaba.excel.write.builder;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.exception.ExcelGenerateException;
@@ -53,6 +54,10 @@ public class ExcelWriterTableBuilder extends AbstractExcelWriterParameterBuilder
         }
         excelWriter.write(data, writeSheet, build());
         excelWriter.finish();
+    }
+
+    public void doWrite(Supplier<Collection<?>> supplier) {
+        doWrite(supplier.get());
     }
 
     @Override
