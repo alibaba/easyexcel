@@ -341,6 +341,7 @@ public class WriteTest {
      * 1. 创建excel对应的实体对象 参照{@link WriteCellDemoData}
      * <p>
      * 2. 直接写即可
+     * @since 3.0.0-beta1
      */
     @Test
     public void writeCellDataWrite() {
