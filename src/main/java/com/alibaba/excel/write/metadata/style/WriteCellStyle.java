@@ -236,110 +236,121 @@ public class WriteCellStyle {
             return null;
         }
         WriteCellStyle writeCellStyle = new WriteCellStyle();
-        if (styleProperty != null) {
-            if (styleProperty.getDataFormatData() != null) {
-                if (writeCellStyle.getDataFormatData() == null) {
-                    writeCellStyle.setDataFormatData(styleProperty.getDataFormatData());
-                } else {
-                    DataFormatData.merge(styleProperty.getDataFormatData(), writeCellStyle.getDataFormatData());
-                }
-            }
-            if (styleProperty.getHidden() != null) {
-                writeCellStyle.setHidden(styleProperty.getHidden());
-            }
-            if (styleProperty.getLocked() != null) {
-                writeCellStyle.setLocked(styleProperty.getLocked());
-            }
-            if (styleProperty.getQuotePrefix() != null) {
-                writeCellStyle.setQuotePrefix(styleProperty.getQuotePrefix());
-            }
-            if (styleProperty.getHorizontalAlignment() != null) {
-                writeCellStyle.setHorizontalAlignment(styleProperty.getHorizontalAlignment());
-            }
-            if (styleProperty.getWrapped() != null) {
-                writeCellStyle.setWrapped(styleProperty.getWrapped());
-            }
-            if (styleProperty.getVerticalAlignment() != null) {
-                writeCellStyle.setVerticalAlignment(styleProperty.getVerticalAlignment());
-            }
-            if (styleProperty.getRotation() != null) {
-                writeCellStyle.setRotation(styleProperty.getRotation());
-            }
-            if (styleProperty.getIndent() != null) {
-                writeCellStyle.setIndent(styleProperty.getIndent());
-            }
-            if (styleProperty.getBorderLeft() != null) {
-                writeCellStyle.setBorderLeft(styleProperty.getBorderLeft());
-            }
-            if (styleProperty.getBorderRight() != null) {
-                writeCellStyle.setBorderRight(styleProperty.getBorderRight());
-            }
-            if (styleProperty.getBorderTop() != null) {
-                writeCellStyle.setBorderTop(styleProperty.getBorderTop());
-            }
-            if (styleProperty.getBorderBottom() != null) {
-                writeCellStyle.setBorderBottom(styleProperty.getBorderBottom());
-            }
-            if (styleProperty.getLeftBorderColor() != null) {
-                writeCellStyle.setLeftBorderColor(styleProperty.getLeftBorderColor());
-            }
-            if (styleProperty.getRightBorderColor() != null) {
-                writeCellStyle.setRightBorderColor(styleProperty.getRightBorderColor());
-            }
-            if (styleProperty.getTopBorderColor() != null) {
-                writeCellStyle.setTopBorderColor(styleProperty.getTopBorderColor());
-            }
-            if (styleProperty.getBottomBorderColor() != null) {
-                writeCellStyle.setBottomBorderColor(styleProperty.getBottomBorderColor());
-            }
-            if (styleProperty.getFillPatternType() != null) {
-                writeCellStyle.setFillPatternType(styleProperty.getFillPatternType());
-            }
-            if (styleProperty.getFillBackgroundColor() != null) {
-                writeCellStyle.setFillBackgroundColor(styleProperty.getFillBackgroundColor());
-            }
-            if (styleProperty.getFillForegroundColor() != null) {
-                writeCellStyle.setFillForegroundColor(styleProperty.getFillForegroundColor());
-            }
-            if (styleProperty.getShrinkToFit() != null) {
-                writeCellStyle.setShrinkToFit(styleProperty.getShrinkToFit());
-            }
-        }
-        if (fontProperty != null) {
-            if (writeCellStyle.getWriteFont() == null) {
-                writeCellStyle.setWriteFont(new WriteFont());
-            }
-            WriteFont writeFont = writeCellStyle.getWriteFont();
-
-            if (StringUtils.isNotBlank(fontProperty.getFontName())) {
-                writeFont.setFontName(fontProperty.getFontName());
-            }
-            if (fontProperty.getFontHeightInPoints() != null) {
-                writeFont.setFontHeightInPoints(fontProperty.getFontHeightInPoints());
-            }
-            if (fontProperty.getItalic() != null) {
-                writeFont.setItalic(fontProperty.getItalic());
-            }
-            if (fontProperty.getStrikeout() != null) {
-                writeFont.setStrikeout(fontProperty.getStrikeout());
-            }
-            if (fontProperty.getColor() != null) {
-                writeFont.setColor(fontProperty.getColor());
-            }
-            if (fontProperty.getTypeOffset() != null) {
-                writeFont.setTypeOffset(fontProperty.getTypeOffset());
-            }
-            if (fontProperty.getUnderline() != null) {
-                writeFont.setUnderline(fontProperty.getUnderline());
-            }
-            if (fontProperty.getCharset() != null) {
-                writeFont.setCharset(fontProperty.getCharset());
-            }
-            if (fontProperty.getBold() != null) {
-                writeFont.setBold(fontProperty.getBold());
-            }
-        }
+        buildStyleProperty(styleProperty, writeCellStyle);
+        buildFontProperty(fontProperty, writeCellStyle);
         return writeCellStyle;
+    }
+
+    private static void buildFontProperty(FontProperty fontProperty, WriteCellStyle writeCellStyle) {
+        if (fontProperty == null) {
+            return;
+        }
+        if (writeCellStyle.getWriteFont() == null) {
+            writeCellStyle.setWriteFont(new WriteFont());
+        }
+        WriteFont writeFont = writeCellStyle.getWriteFont();
+
+        if (StringUtils.isNotBlank(fontProperty.getFontName())) {
+            writeFont.setFontName(fontProperty.getFontName());
+        }
+        if (fontProperty.getFontHeightInPoints() != null) {
+            writeFont.setFontHeightInPoints(fontProperty.getFontHeightInPoints());
+        }
+        if (fontProperty.getItalic() != null) {
+            writeFont.setItalic(fontProperty.getItalic());
+        }
+        if (fontProperty.getStrikeout() != null) {
+            writeFont.setStrikeout(fontProperty.getStrikeout());
+        }
+        if (fontProperty.getColor() != null) {
+            writeFont.setColor(fontProperty.getColor());
+        }
+        if (fontProperty.getTypeOffset() != null) {
+            writeFont.setTypeOffset(fontProperty.getTypeOffset());
+        }
+        if (fontProperty.getUnderline() != null) {
+            writeFont.setUnderline(fontProperty.getUnderline());
+        }
+        if (fontProperty.getCharset() != null) {
+            writeFont.setCharset(fontProperty.getCharset());
+        }
+        if (fontProperty.getBold() != null) {
+            writeFont.setBold(fontProperty.getBold());
+        }
+    }
+
+    private static void buildStyleProperty(StyleProperty styleProperty, WriteCellStyle writeCellStyle) {
+        if (styleProperty == null) {
+            return;
+        }
+        if (styleProperty.getDataFormatData() != null) {
+            if (writeCellStyle.getDataFormatData() == null) {
+                writeCellStyle.setDataFormatData(styleProperty.getDataFormatData());
+            } else {
+                DataFormatData.merge(styleProperty.getDataFormatData(), writeCellStyle.getDataFormatData());
+            }
+        }
+        if (styleProperty.getHidden() != null) {
+            writeCellStyle.setHidden(styleProperty.getHidden());
+        }
+        if (styleProperty.getLocked() != null) {
+            writeCellStyle.setLocked(styleProperty.getLocked());
+        }
+        if (styleProperty.getQuotePrefix() != null) {
+            writeCellStyle.setQuotePrefix(styleProperty.getQuotePrefix());
+        }
+        if (styleProperty.getHorizontalAlignment() != null) {
+            writeCellStyle.setHorizontalAlignment(styleProperty.getHorizontalAlignment());
+        }
+        if (styleProperty.getWrapped() != null) {
+            writeCellStyle.setWrapped(styleProperty.getWrapped());
+        }
+        if (styleProperty.getVerticalAlignment() != null) {
+            writeCellStyle.setVerticalAlignment(styleProperty.getVerticalAlignment());
+        }
+        if (styleProperty.getRotation() != null) {
+            writeCellStyle.setRotation(styleProperty.getRotation());
+        }
+        if (styleProperty.getIndent() != null) {
+            writeCellStyle.setIndent(styleProperty.getIndent());
+        }
+        if (styleProperty.getBorderLeft() != null) {
+            writeCellStyle.setBorderLeft(styleProperty.getBorderLeft());
+        }
+        if (styleProperty.getBorderRight() != null) {
+            writeCellStyle.setBorderRight(styleProperty.getBorderRight());
+        }
+        if (styleProperty.getBorderTop() != null) {
+            writeCellStyle.setBorderTop(styleProperty.getBorderTop());
+        }
+        if (styleProperty.getBorderBottom() != null) {
+            writeCellStyle.setBorderBottom(styleProperty.getBorderBottom());
+        }
+        if (styleProperty.getLeftBorderColor() != null) {
+            writeCellStyle.setLeftBorderColor(styleProperty.getLeftBorderColor());
+        }
+        if (styleProperty.getRightBorderColor() != null) {
+            writeCellStyle.setRightBorderColor(styleProperty.getRightBorderColor());
+        }
+        if (styleProperty.getTopBorderColor() != null) {
+            writeCellStyle.setTopBorderColor(styleProperty.getTopBorderColor());
+        }
+        if (styleProperty.getBottomBorderColor() != null) {
+            writeCellStyle.setBottomBorderColor(styleProperty.getBottomBorderColor());
+        }
+        if (styleProperty.getFillPatternType() != null) {
+            writeCellStyle.setFillPatternType(styleProperty.getFillPatternType());
+        }
+        if (styleProperty.getFillBackgroundColor() != null) {
+            writeCellStyle.setFillBackgroundColor(styleProperty.getFillBackgroundColor());
+        }
+        if (styleProperty.getFillForegroundColor() != null) {
+            writeCellStyle.setFillForegroundColor(styleProperty.getFillForegroundColor());
+        }
+        if (styleProperty.getShrinkToFit() != null) {
+            writeCellStyle.setShrinkToFit(styleProperty.getShrinkToFit());
+        }
+
     }
 
 }
