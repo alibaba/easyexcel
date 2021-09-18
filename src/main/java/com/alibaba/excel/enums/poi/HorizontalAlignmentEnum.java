@@ -45,7 +45,7 @@ public enum HorizontalAlignmentEnum {
      * Indicates that the value of the cell should be filled
      * across the entire width of the cell. If blank cells to the right also have the fill alignment,
      * they are also filled with the value, using a convention similar to centerContinuous.
-     * <p>
+     *
      * Additional rules:
      * <ol>
      * <li>Only whole values can be appended, not partial values.</li>
@@ -54,7 +54,6 @@ public enum HorizontalAlignmentEnum {
      * left/right edge, don't append the additional occurrence of the value.</li>
      * <li>The display value of the cell is filled, not the underlying raw number.</li>
      * </ol>
-     * </p>
      */
     FILL(HorizontalAlignment.FILL),
 
