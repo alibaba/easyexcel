@@ -7,6 +7,7 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
+import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -14,10 +15,14 @@ import org.apache.commons.collections4.CollectionUtils;
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     private WriteCellStyle headWriteCellStyle;
     private List<WriteCellStyle> contentWriteCellStyleList;
+
+    public HorizontalCellStyleStrategy() {
+    }
 
     public HorizontalCellStyleStrategy(WriteCellStyle headWriteCellStyle,
         List<WriteCellStyle> contentWriteCellStyleList) {
@@ -37,8 +42,8 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
         if (stopProcessing(context) || headWriteCellStyle == null) {
             return;
         }
-        WriteCellData<?> cellData = context.getCellDataList().get(0);
-        cellData.setWriteCellStyle(headWriteCellStyle);
+        WriteCellData<?> cellData = context.getFirstCellData();
+        WriteCellStyle.merge(headWriteCellStyle, cellData.getOrCreateStyle());
     }
 
     @Override
@@ -46,18 +51,18 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
         if (stopProcessing(context) || CollectionUtils.isEmpty(contentWriteCellStyleList)) {
             return;
         }
-        WriteCellData<?> cellData = context.getCellDataList().get(0);
+        WriteCellData<?> cellData = context.getFirstCellData();
         if (context.getRelativeRowIndex() == null || context.getRelativeRowIndex() <= 0) {
-            cellData.setWriteCellStyle(contentWriteCellStyleList.get(0));
+            WriteCellStyle.merge(contentWriteCellStyleList.get(0), cellData.getOrCreateStyle());
         } else {
-            cellData.setWriteCellStyle(
-                contentWriteCellStyleList.get(context.getRelativeRowIndex() % contentWriteCellStyleList.size()));
+            WriteCellStyle.merge(
+                contentWriteCellStyleList.get(context.getRelativeRowIndex() % contentWriteCellStyleList.size()),
+                cellData.getOrCreateStyle());
         }
     }
 
     protected boolean stopProcessing(CellWriteHandlerContext context) {
-        List<WriteCellData<?>> cellDataList = context.getCellDataList();
-        return CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1;
+        return context.getFirstCellData() == null;
     }
 
 }

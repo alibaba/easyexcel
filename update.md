@@ -1,3 +1,7 @@
+# 3.0.0-beta2
+
+* 优化写入样式的
+
 # 3.0.0-beta1
 
 * 升级jdk8 不再支持jdk6 jdk7
@@ -33,6 +37,7 @@
 * 新增部分jdk8特性
 
 # 2.2.11
+
 * 修复有些xlsx解析失败的bug [Issue #1595](https://github.com/alibaba/easyexcel/issues/1595)
 
 # 2.2.10

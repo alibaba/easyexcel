@@ -116,4 +116,15 @@ public class WriteCellData<T> extends CellData<T> {
         imageDataList.add(imageData);
     }
 
+    /**
+     * Return a style, if is empty, create a new
+     *
+     * @return not null.
+     */
+    public WriteCellStyle getOrCreateStyle() {
+        if (this.writeCellStyle == null) {
+            this.writeCellStyle = new WriteCellStyle();
+        }
+        return this.writeCellStyle;
+    }
 }

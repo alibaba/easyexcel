@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.alibaba.excel.constant.OrderConstant;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
@@ -235,6 +236,11 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
     private void dealStyle(List<WriteHandler> handlerList) {
         WriteHandler styleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            public int order() {
+                return OrderConstant.ANNOTATION_DEFINE_STYLE;
+            }
+
             @Override
             protected WriteCellStyle headCellStyle(Head head) {
                 return WriteCellStyle.build(head.getHeadStyleProperty(), head.getHeadFontProperty());

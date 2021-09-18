@@ -63,6 +63,13 @@ public class CellWriteHandlerContext {
      */
     private List<WriteCellData<?>> cellDataList;
     /**
+     * Nullable.
+     * It is null in the case of add header.
+     * In the case of write there must be not null.
+     * firstCellData == cellDataList.get(0)
+     */
+    private WriteCellData<?> firstCellData;
+    /**
      * Nullable.It is null in the case of fill data.
      */
     private Boolean head;
