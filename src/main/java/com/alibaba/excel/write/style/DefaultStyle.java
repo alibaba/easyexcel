@@ -19,7 +19,7 @@ public class DefaultStyle extends HorizontalCellStyleStrategy {
 
     @Override
     public int order() {
-        return OrderConstant.DEFINE_STYLE - 1;
+        return OrderConstant.DEFAULT_DEFINE_STYLE;
     }
 
     public DefaultStyle() {
