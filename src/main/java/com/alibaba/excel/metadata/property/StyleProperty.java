@@ -143,29 +143,47 @@ public class StyleProperty {
             return null;
         }
         StyleProperty styleProperty = new StyleProperty();
-        DataFormatData dataFormatData = new DataFormatData();
-        dataFormatData.setIndex(headStyle.dataFormat());
-        styleProperty.setDataFormatData(dataFormatData);
-        styleProperty.setHidden(headStyle.hidden());
-        styleProperty.setLocked(headStyle.locked());
-        styleProperty.setQuotePrefix(headStyle.quotePrefix());
-        styleProperty.setHorizontalAlignment(headStyle.horizontalAlignment());
-        styleProperty.setWrapped(headStyle.wrapped());
-        styleProperty.setVerticalAlignment(headStyle.verticalAlignment());
-        styleProperty.setRotation(headStyle.rotation());
-        styleProperty.setIndent(headStyle.indent());
-        styleProperty.setBorderLeft(headStyle.borderLeft());
-        styleProperty.setBorderRight(headStyle.borderRight());
-        styleProperty.setBorderTop(headStyle.borderTop());
-        styleProperty.setBorderBottom(headStyle.borderBottom());
-        styleProperty.setLeftBorderColor(headStyle.leftBorderColor());
-        styleProperty.setRightBorderColor(headStyle.rightBorderColor());
-        styleProperty.setTopBorderColor(headStyle.topBorderColor());
-        styleProperty.setBottomBorderColor(headStyle.bottomBorderColor());
-        styleProperty.setFillPatternType(headStyle.fillPatternType());
-        styleProperty.setFillBackgroundColor(headStyle.fillBackgroundColor());
-        styleProperty.setFillForegroundColor(headStyle.fillForegroundColor());
-        styleProperty.setShrinkToFit(headStyle.shrinkToFit());
+        if (headStyle.dataFormat() >= 0) {
+            DataFormatData dataFormatData = new DataFormatData();
+            dataFormatData.setIndex(headStyle.dataFormat());
+            styleProperty.setDataFormatData(dataFormatData);
+        }
+        styleProperty.setHidden(headStyle.hidden().getBooleanValue());
+        styleProperty.setLocked(headStyle.locked().getBooleanValue());
+        styleProperty.setQuotePrefix(headStyle.quotePrefix().getBooleanValue());
+        styleProperty.setHorizontalAlignment(headStyle.horizontalAlignment().getPoiHorizontalAlignment());
+        styleProperty.setWrapped(headStyle.wrapped().getBooleanValue());
+        styleProperty.setVerticalAlignment(headStyle.verticalAlignment().getPoiVerticalAlignmentEnum());
+        if (headStyle.rotation() >= 0) {
+            styleProperty.setRotation(headStyle.rotation());
+        }
+        if (headStyle.indent() >= 0) {
+            styleProperty.setIndent(headStyle.indent());
+        }
+        styleProperty.setBorderLeft(headStyle.borderLeft().getPoiBorderStyle());
+        styleProperty.setBorderRight(headStyle.borderRight().getPoiBorderStyle());
+        styleProperty.setBorderTop(headStyle.borderTop().getPoiBorderStyle());
+        styleProperty.setBorderBottom(headStyle.borderBottom().getPoiBorderStyle());
+        if (headStyle.leftBorderColor() >= 0) {
+            styleProperty.setLeftBorderColor(headStyle.leftBorderColor());
+        }
+        if (headStyle.rightBorderColor() >= 0) {
+            styleProperty.setRightBorderColor(headStyle.rightBorderColor());
+        }
+        if (headStyle.topBorderColor() >= 0) {
+            styleProperty.setTopBorderColor(headStyle.topBorderColor());
+        }
+        if (headStyle.bottomBorderColor() >= 0) {
+            styleProperty.setBottomBorderColor(headStyle.bottomBorderColor());
+        }
+        styleProperty.setFillPatternType(headStyle.fillPatternType().getPoiFillPatternType());
+        if (headStyle.fillBackgroundColor() >= 0) {
+            styleProperty.setFillBackgroundColor(headStyle.fillBackgroundColor());
+        }
+        if (headStyle.fillForegroundColor() >= 0) {
+            styleProperty.setFillForegroundColor(headStyle.fillForegroundColor());
+        }
+        styleProperty.setShrinkToFit(headStyle.shrinkToFit().getBooleanValue());
         return styleProperty;
     }
 
@@ -174,29 +192,47 @@ public class StyleProperty {
             return null;
         }
         StyleProperty styleProperty = new StyleProperty();
-        DataFormatData dataFormatData = new DataFormatData();
-        dataFormatData.setIndex(contentStyle.dataFormat());
-        styleProperty.setDataFormatData(dataFormatData);
-        styleProperty.setHidden(contentStyle.hidden());
-        styleProperty.setLocked(contentStyle.locked());
-        styleProperty.setQuotePrefix(contentStyle.quotePrefix());
-        styleProperty.setHorizontalAlignment(contentStyle.horizontalAlignment());
-        styleProperty.setWrapped(contentStyle.wrapped());
-        styleProperty.setVerticalAlignment(contentStyle.verticalAlignment());
-        styleProperty.setRotation(contentStyle.rotation());
-        styleProperty.setIndent(contentStyle.indent());
-        styleProperty.setBorderLeft(contentStyle.borderLeft());
-        styleProperty.setBorderRight(contentStyle.borderRight());
-        styleProperty.setBorderTop(contentStyle.borderTop());
-        styleProperty.setBorderBottom(contentStyle.borderBottom());
-        styleProperty.setLeftBorderColor(contentStyle.leftBorderColor());
-        styleProperty.setRightBorderColor(contentStyle.rightBorderColor());
-        styleProperty.setTopBorderColor(contentStyle.topBorderColor());
-        styleProperty.setBottomBorderColor(contentStyle.bottomBorderColor());
-        styleProperty.setFillPatternType(contentStyle.fillPatternType());
-        styleProperty.setFillBackgroundColor(contentStyle.fillBackgroundColor());
-        styleProperty.setFillForegroundColor(contentStyle.fillForegroundColor());
-        styleProperty.setShrinkToFit(contentStyle.shrinkToFit());
+        if (contentStyle.dataFormat() >= 0) {
+            DataFormatData dataFormatData = new DataFormatData();
+            dataFormatData.setIndex(contentStyle.dataFormat());
+            styleProperty.setDataFormatData(dataFormatData);
+        }
+        styleProperty.setHidden(contentStyle.hidden().getBooleanValue());
+        styleProperty.setLocked(contentStyle.locked().getBooleanValue());
+        styleProperty.setQuotePrefix(contentStyle.quotePrefix().getBooleanValue());
+        styleProperty.setHorizontalAlignment(contentStyle.horizontalAlignment().getPoiHorizontalAlignment());
+        styleProperty.setWrapped(contentStyle.wrapped().getBooleanValue());
+        styleProperty.setVerticalAlignment(contentStyle.verticalAlignment().getPoiVerticalAlignmentEnum());
+        if (contentStyle.rotation() >= 0) {
+            styleProperty.setRotation(contentStyle.rotation());
+        }
+        if (contentStyle.indent() >= 0) {
+            styleProperty.setIndent(contentStyle.indent());
+        }
+        styleProperty.setBorderLeft(contentStyle.borderLeft().getPoiBorderStyle());
+        styleProperty.setBorderRight(contentStyle.borderRight().getPoiBorderStyle());
+        styleProperty.setBorderTop(contentStyle.borderTop().getPoiBorderStyle());
+        styleProperty.setBorderBottom(contentStyle.borderBottom().getPoiBorderStyle());
+        if (contentStyle.leftBorderColor() >= 0) {
+            styleProperty.setLeftBorderColor(contentStyle.leftBorderColor());
+        }
+        if (contentStyle.rightBorderColor() >= 0) {
+            styleProperty.setRightBorderColor(contentStyle.rightBorderColor());
+        }
+        if (contentStyle.topBorderColor() >= 0) {
+            styleProperty.setTopBorderColor(contentStyle.topBorderColor());
+        }
+        if (contentStyle.bottomBorderColor() >= 0) {
+            styleProperty.setBottomBorderColor(contentStyle.bottomBorderColor());
+        }
+        styleProperty.setFillPatternType(contentStyle.fillPatternType().getPoiFillPatternType());
+        if (contentStyle.fillBackgroundColor() >= 0) {
+            styleProperty.setFillBackgroundColor(contentStyle.fillBackgroundColor());
+        }
+        if (contentStyle.fillForegroundColor() >= 0) {
+            styleProperty.setFillForegroundColor(contentStyle.fillForegroundColor());
+        }
+        styleProperty.setShrinkToFit(contentStyle.shrinkToFit().getBooleanValue());
         return styleProperty;
     }
 }

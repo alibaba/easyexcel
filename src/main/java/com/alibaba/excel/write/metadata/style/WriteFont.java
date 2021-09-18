@@ -1,5 +1,7 @@
 package com.alibaba.excel.write.metadata.style;
 
+import com.alibaba.excel.util.StringUtils;
+
 import lombok.Data;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -70,4 +72,43 @@ public class WriteFont {
      * Bold
      */
     private Boolean bold;
+
+    /**
+     * The source is not empty merge the data to the target.
+     *
+     * @param source source
+     * @param target target
+     */
+    public static void merge(WriteFont source, WriteFont target) {
+        if (source == null || target == null) {
+            return;
+        }
+        if (StringUtils.isNotBlank(source.getFontName())) {
+            target.setFontName(source.getFontName());
+        }
+        if (source.getFontHeightInPoints() != null) {
+            target.setFontHeightInPoints(source.getFontHeightInPoints());
+        }
+        if (source.getItalic() != null) {
+            target.setItalic(source.getItalic());
+        }
+        if (source.getStrikeout() != null) {
+            target.setStrikeout(source.getStrikeout());
+        }
+        if (source.getColor() != null) {
+            target.setColor(source.getColor());
+        }
+        if (source.getTypeOffset() != null) {
+            target.setTypeOffset(source.getTypeOffset());
+        }
+        if (source.getUnderline() != null) {
+            target.setUnderline(source.getUnderline());
+        }
+        if (source.getCharset() != null) {
+            target.setCharset(source.getCharset());
+        }
+        if (source.getBold() != null) {
+            target.setBold(source.getBold());
+        }
+    }
 }
