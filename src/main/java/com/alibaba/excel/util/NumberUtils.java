@@ -58,7 +58,7 @@ public class NumberUtils {
      * @return
      */
     public static WriteCellData<?> formatToCellData(Number num, ExcelContentProperty contentProperty) {
-        WriteCellData<?> cellData = new WriteCellData<>(BigDecimal.valueOf(num.doubleValue()));
+        WriteCellData<?> cellData = new WriteCellData<>(new BigDecimal(num.toString()));
         if (contentProperty != null && contentProperty.getNumberFormatProperty() != null
             && StringUtils.isNotBlank(contentProperty.getNumberFormatProperty().getFormat())) {
             WorkBookUtil.fillDataFormat(cellData, contentProperty.getNumberFormatProperty().getFormat(), null);
@@ -134,7 +134,7 @@ public class NumberUtils {
         if (!hasFormat(contentProperty)) {
             return new BigDecimal(string);
         }
-        return BigDecimal.valueOf(parse(string, contentProperty).doubleValue());
+        return new BigDecimal(parse(string, contentProperty).toString());
     }
 
     /**
