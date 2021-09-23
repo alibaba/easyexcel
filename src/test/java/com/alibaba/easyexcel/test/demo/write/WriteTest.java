@@ -336,11 +336,12 @@ public class WriteTest {
     }
 
     /**
-     * 超链接、备注、公式、指定单个单元格的样式
+     * 超链接、备注、公式、指定单个单元格的样式、单个单元格多种样式
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link WriteCellDemoData}
      * <p>
      * 2. 直接写即可
+     *
      * @since 3.0.0-beta1
      */
     @Test
@@ -378,6 +379,7 @@ public class WriteTest {
 
         // 设置单个单元格的样式 当然样式 很多的话 也可以用注解等方式。
         WriteCellData<String> writeCellStyle = new WriteCellData<>("单元格样式");
+        writeCellStyle.setType(CellDataTypeEnum.STRING);
         writeCellDemoData.setWriteCellStyle(writeCellStyle);
         WriteCellStyle writeCellStyleData = new WriteCellStyle();
         writeCellStyle.setWriteCellStyle(writeCellStyleData);
@@ -385,6 +387,22 @@ public class WriteTest {
         writeCellStyleData.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
         // 背景绿色
         writeCellStyleData.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+
+        // 设置单个单元格多种样式
+        WriteCellData<String> richTest = new WriteCellData<>();
+        richTest.setType(CellDataTypeEnum.RICH_TEXT_STRING);
+        writeCellDemoData.setRichText(richTest);
+        RichTextStringData richTextStringData = new RichTextStringData();
+        richTest.setRichTextStringDataValue(richTextStringData);
+        richTextStringData.setTextString("红色绿色默认");
+        // 前2个字红色
+        WriteFont writeFont = new WriteFont();
+        writeFont.setColor(IndexedColors.RED.getIndex());
+        richTextStringData.applyFont(0, 2, writeFont);
+        // 接下来2个字绿色
+        writeFont = new WriteFont();
+        writeFont.setColor(IndexedColors.GREEN.getIndex());
+        richTextStringData.applyFont(2, 4, writeFont);
 
         List<WriteCellDemoData> data = new ArrayList<>();
         data.add(writeCellDemoData);
