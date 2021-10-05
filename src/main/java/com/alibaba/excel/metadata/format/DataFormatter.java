@@ -201,8 +201,9 @@ public class DataFormatter {
         //  handle these ourselves in a special way.
         // For now, if we detect 2+ parts, we call out to CellFormat to handle it
         // TODO Going forward, we should really merge the logic between the two classes
-        if (formatStr.contains(";") &&
-            (formatStr.indexOf(';') != formatStr.lastIndexOf(';')
+        final int semicolonStartIndex = formatStr.indexOf(';');
+        if (semicolonStartIndex >= 0 &&
+            (semicolonStartIndex != formatStr.lastIndexOf(';')
                 || rangeConditionalPattern.matcher(formatStr).matches()
             )) {
             try {
