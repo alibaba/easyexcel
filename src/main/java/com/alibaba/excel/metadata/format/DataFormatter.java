@@ -850,7 +850,7 @@ public class DataFormatter {
      * non-cachable wrapper around a
      * {@link CellFormatResult}
      */
-    private final class CellFormatResultWrapper extends Format {
+    private static final class CellFormatResultWrapper extends Format {
         private final CellFormatResult result;
 
         private CellFormatResultWrapper(CellFormatResult result) {
