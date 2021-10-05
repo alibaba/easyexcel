@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 import lombok.Data;
+import org.apache.commons.collections4.iterators.EmptyIterator;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.udf.UDFFinder;
@@ -404,6 +405,6 @@ public class CsvWorkbook implements Workbook {
 
     @Override
     public Iterator<Sheet> iterator() {
-        return null;
+        return EmptyIterator.emptyIterator();
     }
 }
