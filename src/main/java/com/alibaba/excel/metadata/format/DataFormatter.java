@@ -218,7 +218,7 @@ public class DataFormatter {
                 // Wrap and return (non-cachable - CellFormat does that)
                 return new CellFormatResultWrapper(cfmt.apply(cellValueO));
             } catch (Exception e) {
-                LOGGER.warn("Formatting failed for format {}, falling back", formatStr, e);
+                LOGGER.warn("Formatting failed for format " + formatStr + ", falling back", e);
             }
         }
 
@@ -453,7 +453,7 @@ public class DataFormatter {
         try {
             return new ExcelStyleDateFormatter(formatStr, dateSymbols);
         } catch (IllegalArgumentException iae) {
-            LOGGER.debug("Formatting failed for format {}, falling back", formatStr, iae);
+            LOGGER.debug("Formatting failed for format " + formatStr + ", falling back", iae);
             // the pattern could not be parsed correctly,
             // so fall back to the default number format
             return getDefaultFormat();
@@ -582,7 +582,7 @@ public class DataFormatter {
         try {
             return new InternalDecimalFormatWithScale(format, symbols);
         } catch (IllegalArgumentException iae) {
-            LOGGER.error("Formatting failed for format {}, falling back", formatStr, iae);
+            LOGGER.error("Formatting failed for format " + formatStr + ", falling back", iae);
             // the pattern could not be parsed correctly,
             // so fall back to the default number format
             return getDefaultFormat();
