@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 
 import com.alibaba.excel.util.DateUtils;
 
+import com.alibaba.excel.util.StringUtils;
 import org.apache.poi.ss.format.CellFormat;
 import org.apache.poi.ss.format.CellFormatResult;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -278,7 +279,7 @@ public class DataFormatter {
         }
 
         // Check for special cases
-        if (formatStr == null || formatStr.trim().length() == 0) {
+        if (StringUtils.isBlank(formatStr)) {
             return getDefaultFormat();
         }
 
@@ -824,10 +825,10 @@ public class DataFormatter {
             seg2 = result.substring(Math.max(0, len - 7), len - 4);
             seg1 = result.substring(Math.max(0, len - 10), Math.max(0, len - 7));
 
-            if (seg1.trim().length() > 0) {
+            if (StringUtils.isNotBlank(seg1)) {
                 sb.append('(').append(seg1).append(") ");
             }
-            if (seg2.trim().length() > 0) {
+            if (StringUtils.isNotBlank(seg2)) {
                 sb.append(seg2).append('-');
             }
             sb.append(seg3);
