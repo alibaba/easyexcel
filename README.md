@@ -6,7 +6,8 @@ EasyExcel
 
 [QQ1群(已满): 662022184](https://jq.qq.com/?_wv=1027&k=1T21jJxh)  
 [QQ2群(已满): 1097936804](https://jq.qq.com/?_wv=1027&k=j5zEy6Xl)  
-[QQ3群: 453928496](https://qm.qq.com/cgi-bin/qm/qr?k=e2ULsA5A0GldhV2CXJ8sIbAyu9I6qqs7&jump_from=webapi)  
+[QQ3群(已满): 453928496](https://qm.qq.com/cgi-bin/qm/qr?k=e2ULsA5A0GldhV2CXJ8sIbAyu9I6qqs7&jump_from=webapi)  
+[QQ4群: 496594404](https://qm.qq.com/cgi-bin/qm/qr?k=e_aVG1Q7gi0PJUBkbrUGAgbeO3kUEInK&jump_from=webapi)   
 [钉钉1群（已满）: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)  
 [钉钉2群（已满）: 32796397](https://qr.dingtalk.com/action/joingroup?code=v1,k1,jyU9GtEuNU5S0QTyklqYcYJ8qDZtUuTPMM7uPZTS8Hs=&_dt_no_comment=1&origin=11)  
 [钉钉3群（已满）: 33797247](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3UGlEScTGQaHpW2cIRo+gkxJ9EVZ5fz26M6nW3uFP30=&_dt_no_comment=1&origin=11)  
@@ -34,8 +35,18 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
   * 读的时候`invoke`里面抛出异常，不会再额外封装一层`ExcelAnalysisException` （不会编译报错）
   * 样式等注解涉及到 `boolean` or 一些枚举 值的 有变动，新增默认值（会编译报错，注解改就行）
 * 大版本升级后建议相关内容重新测试下
+* 要升级涉及到
 
-## 人员招募
+## 广告位
+### 支付宝扫一扫红包
+本项目都是个人业余时间写的，所以比较贫穷。推广下支付宝，赚个建群的费用。有空的同学帮忙扫一扫   
+扫一扫会有1元+的红包，然后本项目也会收到推广红包的费用。    
+![img](img/readme/alipay.png)
+### 阿里巴巴新零售事业部招募
+阿里巴巴新零售事业部--诚招JAVA资深开发、技术专家。有意向可以微信联系，简历可以发我邮箱jipengfei.jpf@alibaba-inc.com
+### 阿里巴巴&滴滴内推
+有入职滴滴、阿里需求的可以联系群主帮忙内推（会帮忙审核简历并提出修改意见）
+### easyexcel人员招募
 由于工作较忙,有意愿做开源的同学可以报名,主要负责群里回答&issue处理，当然也可以做一些PR.   
 由于开源没有任何物质回报，然后现在的维护同学也是课余时间维护的，所以想加入的同学需要持之以恒，而不是一时兴起.   
 要求如下：
@@ -127,5 +138,3 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 ```
 ### 联系我们
 有问题阿里同事可以通过钉钉找到我，阿里外同学可以通过git留言。其他技术非技术相关的也欢迎一起探讨。
-### 招聘&交流
-阿里巴巴新零售事业部--诚招JAVA资深开发、技术专家。有意向可以微信联系，简历可以发我邮箱jipengfei.jpf@alibaba-inc.com
