@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -176,6 +178,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
     }
 
+    AtomicInteger integer = new AtomicInteger(0);
+
     private void doFill(List<AnalysisCell> analysisCellList, Object oneRowData, FillConfig fillConfig,
         Integer relativeRowIndex) {
         if (CollectionUtils.isEmpty(analysisCellList) || oneRowData == null) {
@@ -190,7 +194,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         Map<String, ExcelContentProperty> fieldNameContentPropertyMap =
             writeContext.currentWriteHolder().excelWriteHeadProperty().getFieldNameContentPropertyMap();
-
         for (AnalysisCell analysisCell : analysisCellList) {
             Cell cell = getOneCell(analysisCell, fillConfig);
             if (analysisCell.getOnlyOneVariable()) {
@@ -202,6 +205,21 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 WriteCellData<?> cellData = converterAndSet(writeSheetHolder,
                     FieldUtils.getFieldClass(dataMap, variable),
                     null, cell, value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
+
+                // Restyle
+                if (fillConfig.getAutoStyle()) {
+                    Optional.ofNullable(collectionFieldStyleCache.get(currentUniqueDataFlag))
+                        .map(collectionFieldStyleMap -> collectionFieldStyleMap.get(analysisCell))
+                        .ifPresent(cellStyle -> {
+                            cellData.setOriginCellStyle(cellStyle);
+                            //WriteCellStyle writeCellStyle = StyleUtil.buildWritCellStyle(cellStyle,
+                            //    writeContext.writeWorkbookHolder().getWorkbook()
+                            //        .getFontAt(cellStyle.getFontIndexAsInt()));
+                            //WriteCellStyle.merge(cellData.getWriteCellStyle(), writeCellStyle);
+                            //cellData.setWriteCellStyle(writeCellStyle);
+                        });
+                }
+
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();
@@ -235,6 +253,14 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 }
                 cellValueBuild.append(analysisCell.getPrepareDataList().get(index));
                 cell.setCellValue(cellValueBuild.toString());
+
+                // Restyle
+                if (fillConfig.getAutoStyle()) {
+                    Optional.ofNullable(collectionFieldStyleCache.get(currentUniqueDataFlag))
+                        .map(collectionFieldStyleMap -> collectionFieldStyleMap.get(analysisCell))
+                        .ifPresent(cell::setCellStyle);
+                }
+
                 WriteHandlerUtils.afterCellDispose(writeContext, cellDataList, cell, null, relativeRowIndex,
                     Boolean.FALSE);
             }
@@ -295,18 +321,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         Row row = createRowIfNecessary(sheet, cachedSheet, lastRowIndex, fillConfig, analysisCell, isOriginalCell);
         Cell cell = createCellIfNecessary(row, lastColumnIndex);
 
-        Map<AnalysisCell, CellStyle> collectionFieldStyleMap = collectionFieldStyleCache.computeIfAbsent(
-            currentUniqueDataFlag, key -> MapUtils.newHashMap());
-
         if (isOriginalCell) {
+            Map<AnalysisCell, CellStyle> collectionFieldStyleMap = collectionFieldStyleCache.computeIfAbsent(
+                currentUniqueDataFlag, key -> MapUtils.newHashMap());
             collectionFieldStyleMap.put(analysisCell, cell.getCellStyle());
-        } else {
-            if (fillConfig.getAutoStyle()) {
-                CellStyle cellStyle = collectionFieldStyleMap.get(analysisCell);
-                if (cellStyle != null) {
-                    cell.setCellStyle(cellStyle);
-                }
-            }
         }
         return cell;
     }

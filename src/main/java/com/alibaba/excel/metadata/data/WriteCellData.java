@@ -12,6 +12,7 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.poi.ss.usermodel.CellStyle;
 
 /**
  * wirte cell data
@@ -46,6 +47,12 @@ public class WriteCellData<T> extends CellData<T> {
      * style
      */
     private WriteCellStyle writeCellStyle;
+
+    /**
+     * If originCellStyle is empty, one will be created.
+     * If both writeCellStyle and originCellStyle exist, copy from writeCellStyle to originCellStyle.
+     */
+    private CellStyle originCellStyle;
 
     public WriteCellData(String stringValue) {
         this(CellDataTypeEnum.STRING, stringValue);

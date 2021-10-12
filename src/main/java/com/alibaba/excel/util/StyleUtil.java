@@ -156,6 +156,60 @@ public class StyleUtil {
         return font;
     }
 
+    public static WriteCellStyle buildWritCellStyle(CellStyle cellStyle, Font font) {
+        WriteCellStyle writeCellStyle = new WriteCellStyle();
+        if (cellStyle == null) {
+            return writeCellStyle;
+        }
+        writeCellStyle.setHidden(cellStyle.getHidden());
+        writeCellStyle.setLocked(cellStyle.getLocked());
+        writeCellStyle.setQuotePrefix(cellStyle.getQuotePrefixed());
+        writeCellStyle.setHorizontalAlignment(cellStyle.getAlignment());
+        writeCellStyle.setWrapped(cellStyle.getWrapText());
+        writeCellStyle.setVerticalAlignment(cellStyle.getVerticalAlignment());
+        writeCellStyle.setRotation(cellStyle.getRotation());
+        writeCellStyle.setIndent(cellStyle.getIndention());
+        writeCellStyle.setBorderLeft(cellStyle.getBorderLeft());
+        writeCellStyle.setBorderRight(cellStyle.getBorderRight());
+        writeCellStyle.setBorderTop(cellStyle.getBorderTop());
+        writeCellStyle.setBorderBottom(cellStyle.getBorderBottom());
+        writeCellStyle.setLeftBorderColor(cellStyle.getLeftBorderColor());
+        writeCellStyle.setRightBorderColor(cellStyle.getRightBorderColor());
+        writeCellStyle.setTopBorderColor(cellStyle.getTopBorderColor());
+        writeCellStyle.setBottomBorderColor(cellStyle.getBottomBorderColor());
+        writeCellStyle.setFillPatternType(cellStyle.getFillPattern());
+        //writeCellStyle.setFillBackgroundColor(cellStyle.getFillBackgroundColor());
+        //writeCellStyle.setFillForegroundColor(cellStyle.getFillForegroundColor());
+        writeCellStyle.setShrinkToFit(cellStyle.getShrinkToFit());
+        writeCellStyle.setDataFormatData(buildDataFormat(cellStyle.getDataFormat(), cellStyle.getDataFormatString()));
+        writeCellStyle.setWriteFont(buildFont(font));
+        return writeCellStyle;
+    }
+
+    public static DataFormatData buildDataFormat(short dataFormat, String dataFormatString) {
+        DataFormatData dataFormatData = new DataFormatData();
+        dataFormatData.setIndex(dataFormat);
+        dataFormatData.setFormat(dataFormatString);
+        return dataFormatData;
+    }
+
+    public static WriteFont buildFont(Font font) {
+        WriteFont writeFont = new WriteFont();
+        if (font == null) {
+            return writeFont;
+        }
+        writeFont.setFontName(font.getFontName());
+        writeFont.setFontHeightInPoints(font.getFontHeightInPoints());
+        writeFont.setItalic(font.getItalic());
+        writeFont.setStrikeout(font.getStrikeout());
+        writeFont.setColor(font.getColor());
+        writeFont.setTypeOffset(font.getTypeOffset());
+        writeFont.setUnderline(font.getUnderline());
+        writeFont.setCharset(font.getCharSet());
+        writeFont.setBold(font.getBold());
+        return writeFont;
+    }
+
     public static RichTextString buildRichTextString(WriteWorkbookHolder writeWorkbookHolder,
         RichTextStringData richTextStringData) {
         if (richTextStringData == null) {
