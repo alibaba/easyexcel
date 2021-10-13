@@ -17,8 +17,10 @@ import com.alibaba.excel.metadata.data.ImageData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileTypeUtils;
 import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -32,7 +34,6 @@ import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 
@@ -62,8 +63,6 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         // Fill in picture information
         fillImage(cell, cellData.getImageDataList());
 
-        //setImageValue(cellData,cell);
-
         // Fill in comment information
         fillComment(cell, cellData.getCommentData());
 
@@ -75,6 +74,10 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
         // Fill in style information
         fillStyle(cell, cellData.getWriteCellStyle());
+
+        // Fill index
+        cellData.setRowIndex(cell.getRowIndex());
+        cellData.setColumnIndex(cell.getColumnIndex());
 
         if (cellData.getType() == null) {
             cellData.setType(CellDataTypeEnum.EMPTY);
@@ -221,8 +224,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             if (imageData.getAnchorType() != null) {
                 anchor.setAnchorType(imageData.getAnchorType().getValue());
             }
-            Picture picture = drawing.createPicture(anchor, index);
-            //picture.resize(0.5, 0.5);
+            drawing.createPicture(anchor, index);
         }
     }
 
@@ -235,6 +237,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             }
             WriteCellData<?> cellDataValue = (WriteCellData<?>)value;
             if (cellDataValue.getType() != null) {
+                // Configuration information may not be read here
+                fillProperty(cellDataValue, excelContentProperty);
+
                 return cellDataValue;
             } else {
                 if (cellDataValue.getData() == null) {
@@ -266,6 +271,27 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         return doConvert(currentWriteHolder, clazz, targetType, cell, value, excelContentProperty);
     }
 
+    private void fillProperty(WriteCellData<?> cellDataValue, ExcelContentProperty excelContentProperty) {
+        switch (cellDataValue.getType()) {
+            case DATE:
+                String dateFormat = null;
+                if (excelContentProperty != null && excelContentProperty.getDateTimeFormatProperty() != null) {
+                    dateFormat = excelContentProperty.getDateTimeFormatProperty().getFormat();
+                }
+                WorkBookUtil.fillDataFormat(cellDataValue, dateFormat, DateUtils.defaultDateFormat);
+                return;
+            case NUMBER:
+                String numberFormat = null;
+                if (excelContentProperty != null && excelContentProperty.getNumberFormatProperty() != null) {
+                    numberFormat = excelContentProperty.getNumberFormatProperty().getFormat();
+                }
+                WorkBookUtil.fillDataFormat(cellDataValue, numberFormat, null);
+                return;
+            default:
+                return;
+        }
+    }
+
     private WriteCellData<?> doConvert(WriteHolder currentWriteHolder, Class<?> clazz, CellDataTypeEnum targetType,
         Cell cell, Object value, ExcelContentProperty excelContentProperty) {
         Converter<?> converter = null;
@@ -273,15 +299,19 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             converter = excelContentProperty.getConverter();
         }
         if (converter == null) {
+            // csv is converted to string by default
+            if (writeContext.writeWorkbookHolder().getExcelType() == ExcelTypeEnum.CSV) {
+                targetType = CellDataTypeEnum.STRING;
+            }
             converter = currentWriteHolder.converterMap().get(ConverterKeyBuild.buildKey(clazz, targetType));
+        }
+        if (value == null && !(converter instanceof NullableObjectConverter)) {
+            return new WriteCellData<>(CellDataTypeEnum.EMPTY);
         }
         if (converter == null) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new WriteCellData<>(CellDataTypeEnum.EMPTY), excelContentProperty,
                 "Can not find 'Converter' support class " + clazz.getSimpleName() + ".");
-        }
-        if (value == null && !(converter instanceof NullableObjectConverter)) {
-            return new WriteCellData<>(CellDataTypeEnum.EMPTY);
         }
         WriteCellData<?> cellData;
         try {
@@ -290,12 +320,12 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         } catch (Exception e) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new WriteCellData<>(CellDataTypeEnum.EMPTY), excelContentProperty,
-                "Convert data:" + value + " error,at row:" + cell.getRow().getRowNum(), e);
+                "Convert data:" + value + " error, at row:" + cell.getRow().getRowNum(), e);
         }
         if (cellData == null || cellData.getType() == null) {
             throw new ExcelDataConvertException(cell.getRow().getRowNum(), cell.getColumnIndex(),
                 new WriteCellData<>(CellDataTypeEnum.EMPTY), excelContentProperty,
-                "Convert data:" + value + " return null,at row:" + cell.getRow().getRowNum());
+                "Convert data:" + value + " return null, at row:" + cell.getRow().getRowNum());
         }
         return cellData;
     }

@@ -1,16 +1,19 @@
 EasyExcel
 ======================
-[![Build Status](https://travis-ci.org/alibaba/easyexcel.svg?branch=master)](https://travis-ci.org/alibaba/easyexcel)
+[![Build Status](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml?query=branch%3Amaster)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/easyexcel/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/easyexcel)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-[QQ1群(已满): 662022184](https://jq.qq.com/?_wv=1027&k=1T21jJxh)
-[QQ2群: 1097936804](https://jq.qq.com/?_wv=1027&k=j5zEy6Xl)
-[钉钉1群（已满）: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)
-[钉钉2群（已满）: 32796397](https://qr.dingtalk.com/action/joingroup?code=v1,k1,jyU9GtEuNU5S0QTyklqYcYJ8qDZtUuTPMM7uPZTS8Hs=&_dt_no_comment=1&origin=11)
-[钉钉3群（已满）: 33797247](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3UGlEScTGQaHpW2cIRo+gkxJ9EVZ5fz26M6nW3uFP30=&_dt_no_comment=1&origin=11)
-[钉钉4群: 33491624](https://qr.dingtalk.com/action/joingroup?code=v1,k1,V14Pb65Too70rQkEaJ9ohb6lZBZbtp6jIL/q9EWh9vA=&_dt_no_comment=1&origin=11)
-[官方网站: https://yuque.com/easyexcel](https://www.yuque.com/easyexcel/doc/easyexcel)
+[QQ1群(已满): 662022184](https://jq.qq.com/?_wv=1027&k=1T21jJxh)  
+[QQ2群(已满): 1097936804](https://jq.qq.com/?_wv=1027&k=j5zEy6Xl)  
+[QQ3群(已满): 453928496](https://qm.qq.com/cgi-bin/qm/qr?k=e2ULsA5A0GldhV2CXJ8sIbAyu9I6qqs7&jump_from=webapi)  
+[QQ4群: 496594404](https://qm.qq.com/cgi-bin/qm/qr?k=e_aVG1Q7gi0PJUBkbrUGAgbeO3kUEInK&jump_from=webapi)   
+[钉钉1群（已满）: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)  
+[钉钉2群（已满）: 32796397](https://qr.dingtalk.com/action/joingroup?code=v1,k1,jyU9GtEuNU5S0QTyklqYcYJ8qDZtUuTPMM7uPZTS8Hs=&_dt_no_comment=1&origin=11)  
+[钉钉3群（已满）: 33797247](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3UGlEScTGQaHpW2cIRo+gkxJ9EVZ5fz26M6nW3uFP30=&_dt_no_comment=1&origin=11)  
+[钉钉4群（已满）: 33491624](https://qr.dingtalk.com/action/joingroup?code=v1,k1,V14Pb65Too70rQkEaJ9ohb6lZBZbtp6jIL/q9EWh9vA=&_dt_no_comment=1&origin=11)  
+[钉钉5群: 32134498](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingb9fa1325d9dccc3ecac589edd02f1650&5233a=71a83&cbdbhh=qwertyuiop)  
+[官方网站: https://yuque.com/easyexcel](https://www.yuque.com/easyexcel/doc/easyexcel)  
 
 [常见问题](https://www.yuque.com/easyexcel/faq)
 #### 因为公司不方便用QQ，所以建议加钉钉群
@@ -22,6 +25,37 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 当然还有极速模式能更快，但是内存占用会在100M多一点
 ![img](img/readme/large.png)
 
+## 版本支持
+* 2+ 版本支持 Java7和Java6
+* 3+ 版本至少 Java8
+### 关于版本升级
+* 不建议跨大版本升级 尤其跨2个大版本
+* 2+ 升级到 3+ 一些不兼容的地方
+  * 使用了自定义拦截器去修改样式的会出问题（不会编译报错）
+  * 读的时候`invoke`里面抛出异常，不会再额外封装一层`ExcelAnalysisException` （不会编译报错）
+  * 样式等注解涉及到 `boolean` or 一些枚举 值的 有变动，新增默认值（会编译报错，注解改就行）
+* 大版本升级后建议相关内容重新测试下
+* 要升级涉及到
+
+## 广告位
+### 支付宝扫一扫红包
+本项目都是个人业余时间写的，所以比较贫穷。推广下支付宝，赚个建群的费用。有空的同学帮忙扫一扫   
+扫一扫会有1元+的红包，然后本项目也会收到推广红包的费用。    
+![img](img/readme/alipay.png)
+### 阿里巴巴新零售事业部招募
+阿里巴巴新零售事业部--诚招JAVA资深开发、技术专家。有意向可以微信联系，简历可以发我邮箱jipengfei.jpf@alibaba-inc.com
+### 阿里巴巴&滴滴内推
+有入职滴滴、阿里需求的可以联系群主帮忙内推（会帮忙审核简历并提出修改意见）
+### easyexcel人员招募
+由于工作较忙,有意愿做开源的同学可以报名,主要负责群里回答&issue处理，当然也可以做一些PR.   
+由于开源没有任何物质回报，然后现在的维护同学也是课余时间维护的，所以想加入的同学需要持之以恒，而不是一时兴起.   
+要求如下：
+* 有一定java编码能力 & 良好的编码习惯
+* 了解easyexcel 读&写的原理
+* 热爱开源项目
+* 能长期坚持的去做
+* 相对工作没那么忙
+
 ## 相关文档
 * [快速开始](https://www.yuque.com/easyexcel/doc/easyexcel)
 * [关于软件](/abouteasyexcel.md)
@@ -29,7 +63,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 * [贡献代码](https://www.yuque.com/easyexcel/doc/contribute)
 
 ## 维护者
-玉霄、庄家钜、怀宇
+姬朋飞（玉霄)、庄家钜、怀宇
 ## 快速开始
 ### 读Excel
 DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
@@ -104,5 +138,3 @@ DEMO代码地址：[https://github.com/alibaba/easyexcel/blob/master/src/test/ja
 ```
 ### 联系我们
 有问题阿里同事可以通过钉钉找到我，阿里外同学可以通过git留言。其他技术非技术相关的也欢迎一起探讨。
-### 招聘&交流
-阿里巴巴新零售事业部--诚招JAVA资深开发、技术专家。有意向可以微信联系，简历可以发我邮箱jipengfei.jpf@alibaba-inc.com

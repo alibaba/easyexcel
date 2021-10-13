@@ -20,11 +20,14 @@ public class UnCamelDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
+
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("unCame07.xlsx");
         file03 = TestFileUtil.createNewFile("unCame03.xls");
+        fileCsv = TestFileUtil.createNewFile("unCameCsv.csv");
     }
 
     @Test
@@ -35,6 +38,11 @@ public class UnCamelDataTest {
     @Test
     public void t02ReadAndWrite03() {
         readAndWrite(file03);
+    }
+
+    @Test
+    public void t03ReadAndWriteCsv() {
+        readAndWrite(fileCsv);
     }
 
     private void readAndWrite(File file) {

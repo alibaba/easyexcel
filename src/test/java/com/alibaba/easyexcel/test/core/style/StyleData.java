@@ -1,6 +1,8 @@
 package com.alibaba.easyexcel.test.core.style;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
 
 import lombok.Data;
 
@@ -8,6 +10,8 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
+@HeadStyle
+@HeadFontStyle
 public class StyleData {
     @ExcelProperty("字符串")
     private String string;

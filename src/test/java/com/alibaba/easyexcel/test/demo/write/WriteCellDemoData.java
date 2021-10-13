@@ -38,4 +38,11 @@ public class WriteCellDemoData {
      * @since 3.0.0-beta1
      */
     private WriteCellData<String> writeCellStyle;
+
+    /**
+     * 指定一个单元格有多个样式
+     *
+     * @since 3.0.0-beta1
+     */
+    private WriteCellData<String> richText;
 }

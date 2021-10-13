@@ -1,7 +1,5 @@
 package com.alibaba.excel.read.listener;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.context.AnalysisContext;
@@ -13,11 +11,12 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
+import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.MapUtils;
 
-import net.sf.cglib.beans.BeanMap;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Convert to the object the user needs
@@ -27,7 +26,12 @@ import net.sf.cglib.beans.BeanMap;
 public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCellData<?>>> {
 
     @Override
-    public void invokeHead(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {}
+    public void invokeHead(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {
+        if (context.readSheetHolder().getMaxDataHeadSize() == null
+            || context.readSheetHolder().getMaxDataHeadSize() < CollectionUtils.size(cellDataMap)) {
+            context.readSheetHolder().setMaxDataHeadSize(CollectionUtils.size(cellDataMap));
+        }
+    }
 
     @Override
     public void invoke(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {
@@ -43,56 +47,36 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
     private Object buildStringList(Map<Integer, ReadCellData<?>> cellDataMap, ReadSheetHolder readSheetHolder,
         AnalysisContext context) {
         int index = 0;
-        if (context.readWorkbookHolder().getDefaultReturnMap()) {
-            Map<Integer, String> map = MapUtils.newLinkedHashMapWithExpectedSize(cellDataMap.size());
-            for (Map.Entry<Integer, ReadCellData<?>> entry : cellDataMap.entrySet()) {
-                Integer key = entry.getKey();
-                ReadCellData<?> cellData = entry.getValue();
-                while (index < key) {
-                    map.put(index, null);
-                    index++;
-                }
-                index++;
-                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                    map.put(key, null);
-                    continue;
-                }
-                map.put(key,
-                    (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
-                        context, context.readRowHolder().getRowIndex(), key));
-            }
-            int headSize = readSheetHolder.excelReadHeadProperty().getHeadMap().size();
-            while (index < headSize) {
+        Map<Integer, String> map = MapUtils.newLinkedHashMapWithExpectedSize(cellDataMap.size());
+        for (Map.Entry<Integer, ReadCellData<?>> entry : cellDataMap.entrySet()) {
+            Integer key = entry.getKey();
+            ReadCellData<?> cellData = entry.getValue();
+            while (index < key) {
                 map.put(index, null);
                 index++;
             }
-            return map;
-        } else {
-            // Compatible with the old code the old code returns a list
-            List<String> list = new ArrayList<>();
-            for (Map.Entry<Integer, ReadCellData<?>> entry : cellDataMap.entrySet()) {
-                Integer key = entry.getKey();
-                ReadCellData<?> cellData = entry.getValue();
-                while (index < key) {
-                    list.add(null);
-                    index++;
-                }
-                index++;
-                if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                    list.add(null);
-                    continue;
-                }
-                list.add(
-                    (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
-                        context, context.readRowHolder().getRowIndex(), key));
-            }
-            int headSize = readSheetHolder.excelReadHeadProperty().getHeadMap().size();
-            while (index < headSize) {
-                list.add(null);
-                index++;
-            }
-            return list;
+            index++;
+            map.put(key,
+                (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
+                    context, context.readRowHolder().getRowIndex(), key));
         }
+        // fix https://github.com/alibaba/easyexcel/issues/2014
+        int headSize = calculateHeadSize(readSheetHolder);
+        while (index < headSize) {
+            map.put(index, null);
+            index++;
+        }
+        return map;
+    }
+
+    private int calculateHeadSize(ReadSheetHolder readSheetHolder) {
+        if (readSheetHolder.excelReadHeadProperty().getHeadMap().size() > 0) {
+            return readSheetHolder.excelReadHeadProperty().getHeadMap().size();
+        }
+        if (readSheetHolder.getMaxDataHeadSize() != null) {
+            return readSheetHolder.getMaxDataHeadSize();
+        }
+        return 0;
     }
 
     private Object buildUserModel(Map<Integer, ReadCellData<?>> cellDataMap, ReadSheetHolder readSheetHolder,
@@ -115,9 +99,6 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
                 continue;
             }
             ReadCellData<?> cellData = cellDataMap.get(index);
-            if (cellData.getType() == CellDataTypeEnum.EMPTY) {
-                continue;
-            }
             ExcelContentProperty excelContentProperty = contentPropertyMap.get(index);
             Object value = ConverterUtils.convertToJavaObject(cellData, excelContentProperty.getField(),
                 excelContentProperty, readSheetHolder.converterMap(), context,
@@ -126,7 +107,7 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
                 map.put(FieldUtils.resolveCglibFieldName(excelContentProperty.getField()), value);
             }
         }
-        BeanMap.create(resultModel).putAll(map);
+        BeanMapUtils.create(resultModel).putAll(map);
         return resultModel;
     }
 

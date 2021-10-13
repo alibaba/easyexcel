@@ -5,11 +5,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
@@ -17,59 +12,79 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.cache.MapCache;
 import com.alibaba.excel.converters.string.StringStringConverter;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
 /**
- *
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ParameterDataTest {
 
-    private static File file;
+    private static File file07;
+    private static File fileCsv;
 
     @BeforeClass
     public static void init() {
-        file = TestFileUtil.createNewFile("parameter07.xlsx");
+        file07 = TestFileUtil.createNewFile("parameter07.xlsx");
+        fileCsv = TestFileUtil.createNewFile("parameterCsv.csv");
     }
 
     @Test
     public void t01ReadAndWrite() throws Exception {
-        readAndWrite1();
-        readAndWrite2();
-        readAndWrite3();
-        readAndWrite4();
-        readAndWrite5();
-        readAndWrite6();
-        readAndWrite7();
+        readAndWrite1(file07, ExcelTypeEnum.XLSX);
+        readAndWrite2(file07, ExcelTypeEnum.XLSX);
+        readAndWrite3(file07, ExcelTypeEnum.XLSX);
+        readAndWrite4(file07, ExcelTypeEnum.XLSX);
+        readAndWrite5(file07, ExcelTypeEnum.XLSX);
+        readAndWrite6(file07, ExcelTypeEnum.XLSX);
+        readAndWrite7(file07, ExcelTypeEnum.XLSX);
     }
 
-    private void readAndWrite1() {
+    @Test
+    public void t02ReadAndWrite() throws Exception {
+        readAndWrite1(fileCsv, ExcelTypeEnum.CSV);
+        readAndWrite2(fileCsv, ExcelTypeEnum.CSV);
+        readAndWrite3(fileCsv, ExcelTypeEnum.CSV);
+        readAndWrite4(fileCsv, ExcelTypeEnum.CSV);
+        readAndWrite5(fileCsv, ExcelTypeEnum.CSV);
+        readAndWrite6(fileCsv, ExcelTypeEnum.CSV);
+        readAndWrite7(fileCsv, ExcelTypeEnum.CSV);
+    }
+
+    private void readAndWrite1(File file, ExcelTypeEnum type) {
         EasyExcel.write(file.getPath()).head(ParameterData.class).sheet().doWrite(data());
         EasyExcel.read(file.getPath()).head(ParameterData.class).registerReadListener(new ParameterDataListener())
             .sheet().doRead();
     }
 
-    private void readAndWrite2() {
+    private void readAndWrite2(File file, ExcelTypeEnum type) {
         EasyExcel.write(file.getPath(), ParameterData.class).sheet().doWrite(data());
         EasyExcel.read(file.getPath(), ParameterData.class, new ParameterDataListener()).sheet().doRead();
     }
 
-    private void readAndWrite3() throws Exception {
-        EasyExcel.write(new FileOutputStream(file)).head(ParameterData.class).sheet().doWrite(data());
+    private void readAndWrite3(File file, ExcelTypeEnum type) throws Exception {
+        EasyExcel.write(new FileOutputStream(file)).excelType(type).head(ParameterData.class).sheet()
+            .doWrite(data());
         EasyExcel.read(file.getPath()).head(ParameterData.class).registerReadListener(new ParameterDataListener())
             .sheet().doRead();
     }
 
-    private void readAndWrite4() throws Exception {
-        EasyExcel.write(new FileOutputStream(file), ParameterData.class).sheet().doWrite(data());
+    private void readAndWrite4(File file, ExcelTypeEnum type) throws Exception {
+        EasyExcel.write(new FileOutputStream(file), ParameterData.class).excelType(type).sheet().doWrite(data());
         EasyExcel.read(file.getPath(), new ParameterDataListener()).head(ParameterData.class).sheet().doRead();
     }
 
-    private void readAndWrite5() throws Exception {
+    private void readAndWrite5(File file, ExcelTypeEnum type) throws Exception {
         ExcelWriter excelWriter =
-            EasyExcel.write(new FileOutputStream(file)).head(ParameterData.class).relativeHeadRowIndex(0).build();
+            EasyExcel.write(new FileOutputStream(file)).excelType(type).head(ParameterData.class).relativeHeadRowIndex(
+                0).build();
         WriteSheet writeSheet = EasyExcel.writerSheet(0).relativeHeadRowIndex(0).needHead(Boolean.FALSE).build();
         WriteTable writeTable = EasyExcel.writerTable(0).relativeHeadRowIndex(0).needHead(Boolean.TRUE).build();
         excelWriter.write(data(), writeSheet, writeTable);
@@ -88,9 +103,10 @@ public class ParameterDataTest {
         excelReader.finish();
     }
 
-    private void readAndWrite6() throws Exception {
+    private void readAndWrite6(File file, ExcelTypeEnum type) throws Exception {
         ExcelWriter excelWriter =
-            EasyExcel.write(new FileOutputStream(file)).head(ParameterData.class).relativeHeadRowIndex(0).build();
+            EasyExcel.write(new FileOutputStream(file)).excelType(type).head(ParameterData.class).relativeHeadRowIndex(
+                0).build();
         WriteSheet writeSheet = EasyExcel.writerSheet(0).relativeHeadRowIndex(0).needHead(Boolean.FALSE).build();
         WriteTable writeTable = EasyExcel.writerTable(0).registerConverter(new StringStringConverter())
             .relativeHeadRowIndex(0).needHead(Boolean.TRUE).build();
@@ -110,7 +126,7 @@ public class ParameterDataTest {
         excelReader.finish();
     }
 
-    private void readAndWrite7() {
+    private void readAndWrite7(File file, ExcelTypeEnum type) {
         EasyExcel.write(file, ParameterData.class).registerConverter(new StringStringConverter()).sheet()
             .registerConverter(new StringStringConverter()).needHead(Boolean.FALSE).table(0).needHead(Boolean.TRUE)
             .doWrite(data());
@@ -119,7 +135,7 @@ public class ParameterDataTest {
     }
 
     private List<ParameterData> data() {
-        List<ParameterData> list = new ArrayList<ParameterData>();
+        List<ParameterData> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             ParameterData simpleData = new ParameterData();
             simpleData.setName("姓名" + i);

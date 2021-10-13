@@ -1,7 +1,6 @@
 package com.alibaba.excel.metadata;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
@@ -55,19 +54,24 @@ public abstract class AbstractHolder implements ConfigurationHolder {
         }
         this.globalConfiguration = new GlobalConfiguration();
         if (basicParameter.getAutoTrim() == null) {
-            if (prentAbstractHolder == null) {
-                globalConfiguration.setAutoTrim(Boolean.TRUE);
-            } else {
+            if (prentAbstractHolder != null) {
                 globalConfiguration.setAutoTrim(prentAbstractHolder.getGlobalConfiguration().getAutoTrim());
             }
         } else {
             globalConfiguration.setAutoTrim(basicParameter.getAutoTrim());
         }
 
+        if (basicParameter.getUse1904windowing() == null) {
+            if (prentAbstractHolder != null) {
+                globalConfiguration.setUse1904windowing(
+                    prentAbstractHolder.getGlobalConfiguration().getUse1904windowing());
+            }
+        } else {
+            globalConfiguration.setUse1904windowing(basicParameter.getUse1904windowing());
+        }
+
         if (basicParameter.getLocale() == null) {
-            if (prentAbstractHolder == null) {
-                globalConfiguration.setLocale(Locale.getDefault());
-            } else {
+            if (prentAbstractHolder != null) {
                 globalConfiguration.setLocale(prentAbstractHolder.getGlobalConfiguration().getLocale());
             }
         } else {

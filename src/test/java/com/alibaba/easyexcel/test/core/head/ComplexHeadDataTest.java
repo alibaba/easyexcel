@@ -4,29 +4,35 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
 /**
- *
  * @author Jiaju Zhuang
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ComplexHeadDataTest {
 
     private static File file07;
     private static File file03;
+    private static File fileCsv;
     private static File file07AutomaticMergeHead;
     private static File file03AutomaticMergeHead;
+    private static File fileCsvAutomaticMergeHead;
 
     @BeforeClass
     public static void init() {
         file07 = TestFileUtil.createNewFile("complexHead07.xlsx");
         file03 = TestFileUtil.createNewFile("complexHead03.xls");
+        fileCsv = TestFileUtil.createNewFile("complexHeadCsv.csv");
         file07AutomaticMergeHead = TestFileUtil.createNewFile("complexHeadAutomaticMergeHead07.xlsx");
         file03AutomaticMergeHead = TestFileUtil.createNewFile("complexHeadAutomaticMergeHead03.xls");
+        fileCsvAutomaticMergeHead = TestFileUtil.createNewFile("complexHeadAutomaticMergeHeadCsv.csv");
     }
 
     @Test
@@ -39,6 +45,11 @@ public class ComplexHeadDataTest {
         readAndWrite(file03);
     }
 
+    @Test
+    public void t03ReadAndWriteCsv() {
+        readAndWrite(fileCsv);
+    }
+
     private void readAndWrite(File file) {
         EasyExcel.write(file, ComplexHeadData.class).sheet().doWrite(data());
         EasyExcel.read(file, ComplexHeadData.class, new ComplexDataListener())
@@ -46,16 +57,21 @@ public class ComplexHeadDataTest {
     }
 
     @Test
-    public void t03ReadAndWriteAutomaticMergeHead07() {
-        readAndWriteAutomaticMergeHead07(file07AutomaticMergeHead);
+    public void t11ReadAndWriteAutomaticMergeHead07() {
+        readAndWriteAutomaticMergeHead(file07AutomaticMergeHead);
     }
 
     @Test
-    public void t04ReadAndWriteAutomaticMergeHead0703() {
-        readAndWriteAutomaticMergeHead07(file03AutomaticMergeHead);
+    public void t12ReadAndWriteAutomaticMergeHead03() {
+        readAndWriteAutomaticMergeHead(file03AutomaticMergeHead);
     }
 
-    private void readAndWriteAutomaticMergeHead07(File file) {
+    @Test
+    public void t13ReadAndWriteAutomaticMergeHeadCsv() {
+        readAndWriteAutomaticMergeHead(fileCsvAutomaticMergeHead);
+    }
+
+    private void readAndWriteAutomaticMergeHead(File file) {
         EasyExcel.write(file, ComplexHeadData.class).automaticMergeHead(Boolean.FALSE).sheet().doWrite(data());
         EasyExcel.read(file, ComplexHeadData.class, new ComplexDataListener()).sheet().doRead();
     }

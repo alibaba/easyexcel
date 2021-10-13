@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.alibaba.excel.enums.BooleanEnum;
+
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.ss.usermodel.Font;
@@ -34,12 +36,12 @@ public @interface ContentFontStyle {
     /**
      * Whether to use italics or not
      */
-    boolean italic() default false;
+    BooleanEnum italic() default BooleanEnum.DEFAULT;
 
     /**
      * Whether to use a strikeout horizontal line through the text or not
      */
-    boolean strikeout() default false;
+    BooleanEnum strikeout() default BooleanEnum.DEFAULT;
 
     /**
      * The color for the font
@@ -52,7 +54,7 @@ public @interface ContentFontStyle {
     short color() default -1;
 
     /**
-     * Set normal,super or subscript.
+     * Set normal, super or subscript.
      *
      * @see Font#SS_NONE
      * @see Font#SS_SUPER
@@ -85,5 +87,5 @@ public @interface ContentFontStyle {
     /**
      * Bold
      */
-    boolean bold() default false;
+    BooleanEnum bold() default BooleanEnum.DEFAULT;
 }

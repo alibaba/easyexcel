@@ -1,18 +1,21 @@
 package com.alibaba.excel.metadata.property;
 
+import com.alibaba.excel.annotation.write.style.ContentFontStyle;
+import com.alibaba.excel.annotation.write.style.HeadFontStyle;
+import com.alibaba.excel.util.StringUtils;
+
+import lombok.Data;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
-
-import com.alibaba.excel.annotation.write.style.ContentFontStyle;
-import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 
 /**
  * Configuration from annotations
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class FontProperty {
     /**
      * The name for the font (i.e. Arial)
@@ -40,7 +43,7 @@ public class FontProperty {
      */
     private Short color;
     /**
-     * Set normal,super or subscript.
+     * Set normal, super or subscript.
      *
      * @see Font#SS_NONE
      * @see Font#SS_SUPER
@@ -77,15 +80,27 @@ public class FontProperty {
             return null;
         }
         FontProperty styleProperty = new FontProperty();
-        styleProperty.setFontName(headFontStyle.fontName());
-        styleProperty.setFontHeightInPoints(headFontStyle.fontHeightInPoints());
-        styleProperty.setItalic(headFontStyle.italic());
-        styleProperty.setStrikeout(headFontStyle.strikeout());
-        styleProperty.setColor(headFontStyle.color());
-        styleProperty.setTypeOffset(headFontStyle.typeOffset());
-        styleProperty.setUnderline(headFontStyle.underline());
-        styleProperty.setCharset(headFontStyle.charset());
-        styleProperty.setBold(headFontStyle.bold());
+        if (StringUtils.isNotBlank(headFontStyle.fontName())) {
+            styleProperty.setFontName(headFontStyle.fontName());
+        }
+        if (headFontStyle.fontHeightInPoints() >= 0) {
+            styleProperty.setFontHeightInPoints(headFontStyle.fontHeightInPoints());
+        }
+        styleProperty.setItalic(headFontStyle.italic().getBooleanValue());
+        styleProperty.setStrikeout(headFontStyle.strikeout().getBooleanValue());
+        if (headFontStyle.color() >= 0) {
+            styleProperty.setColor(headFontStyle.color());
+        }
+        if (headFontStyle.typeOffset() >= 0) {
+            styleProperty.setTypeOffset(headFontStyle.typeOffset());
+        }
+        if (headFontStyle.underline() >= 0) {
+            styleProperty.setUnderline(headFontStyle.underline());
+        }
+        if (headFontStyle.charset() >= 0) {
+            styleProperty.setCharset(headFontStyle.charset());
+        }
+        styleProperty.setBold(headFontStyle.bold().getBooleanValue());
         return styleProperty;
     }
 
@@ -94,87 +109,28 @@ public class FontProperty {
             return null;
         }
         FontProperty styleProperty = new FontProperty();
-        styleProperty.setFontName(contentFontStyle.fontName());
-        styleProperty.setFontHeightInPoints(contentFontStyle.fontHeightInPoints());
-        styleProperty.setItalic(contentFontStyle.italic());
-        styleProperty.setStrikeout(contentFontStyle.strikeout());
-        styleProperty.setColor(contentFontStyle.color());
-        styleProperty.setTypeOffset(contentFontStyle.typeOffset());
-        styleProperty.setUnderline(contentFontStyle.underline());
-        styleProperty.setCharset(contentFontStyle.charset());
-        styleProperty.setBold(contentFontStyle.bold());
+        if (StringUtils.isNotBlank(contentFontStyle.fontName())) {
+            styleProperty.setFontName(contentFontStyle.fontName());
+        }
+        if (contentFontStyle.fontHeightInPoints() >= 0) {
+            styleProperty.setFontHeightInPoints(contentFontStyle.fontHeightInPoints());
+        }
+        styleProperty.setItalic(contentFontStyle.italic().getBooleanValue());
+        styleProperty.setStrikeout(contentFontStyle.strikeout().getBooleanValue());
+        if (contentFontStyle.color() >= 0) {
+            styleProperty.setColor(contentFontStyle.color());
+        }
+        if (contentFontStyle.typeOffset() >= 0) {
+            styleProperty.setTypeOffset(contentFontStyle.typeOffset());
+        }
+        if (contentFontStyle.underline() >= 0) {
+            styleProperty.setUnderline(contentFontStyle.underline());
+        }
+        if (contentFontStyle.charset() >= 0) {
+            styleProperty.setCharset(contentFontStyle.charset());
+        }
+        styleProperty.setBold(contentFontStyle.bold().getBooleanValue());
         return styleProperty;
     }
 
-    public String getFontName() {
-        return fontName;
-    }
-
-    public void setFontName(String fontName) {
-        this.fontName = fontName;
-    }
-
-    public Short getFontHeightInPoints() {
-        return fontHeightInPoints;
-    }
-
-    public void setFontHeightInPoints(Short fontHeightInPoints) {
-        this.fontHeightInPoints = fontHeightInPoints;
-    }
-
-    public Boolean getItalic() {
-        return italic;
-    }
-
-    public void setItalic(Boolean italic) {
-        this.italic = italic;
-    }
-
-    public Boolean getStrikeout() {
-        return strikeout;
-    }
-
-    public void setStrikeout(Boolean strikeout) {
-        this.strikeout = strikeout;
-    }
-
-    public Short getColor() {
-        return color;
-    }
-
-    public void setColor(Short color) {
-        this.color = color;
-    }
-
-    public Short getTypeOffset() {
-        return typeOffset;
-    }
-
-    public void setTypeOffset(Short typeOffset) {
-        this.typeOffset = typeOffset;
-    }
-
-    public Byte getUnderline() {
-        return underline;
-    }
-
-    public void setUnderline(Byte underline) {
-        this.underline = underline;
-    }
-
-    public Integer getCharset() {
-        return charset;
-    }
-
-    public void setCharset(Integer charset) {
-        this.charset = charset;
-    }
-
-    public Boolean getBold() {
-        return bold;
-    }
-
-    public void setBold(Boolean bold) {
-        this.bold = bold;
-    }
 }

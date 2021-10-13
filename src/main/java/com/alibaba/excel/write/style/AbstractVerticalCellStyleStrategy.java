@@ -1,13 +1,9 @@
 package com.alibaba.excel.write.style;
 
-import java.util.List;
-
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * Use the same style for the column
@@ -18,20 +14,20 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
 
     @Override
     protected void setHeadCellStyle(CellWriteHandlerContext context) {
-        if (!continueProcessing(context)) {
+        if (stopProcessing(context)) {
             return;
         }
-        WriteCellData<?> cellData = context.getCellDataList().get(0);
-        cellData.setWriteCellStyle(headCellStyle(context.getHeadData()));
+        WriteCellData<?> cellData = context.getFirstCellData();
+        WriteCellStyle.merge(headCellStyle(context.getHeadData()), cellData.getOrCreateStyle());
     }
 
     @Override
     protected void setContentCellStyle(CellWriteHandlerContext context) {
-        if (!continueProcessing(context)) {
+        if (stopProcessing(context)) {
             return;
         }
-        WriteCellData<?> cellData = context.getCellDataList().get(0);
-        cellData.setWriteCellStyle(contentCellStyle(context));
+        WriteCellData<?> cellData = context.getFirstCellData();
+        WriteCellStyle.merge(contentCellStyle(context), cellData.getOrCreateStyle());
     }
 
     /**
@@ -64,11 +60,10 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
                 + "'contentCellStyle(Head head)' must be implemented.");
     }
 
-    protected boolean continueProcessing(CellWriteHandlerContext context) {
-        List<WriteCellData<?>> cellDataList = context.getCellDataList();
-        if (CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1) {
-            return false;
+    protected boolean stopProcessing(CellWriteHandlerContext context) {
+        if (context.getFirstCellData() == null) {
+            return true;
         }
-        return context.getHeadData() != null;
+        return context.getHeadData() == null;
     }
 }

@@ -10,6 +10,7 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.ReadSheet;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * sheet holder
@@ -17,6 +18,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
+@NoArgsConstructor
 public class ReadSheetHolder extends AbstractReadHolder {
 
     /**
@@ -55,9 +57,14 @@ public class ReadSheetHolder extends AbstractReadHolder {
      * Current CellData
      */
     private ReadCellData<?> tempCellData;
+    /**
+     * Read the size of the largest head in sheet head data.
+     * see https://github.com/alibaba/easyexcel/issues/2014
+     */
+    private Integer maxDataHeadSize;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
-        super(readSheet, readWorkbookHolder, readWorkbookHolder.getReadWorkbook().getConvertAllFiled());
+        super(readSheet, readWorkbookHolder);
         this.readSheet = readSheet;
         this.parentReadWorkbookHolder = readWorkbookHolder;
         this.sheetNo = readSheet.getSheetNo();
@@ -67,10 +74,10 @@ public class ReadSheetHolder extends AbstractReadHolder {
     }
 
     /**
-     * Approximate total number of rows
+     * Approximate total number of rows.
+     * use: getApproximateTotalRowNumber()
      *
      * @return
-     * @see #getApproximateTotalRowNumber()
      */
     @Deprecated
     public Integer getTotal() {

@@ -77,7 +77,7 @@ public class WriteSheetHolder extends AbstractWriteHolder {
     private Integer lastRowIndex;
 
     public WriteSheetHolder(WriteSheet writeSheet, WriteWorkbookHolder writeWorkbookHolder) {
-        super(writeSheet, writeWorkbookHolder, writeWorkbookHolder.getWriteWorkbook().getConvertAllFiled());
+        super(writeSheet, writeWorkbookHolder);
         this.writeSheet = writeSheet;
         if (writeSheet.getSheetNo() == null && StringUtils.isEmpty(writeSheet.getSheetName())) {
             this.sheetNo = 0;
@@ -96,12 +96,12 @@ public class WriteSheetHolder extends AbstractWriteHolder {
     }
 
     /**
-     * Get the last line of index,you have to make sure that the data is written next
+     * Get the last line of index, you have to make sure that the data is written next
      *
      * @return
      */
     public int getNewRowIndexAndStartDoWrite() {
-        // 'getLastRowNum' doesn't matter if it has one or zero,is's zero
+        // 'getLastRowNum' doesn't matter if it has one or zero, it's zero
         int newRowIndex = 0;
         switch (writeLastRowTypeEnum) {
             case TEMPLATE_EMPTY:

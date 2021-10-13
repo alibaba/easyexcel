@@ -5,6 +5,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * write converter context
@@ -12,6 +13,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class WriteConverterContext<T> {
 

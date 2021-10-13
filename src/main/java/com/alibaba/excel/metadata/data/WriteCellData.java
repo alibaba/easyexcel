@@ -1,6 +1,8 @@
 package com.alibaba.excel.metadata.data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +24,8 @@ public class WriteCellData<T> extends CellData<T> {
     /**
      * Support only when writing.{@link CellDataTypeEnum#DATE}
      */
-    private Date dateValue;
+    private LocalDateTime dateValue;
+
     /**
      * rich text.{@link CellDataTypeEnum#RICH_TEXT_STRING}
      */
@@ -40,7 +43,7 @@ public class WriteCellData<T> extends CellData<T> {
      */
     private HyperlinkData hyperlinkData;
     /**
-     * sytle
+     * style
      */
     private WriteCellStyle writeCellStyle;
 
@@ -89,6 +92,15 @@ public class WriteCellData<T> extends CellData<T> {
             throw new IllegalArgumentException("DateValue can not be null");
         }
         setType(CellDataTypeEnum.DATE);
+        this.dateValue = LocalDateTime.ofInstant(dateValue.toInstant(), ZoneId.systemDefault());
+    }
+
+    public WriteCellData(LocalDateTime dateValue) {
+        super();
+        if (dateValue == null) {
+            throw new IllegalArgumentException("DateValue can not be null");
+        }
+        setType(CellDataTypeEnum.DATE);
         this.dateValue = dateValue;
     }
 
@@ -104,4 +116,15 @@ public class WriteCellData<T> extends CellData<T> {
         imageDataList.add(imageData);
     }
 
+    /**
+     * Return a style, if is empty, create a new
+     *
+     * @return not null.
+     */
+    public WriteCellStyle getOrCreateStyle() {
+        if (this.writeCellStyle == null) {
+            this.writeCellStyle = new WriteCellStyle();
+        }
+        return this.writeCellStyle;
+    }
 }

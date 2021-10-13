@@ -3,8 +3,11 @@ package com.alibaba.excel.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -73,6 +76,25 @@ public class DateUtils {
      * convert string to date
      *
      * @param dateString
+     * @param dateFormat
+     * @param local
+     * @return
+     */
+    public static LocalDateTime parseLocalDateTime(String dateString, String dateFormat, Locale local) {
+        if (StringUtils.isEmpty(dateFormat)) {
+            dateFormat = switchDateFormat(dateString);
+        }
+        if (local == null) {
+            return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat));
+        } else {
+            return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, local));
+        }
+    }
+
+    /**
+     * convert string to date
+     *
+     * @param dateString
      * @return
      * @throws ParseException
      */
@@ -86,7 +108,7 @@ public class DateUtils {
      * @param dateString
      * @return
      */
-    private static String switchDateFormat(String dateString) {
+    public static String switchDateFormat(String dateString) {
         int length = dateString.length();
         switch (length) {
             case 19:
@@ -133,12 +155,33 @@ public class DateUtils {
      */
     public static String format(Date date, String dateFormat) {
         if (date == null) {
-            return "";
+            return null;
         }
         if (StringUtils.isEmpty(dateFormat)) {
             dateFormat = defaultDateFormat;
         }
         return getCacheDateFormat(dateFormat).format(date);
+    }
+
+    /**
+     * Format date
+     *
+     * @param date
+     * @param dateFormat
+     * @return
+     */
+    public static String format(LocalDateTime date, String dateFormat, Locale local) {
+        if (date == null) {
+            return null;
+        }
+        if (StringUtils.isEmpty(dateFormat)) {
+            dateFormat = defaultDateFormat;
+        }
+        if (local == null) {
+            return date.format(DateTimeFormatter.ofPattern(dateFormat));
+        } else {
+            return date.format(DateTimeFormatter.ofPattern(dateFormat, local));
+        }
     }
 
     private static DateFormat getCacheDateFormat(String dateFormat) {

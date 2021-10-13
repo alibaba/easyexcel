@@ -3,12 +3,12 @@ package com.alibaba.easyexcel.test.demo.read;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 模板的读取类
@@ -21,8 +21,11 @@ public class DemoDataListener extends AnalysisEventListener<DemoData> {
     /**
      * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
-    private static final int BATCH_COUNT = 5;
-    List<DemoData> list = new ArrayList<DemoData>();
+    private static final int BATCH_COUNT = 3000;
+    /**
+     * 缓存的数据
+     */
+    private List<DemoData> list = new ArrayList<>(BATCH_COUNT);
     /**
      * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
      */
@@ -45,8 +48,7 @@ public class DemoDataListener extends AnalysisEventListener<DemoData> {
     /**
      * 这个每一条数据解析都会来调用
      *
-     * @param data
-     *            one row value. Is is same as {@link AnalysisContext#readRowHolder()}
+     * @param data    one row value. Is is same as {@link AnalysisContext#readRowHolder()}
      * @param context
      */
     @Override
@@ -57,7 +59,7 @@ public class DemoDataListener extends AnalysisEventListener<DemoData> {
         if (list.size() >= BATCH_COUNT) {
             saveData();
             // 存储完成清理 list
-            list.clear();
+            list = new ArrayList<>(BATCH_COUNT);
         }
     }
 

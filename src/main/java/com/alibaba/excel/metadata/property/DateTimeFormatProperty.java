@@ -1,12 +1,16 @@
 package com.alibaba.excel.metadata.property;
 
 import com.alibaba.excel.annotation.format.DateTimeFormat;
+import com.alibaba.excel.util.BooleanUtils;
+
+import lombok.Data;
 
 /**
  * Configuration from annotations
  *
  * @author Jiaju Zhuang
  */
+@Data
 public class DateTimeFormatProperty {
     private String format;
     private Boolean use1904windowing;
@@ -20,22 +24,7 @@ public class DateTimeFormatProperty {
         if (dateTimeFormat == null) {
             return null;
         }
-        return new DateTimeFormatProperty(dateTimeFormat.value(), dateTimeFormat.use1904windowing());
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public Boolean getUse1904windowing() {
-        return use1904windowing;
-    }
-
-    public void setUse1904windowing(Boolean use1904windowing) {
-        this.use1904windowing = use1904windowing;
+        return new DateTimeFormatProperty(dateTimeFormat.value(),
+            BooleanUtils.isTrue(dateTimeFormat.use1904windowing().getBooleanValue()));
     }
 }

@@ -16,6 +16,7 @@ import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.ListUtils;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Read Holder
@@ -23,6 +24,7 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
+@NoArgsConstructor
 public abstract class AbstractReadHolder extends AbstractHolder implements ReadHolder {
     /**
      * Count the number of added heads when read sheet.
@@ -44,29 +46,20 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
      */
     private List<ReadListener<?>> readListenerList;
 
-    public AbstractReadHolder(ReadBasicParameter readBasicParameter, AbstractReadHolder parentAbstractReadHolder,
-        Boolean convertAllFiled) {
+    public AbstractReadHolder(ReadBasicParameter readBasicParameter, AbstractReadHolder parentAbstractReadHolder) {
         super(readBasicParameter, parentAbstractReadHolder);
-        if (readBasicParameter.getUse1904windowing() == null && parentAbstractReadHolder != null) {
-            getGlobalConfiguration()
-                .setUse1904windowing(parentAbstractReadHolder.getGlobalConfiguration().getUse1904windowing());
-        } else {
-            getGlobalConfiguration().setUse1904windowing(readBasicParameter.getUse1904windowing());
-        }
 
         if (readBasicParameter.getUseScientificFormat() == null) {
-            if (parentAbstractReadHolder == null) {
-                getGlobalConfiguration().setUseScientificFormat(Boolean.FALSE);
-            } else {
-                getGlobalConfiguration()
-                    .setUseScientificFormat(parentAbstractReadHolder.getGlobalConfiguration().getUseScientificFormat());
+            if (parentAbstractReadHolder != null) {
+                getGlobalConfiguration().setUseScientificFormat(
+                    parentAbstractReadHolder.getGlobalConfiguration().getUseScientificFormat());
             }
         } else {
             getGlobalConfiguration().setUseScientificFormat(readBasicParameter.getUseScientificFormat());
         }
 
         // Initialization property
-        this.excelReadHeadProperty = new ExcelReadHeadProperty(this, getClazz(), getHead(), convertAllFiled);
+        this.excelReadHeadProperty = new ExcelReadHeadProperty(this, getClazz(), getHead());
         if (readBasicParameter.getHeadRowNumber() == null) {
             if (parentAbstractReadHolder == null) {
                 if (excelReadHeadProperty.hasHead()) {
@@ -111,7 +104,6 @@ public abstract class AbstractReadHolder extends AbstractHolder implements ReadH
             }
         }
     }
-
 
     @Override
     public List<ReadListener<?>> readListenerList() {

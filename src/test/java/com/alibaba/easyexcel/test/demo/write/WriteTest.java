@@ -27,7 +27,10 @@ import com.alibaba.excel.metadata.data.ImageData;
 import com.alibaba.excel.metadata.data.ImageData.ImageType;
 import com.alibaba.excel.metadata.data.RichTextStringData;
 import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
@@ -36,8 +39,11 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -59,13 +65,25 @@ public class WriteTest {
      */
     @Test
     public void simpleWrite() {
-        // 写法1
+        // 写法1 JDK8+
+        // since: 3.0.0-beta1
         String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        EasyExcel.write(fileName, DemoData.class)
+            .sheet("模板")
+            .doWrite(() -> {
+                // 分页查询数据
+                return data();
+            });
+
+        // 写法2
+        fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
         EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
 
-        // 写法2
+        // 写法3
         fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = null;
@@ -95,9 +113,10 @@ public class WriteTest {
     @Test
     public void excludeOrIncludeWrite() {
         String fileName = TestFileUtil.getPath() + "excludeOrIncludeWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里需要注意 在使用ExcelProperty注解的使用，如果想不空列则需要加入order字段，而不是index,order会忽略空列，然后继续往后，而index，不会忽略空列，在第几列就是第几列。
 
         // 根据用户传入字段 假设我们要忽略 date
-        Set<String> excludeColumnFiledNames = new HashSet<String>();
+        Set<String> excludeColumnFiledNames = new HashSet<>();
         excludeColumnFiledNames.add("date");
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).excludeColumnFiledNames(excludeColumnFiledNames).sheet("模板")
@@ -105,7 +124,7 @@ public class WriteTest {
 
         fileName = TestFileUtil.getPath() + "excludeOrIncludeWrite" + System.currentTimeMillis() + ".xlsx";
         // 根据用户传入字段 假设我们只要导出 date
-        Set<String> includeColumnFiledNames = new HashSet<String>();
+        Set<String> includeColumnFiledNames = new HashSet<>();
         includeColumnFiledNames.add("date");
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).includeColumnFiledNames(includeColumnFiledNames).sheet("模板")
@@ -260,11 +279,17 @@ public class WriteTest {
             imageDemoData.setUrl(new URL(
                 "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
 
-            // 这里演示 图片 不想顶格放 且占用2个单元格的情况
+            // 这里演示
+            // 需要额外放入文字
+            // 而且需要放入2个图片
+            // 第一个图片靠左
+            // 第二个靠右 而且要额外的占用他后面的单元格
             WriteCellData<Void> writeCellData = new WriteCellData<>();
             imageDemoData.setWriteCellDataFile(writeCellData);
-            // 设置为空 代表当前单元格不需要写图片以外的数据
-            writeCellData.setType(CellDataTypeEnum.EMPTY);
+            // 这里可以设置为 EMPTY 则代表不需要其他数据了
+            writeCellData.setType(CellDataTypeEnum.STRING);
+            writeCellData.setStringValue("额外的放一些文字");
+
             // 可以放入多个图片
             List<ImageData> imageDataList = new ArrayList<>();
             ImageData imageData = new ImageData();
@@ -275,17 +300,30 @@ public class WriteTest {
             // 图片类型
             imageData.setImageType(ImageType.PICTURE_TYPE_PNG);
             // 上 右 下 左 需要留空
+            // 这个类似于 css 的 margin
             // 这里实测 不能设置太大 超过单元格原始大小后 打开会提示修复。暂时未找到很好的解法。
+            imageData.setTop(5);
+            imageData.setRight(40);
+            imageData.setBottom(5);
+            imageData.setLeft(5);
+
+            // 放入第二个图片
+            imageData = new ImageData();
+            imageDataList.add(imageData);
+            writeCellData.setImageDataList(imageDataList);
+            imageData.setImage(FileUtils.readFileToByteArray(new File(imagePath)));
+            imageData.setImageType(ImageType.PICTURE_TYPE_PNG);
             imageData.setTop(5);
             imageData.setRight(5);
             imageData.setBottom(5);
-            imageData.setLeft(5);
+            imageData.setLeft(50);
             // 设置图片的位置 假设 现在目标 是 覆盖 当前单元格 和当前单元格右边的单元格
             // 起点相对于当前单元格为0 当然可以不写
             imageData.setRelativeFirstRowIndex(0);
             imageData.setRelativeFirstColumnIndex(0);
             imageData.setRelativeLastRowIndex(0);
             // 前面3个可以不写  下面这个需要写 也就是 结尾 需要相对当前单元格 往右移动一格
+            // 也就是说 这个图片会覆盖当前单元格和 后面的那一格
             imageData.setRelativeLastColumnIndex(1);
 
             // 写入数据
@@ -298,14 +336,16 @@ public class WriteTest {
     }
 
     /**
-     * 超链接、备注、公式、指定单个单元格的样式
+     * 超链接、备注、公式、指定单个单元格的样式、单个单元格多种样式
      * <p>
      * 1. 创建excel对应的实体对象 参照{@link WriteCellDemoData}
      * <p>
      * 2. 直接写即可
+     *
+     * @since 3.0.0-beta1
      */
     @Test
-    public void writeCellDataWrite() throws Exception {
+    public void writeCellDataWrite() {
         String fileName = TestFileUtil.getPath() + "writeCellDataWrite" + System.currentTimeMillis() + ".xlsx";
         WriteCellDemoData writeCellDemoData = new WriteCellDemoData();
 
@@ -328,7 +368,6 @@ public class WriteTest {
         commentData.setRelativeLastColumnIndex(1);
         commentData.setRelativeLastRowIndex(1);
 
-
         // 设置公式
         WriteCellData<String> formula = new WriteCellData<>();
         writeCellDemoData.setFormulaData(formula);
@@ -338,9 +377,9 @@ public class WriteTest {
         // 这里只是例子 如果真的涉及到公式 能内存算好尽量内存算好 公式能不用尽量不用
         formulaData.setFormulaValue("REPLACE(123456789,1,1,2)");
 
-
         // 设置单个单元格的样式 当然样式 很多的话 也可以用注解等方式。
         WriteCellData<String> writeCellStyle = new WriteCellData<>("单元格样式");
+        writeCellStyle.setType(CellDataTypeEnum.STRING);
         writeCellDemoData.setWriteCellStyle(writeCellStyle);
         WriteCellStyle writeCellStyleData = new WriteCellStyle();
         writeCellStyle.setWriteCellStyle(writeCellStyleData);
@@ -348,6 +387,22 @@ public class WriteTest {
         writeCellStyleData.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
         // 背景绿色
         writeCellStyleData.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+
+        // 设置单个单元格多种样式
+        WriteCellData<String> richTest = new WriteCellData<>();
+        richTest.setType(CellDataTypeEnum.RICH_TEXT_STRING);
+        writeCellDemoData.setRichText(richTest);
+        RichTextStringData richTextStringData = new RichTextStringData();
+        richTest.setRichTextStringDataValue(richTextStringData);
+        richTextStringData.setTextString("红色绿色默认");
+        // 前2个字红色
+        WriteFont writeFont = new WriteFont();
+        writeFont.setColor(IndexedColors.RED.getIndex());
+        richTextStringData.applyFont(0, 2, writeFont);
+        // 接下来2个字绿色
+        writeFont = new WriteFont();
+        writeFont.setColor(IndexedColors.GREEN.getIndex());
+        richTextStringData.applyFont(2, 4, writeFont);
 
         List<WriteCellDemoData> data = new ArrayList<>();
         data.add(writeCellDemoData);
@@ -416,6 +471,9 @@ public class WriteTest {
      */
     @Test
     public void handlerStyleWrite() {
+        // 方法1 使用已有的策略 推荐
+        // HorizontalCellStyleStrategy 每一行的样式都一样 或者隔行一样
+        // AbstractVerticalCellStyleStrategy 每一列的样式都一样 需要自己回调每一页
         String fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
         // 头的策略
         WriteCellStyle headWriteCellStyle = new WriteCellStyle();
@@ -439,7 +497,70 @@ public class WriteTest {
             new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
 
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(horizontalCellStyleStrategy).sheet("模板")
+        EasyExcel.write(fileName, DemoData.class)
+            .registerWriteHandler(horizontalCellStyleStrategy)
+            .sheet("模板")
+            .doWrite(data());
+
+        // 方法2: 使用easyexcel的方式完全自己写 不太推荐 尽量使用已有策略
+        // @since 3.0.0-beta2
+        fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
+        EasyExcel.write(fileName, DemoData.class)
+            .registerWriteHandler(new CellWriteHandler() {
+                @Override
+                public void afterCellDispose(CellWriteHandlerContext context) {
+                    // 当前事件会在 数据设置到poi的cell里面才会回调
+                    // 判断不是头的情况 如果是fill 的情况 这里会==null 所以用not true
+                    if (BooleanUtils.isNotTrue(context.getHead())) {
+                        // 第一个单元格
+                        // 只要不是头 一定会有数据 当然fill的情况 可能要context.getCellDataList() ,这个需要看模板，因为一个单元格会有多个 WriteCellData
+                        WriteCellData<?> cellData = context.getFirstCellData();
+                        // 这里需要去cellData 获取样式
+                        // 很重要的一个原因是 WriteCellStyle 和 dataFormatData绑定的 简单的说 比如你加了 DateTimeFormat
+                        // ，已经将writeCellStyle里面的dataFormatData 改了 如果你自己new了一个WriteCellStyle，可能注解的样式就失效了
+                        // 然后 getOrCreateStyle 用于返回一个样式，如果为空，则创建一个后返回
+                        WriteCellStyle writeCellStyle = cellData.getOrCreateStyle();
+                        writeCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
+                        // 这里需要指定 FillPatternType 为FillPatternType.SOLID_FOREGROUND
+                        writeCellStyle.setFillPatternType(FillPatternType.SOLID_FOREGROUND);
+
+                        // 这样样式就设置好了 后面有个FillStyleCellWriteHandler 默认会将 WriteCellStyle 设置到 cell里面去 所以可以不用管了
+                    }
+                }
+            }).sheet("模板")
+            .doWrite(data());
+
+        // 方法3: 使用poi的样式完全自己写 不推荐
+        // @since 3.0.0-beta2
+        // 坑1：style里面有dataformat 用来格式化数据的 所以自己设置可能导致格式化注解不生效
+        // 坑2：不要一直去创建style 记得缓存起来 最多创建6W个就挂了
+        fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
+        EasyExcel.write(fileName, DemoData.class)
+            .registerWriteHandler(new CellWriteHandler() {
+                @Override
+                public void afterCellDispose(CellWriteHandlerContext context) {
+                    // 当前事件会在 数据设置到poi的cell里面才会回调
+                    // 判断不是头的情况 如果是fill 的情况 这里会==null 所以用not true
+                    if (BooleanUtils.isNotTrue(context.getHead())) {
+                        Cell cell = context.getCell();
+                        // 拿到poi的workbook
+                        Workbook workbook = context.getWriteWorkbookHolder().getWorkbook();
+                        // 这里千万记住 想办法能复用的地方把他缓存起来 一个表格最多创建6W个样式
+                        // 不同单元格尽量传同一个 cellStyle
+                        CellStyle cellStyle = workbook.createCellStyle();
+                        cellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
+                        // 这里需要指定 FillPatternType 为FillPatternType.SOLID_FOREGROUND
+                        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                        cell.setCellStyle(cellStyle);
+
+                        // 由于这里没有指定dataformat 最后展示的数据 格式可能会不太正确
+
+                        // 这里要把 WriteCellData的样式清空， 不然后面还有一个拦截器 FillStyleCellWriteHandler 默认会将 WriteCellStyle 设置到
+                        // cell里面去 会导致自己设置的不一样
+                        context.getFirstCellData().setWriteCellStyle(null);
+                    }
+                }
+            }).sheet("模板")
             .doWrite(data());
     }
 
@@ -547,6 +668,23 @@ public class WriteTest {
     }
 
     /**
+     * 对字符串的换行进行处理，取最长为本单元格长度
+     */
+    @Test
+    public void longestMatchColumnWidthWriteChangeRow() {
+        String fileName =
+            TestFileUtil.getPath() + "longestMatchColumnWidthWrite" + System.currentTimeMillis() + ".xlsx";
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+        WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
+        //开启换行
+        contentWriteCellStyle.setWrapped(true);
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, LongestMatchColumnWidthData.class)
+            .registerWriteHandler(new HorizontalCellStyleStrategy(headWriteCellStyle,contentWriteCellStyle))
+            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet("模板").doWrite(dataLongChangeRow());
+    }
+
+    /**
      * 下拉，超链接等自定义拦截器（上面几点都不符合但是要对单元格进行操作的参照这个）
      * <p>
      * demo这里实现2点。1. 对第一行第一列的头超链接到:https://github.com/alibaba/easyexcel 2. 对第一列第一行和第二行的数据新增下拉框，显示 测试1 测试2
@@ -612,7 +750,7 @@ public class WriteTest {
     }
 
     private List<LongestMatchColumnWidthData> dataLong() {
-        List<LongestMatchColumnWidthData> list = new ArrayList<LongestMatchColumnWidthData>();
+        List<LongestMatchColumnWidthData> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             LongestMatchColumnWidthData data = new LongestMatchColumnWidthData();
             data.setString("测试很长的字符串测试很长的字符串测试很长的字符串" + i);
@@ -623,13 +761,25 @@ public class WriteTest {
         return list;
     }
 
+    private List<LongestMatchColumnWidthData> dataLongChangeRow() {
+        List<LongestMatchColumnWidthData> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            LongestMatchColumnWidthData data = new LongestMatchColumnWidthData();
+            data.setString("测试很长的字符串测试很长的字符\n串测试很长的字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(1000000000000.0);
+            list.add(data);
+        }
+        return list;
+    }
+
     private List<List<String>> variableTitleHead() {
-        List<List<String>> list = new ArrayList<List<String>>();
-        List<String> head0 = new ArrayList<String>();
+        List<List<String>> list = new ArrayList<>();
+        List<String> head0 = new ArrayList<>();
         head0.add("string" + System.currentTimeMillis());
-        List<String> head1 = new ArrayList<String>();
+        List<String> head1 = new ArrayList<>();
         head1.add("number" + System.currentTimeMillis());
-        List<String> head2 = new ArrayList<String>();
+        List<String> head2 = new ArrayList<>();
         head2.add("date" + System.currentTimeMillis());
         list.add(head0);
         list.add(head1);
@@ -652,9 +802,9 @@ public class WriteTest {
     }
 
     private List<List<Object>> dataList() {
-        List<List<Object>> list = new ArrayList<List<Object>>();
+        List<List<Object>> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            List<Object> data = new ArrayList<Object>();
+            List<Object> data = new ArrayList<>();
             data.add("字符串" + i);
             data.add(new Date());
             data.add(0.56);
@@ -664,7 +814,7 @@ public class WriteTest {
     }
 
     private List<DemoData> data() {
-        List<DemoData> list = new ArrayList<DemoData>();
+        List<DemoData> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             DemoData data = new DemoData();
             data.setString("字符串" + i);

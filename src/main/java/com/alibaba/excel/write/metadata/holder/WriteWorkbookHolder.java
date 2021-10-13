@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +62,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     /**
      * Final output file
      * <p>
-     * If 'outputStream' and 'file' all not empty,file first
+     * If 'outputStream' and 'file' all not empty, file first
      */
     private File file;
     /**
@@ -69,15 +70,19 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private OutputStream outputStream;
     /**
+     * output charset
+     */
+    private Charset charset;
+    /**
      * Template input stream
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private InputStream templateInputStream;
     /**
      * Template file
      * <p>
-     * If 'inputStream' and 'file' all not empty,file first
+     * If 'inputStream' and 'file' all not empty, file first
      */
     private File templateFile;
     /**
@@ -111,7 +116,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      */
     private String password;
     /**
-     * Write excel in memory. Default false,the cache file is created and finally written to excel.
+     * Write excel in memory. Default false, the cache file is created and finally written to excel.
      * <p>
      * Comment and RichTextString are only supported in memory mode.
      */
@@ -135,7 +140,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     private Map<DataFormatData, Short> dataFormatMap;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
-        super(writeWorkbook, null, writeWorkbook.getConvertAllFiled());
+        super(writeWorkbook, null);
         this.writeWorkbook = writeWorkbook;
         this.file = writeWorkbook.getFile();
         if (file != null) {
@@ -147,15 +152,17 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.outputStream = writeWorkbook.getOutputStream();
         }
+
+        if (writeWorkbook.getCharset() == null) {
+            this.charset = Charset.defaultCharset();
+        } else {
+            this.charset = writeWorkbook.getCharset();
+        }
+
         if (writeWorkbook.getAutoCloseStream() == null) {
             this.autoCloseStream = Boolean.TRUE;
         } else {
             this.autoCloseStream = writeWorkbook.getAutoCloseStream();
-        }
-        try {
-            copyTemplate();
-        } catch (IOException e) {
-            throw new ExcelGenerateException("Copy template failure.", e);
         }
         if (writeWorkbook.getExcelType() == null) {
             boolean isXls = (file != null && file.getName().endsWith(ExcelTypeEnum.XLS.getValue()))
@@ -164,18 +171,30 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             if (isXls) {
                 this.excelType = ExcelTypeEnum.XLS;
             } else {
-                this.excelType = ExcelTypeEnum.XLSX;
+                boolean isCsv = (file != null && file.getName().endsWith(ExcelTypeEnum.CSV.getValue()))
+                    || (writeWorkbook.getTemplateFile() != null
+                    && writeWorkbook.getTemplateFile().getName().endsWith(ExcelTypeEnum.CSV.getValue()));
+                if (isCsv) {
+                    this.excelType = ExcelTypeEnum.CSV;
+                } else {
+                    this.excelType = ExcelTypeEnum.XLSX;
+                }
             }
         } else {
             this.excelType = writeWorkbook.getExcelType();
+        }
+        try {
+            copyTemplate();
+        } catch (IOException e) {
+            throw new ExcelGenerateException("Copy template failure.", e);
         }
         if (writeWorkbook.getMandatoryUseInputStream() == null) {
             this.mandatoryUseInputStream = Boolean.FALSE;
         } else {
             this.mandatoryUseInputStream = writeWorkbook.getMandatoryUseInputStream();
         }
-        this.hasBeenInitializedSheetIndexMap = new HashMap<Integer, WriteSheetHolder>();
-        this.hasBeenInitializedSheetNameMap = new HashMap<String, WriteSheetHolder>();
+        this.hasBeenInitializedSheetIndexMap = new HashMap<>();
+        this.hasBeenInitializedSheetNameMap = new HashMap<>();
         this.password = writeWorkbook.getPassword();
         if (writeWorkbook.getInMemory() == null) {
             this.inMemory = Boolean.FALSE;
@@ -188,13 +207,16 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.writeExcelOnException = writeWorkbook.getWriteExcelOnException();
         }
         this.cellStyleMap = MapUtils.newHashMap();
-        this.fontMap= MapUtils.newHashMap();
-        this.dataFormatMap=MapUtils.newHashMap();
+        this.fontMap = MapUtils.newHashMap();
+        this.dataFormatMap = MapUtils.newHashMap();
     }
 
     private void copyTemplate() throws IOException {
         if (writeWorkbook.getTemplateFile() == null && writeWorkbook.getTemplateInputStream() == null) {
             return;
+        }
+        if (this.excelType == ExcelTypeEnum.CSV) {
+            throw new ExcelGenerateException("csv cannot use template.");
         }
         byte[] templateFileByte = null;
         if (writeWorkbook.getTemplateFile() != null) {

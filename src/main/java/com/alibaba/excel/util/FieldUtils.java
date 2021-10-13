@@ -41,15 +41,15 @@ public class FieldUtils {
 
     /**
      * Parsing the name matching cglib。
-     * <ul>
-     *     <ul>null -> null</ul>
-     *     <ul>string1 -> string1</ul>
-     *     <ul>String2 -> string2</ul>
-     *     <ul>sTring3 -> STring3</ul>
-     *     <ul>STring4 -> STring4</ul>
-     *     <ul>STRING5 -> STRING5</ul>
-     *     <ul>STRing6 -> STRing6</ul>
-     * </ul>
+     * <pre>
+     *     null -&gt; null
+     *     string1 -&gt; string1
+     *     String2 -&gt; string2
+     *     sTring3 -&gt; STring3
+     *     STring4 -&gt; STring4
+     *     STRING5 -&gt; STRING5
+     *     STRing6 -&gt; STRing6
+     * </pre>
      *
      * @param field field
      * @return field name.

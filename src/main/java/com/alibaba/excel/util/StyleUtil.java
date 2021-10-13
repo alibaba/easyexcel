@@ -123,7 +123,7 @@ public class StyleUtil {
 
     public static Font buildFont(Workbook workbook, WriteFont writeFont) {
         Font font = workbook.createFont();
-        if (writeFont == null) {
+        if (writeFont == null || font == null) {
             return font;
         }
         if (writeFont.getFontName() != null) {

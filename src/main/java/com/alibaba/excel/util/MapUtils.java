@@ -2,6 +2,7 @@ package com.alibaba.excel.util;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 /**
  * Map utils
@@ -16,9 +17,9 @@ public class MapUtils {
     /**
      * Creates a <i>mutable</i>, empty {@code HashMap} instance.
      *
-     * <p><b>Note:</b> if mutability is not required, use {@link ImmutableMap#of()} instead.
+     * <p><b>Note:</b> if mutability is not required, use ImmutableMap.of() instead.
      *
-     * <p><b>Note:</b> if {@code K} is an {@code enum} type, use {@link #newEnumMap} instead.
+     * <p><b>Note:</b> if {@code K} is an {@code enum} type, use newEnumMap instead.
      *
      * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and should be treated as
      * deprecated. Instead, use the {@code HashMap} constructor directly, taking advantage of the new
@@ -28,6 +29,22 @@ public class MapUtils {
      */
     public static <K, V> HashMap<K, V> newHashMap() {
         return new HashMap<>(16);
+    }
+
+    /**
+     * Creates a <i>mutable</i>, empty {@code TreeMap} instance using the natural ordering of its
+     * elements.
+     *
+     * <p><b>Note:</b> if mutability is not required, use ImmutableSortedMap.of() instead.
+     *
+     * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and should be treated as
+     * deprecated. Instead, use the {@code TreeMap} constructor directly, taking advantage of the new
+     * <a href="http://goo.gl/iz2Wi">"diamond" syntax</a>.
+     *
+     * @return a new, empty {@code TreeMap}
+     */
+    public static <K extends Comparable, V> TreeMap<K, V> newTreeMap() {
+        return new TreeMap<>();
     }
 
     /**
@@ -48,7 +65,7 @@ public class MapUtils {
     /**
      * Creates a <i>mutable</i>, empty, insertion-ordered {@code LinkedHashMap} instance.
      *
-     * <p><b>Note:</b> if mutability is not required, use {@link ImmutableMap#of()} instead.
+     * <p><b>Note:</b> if mutability is not required, use  ImmutableMap.of() instead.
      *
      * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and should be treated as
      * deprecated. Instead, use the {@code LinkedHashMap} constructor directly, taking advantage of

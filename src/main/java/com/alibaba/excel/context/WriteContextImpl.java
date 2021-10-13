@@ -139,7 +139,7 @@ public class WriteContextImpl implements WriteContext {
             return false;
         }
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Sheet:{} is already existed", writeSheet.getSheetNo());
+            LOGGER.debug("Sheet:{},{} is already existed", writeSheet.getSheetNo(), writeSheet.getSheetName());
         }
         writeSheetHolder.setNewInitialization(Boolean.FALSE);
         writeTableHolder = null;
@@ -245,10 +245,15 @@ public class WriteContextImpl implements WriteContext {
             Head head = entry.getValue();
             int columnIndex = entry.getKey();
             WriteHandlerUtils.beforeCellCreate(this, row, head, columnIndex, relativeRowIndex, Boolean.TRUE);
+
             Cell cell = row.createCell(columnIndex);
+
             WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
-            cell.setCellValue(head.getHeadNameList().get(relativeRowIndex));
-            WriteHandlerUtils.afterCellDispose(this, (WriteCellData<?>)null, cell, head, relativeRowIndex,
+
+            WriteCellData<String> writeCellData = new WriteCellData<>(head.getHeadNameList().get(relativeRowIndex));
+            cell.setCellValue(writeCellData.getStringValue());
+
+            WriteHandlerUtils.afterCellDispose(this, writeCellData, cell, head, relativeRowIndex,
                 Boolean.TRUE);
         }
     }
@@ -286,7 +291,7 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void initCurrentTableHolder(WriteTable writeTable) {
-        writeTableHolder = new WriteTableHolder(writeTable, writeSheetHolder, writeWorkbookHolder);
+        writeTableHolder = new WriteTableHolder(writeTable, writeSheetHolder);
         writeSheetHolder.getHasBeenInitializedTable().put(writeTable.getTableNo(), writeTableHolder);
         currentWriteHolder = writeTableHolder;
         if (LOGGER.isDebugEnabled()) {
@@ -432,7 +437,7 @@ public class WriteContextImpl implements WriteContext {
         if (writeWorkbookHolder.getFile() != null) {
             return false;
         }
-        File tempXlsx = FileUtils.createTmpFile(UUID.randomUUID().toString() + ".xlsx");
+        File tempXlsx = FileUtils.createTmpFile(UUID.randomUUID() + ".xlsx");
         FileOutputStream tempFileOutputStream = new FileOutputStream(tempXlsx);
         try {
             writeWorkbookHolder.getWorkbook().write(tempFileOutputStream);

@@ -6,13 +6,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
+import com.alibaba.excel.enums.BooleanEnum;
+import com.alibaba.excel.enums.poi.BorderStyleEnum;
+import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
+import com.alibaba.excel.enums.poi.HorizontalAlignmentEnum;
+import com.alibaba.excel.enums.poi.VerticalAlignmentEnum;
+
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 /**
  * Custom header styles
@@ -31,35 +34,35 @@ public @interface HeadStyle {
     /**
      * Set the cell's using this style to be hidden
      */
-    boolean hidden() default false;
+    BooleanEnum hidden() default BooleanEnum.DEFAULT;
 
     /**
      * Set the cell's using this style to be locked
      */
-    boolean locked() default true;
+    BooleanEnum locked() default BooleanEnum.DEFAULT;
 
     /**
      * Turn on or off "Quote Prefix" or "123 Prefix" for the style, which is used to tell Excel that the thing which
      * looks like a number or a formula shouldn't be treated as on. Turning this on is somewhat (but not completely, see
      * {@link IgnoredErrorType}) like prefixing the cell value with a ' in Excel
      */
-    boolean quotePrefix() default false;
+    BooleanEnum quotePrefix() default BooleanEnum.DEFAULT;
 
     /**
      * Set the type of horizontal alignment for the cell
      */
-    HorizontalAlignment horizontalAlignment() default HorizontalAlignment.CENTER;
+    HorizontalAlignmentEnum horizontalAlignment() default HorizontalAlignmentEnum.DEFAULT;
 
     /**
      * Set whether the text should be wrapped. Setting this flag to <code>true</code> make all content visible within a
      * cell by displaying it on multiple lines
      */
-    boolean wrapped() default true;
+    BooleanEnum wrapped() default BooleanEnum.DEFAULT;
 
     /**
      * Set the type of vertical alignment for the cell
      */
-    VerticalAlignment verticalAlignment() default VerticalAlignment.CENTER;
+    VerticalAlignmentEnum verticalAlignment() default VerticalAlignmentEnum.DEFAULT;
 
     /**
      * Set the degree of rotation for the text in the cell.
@@ -79,22 +82,22 @@ public @interface HeadStyle {
     /**
      * Set the type of border to use for the left border of the cell
      */
-    BorderStyle borderLeft() default BorderStyle.THIN;
+    BorderStyleEnum borderLeft() default BorderStyleEnum.DEFAULT;
 
     /**
      * Set the type of border to use for the right border of the cell
      */
-    BorderStyle borderRight() default BorderStyle.THIN;
+    BorderStyleEnum borderRight() default BorderStyleEnum.DEFAULT;
 
     /**
      * Set the type of border to use for the top border of the cell
      */
-    BorderStyle borderTop() default BorderStyle.THIN;
+    BorderStyleEnum borderTop() default BorderStyleEnum.DEFAULT;
 
     /**
      * Set the type of border to use for the bottom border of the cell
      */
-    BorderStyle borderBottom() default BorderStyle.THIN;
+    BorderStyleEnum borderBottom() default BorderStyleEnum.DEFAULT;
 
     /**
      * Set the color to use for the left border
@@ -129,7 +132,7 @@ public @interface HeadStyle {
      *
      * @see FillPatternType#SOLID_FOREGROUND
      */
-    FillPatternType fillPatternType() default FillPatternType.SOLID_FOREGROUND;
+    FillPatternTypeEnum fillPatternType() default FillPatternTypeEnum.DEFAULT;
 
     /**
      * Set the background fill color.
@@ -148,6 +151,6 @@ public @interface HeadStyle {
     /**
      * Controls if the Cell should be auto-sized to shrink to fit if the text is too long
      */
-    boolean shrinkToFit() default false;
+    BooleanEnum shrinkToFit() default BooleanEnum.DEFAULT;
 
 }

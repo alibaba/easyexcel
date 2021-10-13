@@ -3,7 +3,6 @@ package com.alibaba.excel.metadata.property;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,6 +17,7 @@ import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.util.ClassUtils;
+import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 
@@ -64,19 +64,19 @@ public class ExcelHeadProperty {
      */
     private Map<String, Field> ignoreMap;
 
-    public ExcelHeadProperty(Holder holder, Class headClazz, List<List<String>> head, Boolean convertAllFiled) {
+    public ExcelHeadProperty(Holder holder, Class headClazz, List<List<String>> head) {
         this.headClazz = headClazz;
-        headMap = new TreeMap<Integer, Head>();
-        contentPropertyMap = new TreeMap<Integer, ExcelContentProperty>();
-        fieldNameContentPropertyMap = new HashMap<String, ExcelContentProperty>();
-        ignoreMap = new HashMap<String, Field>(16);
+        headMap = new TreeMap<>();
+        contentPropertyMap = new TreeMap<>();
+        fieldNameContentPropertyMap = MapUtils.newHashMap();
+        ignoreMap = MapUtils.newHashMap();
         headKind = HeadKindEnum.NONE;
         headRowNumber = 0;
         if (head != null && !head.isEmpty()) {
             int headIndex = 0;
             for (int i = 0; i < head.size(); i++) {
                 if (holder instanceof AbstractWriteHolder) {
-                    if (((AbstractWriteHolder) holder).ignore(null, i)) {
+                    if (((AbstractWriteHolder)holder).ignore(null, i)) {
                         continue;
                     }
                 }
@@ -87,7 +87,7 @@ public class ExcelHeadProperty {
             headKind = HeadKindEnum.STRING;
         }
         // convert headClazz to head
-        initColumnProperties(holder, convertAllFiled);
+        initColumnProperties(holder);
 
         initHeadRowNumber();
         if (LOGGER.isDebugEnabled()) {
@@ -115,21 +115,21 @@ public class ExcelHeadProperty {
         }
     }
 
-    private void initColumnProperties(Holder holder, Boolean convertAllFiled) {
+    private void initColumnProperties(Holder holder) {
         if (headClazz == null) {
             return;
         }
         // Declared fields
-        Map<Integer, Field> sortedAllFiledMap = new TreeMap<Integer, Field>();
-        Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
+        Map<Integer, Field> sortedAllFiledMap = MapUtils.newTreeMap();
+        Map<Integer, Field> indexFiledMap = MapUtils.newTreeMap();
 
         boolean needIgnore = (holder instanceof AbstractWriteHolder) && (
-            !CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getExcludeColumnFieldNames()) || !CollectionUtils
-                .isEmpty(((AbstractWriteHolder) holder).getExcludeColumnIndexes()) || !CollectionUtils
-                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnFieldNames()) || !CollectionUtils
-                .isEmpty(((AbstractWriteHolder) holder).getIncludeColumnIndexes()));
-        ClassUtils.declaredFields(headClazz, sortedAllFiledMap, indexFiledMap, ignoreMap, convertAllFiled, needIgnore,
-            holder);
+            !CollectionUtils.isEmpty(((AbstractWriteHolder)holder).getExcludeColumnFieldNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder)holder).getExcludeColumnIndexes()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder)holder).getIncludeColumnFieldNames()) || !CollectionUtils
+                .isEmpty(((AbstractWriteHolder)holder).getIncludeColumnIndexes()));
+
+        ClassUtils.declaredFields(headClazz, sortedAllFiledMap, indexFiledMap, ignoreMap, needIgnore, holder);
 
         for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {
             initOneColumnProperty(entry.getKey(), entry.getValue(), indexFiledMap.containsKey(entry.getKey()));

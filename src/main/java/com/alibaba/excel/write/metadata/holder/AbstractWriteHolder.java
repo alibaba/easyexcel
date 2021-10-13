@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.alibaba.excel.constant.OrderConstant;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
@@ -93,19 +94,8 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      */
     private Collection<String> includeColumnFieldNames;
 
-    public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder,
-        Boolean convertAllField) {
+    public AbstractWriteHolder(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder) {
         super(writeBasicParameter, parentAbstractWriteHolder);
-        if (writeBasicParameter.getUse1904windowing() == null) {
-            if (parentAbstractWriteHolder == null) {
-                getGlobalConfiguration().setUse1904windowing(Boolean.FALSE);
-            } else {
-                getGlobalConfiguration()
-                    .setUse1904windowing(parentAbstractWriteHolder.getGlobalConfiguration().getUse1904windowing());
-            }
-        } else {
-            getGlobalConfiguration().setUse1904windowing(writeBasicParameter.getUse1904windowing());
-        }
 
         if (writeBasicParameter.getUseScientificFormat() != null) {
             throw new UnsupportedOperationException("Currently does not support setting useScientificFormat.");
@@ -173,7 +163,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
 
         // Initialization property
-        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead(), convertAllField);
+        this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead());
 
         // Set writeHandlerMap
         List<WriteHandler> handlerList = new ArrayList<WriteHandler>();
@@ -209,7 +199,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             }
         }
     }
-
 
     protected void initAnnotationConfig(List<WriteHandler> handlerList, WriteBasicParameter writeBasicParameter) {
         if (!HeadKindEnum.CLASS.equals(getExcelWriteHeadProperty().getHeadKind())) {
@@ -247,6 +236,11 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
     private void dealStyle(List<WriteHandler> handlerList) {
         WriteHandler styleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            public int order() {
+                return OrderConstant.ANNOTATION_DEFINE_STYLE;
+            }
+
             @Override
             protected WriteCellStyle headCellStyle(Head head) {
                 return WriteCellStyle.build(head.getHeadStyleProperty(), head.getHeadFontProperty());
@@ -310,7 +304,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         handlerList.add(columnWidthStyleStrategy);
     }
 
-
     protected Map<Class<? extends WriteHandler>, List<WriteHandler>> sortAndClearUpAllHandler(
         List<WriteHandler> handlerList, Map<Class<? extends WriteHandler>, List<WriteHandler>> parentHandlerMap) {
         // add
@@ -330,7 +323,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         for (WriteHandler handler : handlerList) {
             int order = Integer.MIN_VALUE;
             if (handler instanceof Order) {
-                order = ((Order) handler).order();
+                order = ((Order)handler).order();
             }
             if (orderExcelWriteHandlerMap.containsKey(order)) {
                 orderExcelWriteHandlerMap.get(order).add(handler);
@@ -346,7 +339,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         for (Map.Entry<Integer, List<WriteHandler>> entry : orderExcelWriteHandlerMap.entrySet()) {
             for (WriteHandler handler : entry.getValue()) {
                 if (handler instanceof NotRepeatExecutor) {
-                    String uniqueValue = ((NotRepeatExecutor) handler).uniqueValue();
+                    String uniqueValue = ((NotRepeatExecutor)handler).uniqueValue();
                     if (alreadyExistedHandlerSet.contains(uniqueValue)) {
                         continue;
                     }

@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.alibaba.excel.enums.BooleanEnum;
+
 /**
  * Convert date format.
  *
@@ -34,5 +36,5 @@ public @interface DateTimeFormat {
      *
      * @return True if date uses 1904 windowing, or false if using 1900 date windowing.
      */
-    boolean use1904windowing() default false;
+    BooleanEnum use1904windowing() default BooleanEnum.DEFAULT;
 }

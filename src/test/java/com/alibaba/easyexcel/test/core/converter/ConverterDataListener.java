@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.core.converter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,10 @@ public class ConverterDataListener extends AnalysisEventListener<ConverterReadDa
         } catch (ParseException e) {
             throw new ExcelCommonException("Test Exception", e);
         }
+        Assert.assertEquals(DateUtils.parseLocalDateTime("2020-01-01 01:01:01", null, null), data.getLocalDateTime());
         Assert.assertEquals(data.getBooleanData(), Boolean.TRUE);
         Assert.assertEquals(data.getBigDecimal().doubleValue(), BigDecimal.ONE.doubleValue(), 0.0);
+        Assert.assertEquals(data.getBigInteger().intValue(), BigInteger.ONE.intValue(), 0.0);
         Assert.assertEquals((long)data.getLongData(), 1L);
         Assert.assertEquals((long)data.getIntegerData(), 1L);
         Assert.assertEquals((long)data.getShortData(), 1L);
