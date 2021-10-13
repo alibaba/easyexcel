@@ -25,6 +25,8 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
 
     private static final int MAX_COLUMN_WIDTH = 255;
 
+    private static String changeLine="\n";
+
     private final Map<Integer, Map<Integer, Integer>> cache = MapUtils.newHashMapWithExpectedSize(8);
 
     @Override
@@ -65,8 +67,8 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
         }
         switch (type) {
             case STRING:
-                if(cell.getStringCellValue().contains("\n")){
-                    String[] items=cell.getStringCellValue().split("\n");
+                if(cell.getStringCellValue().contains(changeLine)){
+                    String[] items=cell.getStringCellValue().split(changeLine);
                     Integer maxWith=items[0].getBytes().length;
                     for(String item:items){
                         if(item.length()>maxWith){
