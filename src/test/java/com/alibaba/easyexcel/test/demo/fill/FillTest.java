@@ -69,27 +69,27 @@ public class FillTest {
         // 方案1 一下子全部放到内存里面 并填充
         String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
         // 这里 会填充到第一个sheet， 然后文件流会自动关闭
-        EasyExcel.write(fileName).withTemplate(templateFileName).inMemory(Boolean.TRUE).sheet().doFill(data());
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(data());
 
-        //// 方案2 分多次 填充 会使用文件缓存（省内存） jdk8
-        //// since: 3.0.0-beta1
-        //fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
-        //EasyExcel.write(fileName)
-        //    .withTemplate(templateFileName)
-        //    .sheet()
-        //    .doFill(() -> {
-        //        // 分页查询数据
-        //        return data();
-        //    });
-        //
-        //// 方案3 分多次 填充 会使用文件缓存（省内存）
-        //fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
-        //ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
-        //WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        //excelWriter.fill(data(), writeSheet);
-        //excelWriter.fill(data(), writeSheet);
-        //// 千万别忘记关闭流
-        //excelWriter.finish();
+        // 方案2 分多次 填充 会使用文件缓存（省内存） jdk8
+        // since: 3.0.0-beta1
+        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+        EasyExcel.write(fileName)
+            .withTemplate(templateFileName)
+            .sheet()
+            .doFill(() -> {
+                // 分页查询数据
+                return data();
+            });
+
+        // 方案3 分多次 填充 会使用文件缓存（省内存）
+        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+        ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet().build();
+        excelWriter.fill(data(), writeSheet);
+        excelWriter.fill(data(), writeSheet);
+        // 千万别忘记关闭流
+        excelWriter.finish();
     }
 
     /**

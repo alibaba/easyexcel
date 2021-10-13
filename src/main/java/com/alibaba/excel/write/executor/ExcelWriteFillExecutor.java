@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -178,8 +177,6 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
     }
 
-    AtomicInteger integer = new AtomicInteger(0);
-
     private void doFill(List<AnalysisCell> analysisCellList, Object oneRowData, FillConfig fillConfig,
         Integer relativeRowIndex) {
         if (CollectionUtils.isEmpty(analysisCellList) || oneRowData == null) {
@@ -210,14 +207,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 if (fillConfig.getAutoStyle()) {
                     Optional.ofNullable(collectionFieldStyleCache.get(currentUniqueDataFlag))
                         .map(collectionFieldStyleMap -> collectionFieldStyleMap.get(analysisCell))
-                        .ifPresent(cellStyle -> {
-                            cellData.setOriginCellStyle(cellStyle);
-                            //WriteCellStyle writeCellStyle = StyleUtil.buildWritCellStyle(cellStyle,
-                            //    writeContext.writeWorkbookHolder().getWorkbook()
-                            //        .getFontAt(cellStyle.getFontIndexAsInt()));
-                            //WriteCellStyle.merge(cellData.getWriteCellStyle(), writeCellStyle);
-                            //cellData.setWriteCellStyle(writeCellStyle);
-                        });
+                        .ifPresent(cellData::setOriginCellStyle);
                 }
 
                 WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);

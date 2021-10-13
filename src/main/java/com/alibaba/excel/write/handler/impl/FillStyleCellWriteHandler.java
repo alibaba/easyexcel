@@ -11,6 +11,7 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
 
 /**
  * fill cell style.
@@ -33,11 +34,12 @@ public class FillStyleCellWriteHandler implements CellWriteHandler {
         }
         WriteCellData<?> cellData = cellDataList.get(0);
         WriteCellStyle writeCellStyle = cellData.getWriteCellStyle();
-        if (writeCellStyle == null) {
+        CellStyle originCellStyle = cellData.getOriginCellStyle();
+        if (writeCellStyle == null && originCellStyle == null) {
             return;
         }
         WriteWorkbookHolder writeWorkbookHolder = context.getWriteWorkbookHolder();
-        context.getCell().setCellStyle(writeWorkbookHolder.createCellStyle(writeCellStyle));
+        context.getCell().setCellStyle(writeWorkbookHolder.createCellStyle(writeCellStyle, originCellStyle));
     }
 
 }
