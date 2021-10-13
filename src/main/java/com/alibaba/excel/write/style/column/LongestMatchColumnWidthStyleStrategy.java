@@ -65,11 +65,23 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
         }
         switch (type) {
             case STRING:
+                if(cell.getStringCellValue().contains("\n")){
+                    String[] items=cell.getStringCellValue().split("\n");
+                    Integer maxWith=items[0].getBytes().length;
+                    for(String item:items){
+                        if(item.length()>maxWith){
+                            maxWith=item.getBytes().length;
+                        }
+                    }
+                    return maxWith;
+                }
                 return cellData.getStringValue().getBytes().length;
             case BOOLEAN:
                 return cellData.getBooleanValue().toString().getBytes().length;
             case NUMBER:
                 return cellData.getNumberValue().toString().getBytes().length;
+            case DATE:
+                return cellData.getDateValue().toString().getBytes().length;
             default:
                 return -1;
         }

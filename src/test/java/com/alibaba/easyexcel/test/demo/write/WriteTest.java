@@ -668,6 +668,23 @@ public class WriteTest {
     }
 
     /**
+     * 对字符串的换行进行处理，取最长为本单元格长度
+     */
+    @Test
+    public void longestMatchColumnWidthWriteChangeRow() {
+        String fileName =
+            TestFileUtil.getPath() + "longestMatchColumnWidthWrite" + System.currentTimeMillis() + ".xlsx";
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+        WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
+        //开启换行
+        contentWriteCellStyle.setWrapped(true);
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, LongestMatchColumnWidthData.class)
+            .registerWriteHandler(new HorizontalCellStyleStrategy(headWriteCellStyle,contentWriteCellStyle))
+            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet("模板").doWrite(dataLongChangeRow());
+    }
+
+    /**
      * 下拉，超链接等自定义拦截器（上面几点都不符合但是要对单元格进行操作的参照这个）
      * <p>
      * demo这里实现2点。1. 对第一行第一列的头超链接到:https://github.com/alibaba/easyexcel 2. 对第一列第一行和第二行的数据新增下拉框，显示 测试1 测试2
@@ -737,6 +754,18 @@ public class WriteTest {
         for (int i = 0; i < 10; i++) {
             LongestMatchColumnWidthData data = new LongestMatchColumnWidthData();
             data.setString("测试很长的字符串测试很长的字符串测试很长的字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(1000000000000.0);
+            list.add(data);
+        }
+        return list;
+    }
+
+    private List<LongestMatchColumnWidthData> dataLongChangeRow() {
+        List<LongestMatchColumnWidthData> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            LongestMatchColumnWidthData data = new LongestMatchColumnWidthData();
+            data.setString("测试很长的字符串测试很长的字符\n串测试很长的字符串" + i);
             data.setDate(new Date());
             data.setDoubleData(1000000000000.0);
             list.add(data);
