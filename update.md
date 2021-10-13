@@ -1,3 +1,7 @@
+# 3.0.1
+* 升级到正式版
+* 修复填充样式可能丢失的问题 [Issue #2124](https://github.com/alibaba/easyexcel/issues/2124)
+
 # 3.0.0-beta3
 
 * 修复导出浮点型数据可能精度异常的bug
