@@ -200,7 +200,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 }
                 Object value = dataMap.get(variable);
                 WriteCellData<?> cellData = converterAndSet(writeSheetHolder,
-                    FieldUtils.getFieldClass(dataMap, variable),
+                    FieldUtils.getFieldClass(dataMap, variable, value),
                     null, cell, value, fieldNameContentPropertyMap.get(variable), null, relativeRowIndex);
 
                 // Restyle
@@ -221,8 +221,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                         continue;
                     }
                     Object value = dataMap.get(variable);
-                    WriteCellData<?> cellData = convert(writeSheetHolder, value == null ? null : value.getClass(),
-                        CellDataTypeEnum.STRING, cell, value, fieldNameContentPropertyMap.get(variable));
+                    WriteCellData<?> cellData = convert(writeSheetHolder,
+                        FieldUtils.getFieldClass(dataMap, variable, value), CellDataTypeEnum.STRING, cell, value,
+                        fieldNameContentPropertyMap.get(variable));
                     cellDataList.add(cellData);
                     CellDataTypeEnum type = cellData.getType();
                     if (type != null) {

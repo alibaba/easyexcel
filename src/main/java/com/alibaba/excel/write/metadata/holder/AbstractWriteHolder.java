@@ -27,6 +27,7 @@ import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteBasicParameter;
@@ -242,13 +243,15 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             }
 
             @Override
-            protected WriteCellStyle headCellStyle(Head head) {
-                return WriteCellStyle.build(head.getHeadStyleProperty(), head.getHeadFontProperty());
+            protected WriteCellStyle headCellStyle(CellWriteHandlerContext context) {
+                //return WriteCellStyle.build(head.getHeadStyleProperty(), head.getHeadFontProperty());
+                return null;
             }
 
             @Override
-            protected WriteCellStyle contentCellStyle(Head head) {
-                return WriteCellStyle.build(head.getContentStyleProperty(), head.getContentFontProperty());
+            protected WriteCellStyle contentCellStyle(CellWriteHandlerContext context) {
+                //return WriteCellStyle.build(head.getContentStyleProperty(), head.getContentFontProperty());
+                return null;
             }
         };
         handlerList.add(styleStrategy);

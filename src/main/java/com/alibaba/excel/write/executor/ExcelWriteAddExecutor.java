@@ -115,7 +115,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
         Object value = oneRowData.get(dataIndex);
         WriteCellData<?> cellData = converterAndSet(writeContext.currentWriteHolder(),
-            FieldUtils.getFieldClass(oneRowData, dataIndex), null, cell, value, null, head, relativeRowIndex);
+            FieldUtils.getFieldClass(value), null, cell, value, null, head, relativeRowIndex);
         WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
     }
 
@@ -173,7 +173,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             Cell cell = WorkBookUtil.createCell(row, maxCellIndex++);
             WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
             WriteCellData<?> cellData = converterAndSet(currentWriteHolder,
-                FieldUtils.getFieldClass(beanMap, filedName), null, cell, value, null, null, relativeRowIndex);
+                FieldUtils.getFieldClass(beanMap, filedName, value), null, cell, value, null, null, relativeRowIndex);
             WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
         }
     }

@@ -29,7 +29,7 @@ public class FillStyleCellWriteHandler implements CellWriteHandler {
     @Override
     public void afterCellDispose(CellWriteHandlerContext context) {
         List<WriteCellData<?>> cellDataList = context.getCellDataList();
-        if (CollectionUtils.isEmpty(cellDataList) || cellDataList.size() > 1) {
+        if (CollectionUtils.isEmpty(cellDataList)) {
             return;
         }
         WriteCellData<?> cellData = cellDataList.get(0);

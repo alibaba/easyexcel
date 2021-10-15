@@ -9,11 +9,14 @@ import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 
+import lombok.Data;
+
 /**
  * excel head
  *
  * @author Jiaju Zhuang
  **/
+@Data
 public class Head {
     /**
      * Column index of head
@@ -76,93 +79,5 @@ public class Head {
         }
         this.forceIndex = forceIndex;
         this.forceName = forceName;
-    }
-
-    public Integer getColumnIndex() {
-        return columnIndex;
-    }
-
-    public void setColumnIndex(Integer columnIndex) {
-        this.columnIndex = columnIndex;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public List<String> getHeadNameList() {
-        return headNameList;
-    }
-
-    public void setHeadNameList(List<String> headNameList) {
-        this.headNameList = headNameList;
-    }
-
-    public ColumnWidthProperty getColumnWidthProperty() {
-        return columnWidthProperty;
-    }
-
-    public void setColumnWidthProperty(ColumnWidthProperty columnWidthProperty) {
-        this.columnWidthProperty = columnWidthProperty;
-    }
-
-    public Boolean getForceIndex() {
-        return forceIndex;
-    }
-
-    public void setForceIndex(Boolean forceIndex) {
-        this.forceIndex = forceIndex;
-    }
-
-    public Boolean getForceName() {
-        return forceName;
-    }
-
-    public void setForceName(Boolean forceName) {
-        this.forceName = forceName;
-    }
-
-    public LoopMergeProperty getLoopMergeProperty() {
-        return loopMergeProperty;
-    }
-
-    public void setLoopMergeProperty(LoopMergeProperty loopMergeProperty) {
-        this.loopMergeProperty = loopMergeProperty;
-    }
-
-    public StyleProperty getHeadStyleProperty() {
-        return headStyleProperty;
-    }
-
-    public void setHeadStyleProperty(StyleProperty headStyleProperty) {
-        this.headStyleProperty = headStyleProperty;
-    }
-
-    public StyleProperty getContentStyleProperty() {
-        return contentStyleProperty;
-    }
-
-    public void setContentStyleProperty(StyleProperty contentStyleProperty) {
-        this.contentStyleProperty = contentStyleProperty;
-    }
-
-    public FontProperty getHeadFontProperty() {
-        return headFontProperty;
-    }
-
-    public void setHeadFontProperty(FontProperty headFontProperty) {
-        this.headFontProperty = headFontProperty;
-    }
-
-    public FontProperty getContentFontProperty() {
-        return contentFontProperty;
-    }
-
-    public void setContentFontProperty(FontProperty contentFontProperty) {
-        this.contentFontProperty = contentFontProperty;
     }
 }

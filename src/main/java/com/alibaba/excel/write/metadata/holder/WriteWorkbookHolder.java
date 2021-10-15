@@ -24,6 +24,7 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -39,6 +40,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author Jiaju Zhuang
  */
 @Data
+@Slf4j
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
      * Current poi Workbook.This is only for writing, and there may be no data in version 07 when template data needs to
@@ -254,7 +256,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
         short styleIndex = -1;
         Font originFont = null;
-        boolean useCache = false;
+        boolean useCache = true;
         if (originCellStyle != null) {
             styleIndex = originCellStyle.getIndex();
             if (originCellStyle instanceof XSSFCellStyle) {
@@ -262,7 +264,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             } else if (originCellStyle instanceof HSSFCellStyle) {
                 originFont = ((HSSFCellStyle)originCellStyle).getFont(workbook);
             }
-            useCache = true;
+            useCache = false;
         }
 
         Map<WriteCellStyle, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
@@ -271,9 +273,18 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (cellStyle != null) {
             return cellStyle;
         }
+        if (log.isDebugEnabled()) {
+            log.info("create new style:{},{}", writeCellStyle, originCellStyle);
+        }
         cellStyle = StyleUtil.buildCellStyle(workbook, originCellStyle, writeCellStyle);
-        cellStyle.setDataFormat(createDataFormat(writeCellStyle.getDataFormatData(), useCache));
-        cellStyle.setFont(createFont(writeCellStyle.getWriteFont(), originFont, useCache));
+        Short dataFormat = createDataFormat(writeCellStyle.getDataFormatData(), useCache);
+        if (dataFormat != null) {
+            cellStyle.setDataFormat(dataFormat);
+        }
+        Font font = createFont(writeCellStyle.getWriteFont(), originFont, useCache);
+        if (font != null) {
+            cellStyle.setFont(font);
+        }
         cellStyleMap.put(writeCellStyle, cellStyle);
         return cellStyle;
     }
@@ -307,6 +318,9 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * @return
      */
     public Short createDataFormat(DataFormatData dataFormatData, boolean useCache) {
+        if (dataFormatData == null) {
+            return null;
+        }
         if (!useCache) {
             return StyleUtil.buildDataFormat(workbook, dataFormatData);
         }

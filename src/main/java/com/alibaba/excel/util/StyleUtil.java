@@ -10,6 +10,7 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -27,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 /**
  * @author jipengfei
  */
+@Slf4j
 public class StyleUtil {
 
     private StyleUtil() {}
@@ -123,6 +125,9 @@ public class StyleUtil {
             return dataFormatData.getIndex();
         }
         if (StringUtils.isNotBlank(dataFormatData.getFormat())) {
+            if (log.isDebugEnabled()) {
+                log.info("create new data fromat:{}", dataFormatData);
+            }
             DataFormat dataFormatCreate = workbook.createDataFormat();
             return dataFormatCreate.getFormat(dataFormatData.getFormat());
         }
@@ -130,8 +135,14 @@ public class StyleUtil {
     }
 
     public static Font buildFont(Workbook workbook, Font originFont, WriteFont writeFont) {
-        Font font = createFont(workbook, originFont);
-        if (writeFont == null || font == null) {
+        if (log.isDebugEnabled()) {
+            log.info("create new font:{},{}", writeFont, originFont);
+        }
+        if (writeFont == null && originFont == null) {
+            return null;
+        }
+        Font font = createFont(workbook, originFont, writeFont);
+        if (writeFont == null) {
             return font;
         }
         if (writeFont.getFontName() != null) {
@@ -164,7 +175,7 @@ public class StyleUtil {
         return font;
     }
 
-    private static Font createFont(Workbook workbook, Font originFont) {
+    private static Font createFont(Workbook workbook, Font originFont, WriteFont writeFont) {
         Font font = workbook.createFont();
         if (originFont == null) {
             return font;
@@ -176,7 +187,10 @@ public class StyleUtil {
             xssfFont.setFontHeightInPoints(xssfOriginFont.getFontHeightInPoints());
             xssfFont.setItalic(xssfOriginFont.getItalic());
             xssfFont.setStrikeout(xssfOriginFont.getStrikeout());
-            xssfFont.setColor(new XSSFColor(xssfOriginFont.getXSSFColor().getRGB(), null));
+            // Colors cannot be overwritten
+            if (writeFont == null || writeFont.getColor() == null) {
+                xssfFont.setColor(new XSSFColor(xssfOriginFont.getXSSFColor().getRGB(), null));
+            }
             xssfFont.setTypeOffset(xssfOriginFont.getTypeOffset());
             xssfFont.setUnderline(xssfOriginFont.getUnderline());
             xssfFont.setCharSet(xssfOriginFont.getCharSet());

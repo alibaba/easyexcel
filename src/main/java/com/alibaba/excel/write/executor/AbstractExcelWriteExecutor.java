@@ -104,7 +104,6 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
     }
 
-
     private void fillFormula(Cell cell, FormulaData formulaData) {
         if (formulaData == null) {
             return;

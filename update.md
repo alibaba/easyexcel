@@ -1,6 +1,7 @@
 # 3.0.1
 * 升级到正式版
 * 修复填充样式可能丢失的问题 [Issue #2124](https://github.com/alibaba/easyexcel/issues/2124)
+* 修复填充数据为空 可能NPE的bug
 
 # 3.0.0-beta3
 
