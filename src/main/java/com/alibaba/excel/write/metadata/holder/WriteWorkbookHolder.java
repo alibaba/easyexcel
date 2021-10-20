@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
@@ -133,15 +134,15 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     /**
      * Used to cell style.
      */
-    private Map<Short, Map<WriteCellStyle, CellStyle>> cellStyleIndexMap;
+    private Map<Short, Map<String, CellStyle>> cellStyleIndexMap;
     /**
      * Used to font.
      */
-    private Map<WriteFont, Font> fontMap;
+    private Map<String, Font> fontMap;
     /**
      * Used to data format.
      */
-    private Map<DataFormatData, Short> dataFormatMap;
+    private Map<String, Short> dataFormatMap;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null);
@@ -267,9 +268,9 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             useCache = false;
         }
 
-        Map<WriteCellStyle, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
+        Map<String, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
             key -> MapUtils.newHashMap());
-        CellStyle cellStyle = cellStyleMap.get(writeCellStyle);
+        CellStyle cellStyle = cellStyleMap.get(Objects.toString(writeCellStyle));
         if (cellStyle != null) {
             return cellStyle;
         }
@@ -285,7 +286,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (font != null) {
             cellStyle.setFont(font);
         }
-        cellStyleMap.put(writeCellStyle, cellStyle);
+        cellStyleMap.put(Objects.toString(writeCellStyle), cellStyle);
         return cellStyle;
     }
 
@@ -301,12 +302,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (!useCache) {
             return StyleUtil.buildFont(workbook, originFont, writeFont);
         }
-        Font font = fontMap.get(writeFont);
+        Font font = fontMap.get(Objects.toString(writeFont));
         if (font != null) {
             return font;
         }
         font = StyleUtil.buildFont(workbook, originFont, writeFont);
-        fontMap.put(writeFont, font);
+        fontMap.put(Objects.toString(writeFont), font);
         return font;
     }
 
@@ -324,12 +325,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (!useCache) {
             return StyleUtil.buildDataFormat(workbook, dataFormatData);
         }
-        Short dataFormat = dataFormatMap.get(dataFormatData);
+        Short dataFormat = dataFormatMap.get(Objects.toString(dataFormatData));
         if (dataFormat != null) {
             return dataFormat;
         }
         dataFormat = StyleUtil.buildDataFormat(workbook, dataFormatData);
-        dataFormatMap.put(dataFormatData, dataFormat);
+        dataFormatMap.put(Objects.toString(dataFormatData), dataFormat);
         return dataFormat;
     }
 
