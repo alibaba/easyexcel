@@ -1,6 +1,5 @@
 package com.alibaba.excel.util;
 
-import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -10,15 +9,25 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ContentFontStyle;
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.alibaba.excel.converters.AutoConverter;
+import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
+
+import net.sf.cglib.beans.BeanMap;
 
 /**
  * Class utils
@@ -27,7 +36,150 @@ import com.alibaba.excel.write.metadata.holder.WriteHolder;
  **/
 public class ClassUtils {
 
-    public static final Map<Class<?>, SoftReference<FieldCache>> FIELD_CACHE = new ConcurrentHashMap<>();
+    public static final Map<Class<?>, FieldCache> FIELD_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * The cache configuration information for each of the class
+     */
+    public static final Map<Class<?>, Map<String, ExcelContentProperty>> CLASS_CONTENT_CACHE
+        = new ConcurrentHashMap<>();
+
+    /**
+     * The cache configuration information for each of the class
+     */
+    public static final Map<String, ExcelContentProperty> CONTENT_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Calculate the configuration information for the class
+     *
+     * @param dataMap
+     * @param headClazz
+     * @param fieldName
+     * @return
+     */
+    public static ExcelContentProperty declaredExcelContentProperty(Map<?, ?> dataMap, Class<?> headClazz,
+        String fieldName) {
+        Class<?> clazz = null;
+        if (dataMap instanceof BeanMap) {
+            Object bean = ((BeanMap)dataMap).getBean();
+            if (bean != null) {
+                clazz = bean.getClass();
+            }
+        }
+        return getExcelContentProperty(clazz, headClazz, fieldName);
+    }
+
+    private static ExcelContentProperty getExcelContentProperty(Class<?> clazz, Class<?> headClass, String fieldName) {
+        return CONTENT_CACHE.computeIfAbsent(buildKey(clazz, headClass, fieldName), key -> {
+            ExcelContentProperty excelContentProperty = Optional.ofNullable(declaredFieldContentMap(clazz))
+                .map(map -> map.get(fieldName))
+                .orElse(null);
+            ExcelContentProperty headExcelContentProperty = Optional.ofNullable(declaredFieldContentMap(headClass))
+                .map(map -> map.get(fieldName))
+                .orElse(null);
+            ExcelContentProperty combineExcelContentProperty = new ExcelContentProperty();
+
+            combineExcelContentProperty(combineExcelContentProperty, headExcelContentProperty);
+            if (clazz != headClass) {
+                combineExcelContentProperty(combineExcelContentProperty, excelContentProperty);
+            }
+            return combineExcelContentProperty;
+        });
+
+    }
+
+    public static void combineExcelContentProperty(ExcelContentProperty combineExcelContentProperty,
+        ExcelContentProperty excelContentProperty) {
+        if (excelContentProperty == null) {
+            return;
+        }
+        if (excelContentProperty.getField() != null) {
+            combineExcelContentProperty.setField(excelContentProperty.getField());
+        }
+        if (excelContentProperty.getConverter() != null) {
+            combineExcelContentProperty.setConverter(excelContentProperty.getConverter());
+        }
+        if (excelContentProperty.getDateTimeFormatProperty() != null) {
+            combineExcelContentProperty.setDateTimeFormatProperty(excelContentProperty.getDateTimeFormatProperty());
+        }
+        if (excelContentProperty.getNumberFormatProperty() != null) {
+            combineExcelContentProperty.setNumberFormatProperty(excelContentProperty.getNumberFormatProperty());
+        }
+        if (excelContentProperty.getContentStyleProperty() != null) {
+            combineExcelContentProperty.setContentStyleProperty(excelContentProperty.getContentStyleProperty());
+        }
+        if (excelContentProperty.getContentFontProperty() != null) {
+            combineExcelContentProperty.setContentFontProperty(excelContentProperty.getContentFontProperty());
+        }
+    }
+
+    private static String buildKey(Class<?> clazz, Class<?> headClass, String fieldName) {
+        String key = "";
+        if (clazz != null) {
+            key += clazz.getName();
+        }
+        key += "-";
+        if (headClass != null) {
+            key += headClass.getName();
+        }
+        key += "-";
+        if (fieldName != null) {
+            key += fieldName;
+        }
+        return key;
+    }
+
+    private static Map<String, ExcelContentProperty> declaredFieldContentMap(Class<?> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+        return CLASS_CONTENT_CACHE.computeIfAbsent(clazz, key -> {
+            List<Field> tempFieldList = new ArrayList<>();
+            Class<?> tempClass = clazz;
+            while (tempClass != null) {
+                Collections.addAll(tempFieldList, tempClass.getDeclaredFields());
+                // Get the parent class and give it to yourself
+                tempClass = tempClass.getSuperclass();
+            }
+
+            ContentStyle parentContentStyle = clazz.getAnnotation(ContentStyle.class);
+            ContentFontStyle parentContentFontStyle = clazz.getAnnotation(ContentFontStyle.class);
+            Map<String, ExcelContentProperty> fieldContentMap = MapUtils.newHashMapWithExpectedSize(
+                tempFieldList.size());
+            for (Field field : tempFieldList) {
+                ExcelContentProperty excelContentProperty = new ExcelContentProperty();
+                excelContentProperty.setField(field);
+
+                ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+                if (excelProperty != null) {
+                    Class<? extends Converter<?>> convertClazz = excelProperty.converter();
+                    if (convertClazz != AutoConverter.class) {
+                        try {
+                            Converter<?> converter = convertClazz.newInstance();
+                            excelContentProperty.setConverter(converter);
+                        } catch (Exception e) {
+                            throw new ExcelCommonException(
+                                "Can not instance custom converter:" + convertClazz.getName());
+                        }
+                    }
+                }
+
+                ContentStyle contentStyle = field.getAnnotation(ContentStyle.class);
+                if (contentStyle == null) {
+                    contentStyle = parentContentStyle;
+                }
+                excelContentProperty.setContentStyleProperty(StyleProperty.build(contentStyle));
+
+                ContentFontStyle contentFontStyle = field.getAnnotation(ContentFontStyle.class);
+                if (contentFontStyle == null) {
+                    contentFontStyle = parentContentFontStyle;
+                }
+                excelContentProperty.setContentFontProperty(FontProperty.build(contentFontStyle));
+                fieldContentMap.put(field.getName(), excelContentProperty);
+            }
+            return fieldContentMap;
+        });
+    }
 
     /**
      * Parsing filed in the class
@@ -41,7 +193,7 @@ public class ClassUtils {
      */
     public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap,
         Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, Boolean needIgnore, Holder holder) {
-        FieldCache fieldCache = getFieldCache(clazz);
+        FieldCache fieldCache = declaredFields(clazz);
         if (fieldCache == null) {
             return;
         }
@@ -92,45 +244,31 @@ public class ClassUtils {
         declaredFields(clazz, sortedAllFiledMap, null, null, needIgnore, writeHolder);
     }
 
-    private static FieldCache getFieldCache(Class<?> clazz) {
+    private static FieldCache declaredFields(Class<?> clazz) {
         if (clazz == null) {
             return null;
         }
-        SoftReference<FieldCache> fieldCacheSoftReference = FIELD_CACHE.get(clazz);
-        if (fieldCacheSoftReference != null && fieldCacheSoftReference.get() != null) {
-            return fieldCacheSoftReference.get();
-        }
-        synchronized (clazz) {
-            fieldCacheSoftReference = FIELD_CACHE.get(clazz);
-            if (fieldCacheSoftReference != null && fieldCacheSoftReference.get() != null) {
-                return fieldCacheSoftReference.get();
+        return FIELD_CACHE.computeIfAbsent(clazz, key -> {
+            List<Field> tempFieldList = new ArrayList<>();
+            Class<?> tempClass = clazz;
+            // When the parent class is null, it indicates that the parent class (Object class) has reached the top
+            // level.
+            while (tempClass != null) {
+                Collections.addAll(tempFieldList, tempClass.getDeclaredFields());
+                // Get the parent class and give it to yourself
+                tempClass = tempClass.getSuperclass();
             }
-            declaredFields(clazz);
-        }
-        return FIELD_CACHE.get(clazz).get();
-    }
+            // Screening of field
+            Map<Integer, List<Field>> orderFiledMap = new TreeMap<Integer, List<Field>>();
+            Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
+            Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
 
-    private static void declaredFields(Class<?> clazz) {
-        List<Field> tempFieldList = new ArrayList<>();
-        Class<?> tempClass = clazz;
-        // When the parent class is null, it indicates that the parent class (Object class) has reached the top
-        // level.
-        while (tempClass != null) {
-            Collections.addAll(tempFieldList, tempClass.getDeclaredFields());
-            // Get the parent class and give it to yourself
-            tempClass = tempClass.getSuperclass();
-        }
-        // Screening of field
-        Map<Integer, List<Field>> orderFiledMap = new TreeMap<Integer, List<Field>>();
-        Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
-        Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
-
-        ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
-        for (Field field : tempFieldList) {
-            declaredOneField(field, orderFiledMap, indexFiledMap, ignoreMap, excelIgnoreUnannotated);
-        }
-        FIELD_CACHE.put(clazz, new SoftReference<FieldCache>(
-            new FieldCache(buildSortedAllFiledMap(orderFiledMap, indexFiledMap), indexFiledMap, ignoreMap)));
+            ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
+            for (Field field : tempFieldList) {
+                declaredOneField(field, orderFiledMap, indexFiledMap, ignoreMap, excelIgnoreUnannotated);
+            }
+            return new FieldCache(buildSortedAllFiledMap(orderFiledMap, indexFiledMap), indexFiledMap, ignoreMap);
+        });
     }
 
     private static Map<Integer, Field> buildSortedAllFiledMap(Map<Integer, List<Field>> orderFiledMap,

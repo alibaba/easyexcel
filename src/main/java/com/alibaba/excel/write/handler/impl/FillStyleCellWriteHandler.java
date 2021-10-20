@@ -29,10 +29,13 @@ public class FillStyleCellWriteHandler implements CellWriteHandler {
     @Override
     public void afterCellDispose(CellWriteHandlerContext context) {
         List<WriteCellData<?>> cellDataList = context.getCellDataList();
-        if (CollectionUtils.isEmpty(cellDataList)) {
+        if (CollectionUtils.size(cellDataList) != 1) {
             return;
         }
-        WriteCellData<?> cellData = cellDataList.get(0);
+        WriteCellData<?> cellData = context.getFirstCellData();
+        if (cellData.getAnalysisCell() != null && !cellData.getAnalysisCell().getOnlyOneVariable()) {
+            return;
+        }
         WriteCellStyle writeCellStyle = cellData.getWriteCellStyle();
         CellStyle originCellStyle = cellData.getOriginCellStyle();
         if (writeCellStyle == null && originCellStyle == null) {

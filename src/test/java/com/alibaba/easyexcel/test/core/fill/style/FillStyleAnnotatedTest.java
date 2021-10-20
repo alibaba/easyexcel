@@ -63,26 +63,26 @@ public class FillStyleAnnotatedTest {
         XSSFCell cell0 = row.getCell(0);
         Assert.assertEquals("张三", cell0.getStringCellValue());
         Assert.assertEquals(49, cell0.getCellStyle().getDataFormat());
-        Assert.assertEquals("FF00B050", cell0.getCellStyle().getFillForegroundColorColor().getARGBHex());
-        Assert.assertEquals("FF7030A0", cell0.getCellStyle().getFont().getXSSFColor().getARGBHex());
+        Assert.assertEquals("FFFFFF00", cell0.getCellStyle().getFillForegroundColorColor().getARGBHex());
+        Assert.assertEquals("FF808000", cell0.getCellStyle().getFont().getXSSFColor().getARGBHex());
         Assert.assertTrue(cell0.getCellStyle().getFont().getBold());
 
         XSSFCell cell1 = row.getCell(1);
-        Assert.assertEquals("5", cell1.getStringCellValue());
+        Assert.assertEquals(5.2, cell1.getNumericCellValue(), 1);
         Assert.assertEquals(0, cell1.getCellStyle().getDataFormat());
-        Assert.assertEquals("FF92D050", cell1.getCellStyle().getFillForegroundColorColor().getARGBHex());
-        Assert.assertEquals("FF4BACC6", cell1.getCellStyle().getFont().getXSSFColor().getARGBHex());
-        Assert.assertFalse(cell1.getCellStyle().getFont().getBold());
+        Assert.assertEquals("FFFF0000", cell1.getCellStyle().getFillForegroundColorColor().getARGBHex());
+        Assert.assertEquals("FF800000", cell1.getCellStyle().getFont().getXSSFColor().getARGBHex());
+        Assert.assertTrue(cell1.getCellStyle().getFont().getBold());
 
         XSSFCell cell2 = row.getCell(2);
         Assert.assertEquals("2020-01-01 01:01:01", DateUtils.format(cell2.getDateCellValue(), "yyyy-MM-dd HH:mm:ss"));
         Assert.assertEquals("yyyy-MM-dd HH:mm:ss", cell2.getCellStyle().getDataFormatString());
-        Assert.assertEquals("FFFFC000", cell2.getCellStyle().getFillForegroundColorColor().getARGBHex());
-        Assert.assertEquals("FFC0504D", cell2.getCellStyle().getFont().getXSSFColor().getARGBHex());
+        Assert.assertEquals("FF008000", cell2.getCellStyle().getFillForegroundColorColor().getARGBHex());
+        Assert.assertEquals("FF003300", cell2.getCellStyle().getFont().getXSSFColor().getARGBHex());
         Assert.assertTrue(cell2.getCellStyle().getFont().getBold());
 
         XSSFCell cell3 = row.getCell(3);
-        Assert.assertEquals("张三今年5岁了", cell3.getStringCellValue());
+        Assert.assertEquals("张三今年5.2岁了", cell3.getStringCellValue());
         Assert.assertEquals(0, cell3.getCellStyle().getDataFormat());
         Assert.assertEquals("FFFF0000", cell3.getCellStyle().getFillForegroundColorColor().getARGBHex());
         Assert.assertEquals("FFEEECE1", cell3.getCellStyle().getFont().getXSSFColor().getARGBHex());
@@ -116,28 +116,28 @@ public class FillStyleAnnotatedTest {
         HSSFCell cell0 = row.getCell(0);
         Assert.assertEquals("张三", cell0.getStringCellValue());
         Assert.assertEquals(49, cell0.getCellStyle().getDataFormat());
-        Assert.assertEquals("0:8080:0", cell0.getCellStyle().getFillForegroundColorColor().getHexString());
-        Assert.assertEquals("8080:0:8080", cell0.getCellStyle().getFont(workbook).getHSSFColor(workbook)
+        Assert.assertEquals("FFFF:FFFF:0", cell0.getCellStyle().getFillForegroundColorColor().getHexString());
+        Assert.assertEquals("8080:8080:0", cell0.getCellStyle().getFont(workbook).getHSSFColor(workbook)
             .getHexString());
         Assert.assertTrue(cell0.getCellStyle().getFont(workbook).getBold());
 
         HSSFCell cell1 = row.getCell(1);
-        Assert.assertEquals("5", cell1.getStringCellValue());
+        Assert.assertEquals(5.2, cell1.getNumericCellValue(), 1);
         Assert.assertEquals(0, cell1.getCellStyle().getDataFormat());
-        Assert.assertEquals("9999:CCCC:0", cell1.getCellStyle().getFillForegroundColorColor().getHexString());
-        Assert.assertEquals("0:8080:8080", cell1.getCellStyle().getFont(workbook).getHSSFColor(workbook)
+        Assert.assertEquals("FFFF:0:0", cell1.getCellStyle().getFillForegroundColorColor().getHexString());
+        Assert.assertEquals("8080:0:0", cell1.getCellStyle().getFont(workbook).getHSSFColor(workbook)
             .getHexString());
-        Assert.assertFalse(cell1.getCellStyle().getFont(workbook).getBold());
+        Assert.assertTrue(cell1.getCellStyle().getFont(workbook).getBold());
 
         HSSFCell cell2 = row.getCell(2);
         Assert.assertEquals("2020-01-01 01:01:01", DateUtils.format(cell2.getDateCellValue(), "yyyy-MM-dd HH:mm:ss"));
         Assert.assertEquals("yyyy-MM-dd HH:mm:ss", cell2.getCellStyle().getDataFormatString());
-        Assert.assertEquals("FFFF:CCCC:0", cell2.getCellStyle().getFillForegroundColorColor().getHexString());
-        Assert.assertEquals("8080:0:0", cell2.getCellStyle().getFont(workbook).getHSSFColor(workbook).getHexString());
+        Assert.assertEquals("0:8080:0", cell2.getCellStyle().getFillForegroundColorColor().getHexString());
+        Assert.assertEquals("0:3333:0", cell2.getCellStyle().getFont(workbook).getHSSFColor(workbook).getHexString());
         Assert.assertTrue(cell2.getCellStyle().getFont(workbook).getBold());
 
         HSSFCell cell3 = row.getCell(3);
-        Assert.assertEquals("张三今年5岁了", cell3.getStringCellValue());
+        Assert.assertEquals("张三今年5.2岁了", cell3.getStringCellValue());
         Assert.assertEquals(0, cell3.getCellStyle().getDataFormat());
         Assert.assertEquals("FFFF:0:0", cell3.getCellStyle().getFillForegroundColorColor().getHexString());
         Assert.assertEquals("FFFF:FFFF:9999", cell3.getCellStyle().getFont(workbook).getHSSFColor(workbook)

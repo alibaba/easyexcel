@@ -56,7 +56,8 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             value = ((String)value).trim();
         }
         WriteCellData<?> cellData = convert(currentWriteHolder, clazz, targetType, cell, value, excelContentProperty);
-        WriteHandlerUtils.afterCellDataConverted(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
+        WriteHandlerUtils.afterCellDataConverted(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE,
+            excelContentProperty);
 
         // Fill in picture information
         fillImage(cell, cellData.getImageDataList());

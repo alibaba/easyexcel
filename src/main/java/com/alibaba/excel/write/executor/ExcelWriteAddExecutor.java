@@ -110,13 +110,20 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
 
     private void doAddBasicTypeToExcel(RowData oneRowData, Head head, Row row, int relativeRowIndex, int dataIndex,
         int cellIndex) {
-        WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE);
+        ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(null,
+            writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(),
+            head == null ? null : head.getFieldName());
+
+        WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE,
+            excelContentProperty);
         Cell cell = WorkBookUtil.createCell(row, cellIndex);
-        WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
+        WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE,
+            excelContentProperty);
         Object value = oneRowData.get(dataIndex);
         WriteCellData<?> cellData = converterAndSet(writeContext.currentWriteHolder(),
             FieldUtils.getFieldClass(value), null, cell, value, null, head, relativeRowIndex);
-        WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
+        WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE,
+            excelContentProperty);
     }
 
     private void addJavaObjectToExcel(Object oneRowData, Row row, int relativeRowIndex,
@@ -128,24 +135,25 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         // If it's a class it needs to be cast by type
         if (HeadKindEnum.CLASS.equals(writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadKind())) {
             Map<Integer, Head> headMap = writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadMap();
-            Map<Integer, ExcelContentProperty> contentPropertyMap =
-                writeContext.currentWriteHolder().excelWriteHeadProperty().getContentPropertyMap();
-            for (Map.Entry<Integer, ExcelContentProperty> entry : contentPropertyMap.entrySet()) {
+            for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
                 int cellIndex = entry.getKey();
-                ExcelContentProperty excelContentProperty = entry.getValue();
-                String name = FieldUtils.resolveCglibFieldName(excelContentProperty.getField());
+                Head head = entry.getValue();
+                String name = head.getFieldName();
                 if (!beanMap.containsKey(name)) {
                     continue;
                 }
-                Head head = headMap.get(cellIndex);
-                WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE);
+                ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(beanMap,
+                    currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), name);
+                WriteHandlerUtils.beforeCellCreate(writeContext, row, head, cellIndex, relativeRowIndex, Boolean.FALSE,
+                    excelContentProperty);
                 Cell cell = WorkBookUtil.createCell(row, cellIndex);
-                WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE);
+                WriteHandlerUtils.afterCellCreate(writeContext, cell, head, relativeRowIndex, Boolean.FALSE,
+                    excelContentProperty);
                 Object value = beanMap.get(name);
-                WriteCellData<?> cellData = converterAndSet(currentWriteHolder,
-                    excelContentProperty.getField().getType(),
+                WriteCellData<?> cellData = converterAndSet(currentWriteHolder, head.getField().getType(),
                     null, cell, value, excelContentProperty, head, relativeRowIndex);
-                WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
+                WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE,
+                    excelContentProperty);
                 beanMapHandledSet.add(name);
                 maxCellIndex = Math.max(maxCellIndex, cellIndex);
             }
@@ -160,21 +168,26 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         initSortedAllFiledMapFieldList(oneRowData.getClass(), sortedAllFiledMap);
         for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {
             Field field = entry.getValue();
-            String filedName = field.getName();
+            String filedName = FieldUtils.resolveCglibFieldName(field);
             boolean uselessData = !beanMap.containsKey(filedName) || beanMapHandledSet.contains(filedName)
                 || ignoreMap.containsKey(filedName);
             if (uselessData) {
                 continue;
             }
             Object value = beanMap.get(filedName);
-            WriteHandlerUtils.beforeCellCreate(writeContext, row, null, maxCellIndex, relativeRowIndex, Boolean.FALSE);
+            ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(beanMap,
+                currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), filedName);
+            WriteHandlerUtils.beforeCellCreate(writeContext, row, null, maxCellIndex, relativeRowIndex, Boolean.FALSE,
+                excelContentProperty);
             // fix https://github.com/alibaba/easyexcel/issues/1870
             // If there is data, it is written to the next cell
             Cell cell = WorkBookUtil.createCell(row, maxCellIndex++);
-            WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE);
+            WriteHandlerUtils.afterCellCreate(writeContext, cell, null, relativeRowIndex, Boolean.FALSE,
+                excelContentProperty);
             WriteCellData<?> cellData = converterAndSet(currentWriteHolder,
                 FieldUtils.getFieldClass(beanMap, filedName, value), null, cell, value, null, null, relativeRowIndex);
-            WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE);
+            WriteHandlerUtils.afterCellDispose(writeContext, cellData, cell, null, relativeRowIndex, Boolean.FALSE,
+                excelContentProperty);
         }
     }
 

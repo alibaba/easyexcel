@@ -21,7 +21,7 @@ public class FillStyleAnnotatedData {
     @ContentFontStyle(bold = BooleanEnum.TRUE, color = 16)
     private Double number;
     @ContentStyle(fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND, fillForegroundColor = 17)
-    @ContentFontStyle(bold = BooleanEnum.TRUE, color = 18)
+    @ContentFontStyle(bold = BooleanEnum.TRUE, color = 58)
     private Date date;
     @ContentStyle(fillPatternType = FillPatternTypeEnum.SOLID_FOREGROUND, fillForegroundColor = 12)
     @ContentFontStyle(bold = BooleanEnum.TRUE, color = 18)

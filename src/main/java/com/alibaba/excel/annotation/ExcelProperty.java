@@ -54,7 +54,7 @@ public @interface ExcelProperty {
      *
      * @return Converter
      */
-    Class<? extends Converter> converter() default AutoConverter.class;
+    Class<? extends Converter<?>> converter() default AutoConverter.class;
 
     /**
      *

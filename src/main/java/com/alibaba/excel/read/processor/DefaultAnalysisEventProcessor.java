@@ -11,7 +11,6 @@ import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.ReadCellData;
-import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
@@ -118,15 +117,11 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
         Map<Integer, String> dataMap = ConverterUtils.convertToStringMap(cellDataMap, analysisContext);
         ExcelReadHeadProperty excelHeadPropertyData = analysisContext.readSheetHolder().excelReadHeadProperty();
         Map<Integer, Head> headMapData = excelHeadPropertyData.getHeadMap();
-        Map<Integer, ExcelContentProperty> contentPropertyMapData = excelHeadPropertyData.getContentPropertyMap();
         Map<Integer, Head> tmpHeadMap = new HashMap<Integer, Head>(headMapData.size() * 4 / 3 + 1);
-        Map<Integer, ExcelContentProperty> tmpContentPropertyMap =
-            new HashMap<Integer, ExcelContentProperty>(contentPropertyMapData.size() * 4 / 3 + 1);
         for (Map.Entry<Integer, Head> entry : headMapData.entrySet()) {
             Head headData = entry.getValue();
             if (headData.getForceIndex() || !headData.getForceName()) {
                 tmpHeadMap.put(entry.getKey(), headData);
-                tmpContentPropertyMap.put(entry.getKey(), contentPropertyMapData.get(entry.getKey()));
                 continue;
             }
             List<String> headNameList = headData.getHeadNameList();
@@ -146,12 +141,10 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
                 if (headName.equals(headString)) {
                     headData.setColumnIndex(stringKey);
                     tmpHeadMap.put(stringKey, headData);
-                    tmpContentPropertyMap.put(stringKey, contentPropertyMapData.get(entry.getKey()));
                     break;
                 }
             }
         }
         excelHeadPropertyData.setHeadMap(tmpHeadMap);
-        excelHeadPropertyData.setContentPropertyMap(tmpContentPropertyMap);
     }
 }

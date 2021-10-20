@@ -1,5 +1,6 @@
 package com.alibaba.excel.metadata;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,10 @@ public class Head {
     /**
      * It only has values when passed in {@link Sheet#setClazz(Class)} and {@link Table#setClazz(Class)}
      */
+    private Field field;
+    /**
+     * It only has values when passed in {@link Sheet#setClazz(Class)} and {@link Table#setClazz(Class)}
+     */
     private String fieldName;
     /**
      * Head name
@@ -38,10 +43,12 @@ public class Head {
      * Whether to specify a name
      */
     private Boolean forceName;
+
     /**
      * column with
      */
     private ColumnWidthProperty columnWidthProperty;
+
     /**
      * Loop merge
      */
@@ -51,21 +58,14 @@ public class Head {
      */
     private StyleProperty headStyleProperty;
     /**
-     * Content style
-     */
-    private StyleProperty contentStyleProperty;
-    /**
      * Head font
      */
     private FontProperty headFontProperty;
-    /**
-     * Content font
-     */
-    private FontProperty contentFontProperty;
 
-    public Head(Integer columnIndex, String fieldName, List<String> headNameList, Boolean forceIndex,
+    public Head(Integer columnIndex, Field field, String fieldName, List<String> headNameList, Boolean forceIndex,
         Boolean forceName) {
         this.columnIndex = columnIndex;
+        this.field = field;
         this.fieldName = fieldName;
         if (headNameList == null) {
             this.headNameList = new ArrayList<>();
