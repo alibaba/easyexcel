@@ -54,7 +54,6 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
         HeadFontStyle parentHeadFontStyle = headClazz.getAnnotation(HeadFontStyle.class);
 
         for (Map.Entry<Integer, Head> entry : getHeadMap().entrySet()) {
-            Integer index = entry.getKey();
             Head headData = entry.getValue();
             if (headData == null) {
                 throw new IllegalArgumentException(

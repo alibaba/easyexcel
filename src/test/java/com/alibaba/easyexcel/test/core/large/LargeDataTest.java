@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.core.large;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,10 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -25,11 +30,16 @@ public class LargeDataTest {
     private static File fileFill07;
     private static File template07;
     private static File fileCsv;
+    private static File fileWrite07;
+    private static File fileWritePoi07;
+
     private int i = 0;
 
     @BeforeClass
     public static void init() {
         fileFill07 = TestFileUtil.createNewFile("largefill07.xlsx");
+        fileWrite07 = TestFileUtil.createNewFile("large" + File.separator + "fileWrite07.xlsx");
+        fileWritePoi07 = TestFileUtil.createNewFile("large" + File.separator + "fileWritePoi07.xlsx");
         template07 = TestFileUtil.readFile("large" + File.separator + "fill.xlsx");
         fileCsv = TestFileUtil.createNewFile("largefileCsv.csv");
     }
@@ -70,6 +80,39 @@ public class LargeDataTest {
         start = System.currentTimeMillis();
         EasyExcel.read(fileCsv, LargeData.class, new LargeDataListener()).sheet().doRead();
         LOGGER.info("CSV large data total time spent:{}", System.currentTimeMillis() - start);
+    }
+
+    @Test
+    public void t04Write() throws Exception {
+        long start = System.currentTimeMillis();
+        ExcelWriter excelWriter = EasyExcel.write(fileWrite07).build();
+        WriteSheet writeSheet = EasyExcel.writerSheet().build();
+        for (int j = 0; j < 100; j++) {
+            excelWriter.write(data(), writeSheet);
+            LOGGER.info("{} write success.", j);
+        }
+        excelWriter.finish();
+        LOGGER.info("write cost:{}", System.currentTimeMillis() - start);
+        start = System.currentTimeMillis();
+        try (FileOutputStream fileOutputStream = new FileOutputStream(fileWritePoi07)) {
+            SXSSFWorkbook workbook = new SXSSFWorkbook();
+            SXSSFSheet sheet = workbook.createSheet("sheet1");
+            for (int i = 0; i < 100 * 5000; i++) {
+                SXSSFRow row = sheet.createRow(i);
+                for (int j = 0; j < 25; j++) {
+                    SXSSFCell cell = row.createCell(j);
+                    cell.setCellValue("str-" + j + "-" + i);
+                }
+                if (i % 5000 == 0) {
+                    LOGGER.info("{} write success.", i);
+                }
+            }
+            workbook.write(fileOutputStream);
+            workbook.dispose();
+            workbook.close();
+        }
+
+        LOGGER.info("poi write cost:{}", System.currentTimeMillis() - start);
     }
 
     private List<LargeData> data() {

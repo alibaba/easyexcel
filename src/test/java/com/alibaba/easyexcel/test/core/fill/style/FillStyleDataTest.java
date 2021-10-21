@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
-import com.alibaba.easyexcel.test.core.fill.FillData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.metadata.Head;
@@ -72,7 +71,7 @@ public class FillStyleDataTest {
         Assert.assertTrue(cell0.getCellStyle().getFont().getBold());
 
         XSSFCell cell1 = row.getCell(1);
-        Assert.assertEquals("5.2", cell1.getStringCellValue());
+        Assert.assertEquals(5.2, cell1.getNumericCellValue(), 1);
         Assert.assertEquals(0, cell1.getCellStyle().getDataFormat());
         Assert.assertEquals("FF92D050", cell1.getCellStyle().getFillForegroundColorColor().getARGBHex());
         Assert.assertEquals("FF4BACC6", cell1.getCellStyle().getFont().getXSSFColor().getARGBHex());
@@ -126,7 +125,7 @@ public class FillStyleDataTest {
         Assert.assertTrue(cell0.getCellStyle().getFont(workbook).getBold());
 
         HSSFCell cell1 = row.getCell(1);
-        Assert.assertEquals("5.2", cell1.getStringCellValue());
+        Assert.assertEquals(5.2, cell1.getNumericCellValue(), 1);
         Assert.assertEquals(0, cell1.getCellStyle().getDataFormat());
         Assert.assertEquals("9999:CCCC:0", cell1.getCellStyle().getFillForegroundColorColor().getHexString());
         Assert.assertEquals("0:8080:8080", cell1.getCellStyle().getFont(workbook).getHSSFColor(workbook)
@@ -166,7 +165,7 @@ public class FillStyleDataTest {
     }
 
     private void fill(File file, File template) throws Exception {
-        EasyExcel.write(file, FillData.class).withTemplate(template).sheet().doFill(data());
+        EasyExcel.write(file, FillStyleData.class).withTemplate(template).sheet().doFill(data());
     }
 
     @Test

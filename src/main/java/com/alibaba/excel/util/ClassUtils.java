@@ -16,14 +16,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
+import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.ContentStyle;
 import com.alibaba.excel.converters.AutoConverter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.metadata.property.DateTimeFormatProperty;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
@@ -175,6 +179,12 @@ public class ClassUtils {
                     contentFontStyle = parentContentFontStyle;
                 }
                 excelContentProperty.setContentFontProperty(FontProperty.build(contentFontStyle));
+
+                excelContentProperty.setDateTimeFormatProperty(
+                    DateTimeFormatProperty.build(field.getAnnotation(DateTimeFormat.class)));
+                excelContentProperty.setNumberFormatProperty(
+                    NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
+
                 fieldContentMap.put(field.getName(), excelContentProperty);
             }
             return fieldContentMap;

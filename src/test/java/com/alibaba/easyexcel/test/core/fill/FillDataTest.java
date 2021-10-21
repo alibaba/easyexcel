@@ -91,7 +91,7 @@ public class FillDataTest {
     public void t03FillCsv() {
         ExcelGenerateException excelGenerateException = Assert.assertThrows(ExcelGenerateException.class,
             () -> fill(fileCsv, simpleTemplateCsv));
-        Assert.assertEquals("Calling the 'fill' method must use a template.", excelGenerateException.getMessage());
+        Assert.assertEquals("csv cannot use template.", excelGenerateException.getMessage());
     }
 
     @Test

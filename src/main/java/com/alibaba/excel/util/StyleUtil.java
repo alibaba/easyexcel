@@ -142,7 +142,7 @@ public class StyleUtil {
             return null;
         }
         Font font = createFont(workbook, originFont, writeFont);
-        if (writeFont == null) {
+        if (writeFont == null || font == null) {
             return font;
         }
         if (writeFont.getFontName() != null) {
