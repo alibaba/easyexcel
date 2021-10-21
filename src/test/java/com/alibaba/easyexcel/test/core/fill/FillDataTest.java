@@ -216,6 +216,7 @@ public class FillDataTest {
             fillData.setNumber(5.2);
             if (i == 5) {
                 fillData.setName(null);
+                fillData.setNumber(null);
             }
         }
         return list;
