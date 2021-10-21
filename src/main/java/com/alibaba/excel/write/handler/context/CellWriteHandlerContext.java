@@ -5,6 +5,7 @@ import java.util.List;
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
@@ -73,4 +74,8 @@ public class CellWriteHandlerContext {
      * Nullable.It is null in the case of fill data.
      */
     private Boolean head;
+    /**
+     * Field annotation configuration information.
+     */
+    private ExcelContentProperty excelContentProperty;
 }

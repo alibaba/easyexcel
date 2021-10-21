@@ -22,11 +22,12 @@ public class UnCamelDataListener extends AnalysisEventListener<UnCamelData> {
     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
         log.debug("Head is:{}", JSON.toJSONString(headMap));
         Assert.assertEquals(headMap.get(0), "string1");
-        Assert.assertEquals(headMap.get(1), "String2");
-        Assert.assertEquals(headMap.get(2), "sTring3");
+        Assert.assertEquals(headMap.get(1), "string2");
+        Assert.assertEquals(headMap.get(2), "STring3");
         Assert.assertEquals(headMap.get(3), "STring4");
         Assert.assertEquals(headMap.get(4), "STRING5");
         Assert.assertEquals(headMap.get(5), "STRing6");
+
     }
 
     @Override

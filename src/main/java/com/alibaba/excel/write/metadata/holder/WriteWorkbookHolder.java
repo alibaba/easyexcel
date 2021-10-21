@@ -24,11 +24,14 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -37,6 +40,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author Jiaju Zhuang
  */
 @Data
+@Slf4j
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
      * Current poi Workbook.This is only for writing, and there may be no data in version 07 when template data needs to
@@ -129,7 +133,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     /**
      * Used to cell style.
      */
-    private Map<WriteCellStyle, CellStyle> cellStyleMap;
+    private Map<Short, Map<WriteCellStyle, CellStyle>> cellStyleIndexMap;
     /**
      * Used to font.
      */
@@ -206,7 +210,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.writeExcelOnException = writeWorkbook.getWriteExcelOnException();
         }
-        this.cellStyleMap = MapUtils.newHashMap();
+        this.cellStyleIndexMap = MapUtils.newHashMap();
         this.fontMap = MapUtils.newHashMap();
         this.dataFormatMap = MapUtils.newHashMap();
     }
@@ -242,17 +246,48 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * create a cell style.
      *
      * @param writeCellStyle
+     * @param originCellStyle
      * @return
      */
-    public CellStyle createCellStyle(WriteCellStyle writeCellStyle) {
-        CellStyle cellStyle = cellStyleMap.get(writeCellStyle);
+    public CellStyle createCellStyle(WriteCellStyle writeCellStyle, CellStyle originCellStyle) {
+        if (writeCellStyle == null) {
+            return originCellStyle;
+        }
+        WriteCellStyle tempWriteCellStyle = new WriteCellStyle();
+        WriteCellStyle.merge(writeCellStyle, tempWriteCellStyle);
+
+        short styleIndex = -1;
+        Font originFont = null;
+        boolean useCache = true;
+        if (originCellStyle != null) {
+            styleIndex = originCellStyle.getIndex();
+            if (originCellStyle instanceof XSSFCellStyle) {
+                originFont = ((XSSFCellStyle)originCellStyle).getFont();
+            } else if (originCellStyle instanceof HSSFCellStyle) {
+                originFont = ((HSSFCellStyle)originCellStyle).getFont(workbook);
+            }
+            useCache = false;
+        }
+
+        Map<WriteCellStyle, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
+            key -> MapUtils.newHashMap());
+        CellStyle cellStyle = cellStyleMap.get(tempWriteCellStyle);
         if (cellStyle != null) {
             return cellStyle;
         }
-        cellStyle = StyleUtil.buildCellStyle(workbook, writeCellStyle);
-        cellStyle.setDataFormat(createDataFormat(writeCellStyle.getDataFormatData()));
-        cellStyle.setFont(createFont(writeCellStyle.getWriteFont()));
-        cellStyleMap.put(writeCellStyle, cellStyle);
+        if (log.isDebugEnabled()) {
+            log.info("create new style:{},{}", tempWriteCellStyle, originCellStyle);
+        }
+        cellStyle = StyleUtil.buildCellStyle(workbook, originCellStyle, writeCellStyle);
+        Short dataFormat = createDataFormat(tempWriteCellStyle.getDataFormatData(), useCache);
+        if (dataFormat != null) {
+            cellStyle.setDataFormat(dataFormat);
+        }
+        Font font = createFont(tempWriteCellStyle.getWriteFont(), originFont, useCache);
+        if (font != null) {
+            cellStyle.setFont(font);
+        }
+        cellStyleMap.put(tempWriteCellStyle, cellStyle);
         return cellStyle;
     }
 
@@ -260,15 +295,23 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * create a font.
      *
      * @param writeFont
+     * @param originFont
+     * @param useCache
      * @return
      */
-    public Font createFont(WriteFont writeFont) {
-        Font font = fontMap.get(writeFont);
+    public Font createFont(WriteFont writeFont, Font originFont, boolean useCache) {
+        if (!useCache) {
+            return StyleUtil.buildFont(workbook, originFont, writeFont);
+        }
+        WriteFont tempWriteFont = new WriteFont();
+        WriteFont.merge(writeFont, tempWriteFont);
+
+        Font font = fontMap.get(tempWriteFont);
         if (font != null) {
             return font;
         }
-        font = StyleUtil.buildFont(workbook, writeFont);
-        fontMap.put(writeFont, font);
+        font = StyleUtil.buildFont(workbook, originFont, tempWriteFont);
+        fontMap.put(tempWriteFont, font);
         return font;
     }
 
@@ -276,15 +319,25 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * create a data format.
      *
      * @param dataFormatData
+     * @param useCache
      * @return
      */
-    public Short createDataFormat(DataFormatData dataFormatData) {
-        Short dataFormat = dataFormatMap.get(dataFormatData);
+    public Short createDataFormat(DataFormatData dataFormatData, boolean useCache) {
+        if (dataFormatData == null) {
+            return null;
+        }
+        if (!useCache) {
+            return StyleUtil.buildDataFormat(workbook, dataFormatData);
+        }
+        DataFormatData tempDataFormatData = new DataFormatData();
+        DataFormatData.merge(dataFormatData, tempDataFormatData);
+
+        Short dataFormat = dataFormatMap.get(tempDataFormatData);
         if (dataFormat != null) {
             return dataFormat;
         }
-        dataFormat = StyleUtil.buildDataFormat(workbook, dataFormatData);
-        dataFormatMap.put(dataFormatData, dataFormat);
+        dataFormat = StyleUtil.buildDataFormat(workbook, tempDataFormatData);
+        dataFormatMap.put(tempDataFormatData, dataFormat);
         return dataFormat;
     }
 

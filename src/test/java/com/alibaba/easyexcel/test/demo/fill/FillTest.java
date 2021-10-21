@@ -233,6 +233,7 @@ public class FillTest {
             list.add(fillData);
             fillData.setName("张三");
             fillData.setNumber(5.2);
+            fillData.setDate(new Date());
         }
         return list;
     }

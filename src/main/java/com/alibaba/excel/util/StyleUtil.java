@@ -10,8 +10,10 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.common.usermodel.HyperlinkType;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
@@ -19,11 +21,14 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.Units;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
 /**
  * @author jipengfei
  */
+@Slf4j
 public class StyleUtil {
 
     private StyleUtil() {}
@@ -32,11 +37,16 @@ public class StyleUtil {
      * Build  cell style
      *
      * @param workbook
+     * @param originCellStyle
      * @param writeCellStyle
      * @return
      */
-    public static CellStyle buildCellStyle(Workbook workbook, WriteCellStyle writeCellStyle) {
+    public static CellStyle buildCellStyle(Workbook workbook, CellStyle originCellStyle,
+        WriteCellStyle writeCellStyle) {
         CellStyle cellStyle = workbook.createCellStyle();
+        if (originCellStyle != null) {
+            cellStyle.cloneStyleFrom(originCellStyle);
+        }
         if (writeCellStyle == null) {
             return cellStyle;
         }
@@ -115,14 +125,23 @@ public class StyleUtil {
             return dataFormatData.getIndex();
         }
         if (StringUtils.isNotBlank(dataFormatData.getFormat())) {
+            if (log.isDebugEnabled()) {
+                log.info("create new data fromat:{}", dataFormatData);
+            }
             DataFormat dataFormatCreate = workbook.createDataFormat();
             return dataFormatCreate.getFormat(dataFormatData.getFormat());
         }
         return BuiltinFormats.GENERAL;
     }
 
-    public static Font buildFont(Workbook workbook, WriteFont writeFont) {
-        Font font = workbook.createFont();
+    public static Font buildFont(Workbook workbook, Font originFont, WriteFont writeFont) {
+        if (log.isDebugEnabled()) {
+            log.info("create new font:{},{}", writeFont, originFont);
+        }
+        if (writeFont == null && originFont == null) {
+            return null;
+        }
+        Font font = createFont(workbook, originFont, writeFont);
         if (writeFont == null || font == null) {
             return font;
         }
@@ -156,6 +175,44 @@ public class StyleUtil {
         return font;
     }
 
+    private static Font createFont(Workbook workbook, Font originFont, WriteFont writeFont) {
+        Font font = workbook.createFont();
+        if (originFont == null) {
+            return font;
+        }
+        if (originFont instanceof XSSFFont) {
+            XSSFFont xssfFont = (XSSFFont)font;
+            XSSFFont xssfOriginFont = ((XSSFFont)originFont);
+            xssfFont.setFontName(xssfOriginFont.getFontName());
+            xssfFont.setFontHeightInPoints(xssfOriginFont.getFontHeightInPoints());
+            xssfFont.setItalic(xssfOriginFont.getItalic());
+            xssfFont.setStrikeout(xssfOriginFont.getStrikeout());
+            // Colors cannot be overwritten
+            if (writeFont == null || writeFont.getColor() == null) {
+                xssfFont.setColor(new XSSFColor(xssfOriginFont.getXSSFColor().getRGB(), null));
+            }
+            xssfFont.setTypeOffset(xssfOriginFont.getTypeOffset());
+            xssfFont.setUnderline(xssfOriginFont.getUnderline());
+            xssfFont.setCharSet(xssfOriginFont.getCharSet());
+            xssfFont.setBold(xssfOriginFont.getBold());
+            return xssfFont;
+        } else if (originFont instanceof HSSFFont) {
+            HSSFFont hssfFont = (HSSFFont)font;
+            HSSFFont hssfOriginFont = (HSSFFont)originFont;
+            hssfFont.setFontName(hssfOriginFont.getFontName());
+            hssfFont.setFontHeightInPoints(hssfOriginFont.getFontHeightInPoints());
+            hssfFont.setItalic(hssfOriginFont.getItalic());
+            hssfFont.setStrikeout(hssfOriginFont.getStrikeout());
+            hssfFont.setColor(hssfOriginFont.getColor());
+            hssfFont.setTypeOffset(hssfOriginFont.getTypeOffset());
+            hssfFont.setUnderline(hssfOriginFont.getUnderline());
+            hssfFont.setCharSet(hssfOriginFont.getCharSet());
+            hssfFont.setBold(hssfOriginFont.getBold());
+            return hssfFont;
+        }
+        return font;
+    }
+
     public static RichTextString buildRichTextString(WriteWorkbookHolder writeWorkbookHolder,
         RichTextStringData richTextStringData) {
         if (richTextStringData == null) {
@@ -168,12 +225,12 @@ public class StyleUtil {
             richTextString = new HSSFRichTextString(richTextStringData.getTextString());
         }
         if (richTextStringData.getWriteFont() != null) {
-            richTextString.applyFont(writeWorkbookHolder.createFont(richTextStringData.getWriteFont()));
+            richTextString.applyFont(writeWorkbookHolder.createFont(richTextStringData.getWriteFont(), null, true));
         }
         if (CollectionUtils.isNotEmpty(richTextStringData.getIntervalFontList())) {
             for (IntervalFont intervalFont : richTextStringData.getIntervalFontList()) {
                 richTextString.applyFont(intervalFont.getStartIndex(), intervalFont.getEndIndex(),
-                    writeWorkbookHolder.createFont(intervalFont.getWriteFont()));
+                    writeWorkbookHolder.createFont(intervalFont.getWriteFont(), null, true));
             }
         }
         return richTextString;

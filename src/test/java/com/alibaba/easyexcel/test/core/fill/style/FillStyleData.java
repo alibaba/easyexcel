@@ -1,4 +1,4 @@
-package com.alibaba.easyexcel.test.demo.fill;
+package com.alibaba.easyexcel.test.core.fill.style;
 
 import java.util.Date;
 
@@ -8,9 +8,9 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
-public class FillData {
+public class FillStyleData {
     private String name;
-    private double number;
+    private Double number;
     private Date date;
-
+    private String empty;
 }

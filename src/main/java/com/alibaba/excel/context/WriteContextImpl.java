@@ -10,7 +10,9 @@ import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
@@ -244,17 +246,21 @@ public class WriteContextImpl implements WriteContext {
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Head head = entry.getValue();
             int columnIndex = entry.getKey();
-            WriteHandlerUtils.beforeCellCreate(this, row, head, columnIndex, relativeRowIndex, Boolean.TRUE);
+            ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(null,
+                currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), head.getFieldName());
+
+            WriteHandlerUtils.beforeCellCreate(this, row, head, columnIndex, relativeRowIndex, Boolean.TRUE,
+                excelContentProperty);
 
             Cell cell = row.createCell(columnIndex);
 
-            WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE, excelContentProperty);
 
             WriteCellData<String> writeCellData = new WriteCellData<>(head.getHeadNameList().get(relativeRowIndex));
             cell.setCellValue(writeCellData.getStringValue());
 
-            WriteHandlerUtils.afterCellDispose(this, writeCellData, cell, head, relativeRowIndex,
-                Boolean.TRUE);
+            WriteHandlerUtils.afterCellDispose(this, writeCellData, cell, head, relativeRowIndex, Boolean.TRUE,
+                excelContentProperty);
         }
     }
 

@@ -23,12 +23,10 @@ import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -51,14 +49,15 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
     protected WriteCellData<?> converterAndSet(WriteHolder currentWriteHolder, Class<?> clazz,
         CellDataTypeEnum targetType, Cell cell, Object value, ExcelContentProperty excelContentProperty, Head head,
-        Integer relativeRowIndex) {
+        Integer relativeRowIndex, int rowIndex, int columnIndex) {
         boolean needTrim = value != null && (value instanceof String && currentWriteHolder.globalConfiguration()
             .getAutoTrim());
         if (needTrim) {
             value = ((String)value).trim();
         }
         WriteCellData<?> cellData = convert(currentWriteHolder, clazz, targetType, cell, value, excelContentProperty);
-        WriteHandlerUtils.afterCellDataConverted(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE);
+        WriteHandlerUtils.afterCellDataConverted(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE,
+            excelContentProperty);
 
         // Fill in picture information
         fillImage(cell, cellData.getImageDataList());
@@ -72,12 +71,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         // Fill in formula information
         fillFormula(cell, cellData.getFormulaData());
 
-        // Fill in style information
-        fillStyle(cell, cellData.getWriteCellStyle());
-
         // Fill index
-        cellData.setRowIndex(cell.getRowIndex());
-        cellData.setColumnIndex(cell.getColumnIndex());
+        cellData.setRowIndex(rowIndex);
+        cellData.setColumnIndex(columnIndex);
 
         if (cellData.getType() == null) {
             cellData.setType(CellDataTypeEnum.EMPTY);
@@ -107,14 +103,6 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                     + "at row:" + cell.getRow().getRowNum());
         }
 
-    }
-
-    private void fillStyle(Cell cell, WriteCellStyle writeCellStyle) {
-        if (writeCellStyle == null) {
-            return;
-        }
-        CellStyle cellStyle = writeContext.writeWorkbookHolder().createCellStyle(writeCellStyle);
-        cell.setCellStyle(cellStyle);
     }
 
     private void fillFormula(Cell cell, FormulaData formulaData) {

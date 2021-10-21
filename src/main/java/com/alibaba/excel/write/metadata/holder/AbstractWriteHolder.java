@@ -18,6 +18,7 @@ import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.event.Order;
 import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
@@ -27,6 +28,7 @@ import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteBasicParameter;
@@ -77,6 +79,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      * Whether to automatically merge headers.Default is true.
      */
     private Boolean automaticMergeHead;
+
     /**
      * Ignore the custom columns.
      */
@@ -194,7 +197,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
         if (writeBasicParameter.getCustomConverterList() != null
             && !writeBasicParameter.getCustomConverterList().isEmpty()) {
-            for (Converter converter : writeBasicParameter.getCustomConverterList()) {
+            for (Converter<?> converter : writeBasicParameter.getCustomConverterList()) {
                 getConverterMap().put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
             }
         }
@@ -215,8 +218,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             if (head.getColumnWidthProperty() != null) {
                 hasColumnWidth = true;
             }
-            if (head.getHeadStyleProperty() != null || head.getHeadFontProperty() != null
-                || head.getContentStyleProperty() != null || head.getContentFontProperty() != null) {
+            if (head.getHeadStyleProperty() != null || head.getHeadFontProperty() != null) {
                 hasStyle = true;
             }
             dealLoopMerge(handlerList, head);
@@ -226,9 +228,9 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             dealColumnWidth(handlerList);
         }
 
-        if (hasStyle) {
+        //if (hasStyle) {
             dealStyle(handlerList);
-        }
+        //}
 
         dealRowHigh(handlerList);
         dealOnceAbsoluteMerge(handlerList);
@@ -242,13 +244,17 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             }
 
             @Override
-            protected WriteCellStyle headCellStyle(Head head) {
-                return WriteCellStyle.build(head.getHeadStyleProperty(), head.getHeadFontProperty());
+            protected WriteCellStyle headCellStyle(CellWriteHandlerContext context) {
+                ExcelContentProperty excelContentProperty = context.getExcelContentProperty();
+                return WriteCellStyle.build(excelContentProperty.getContentStyleProperty(),
+                    excelContentProperty.getContentFontProperty());
             }
 
             @Override
-            protected WriteCellStyle contentCellStyle(Head head) {
-                return WriteCellStyle.build(head.getContentStyleProperty(), head.getContentFontProperty());
+            protected WriteCellStyle contentCellStyle(CellWriteHandlerContext context) {
+                ExcelContentProperty excelContentProperty = context.getExcelContentProperty();
+                return WriteCellStyle.build(excelContentProperty.getContentStyleProperty(),
+                    excelContentProperty.getContentFontProperty());
             }
         };
         handlerList.add(styleStrategy);

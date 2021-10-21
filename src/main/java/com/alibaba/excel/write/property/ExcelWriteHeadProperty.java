@@ -7,11 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
-import com.alibaba.excel.annotation.write.style.ContentStyle;
 import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadStyle;
@@ -20,8 +17,6 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
-import com.alibaba.excel.metadata.property.ColumnWidthProperty;
-import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
@@ -29,49 +24,42 @@ import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 
+import lombok.Data;
+
 /**
  * Define the header attribute of excel
  *
  * @author jipengfei
  */
+@Data
 public class ExcelWriteHeadProperty extends ExcelHeadProperty {
 
     private RowHeightProperty headRowHeightProperty;
     private RowHeightProperty contentRowHeightProperty;
     private OnceAbsoluteMergeProperty onceAbsoluteMergeProperty;
 
-    public ExcelWriteHeadProperty(Holder holder, Class headClazz, List<List<String>> head) {
+    public ExcelWriteHeadProperty(Holder holder, Class<?> headClazz, List<List<String>> head) {
         super(holder, headClazz, head);
         if (getHeadKind() != HeadKindEnum.CLASS) {
             return;
         }
         this.headRowHeightProperty =
-            RowHeightProperty.build((HeadRowHeight)headClazz.getAnnotation(HeadRowHeight.class));
+            RowHeightProperty.build(headClazz.getAnnotation(HeadRowHeight.class));
         this.contentRowHeightProperty =
-            RowHeightProperty.build((ContentRowHeight)headClazz.getAnnotation(ContentRowHeight.class));
+            RowHeightProperty.build(headClazz.getAnnotation(ContentRowHeight.class));
         this.onceAbsoluteMergeProperty =
-            OnceAbsoluteMergeProperty.build((OnceAbsoluteMerge)headClazz.getAnnotation(OnceAbsoluteMerge.class));
+            OnceAbsoluteMergeProperty.build(headClazz.getAnnotation(OnceAbsoluteMerge.class));
 
-        ColumnWidth parentColumnWidth = (ColumnWidth)headClazz.getAnnotation(ColumnWidth.class);
-        HeadStyle parentHeadStyle = (HeadStyle)headClazz.getAnnotation(HeadStyle.class);
-        HeadFontStyle parentHeadFontStyle = (HeadFontStyle)headClazz.getAnnotation(HeadFontStyle.class);
-        ContentStyle parentContentStyle = (ContentStyle)headClazz.getAnnotation(ContentStyle.class);
-        ContentFontStyle parentContentFontStyle = (ContentFontStyle)headClazz.getAnnotation(ContentFontStyle.class);
+        HeadStyle parentHeadStyle = headClazz.getAnnotation(HeadStyle.class);
+        HeadFontStyle parentHeadFontStyle = headClazz.getAnnotation(HeadFontStyle.class);
 
-        for (Map.Entry<Integer, ExcelContentProperty> entry : getContentPropertyMap().entrySet()) {
-            Integer index = entry.getKey();
-            ExcelContentProperty excelContentPropertyData = entry.getValue();
-            if (excelContentPropertyData == null) {
+        for (Map.Entry<Integer, Head> entry : getHeadMap().entrySet()) {
+            Head headData = entry.getValue();
+            if (headData == null) {
                 throw new IllegalArgumentException(
                     "Passing in the class and list the head, the two must be the same size.");
             }
-            Field field = excelContentPropertyData.getField();
-            Head headData = getHeadMap().get(index);
-            ColumnWidth columnWidth = field.getAnnotation(ColumnWidth.class);
-            if (columnWidth == null) {
-                columnWidth = parentColumnWidth;
-            }
-            headData.setColumnWidthProperty(ColumnWidthProperty.build(columnWidth));
+            Field field = headData.getField();
 
             HeadStyle headStyle = field.getAnnotation(HeadStyle.class);
             if (headStyle == null) {
@@ -85,44 +73,8 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             }
             headData.setHeadFontProperty(FontProperty.build(headFontStyle));
 
-            ContentStyle contentStyle = field.getAnnotation(ContentStyle.class);
-            if (contentStyle == null) {
-                contentStyle = parentContentStyle;
-            }
-            headData.setContentStyleProperty(StyleProperty.build(contentStyle));
-
-            ContentFontStyle contentFontStyle = field.getAnnotation(ContentFontStyle.class);
-            if (contentFontStyle == null) {
-                contentFontStyle = parentContentFontStyle;
-            }
-            headData.setContentFontProperty(FontProperty.build(contentFontStyle));
-
             headData.setLoopMergeProperty(LoopMergeProperty.build(field.getAnnotation(ContentLoopMerge.class)));
         }
-    }
-
-    public RowHeightProperty getHeadRowHeightProperty() {
-        return headRowHeightProperty;
-    }
-
-    public void setHeadRowHeightProperty(RowHeightProperty headRowHeightProperty) {
-        this.headRowHeightProperty = headRowHeightProperty;
-    }
-
-    public RowHeightProperty getContentRowHeightProperty() {
-        return contentRowHeightProperty;
-    }
-
-    public void setContentRowHeightProperty(RowHeightProperty contentRowHeightProperty) {
-        this.contentRowHeightProperty = contentRowHeightProperty;
-    }
-
-    public OnceAbsoluteMergeProperty getOnceAbsoluteMergeProperty() {
-        return onceAbsoluteMergeProperty;
-    }
-
-    public void setOnceAbsoluteMergeProperty(OnceAbsoluteMergeProperty onceAbsoluteMergeProperty) {
-        this.onceAbsoluteMergeProperty = onceAbsoluteMergeProperty;
     }
 
     /**

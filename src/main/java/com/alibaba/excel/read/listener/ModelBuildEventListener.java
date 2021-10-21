@@ -8,14 +8,14 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.ReadCellData;
-import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.BeanMapUtils;
+import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.ConverterUtils;
-import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.MapUtils;
 
+import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -92,22 +92,23 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
         }
         Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();
         Map<String, Object> map = MapUtils.newHashMapWithExpectedSize(headMap.size());
-        Map<Integer, ExcelContentProperty> contentPropertyMap = excelReadHeadProperty.getContentPropertyMap();
+        BeanMap dataMap = BeanMapUtils.create(resultModel);
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Integer index = entry.getKey();
+            Head head = entry.getValue();
+            String fieldName = head.getFieldName();
             if (!cellDataMap.containsKey(index)) {
                 continue;
             }
             ReadCellData<?> cellData = cellDataMap.get(index);
-            ExcelContentProperty excelContentProperty = contentPropertyMap.get(index);
-            Object value = ConverterUtils.convertToJavaObject(cellData, excelContentProperty.getField(),
-                excelContentProperty, readSheetHolder.converterMap(), context,
-                context.readRowHolder().getRowIndex(), index);
+            Object value = ConverterUtils.convertToJavaObject(cellData, head.getField(),
+                ClassUtils.declaredExcelContentProperty(dataMap, readSheetHolder.excelReadHeadProperty().getHeadClazz(),
+                    fieldName), readSheetHolder.converterMap(), context, context.readRowHolder().getRowIndex(), index);
             if (value != null) {
-                map.put(FieldUtils.resolveCglibFieldName(excelContentProperty.getField()), value);
+                map.put(fieldName, value);
             }
         }
-        BeanMapUtils.create(resultModel).putAll(map);
+        dataMap.putAll(map);
         return resultModel;
     }
 

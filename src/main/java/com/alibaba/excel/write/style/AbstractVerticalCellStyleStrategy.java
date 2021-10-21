@@ -18,16 +18,36 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
             return;
         }
         WriteCellData<?> cellData = context.getFirstCellData();
-        WriteCellStyle.merge(headCellStyle(context.getHeadData()), cellData.getOrCreateStyle());
+        WriteCellStyle.merge(headCellStyle(context), cellData.getOrCreateStyle());
     }
 
     @Override
     protected void setContentCellStyle(CellWriteHandlerContext context) {
-        if (stopProcessing(context)) {
+        if (context.getFirstCellData() == null) {
             return;
         }
         WriteCellData<?> cellData = context.getFirstCellData();
         WriteCellStyle.merge(contentCellStyle(context), cellData.getOrCreateStyle());
+    }
+
+    /**
+     * Returns the column width corresponding to each column head
+     *
+     * @param context
+     * @return
+     */
+    protected WriteCellStyle headCellStyle(CellWriteHandlerContext context) {
+        return headCellStyle(context.getHeadData());
+    }
+
+    /**
+     * Returns the column width corresponding to each column head
+     *
+     * @param head Nullable
+     * @return
+     */
+    protected WriteCellStyle headCellStyle(Head head) {
+        return null;
     }
 
     /**
@@ -46,18 +66,8 @@ public abstract class AbstractVerticalCellStyleStrategy extends AbstractCellStyl
      * @param head Nullable
      * @return
      */
-    protected abstract WriteCellStyle headCellStyle(Head head);
-
-    /**
-     * Returns the column width corresponding to each column head
-     *
-     * @param head Nullable
-     * @return
-     */
     protected WriteCellStyle contentCellStyle(Head head) {
-        throw new UnsupportedOperationException(
-            "One of the two methods 'contentCellStyle(Cell cell, Head head, Integer relativeRowIndex)' and "
-                + "'contentCellStyle(Head head)' must be implemented.");
+        return null;
     }
 
     protected boolean stopProcessing(CellWriteHandlerContext context) {

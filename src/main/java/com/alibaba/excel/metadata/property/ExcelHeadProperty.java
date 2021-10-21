@@ -8,15 +8,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.format.DateTimeFormat;
-import com.alibaba.excel.annotation.format.NumberFormat;
-import com.alibaba.excel.converters.AutoConverter;
-import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.HeadKindEnum;
-import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.util.ClassUtils;
+import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
@@ -38,7 +34,7 @@ public class ExcelHeadProperty {
     /**
      * Custom class
      */
-    private Class headClazz;
+    private Class<?> headClazz;
     /**
      * The types of head
      */
@@ -52,23 +48,13 @@ public class ExcelHeadProperty {
      */
     private Map<Integer, Head> headMap;
     /**
-     * Configuration column information
-     */
-    private Map<Integer, ExcelContentProperty> contentPropertyMap;
-    /**
-     * Configuration column information
-     */
-    private Map<String, ExcelContentProperty> fieldNameContentPropertyMap;
-    /**
      * Fields ignored
      */
     private Map<String, Field> ignoreMap;
 
-    public ExcelHeadProperty(Holder holder, Class headClazz, List<List<String>> head) {
+    public ExcelHeadProperty(Holder holder, Class<?> headClazz, List<List<String>> head) {
         this.headClazz = headClazz;
         headMap = new TreeMap<>();
-        contentPropertyMap = new TreeMap<>();
-        fieldNameContentPropertyMap = MapUtils.newHashMap();
         ignoreMap = MapUtils.newHashMap();
         headKind = HeadKindEnum.NONE;
         headRowNumber = 0;
@@ -80,8 +66,7 @@ public class ExcelHeadProperty {
                         continue;
                     }
                 }
-                headMap.put(headIndex, new Head(headIndex, null, head.get(i), Boolean.FALSE, Boolean.TRUE));
-                contentPropertyMap.put(headIndex, null);
+                headMap.put(headIndex, new Head(headIndex, null, null, head.get(i), Boolean.FALSE, Boolean.TRUE));
                 headIndex++;
             }
             headKind = HeadKindEnum.STRING;
@@ -148,39 +133,20 @@ public class ExcelHeadProperty {
     private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         List<String> tmpHeadList = new ArrayList<String>();
+        String fieldName = FieldUtils.resolveCglibFieldName(field);
         boolean notForceName = excelProperty == null || excelProperty.value().length <= 0
             || (excelProperty.value().length == 1 && StringUtils.isEmpty((excelProperty.value())[0]));
         if (headMap.containsKey(index)) {
             tmpHeadList.addAll(headMap.get(index).getHeadNameList());
         } else {
             if (notForceName) {
-                tmpHeadList.add(field.getName());
+                tmpHeadList.add(fieldName);
             } else {
                 Collections.addAll(tmpHeadList, excelProperty.value());
             }
         }
-        Head head = new Head(index, field.getName(), tmpHeadList, forceIndex, !notForceName);
-        ExcelContentProperty excelContentProperty = new ExcelContentProperty();
-        if (excelProperty != null) {
-            Class<? extends Converter> convertClazz = excelProperty.converter();
-            if (convertClazz != AutoConverter.class) {
-                try {
-                    Converter converter = convertClazz.newInstance();
-                    excelContentProperty.setConverter(converter);
-                } catch (Exception e) {
-                    throw new ExcelCommonException("Can not instance custom converter:" + convertClazz.getName());
-                }
-            }
-        }
-        excelContentProperty.setHead(head);
-        excelContentProperty.setField(field);
-        excelContentProperty
-            .setDateTimeFormatProperty(DateTimeFormatProperty.build(field.getAnnotation(DateTimeFormat.class)));
-        excelContentProperty
-            .setNumberFormatProperty(NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
+        Head head = new Head(index, field, fieldName, tmpHeadList, forceIndex, !notForceName);
         headMap.put(index, head);
-        contentPropertyMap.put(index, excelContentProperty);
-        fieldNameContentPropertyMap.put(field.getName(), excelContentProperty);
     }
 
     public boolean hasHead() {

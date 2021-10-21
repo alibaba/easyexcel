@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import com.alibaba.excel.metadata.NullObject;
-import com.alibaba.excel.write.metadata.RowData;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -20,19 +19,17 @@ public class FieldUtils {
 
     private static final int START_RESOLVE_FIELD_LENGTH = 2;
 
-    public static Class<?> getFieldClass(Map dataMap, String filedName) {
+    public static Class<?> getFieldClass(Map dataMap, String filedName, Object value) {
         if (dataMap instanceof BeanMap) {
-            return ((BeanMap)dataMap).getPropertyType(filedName);
+            Class<?> fieldClass = ((BeanMap)dataMap).getPropertyType(filedName);
+            if (fieldClass != null) {
+                return fieldClass;
+            }
         }
-        Object value = dataMap.get(filedName);
-        if (value != null) {
-            return value.getClass();
-        }
-        return nullObjectClass;
+        return getFieldClass(value);
     }
 
-    public static Class<?> getFieldClass(RowData rowData, int dataIndex) {
-        Object value = rowData.get(dataIndex);
+    public static Class<?> getFieldClass(Object value) {
         if (value != null) {
             return value.getClass();
         }
