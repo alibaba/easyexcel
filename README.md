@@ -37,6 +37,15 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 * 大版本升级后建议相关内容重新测试下
 * 要升级涉及到
 
+### 最新版本
+```xml
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+```
+
 ## 广告位
 ### 支付宝扫一扫红包
 本项目都是个人业余时间写的，所以比较贫穷。推广下支付宝，赚个建群的费用。有空的同学帮忙扫一扫   
