@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
@@ -134,15 +133,15 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     /**
      * Used to cell style.
      */
-    private Map<Short, Map<String, CellStyle>> cellStyleIndexMap;
+    private Map<Short, Map<WriteCellStyle, CellStyle>> cellStyleIndexMap;
     /**
      * Used to font.
      */
-    private Map<String, Font> fontMap;
+    private Map<WriteFont, Font> fontMap;
     /**
      * Used to data format.
      */
-    private Map<String, Short> dataFormatMap;
+    private Map<DataFormatData, Short> dataFormatMap;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null);
@@ -254,6 +253,8 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (writeCellStyle == null) {
             return originCellStyle;
         }
+        WriteCellStyle tempWriteCellStyle = new WriteCellStyle();
+        WriteCellStyle.merge(writeCellStyle, tempWriteCellStyle);
 
         short styleIndex = -1;
         Font originFont = null;
@@ -268,25 +269,25 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             useCache = false;
         }
 
-        Map<String, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
+        Map<WriteCellStyle, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
             key -> MapUtils.newHashMap());
-        CellStyle cellStyle = cellStyleMap.get(Objects.toString(writeCellStyle));
+        CellStyle cellStyle = cellStyleMap.get(tempWriteCellStyle);
         if (cellStyle != null) {
             return cellStyle;
         }
         if (log.isDebugEnabled()) {
-            log.info("create new style:{},{}", writeCellStyle, originCellStyle);
+            log.info("create new style:{},{}", tempWriteCellStyle, originCellStyle);
         }
         cellStyle = StyleUtil.buildCellStyle(workbook, originCellStyle, writeCellStyle);
-        Short dataFormat = createDataFormat(writeCellStyle.getDataFormatData(), useCache);
+        Short dataFormat = createDataFormat(tempWriteCellStyle.getDataFormatData(), useCache);
         if (dataFormat != null) {
             cellStyle.setDataFormat(dataFormat);
         }
-        Font font = createFont(writeCellStyle.getWriteFont(), originFont, useCache);
+        Font font = createFont(tempWriteCellStyle.getWriteFont(), originFont, useCache);
         if (font != null) {
             cellStyle.setFont(font);
         }
-        cellStyleMap.put(Objects.toString(writeCellStyle), cellStyle);
+        cellStyleMap.put(tempWriteCellStyle, cellStyle);
         return cellStyle;
     }
 
@@ -302,12 +303,15 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (!useCache) {
             return StyleUtil.buildFont(workbook, originFont, writeFont);
         }
-        Font font = fontMap.get(Objects.toString(writeFont));
+        WriteFont tempWriteFont = new WriteFont();
+        WriteFont.merge(writeFont, tempWriteFont);
+
+        Font font = fontMap.get(tempWriteFont);
         if (font != null) {
             return font;
         }
-        font = StyleUtil.buildFont(workbook, originFont, writeFont);
-        fontMap.put(Objects.toString(writeFont), font);
+        font = StyleUtil.buildFont(workbook, originFont, tempWriteFont);
+        fontMap.put(tempWriteFont, font);
         return font;
     }
 
@@ -325,12 +329,15 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (!useCache) {
             return StyleUtil.buildDataFormat(workbook, dataFormatData);
         }
-        Short dataFormat = dataFormatMap.get(Objects.toString(dataFormatData));
+        DataFormatData tempDataFormatData = new DataFormatData();
+        DataFormatData.merge(dataFormatData, tempDataFormatData);
+
+        Short dataFormat = dataFormatMap.get(tempDataFormatData);
         if (dataFormat != null) {
             return dataFormat;
         }
-        dataFormat = StyleUtil.buildDataFormat(workbook, dataFormatData);
-        dataFormatMap.put(Objects.toString(dataFormatData), dataFormat);
+        dataFormat = StyleUtil.buildDataFormat(workbook, tempDataFormatData);
+        dataFormatMap.put(tempDataFormatData, dataFormat);
         return dataFormat;
     }
 
