@@ -203,7 +203,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
                 WriteCellData<?> cellData = converterAndSet(writeSheetHolder,
                     FieldUtils.getFieldClass(dataMap, variable, value), null, cell, value, excelContentProperty, null,
-                    relativeRowIndex);
+                    relativeRowIndex, analysisCell.getRowIndex(), analysisCell.getColumnIndex());
                 cellData.setAnalysisCell(analysisCell);
 
                 // Restyle

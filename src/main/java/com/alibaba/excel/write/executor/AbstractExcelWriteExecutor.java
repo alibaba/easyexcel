@@ -49,7 +49,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
     protected WriteCellData<?> converterAndSet(WriteHolder currentWriteHolder, Class<?> clazz,
         CellDataTypeEnum targetType, Cell cell, Object value, ExcelContentProperty excelContentProperty, Head head,
-        Integer relativeRowIndex) {
+        Integer relativeRowIndex, int rowIndex, int columnIndex) {
         boolean needTrim = value != null && (value instanceof String && currentWriteHolder.globalConfiguration()
             .getAutoTrim());
         if (needTrim) {
@@ -72,8 +72,8 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         fillFormula(cell, cellData.getFormulaData());
 
         // Fill index
-        cellData.setRowIndex(cell.getRowIndex());
-        cellData.setColumnIndex(cell.getColumnIndex());
+        cellData.setRowIndex(rowIndex);
+        cellData.setColumnIndex(columnIndex);
 
         if (cellData.getType() == null) {
             cellData.setType(CellDataTypeEnum.EMPTY);
