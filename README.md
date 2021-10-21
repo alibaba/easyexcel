@@ -35,7 +35,6 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
   * 读的时候`invoke`里面抛出异常，不会再额外封装一层`ExcelAnalysisException` （不会编译报错）
   * 样式等注解涉及到 `boolean` or 一些枚举 值的 有变动，新增默认值（会编译报错，注解改就行）
 * 大版本升级后建议相关内容重新测试下
-* 要升级涉及到
 
 ### 最新版本
 ```xml
