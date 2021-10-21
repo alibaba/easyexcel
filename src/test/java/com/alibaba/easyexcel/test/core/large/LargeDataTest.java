@@ -85,7 +85,7 @@ public class LargeDataTest {
     @Test
     public void t04Write() throws Exception {
         long start = System.currentTimeMillis();
-        ExcelWriter excelWriter = EasyExcel.write(fileWrite07).build();
+        ExcelWriter excelWriter = EasyExcel.write(fileWrite07, LargeData.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
         for (int j = 0; j < 100; j++) {
             excelWriter.write(data(), writeSheet);
