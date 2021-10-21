@@ -14,6 +14,7 @@ import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -92,7 +93,8 @@ public class LargeDataTest {
             LOGGER.info("{} write success.", j);
         }
         excelWriter.finish();
-        LOGGER.info("write cost:{}", System.currentTimeMillis() - start);
+        long cost = System.currentTimeMillis() - start;
+        LOGGER.info("write cost:{}", cost);
         start = System.currentTimeMillis();
         try (FileOutputStream fileOutputStream = new FileOutputStream(fileWritePoi07)) {
             SXSSFWorkbook workbook = new SXSSFWorkbook();
@@ -111,8 +113,9 @@ public class LargeDataTest {
             workbook.dispose();
             workbook.close();
         }
-
+        long costPoi = System.currentTimeMillis() - start;
         LOGGER.info("poi write cost:{}", System.currentTimeMillis() - start);
+        Assert.assertTrue(costPoi * 3 > cost);
     }
 
     private List<LargeData> data() {
