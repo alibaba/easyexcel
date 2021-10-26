@@ -5,6 +5,7 @@ import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
+import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +39,8 @@ public class FillStyleCellWriteHandler implements CellWriteHandler {
         if (writeCellStyle == null && originCellStyle == null) {
             return;
         }
-        //WriteWorkbookHolder writeWorkbookHolder = context.getWriteWorkbookHolder();
-        //context.getCell().setCellStyle(writeWorkbookHolder.createCellStyle(writeCellStyle, originCellStyle));
+        WriteWorkbookHolder writeWorkbookHolder = context.getWriteWorkbookHolder();
+        context.getCell().setCellStyle(writeWorkbookHolder.createCellStyle(writeCellStyle, originCellStyle));
     }
 
 }
