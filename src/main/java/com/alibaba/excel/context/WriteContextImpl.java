@@ -228,9 +228,9 @@ public class WriteContextImpl implements WriteContext {
             + newRowIndex; i++, relativeRowIndex++) {
             WriteHandlerUtils.beforeRowCreate(this, newRowIndex, relativeRowIndex, Boolean.TRUE);
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
-            WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.afterRowCreate(this, row, i, relativeRowIndex, Boolean.TRUE);
             addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
-            WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.afterRowDispose(this, row, i, relativeRowIndex, Boolean.TRUE);
         }
     }
 
@@ -254,13 +254,14 @@ public class WriteContextImpl implements WriteContext {
 
             Cell cell = row.createCell(columnIndex);
 
-            WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE, excelContentProperty);
+            WriteHandlerUtils.afterCellCreate(this, cell, row, head, columnIndex, relativeRowIndex, Boolean.TRUE,
+                excelContentProperty);
 
             WriteCellData<String> writeCellData = new WriteCellData<>(head.getHeadNameList().get(relativeRowIndex));
             cell.setCellValue(writeCellData.getStringValue());
 
-            WriteHandlerUtils.afterCellDispose(this, writeCellData, cell, head, relativeRowIndex, Boolean.TRUE,
-                excelContentProperty);
+            WriteHandlerUtils.afterCellDispose(this, writeCellData, cell, row, head, columnIndex, relativeRowIndex,
+                Boolean.TRUE, excelContentProperty);
         }
     }
 

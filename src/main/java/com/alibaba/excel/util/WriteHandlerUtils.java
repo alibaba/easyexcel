@@ -133,16 +133,16 @@ public class WriteHandlerUtils {
         }
     }
 
-    public static void afterCellCreate(WriteContext writeContext, Cell cell, Head head, Integer relativeRowIndex,
-        Boolean isHead, ExcelContentProperty excelContentProperty) {
+    public static void afterCellCreate(WriteContext writeContext, Cell cell, Row row, Head head,
+        Integer columnIndex, Integer relativeRowIndex, Boolean isHead, ExcelContentProperty excelContentProperty) {
         List<WriteHandler> handlerList =
             writeContext.currentWriteHolder().writeHandlerMap().get(CellWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         CellWriteHandlerContext context = new CellWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
-            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), cell.getRow(), cell,
-            cell.getColumnIndex(), relativeRowIndex, head, null, null, isHead, excelContentProperty);
+            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), row, cell, columnIndex, relativeRowIndex,
+            head, null, null, isHead, excelContentProperty);
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
                 ((CellWriteHandler)writeHandler).afterCellCreate(context);
@@ -150,8 +150,9 @@ public class WriteHandlerUtils {
         }
     }
 
-    public static void afterCellDataConverted(WriteContext writeContext, WriteCellData<?> cellData, Cell cell,
-        Head head, Integer relativeRowIndex, Boolean isHead, ExcelContentProperty excelContentProperty) {
+    public static void afterCellDataConverted(WriteContext writeContext, WriteCellData<?> cellData, Cell cell, Row row,
+        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead,
+        ExcelContentProperty excelContentProperty) {
         List<WriteHandler> handlerList =
             writeContext.currentWriteHolder().writeHandlerMap().get(CellWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
@@ -159,8 +160,8 @@ public class WriteHandlerUtils {
         }
         List<WriteCellData<?>> cellDataList = cellData == null ? null : ListUtils.newArrayList(cellData);
         CellWriteHandlerContext context = new CellWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
-            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), cell.getRow(), cell,
-            cell.getColumnIndex(), relativeRowIndex, head, cellDataList, cellData, isHead, excelContentProperty);
+            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), row, cell,
+            columnIndex, relativeRowIndex, head, cellDataList, cellData, isHead, excelContentProperty);
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
                 ((CellWriteHandler)writeHandler).afterCellDataConverted(context);
@@ -168,14 +169,17 @@ public class WriteHandlerUtils {
         }
     }
 
-    public static void afterCellDispose(WriteContext writeContext, WriteCellData<?> cellData, Cell cell, Head head,
-        Integer relativeRowIndex, Boolean isHead, ExcelContentProperty excelContentProperty) {
+    public static void afterCellDispose(WriteContext writeContext, WriteCellData<?> cellData, Cell cell, Row row,
+        Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead,
+        ExcelContentProperty excelContentProperty) {
         List<WriteCellData<?>> cellDataList = cellData == null ? null : ListUtils.newArrayList(cellData);
-        afterCellDispose(writeContext, cellDataList, cell, head, relativeRowIndex, isHead, excelContentProperty);
+        afterCellDispose(writeContext, cellDataList, cell, row, head, columnIndex, relativeRowIndex, isHead,
+            excelContentProperty);
     }
 
     public static void afterCellDispose(WriteContext writeContext, List<WriteCellData<?>> cellDataList, Cell cell,
-        Head head, Integer relativeRowIndex, Boolean isHead, ExcelContentProperty excelContentProperty) {
+        Row row, Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead,
+        ExcelContentProperty excelContentProperty) {
         List<WriteHandler> handlerList =
             writeContext.currentWriteHolder().writeHandlerMap().get(CellWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
@@ -186,8 +190,8 @@ public class WriteHandlerUtils {
             cellData = cellDataList.get(0);
         }
         CellWriteHandlerContext context = new CellWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
-            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), cell.getRow(), cell,
-            cell.getColumnIndex(), relativeRowIndex, head, cellDataList, cellData, isHead, excelContentProperty);
+            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), row, cell, columnIndex, relativeRowIndex,
+            head, cellDataList, cellData, isHead, excelContentProperty);
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof CellWriteHandler) {
                 ((CellWriteHandler)writeHandler).afterCellDispose(context);
@@ -210,13 +214,14 @@ public class WriteHandlerUtils {
         }
     }
 
-    public static void afterRowCreate(WriteContext writeContext, Row row, Integer relativeRowIndex, Boolean isHead) {
+    public static void afterRowCreate(WriteContext writeContext, Row row, Integer rowIndex, Integer relativeRowIndex,
+        Boolean isHead) {
         List<WriteHandler> handlerList = writeContext.currentWriteHolder().writeHandlerMap().get(RowWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         RowWriteHandlerContext context = new RowWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
-            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), row.getRowNum(), row, relativeRowIndex,
+            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), rowIndex, row, relativeRowIndex,
             isHead);
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
@@ -225,14 +230,14 @@ public class WriteHandlerUtils {
         }
     }
 
-    public static void afterRowDispose(WriteContext writeContext, Row row, Integer relativeRowIndex, Boolean isHead) {
+    public static void afterRowDispose(WriteContext writeContext, Row row, Integer rowIndex, Integer relativeRowIndex,
+        Boolean isHead) {
         List<WriteHandler> handlerList = writeContext.currentWriteHolder().writeHandlerMap().get(RowWriteHandler.class);
         if (handlerList == null || handlerList.isEmpty()) {
             return;
         }
         RowWriteHandlerContext context = new RowWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
-            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), row.getRowNum(), row, relativeRowIndex,
-            isHead);
+            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), rowIndex, row, relativeRowIndex, isHead);
         for (WriteHandler writeHandler : handlerList) {
             if (writeHandler instanceof RowWriteHandler) {
                 ((RowWriteHandler)writeHandler).afterRowDispose(context);

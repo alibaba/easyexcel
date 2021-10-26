@@ -1,3 +1,6 @@
+# 3.0.2
+* 修复写入的性能问题
+
 # 3.0.1
 * 升级到正式版
 * 修复填充样式可能丢失的问题 [Issue #2124](https://github.com/alibaba/easyexcel/issues/2124)

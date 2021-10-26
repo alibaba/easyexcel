@@ -32,6 +32,7 @@ import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Hyperlink;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 
@@ -48,16 +49,16 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
     }
 
     protected WriteCellData<?> converterAndSet(WriteHolder currentWriteHolder, Class<?> clazz,
-        CellDataTypeEnum targetType, Cell cell, Object value, ExcelContentProperty excelContentProperty, Head head,
-        Integer relativeRowIndex, int rowIndex, int columnIndex) {
+        CellDataTypeEnum targetType, Cell cell, Row row, Object value, ExcelContentProperty excelContentProperty,
+        Head head, Integer relativeRowIndex, int rowIndex, int columnIndex) {
         boolean needTrim = value != null && (value instanceof String && currentWriteHolder.globalConfiguration()
             .getAutoTrim());
         if (needTrim) {
             value = ((String)value).trim();
         }
         WriteCellData<?> cellData = convert(currentWriteHolder, clazz, targetType, cell, value, excelContentProperty);
-        WriteHandlerUtils.afterCellDataConverted(writeContext, cellData, cell, head, relativeRowIndex, Boolean.FALSE,
-            excelContentProperty);
+        WriteHandlerUtils.afterCellDataConverted(writeContext, cellData, cell, row, head, columnIndex, relativeRowIndex,
+            Boolean.FALSE, excelContentProperty);
 
         // Fill in picture information
         fillImage(cell, cellData.getImageDataList());
