@@ -32,7 +32,7 @@ public class ExcelDataConvertException extends RuntimeException {
      */
     private ExcelContentProperty excelContentProperty;
 
-    public ExcelDataConvertException(Integer rowIndex, Integer columnIndex, CellData cellData,
+    public ExcelDataConvertException(Integer rowIndex, Integer columnIndex, CellData<?> cellData,
         ExcelContentProperty excelContentProperty, String message) {
         super(message);
         this.rowIndex = rowIndex;
@@ -41,7 +41,7 @@ public class ExcelDataConvertException extends RuntimeException {
         this.excelContentProperty = excelContentProperty;
     }
 
-    public ExcelDataConvertException(Integer rowIndex, Integer columnIndex, CellData cellData,
+    public ExcelDataConvertException(Integer rowIndex, Integer columnIndex, CellData<?> cellData,
         ExcelContentProperty excelContentProperty, String message, Throwable cause) {
         super(message, cause);
         this.rowIndex = rowIndex;

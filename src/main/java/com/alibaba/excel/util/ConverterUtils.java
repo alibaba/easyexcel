@@ -8,6 +8,7 @@ import java.util.Map;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.converters.ConverterKeyBuild.ConverterKey;
 import com.alibaba.excel.converters.NullableObjectConverter;
 import com.alibaba.excel.converters.ReadConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -80,7 +81,7 @@ public class ConverterUtils {
      * @return
      */
     public static Object convertToJavaObject(ReadCellData<?> cellData, Field field,
-        ExcelContentProperty contentProperty, Map<String, Converter<?>> converterMap, AnalysisContext context,
+        ExcelContentProperty contentProperty, Map<ConverterKey, Converter<?>> converterMap, AnalysisContext context,
         Integer rowIndex, Integer columnIndex) {
         Class<?> clazz;
         if (field == null) {
@@ -126,7 +127,7 @@ public class ConverterUtils {
      * @return
      */
     private static Object doConvertToJavaObject(ReadCellData<?> cellData, Class<?> clazz,
-        ExcelContentProperty contentProperty, Map<String, Converter<?>> converterMap, AnalysisContext context,
+        ExcelContentProperty contentProperty, Map<ConverterKey, Converter<?>> converterMap, AnalysisContext context,
         Integer rowIndex, Integer columnIndex) {
         Converter<?> converter = null;
         if (contentProperty != null) {
