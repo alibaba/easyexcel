@@ -17,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
  */
 @Data
 public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
+    public static int count=0;
 
     private WriteCellStyle headWriteCellStyle;
     private List<WriteCellStyle> contentWriteCellStyleList;
@@ -67,7 +68,7 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     @Override
     public void beforeCellCreate(CellWriteHandlerContext context) {
-
+        //count++;
     }
 
     @Override

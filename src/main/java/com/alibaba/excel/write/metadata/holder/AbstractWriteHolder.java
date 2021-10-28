@@ -22,6 +22,8 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
+import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.write.handler.CellHandlerExecutionChain;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.DefaultWriteHandlerLoader;
 import com.alibaba.excel.write.handler.RowWriteHandler;
@@ -66,6 +68,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      * Write handler
      */
     private Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap;
+    /**
+     * Write handler
+     */
+    private Map<Class<? extends WriteHandler>, CellHandlerExecutionChain> writeHandlerMap2;
     /**
      * Own write handler.Created in the sheet in the workbook interceptors will not be executed because the workbook to
      * create an event long past. So when initializing sheet, supplementary workbook event.
@@ -189,6 +195,39 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
         this.writeHandlerMap = sortAndClearUpAllHandler(handlerList, parentWriteHandlerMap);
 
+        List<WriteHandler> cc = writeHandlerMap.get(CellWriteHandler.class);
+        writeHandlerMap2= MapUtils.newHashMap();
+        if (CollectionUtils.isNotEmpty(cc)) {
+            CellHandlerExecutionChain headChain = new CellHandlerExecutionChain(new CellWriteHandler() {
+                @Override
+                public void beforeCellCreate(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellCreate(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellDispose(CellWriteHandlerContext context) {
+
+                }
+            });
+            writeHandlerMap2.put(CellWriteHandler.class, headChain);
+
+            for (WriteHandler writeHandler : cc) {
+                headChain.addLast((CellWriteHandler)writeHandler);
+
+            }
+
+        }
+
         // Set converterMap
         if (parentAbstractWriteHolder == null) {
             setConverterMap(DefaultConverterLoader.loadDefaultWriteConverter());
@@ -275,7 +314,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             }
         };
         //abstractVerticalCellStyleStrategy = styleStrategy;
-        //handlerList.add(abstractVerticalCellStyleStrategy);
+        handlerList.add(abstractVerticalCellStyleStrategy);
     }
 
     private void dealLoopMerge(List<WriteHandler> handlerList, Head head) {
@@ -442,6 +481,11 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     @Override
     public Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap() {
         return getWriteHandlerMap();
+    }
+
+    @Override
+    public Map<Class<? extends WriteHandler>, CellHandlerExecutionChain> writeHandlerMap2() {
+        return getWriteHandlerMap2();
     }
 
     @Override

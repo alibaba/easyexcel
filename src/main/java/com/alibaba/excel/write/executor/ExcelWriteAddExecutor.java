@@ -142,6 +142,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Map<Integer, Field> sortedAllFiledMap) {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
         BeanMap beanMap = BeanMapUtils.create(oneRowData);
+        Set<String> keySet = new HashSet<>(beanMap.keySet());
         Set<String> beanMapHandledSet = new HashSet<>();
         int maxCellIndex = -1;
         // If it's a class it needs to be cast by type
@@ -151,7 +152,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 int columnIndex = entry.getKey();
                 Head head = entry.getValue();
                 String name = head.getFieldName();
-                if (!beanMap.containsKey(name)) {
+                if (!keySet.contains(name)) {
                     continue;
                 }
 

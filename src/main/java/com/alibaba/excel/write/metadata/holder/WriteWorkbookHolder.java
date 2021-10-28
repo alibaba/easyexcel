@@ -43,6 +43,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 @Data
 @Slf4j
 public class WriteWorkbookHolder extends AbstractWriteHolder {
+
+    public static int count = 0;
     /***
      * Current poi Workbook.This is only for writing, and there may be no data in version 07 when template data needs to
      * be read.
@@ -248,6 +250,8 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         return HolderEnum.WORKBOOK;
     }
 
+    private static Map<Integer, CellStyle> map2 = MapUtils.newHashMap();
+
     /**
      * create a cell style.
      *
@@ -259,9 +263,6 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (writeCellStyle == null) {
             return originCellStyle;
         }
-        WriteCellStyle tempWriteCellStyle = new WriteCellStyle();
-        WriteCellStyle.merge(writeCellStyle, tempWriteCellStyle);
-
         short styleIndex = -1;
         Font originFont = null;
         boolean useCache = true;
@@ -274,13 +275,20 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             }
             useCache = false;
         }
-
         Map<WriteCellStyle, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
             key -> MapUtils.newHashMap());
-        CellStyle cellStyle = cellStyleMap.get(tempWriteCellStyle);
+
+        //CellStyle cellStyle = map2.get(writeCellStyle.hashCode());
+        //if (cellStyle != null) {
+        //    return cellStyle;
+        //}
+        CellStyle cellStyle = cellStyleMap.get(writeCellStyle);
+        count++;
         if (cellStyle != null) {
             return cellStyle;
         }
+        WriteCellStyle tempWriteCellStyle = new WriteCellStyle();
+        WriteCellStyle.merge(writeCellStyle, tempWriteCellStyle);
         if (log.isDebugEnabled()) {
             log.info("create new style:{},{}", tempWriteCellStyle, originCellStyle);
         }

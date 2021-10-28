@@ -7,6 +7,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.write.handler.CellHandlerExecutionChain;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.handler.impl.FillStyleCellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
@@ -110,6 +111,12 @@ public class CellWriteHandlerContext {
      * handler
      */
     private List<WriteHandler> handlerList;
+
+    private CellHandlerExecutionChain cellHandlerExecutionChain;
+
+    public CellWriteHandlerContext(){
+
+    }
 
     public CellWriteHandlerContext(WriteContext writeContext,
         WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder,

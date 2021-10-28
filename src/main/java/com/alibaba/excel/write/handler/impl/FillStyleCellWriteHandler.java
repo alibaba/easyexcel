@@ -30,7 +30,7 @@ public class FillStyleCellWriteHandler implements CellWriteHandler {
 
     @Override
     public void beforeCellCreate(CellWriteHandlerContext context) {
-
+        //count++;
     }
 
     @Override

@@ -353,4 +353,7 @@ public class WriteCellStyle {
 
     }
 
+    public int nativeHashCode() {
+        return super.hashCode();
+    }
 }

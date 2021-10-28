@@ -6,6 +6,7 @@ import java.util.Map;
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.write.handler.CellHandlerExecutionChain;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
@@ -16,9 +17,6 @@ import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
 import com.alibaba.excel.write.handler.impl.DefaultRowWriteHandler;
-import com.alibaba.excel.write.handler.impl.FillStyleCellWriteHandler;
-import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
-import com.alibaba.excel.write.style.DefaultStyle;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -151,71 +149,152 @@ public class WriteHandlerUtils {
     public static CellWriteHandlerContext createCellWriteHandlerContext(WriteContext writeContext, Row row,
         Integer rowIndex, Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead,
         ExcelContentProperty excelContentProperty) {
-        List<WriteHandler> handlerList = writeContext.currentWriteHolder().writeHandlerMap().get(
+        CellHandlerExecutionChain heade = writeContext.currentWriteHolder().writeHandlerMap2().get(
             CellWriteHandler.class);
-        return new CellWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
+        CellWriteHandlerContext context = new CellWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
             writeContext.writeSheetHolder(), writeContext.writeTableHolder(), row, rowIndex, null, columnIndex,
-            relativeRowIndex, head, null, null, isHead, excelContentProperty, handlerList);
+            relativeRowIndex, head, null, null, isHead, excelContentProperty,
+            writeContext.currentWriteHolder().writeHandlerMap().get(
+                CellWriteHandler.class));
+        context.setCellHandlerExecutionChain(heade);
+        return context;
     }
 
     public static void beforeCellCreate(CellWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        DefaultStyle.defaultStyle.beforeCellCreate(context);
-        AbstractWriteHolder.abstractVerticalCellStyleStrategy.beforeCellCreate(context);
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            CostUtil.count++;
 
-            for (WriteHandler writeHandler : handlerList) {
+        context.getCellHandlerExecutionChain().beforeCellCreate(context);
 
-                ((CellWriteHandler)writeHandler).beforeCellCreate(context);
-            }
-        }
-        FillStyleCellWriteHandler.fillStyleCellWriteHandler.beforeCellCreate(context);
     }
 
     public static void afterCellCreate(CellWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        DefaultStyle.defaultStyle.afterCellCreate(context);
-        AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellCreate(context);
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            CostUtil.count++;
-
-            for (WriteHandler writeHandler : handlerList) {
-
-                ((CellWriteHandler)writeHandler).afterCellCreate(context);
-            }
-        }
-        FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellCreate(context);
+        context.getCellHandlerExecutionChain().afterCellCreate(context);
 
     }
 
     public static void afterCellDataConverted(CellWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        DefaultStyle.defaultStyle.afterCellDataConverted(context);
-        AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellDataConverted(context);
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            CostUtil.count++;
-            for (WriteHandler writeHandler : handlerList) {
-                ((CellWriteHandler)writeHandler).afterCellDataConverted(context);
-            }
-        }
-        FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellDataConverted(context);
+        context.getCellHandlerExecutionChain().afterCellDataConverted(context);
 
     }
 
     public static void afterCellDispose(CellWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        DefaultStyle.defaultStyle.afterCellDispose(context);
-        AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellDispose(context);
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            CostUtil.count++;
-            for (WriteHandler writeHandler : handlerList) {
-                ((CellWriteHandler)writeHandler).afterCellDispose(context);
-            }
-        }
-        FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellDispose(context);
-
+        context.getCellHandlerExecutionChain().afterCellDispose(context);
     }
+
+    //public static void beforeCellCreate(CellWriteHandlerContext context) {
+    //
+    //    List<WriteHandler> handlerList = context.getHandlerList();
+    //    if (CollectionUtils.isNotEmpty(handlerList)) {
+    //        CostUtil.count++;
+    //
+    //        for (WriteHandler writeHandler : handlerList) {
+    //
+    //            ((CellWriteHandler)writeHandler).beforeCellCreate(context);
+    //        }
+    //    }
+    //}
+    //
+    //public static void afterCellCreate(CellWriteHandlerContext context) {
+    //
+    //    List<WriteHandler> handlerList = context.getHandlerList();
+    //    if (CollectionUtils.isNotEmpty(handlerList)) {
+    //        CostUtil.count++;
+    //
+    //        for (WriteHandler writeHandler : handlerList) {
+    //
+    //            ((CellWriteHandler)writeHandler).afterCellCreate(context);
+    //        }
+    //    }
+    //
+    //}
+    //
+    //public static void afterCellDataConverted(CellWriteHandlerContext context) {
+    //
+    //    List<WriteHandler> handlerList = context.getHandlerList();
+    //    if (CollectionUtils.isNotEmpty(handlerList)) {
+    //        CostUtil.count++;
+    //        for (WriteHandler writeHandler : handlerList) {
+    //            ((CellWriteHandler)writeHandler).afterCellDataConverted(context);
+    //        }
+    //    }
+    //
+    //}
+    //
+    //public static void afterCellDispose(CellWriteHandlerContext context) {
+    //    List<WriteHandler> handlerList = context.getHandlerList();
+    //    if (CollectionUtils.isNotEmpty(handlerList)) {
+    //        CostUtil.count++;
+    //        for (WriteHandler writeHandler : handlerList) {
+    //            ((CellWriteHandler)writeHandler).afterCellDispose(context);
+    //        }
+    //    }
+    //}
+
+    //
+    //public static void beforeCellCreate(CellWriteHandlerContext context) {
+    //
+    //    context.getCellHandlerExecutionChain().beforeCellCreate(context);
+    //
+    //    //List<WriteHandler> handlerList = context.getHandlerList();
+    //    //DefaultStyle.defaultStyle.beforeCellCreate(context);
+    //    //AbstractWriteHolder.abstractVerticalCellStyleStrategy.beforeCellCreate(context);
+    //    //if (CollectionUtils.isNotEmpty(handlerList)) {
+    //    //    CostUtil.count++;
+    //    //
+    //    //    for (WriteHandler writeHandler : handlerList) {
+    //    //
+    //    //        ((CellWriteHandler)writeHandler).beforeCellCreate(context);
+    //    //    }
+    //    //}
+    //    //FillStyleCellWriteHandler.fillStyleCellWriteHandler.beforeCellCreate(context);
+    //}
+    //
+    //public static void afterCellCreate(CellWriteHandlerContext context) {
+    //    context.getCellHandlerExecutionChain().afterCellCreate(context);
+    //
+    //    //List<WriteHandler> handlerList = context.getHandlerList();
+    //    //DefaultStyle.defaultStyle.afterCellCreate(context);
+    //    //AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellCreate(context);
+    //    //if (CollectionUtils.isNotEmpty(handlerList)) {
+    //    //    CostUtil.count++;
+    //    //
+    //    //    for (WriteHandler writeHandler : handlerList) {
+    //    //
+    //    //        ((CellWriteHandler)writeHandler).afterCellCreate(context);
+    //    //    }
+    //    //}
+    //    //FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellCreate(context);
+    //
+    //}
+    //
+    //public static void afterCellDataConverted(CellWriteHandlerContext context) {
+    //    context.getCellHandlerExecutionChain().afterCellDataConverted(context);
+    //
+    //    //List<WriteHandler> handlerList = context.getHandlerList();
+    //    ////DefaultStyle.defaultStyle.afterCellDataConverted(context);
+    //    ////AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellDataConverted(context);
+    //    //if (CollectionUtils.isNotEmpty(handlerList)) {
+    //    //    CostUtil.count++;
+    //    //    for (WriteHandler writeHandler : handlerList) {
+    //    //        ((CellWriteHandler)writeHandler).afterCellDataConverted(context);
+    //    //    }
+    //    //}
+    //    //FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellDataConverted(context);
+    //
+    //}
+    //
+    //public static void afterCellDispose(CellWriteHandlerContext context) {
+    //    context.getCellHandlerExecutionChain().afterCellDispose(context);
+    //    //List<WriteHandler> handlerList = context.getHandlerList();
+    //    //DefaultStyle.defaultStyle.afterCellDispose(context);
+    //    ////AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellDispose(context);
+    //    //if (CollectionUtils.isNotEmpty(handlerList)) {
+    //    //    CostUtil.count++;
+    //    //    for (WriteHandler writeHandler : handlerList) {
+    //    //        ((CellWriteHandler)writeHandler).afterCellDispose(context);
+    //    //    }
+    //    //}
+    //    //FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellDispose(context);
+    //}
 
     public static RowWriteHandlerContext createRowWriteHandlerContext(WriteContext writeContext, Integer rowIndex,
         Integer relativeRowIndex, Boolean isHead) {

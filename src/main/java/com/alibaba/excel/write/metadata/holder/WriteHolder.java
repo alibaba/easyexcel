@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.metadata.ConfigurationHolder;
+import com.alibaba.excel.write.handler.CellHandlerExecutionChain;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 
@@ -27,6 +28,13 @@ public interface WriteHolder extends ConfigurationHolder {
      * @return
      */
     Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap();
+
+    /**
+     * What handler does the currently operated cell need to execute
+     *
+     * @return
+     */
+    Map<Class<? extends WriteHandler>, CellHandlerExecutionChain> writeHandlerMap2();
 
     /**
      * create your own write handler.
