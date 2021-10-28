@@ -65,4 +65,18 @@ public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
         return context.getFirstCellData() == null;
     }
 
+    @Override
+    public void beforeCellCreate(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
+    public void afterCellCreate(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
+    public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+    }
 }

@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
  * @author Jiaju Zhuang
  */
 public class DefaultStyle extends HorizontalCellStyleStrategy {
+    public static DefaultStyle defaultStyle = new DefaultStyle();
 
     @Override
     public int order() {

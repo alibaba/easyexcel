@@ -508,6 +508,21 @@ public class WriteTest {
         EasyExcel.write(fileName, DemoData.class)
             .registerWriteHandler(new CellWriteHandler() {
                 @Override
+                public void beforeCellCreate(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellCreate(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
                 public void afterCellDispose(CellWriteHandlerContext context) {
                     // 当前事件会在 数据设置到poi的cell里面才会回调
                     // 判断不是头的情况 如果是fill 的情况 这里会==null 所以用not true
@@ -537,6 +552,21 @@ public class WriteTest {
         fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
         EasyExcel.write(fileName, DemoData.class)
             .registerWriteHandler(new CellWriteHandler() {
+                @Override
+                public void beforeCellCreate(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellCreate(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+                }
+
                 @Override
                 public void afterCellDispose(CellWriteHandlerContext context) {
                     // 当前事件会在 数据设置到poi的cell里面才会回调

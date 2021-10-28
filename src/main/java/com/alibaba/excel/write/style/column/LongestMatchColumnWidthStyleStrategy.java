@@ -8,6 +8,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -73,5 +74,20 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
             default:
                 return -1;
         }
+    }
+
+    @Override
+    public void beforeCellCreate(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
+    public void afterCellCreate(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
+    public void afterCellDataConverted(CellWriteHandlerContext context) {
+
     }
 }

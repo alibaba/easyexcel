@@ -31,6 +31,8 @@ import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import net.sf.cglib.beans.BeanMap;
 
 /**
@@ -51,7 +53,7 @@ public class ClassUtils {
     /**
      * The cache configuration information for each of the class
      */
-    public static final Map<String, ExcelContentProperty> CONTENT_CACHE = new ConcurrentHashMap<>();
+    public static final Map<ContentPropertyKey, ExcelContentProperty> CONTENT_CACHE = new ConcurrentHashMap<>();
 
     /**
      * Calculate the configuration information for the class
@@ -117,20 +119,8 @@ public class ClassUtils {
         }
     }
 
-    private static String buildKey(Class<?> clazz, Class<?> headClass, String fieldName) {
-        String key = "";
-        if (clazz != null) {
-            key += clazz.getName();
-        }
-        key += "-";
-        if (headClass != null) {
-            key += headClass.getName();
-        }
-        key += "-";
-        if (fieldName != null) {
-            key += fieldName;
-        }
-        return key;
+    private static ContentPropertyKey buildKey(Class<?> clazz, Class<?> headClass, String fieldName) {
+        return new ContentPropertyKey(clazz, headClass, fieldName);
     }
 
     private static Map<String, ExcelContentProperty> declaredFieldContentMap(Class<?> clazz) {
@@ -413,4 +403,11 @@ public class ClassUtils {
         }
     }
 
+    @Data
+    @AllArgsConstructor
+    public static class ContentPropertyKey {
+        private Class<?> clazz;
+        private Class<?> headClass;
+        private String fieldName;
+    }
 }

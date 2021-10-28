@@ -19,6 +19,21 @@ import org.apache.poi.ss.usermodel.Hyperlink;
 public class CustomCellWriteHandler implements CellWriteHandler {
 
     @Override
+    public void beforeCellCreate(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
+    public void afterCellCreate(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
+    public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
     public void afterCellDispose(CellWriteHandlerContext context) {
         Cell cell = context.getCell();
         // 这里可以对cell进行任何操作

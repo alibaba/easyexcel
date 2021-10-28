@@ -265,6 +265,21 @@ public class FillStyleAnnotatedTest {
             .registerWriteHandler(new AbstractVerticalCellStyleStrategy() {
 
                 @Override
+                public void beforeCellCreate(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellCreate(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
+                public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+                }
+
+                @Override
                 protected WriteCellStyle contentCellStyle(CellWriteHandlerContext context) {
                     WriteCellStyle writeCellStyle = new WriteCellStyle();
                     WriteFont writeFont = new WriteFont();

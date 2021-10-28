@@ -19,9 +19,28 @@ import org.apache.poi.ss.usermodel.CellStyle;
 @Slf4j
 public class FillStyleCellWriteHandler implements CellWriteHandler {
 
+    public static int count=0;
+
+    public static FillStyleCellWriteHandler fillStyleCellWriteHandler = new FillStyleCellWriteHandler();
+
     @Override
     public int order() {
         return OrderConstant.FILL_STYLE;
+    }
+
+    @Override
+    public void beforeCellCreate(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
+    public void afterCellCreate(CellWriteHandlerContext context) {
+
+    }
+
+    @Override
+    public void afterCellDataConverted(CellWriteHandlerContext context) {
+
     }
 
     @Override
@@ -41,6 +60,8 @@ public class FillStyleCellWriteHandler implements CellWriteHandler {
         }
         WriteWorkbookHolder writeWorkbookHolder = context.getWriteWorkbookHolder();
         context.getCell().setCellStyle(writeWorkbookHolder.createCellStyle(writeCellStyle, originCellStyle));
+        count++;
+
     }
 
 }

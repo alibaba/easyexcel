@@ -15,7 +15,12 @@ import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
+import com.alibaba.excel.write.handler.impl.DefaultRowWriteHandler;
+import com.alibaba.excel.write.handler.impl.FillStyleCellWriteHandler;
+import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
+import com.alibaba.excel.write.style.DefaultStyle;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Row;
 
@@ -24,6 +29,7 @@ import org.apache.poi.ss.usermodel.Row;
  *
  * @author Jiaju Zhuang
  */
+@Slf4j
 public class WriteHandlerUtils {
 
     private WriteHandlerUtils() {}
@@ -154,38 +160,61 @@ public class WriteHandlerUtils {
 
     public static void beforeCellCreate(CellWriteHandlerContext context) {
         List<WriteHandler> handlerList = context.getHandlerList();
+        DefaultStyle.defaultStyle.beforeCellCreate(context);
+        AbstractWriteHolder.abstractVerticalCellStyleStrategy.beforeCellCreate(context);
         if (CollectionUtils.isNotEmpty(handlerList)) {
+            CostUtil.count++;
+
             for (WriteHandler writeHandler : handlerList) {
+
                 ((CellWriteHandler)writeHandler).beforeCellCreate(context);
             }
         }
+        FillStyleCellWriteHandler.fillStyleCellWriteHandler.beforeCellCreate(context);
     }
 
     public static void afterCellCreate(CellWriteHandlerContext context) {
         List<WriteHandler> handlerList = context.getHandlerList();
+        DefaultStyle.defaultStyle.afterCellCreate(context);
+        AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellCreate(context);
         if (CollectionUtils.isNotEmpty(handlerList)) {
+            CostUtil.count++;
+
             for (WriteHandler writeHandler : handlerList) {
+
                 ((CellWriteHandler)writeHandler).afterCellCreate(context);
             }
         }
+        FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellCreate(context);
+
     }
 
     public static void afterCellDataConverted(CellWriteHandlerContext context) {
         List<WriteHandler> handlerList = context.getHandlerList();
+        DefaultStyle.defaultStyle.afterCellDataConverted(context);
+        AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellDataConverted(context);
         if (CollectionUtils.isNotEmpty(handlerList)) {
+            CostUtil.count++;
             for (WriteHandler writeHandler : handlerList) {
                 ((CellWriteHandler)writeHandler).afterCellDataConverted(context);
             }
         }
+        FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellDataConverted(context);
+
     }
 
     public static void afterCellDispose(CellWriteHandlerContext context) {
         List<WriteHandler> handlerList = context.getHandlerList();
+        DefaultStyle.defaultStyle.afterCellDispose(context);
+        AbstractWriteHolder.abstractVerticalCellStyleStrategy.afterCellDispose(context);
         if (CollectionUtils.isNotEmpty(handlerList)) {
+            CostUtil.count++;
             for (WriteHandler writeHandler : handlerList) {
                 ((CellWriteHandler)writeHandler).afterCellDispose(context);
             }
         }
+        FillStyleCellWriteHandler.fillStyleCellWriteHandler.afterCellDispose(context);
+
     }
 
     public static RowWriteHandlerContext createRowWriteHandlerContext(WriteContext writeContext, Integer rowIndex,
@@ -218,6 +247,7 @@ public class WriteHandlerUtils {
 
     public static void afterRowDispose(RowWriteHandlerContext context) {
         List<WriteHandler> handlerList = context.getHandlerList();
+        DefaultRowWriteHandler.defaultRowWriteHandler.afterRowDispose(context);
         if (CollectionUtils.isNotEmpty(handlerList)) {
             for (WriteHandler writeHandler : handlerList) {
                 ((RowWriteHandler)writeHandler).afterRowDispose(context);

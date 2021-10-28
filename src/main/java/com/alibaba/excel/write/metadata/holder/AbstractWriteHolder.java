@@ -229,15 +229,32 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
 
         //if (hasStyle) {
-            dealStyle(handlerList);
+        dealStyle(handlerList);
         //}
 
         dealRowHigh(handlerList);
         dealOnceAbsoluteMerge(handlerList);
     }
 
+    public static AbstractVerticalCellStyleStrategy abstractVerticalCellStyleStrategy = null;
+
     private void dealStyle(List<WriteHandler> handlerList) {
-        WriteHandler styleStrategy = new AbstractVerticalCellStyleStrategy() {
+        abstractVerticalCellStyleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            public void beforeCellCreate(CellWriteHandlerContext context) {
+
+            }
+
+            @Override
+            public void afterCellCreate(CellWriteHandlerContext context) {
+
+            }
+
+            @Override
+            public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+            }
+
             @Override
             public int order() {
                 return OrderConstant.ANNOTATION_DEFINE_STYLE;
@@ -257,7 +274,8 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                     excelContentProperty.getContentFontProperty());
             }
         };
-        handlerList.add(styleStrategy);
+        //abstractVerticalCellStyleStrategy = styleStrategy;
+        //handlerList.add(abstractVerticalCellStyleStrategy);
     }
 
     private void dealLoopMerge(List<WriteHandler> handlerList, Head head) {
@@ -296,6 +314,21 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
     private void dealColumnWidth(List<WriteHandler> handlerList) {
         WriteHandler columnWidthStyleStrategy = new AbstractHeadColumnWidthStyleStrategy() {
+            @Override
+            public void beforeCellCreate(CellWriteHandlerContext context) {
+
+            }
+
+            @Override
+            public void afterCellCreate(CellWriteHandlerContext context) {
+
+            }
+
+            @Override
+            public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+            }
+
             @Override
             protected Integer columnWidth(Head head, Integer columnIndex) {
                 if (head == null) {

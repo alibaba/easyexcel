@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class DefaultRowWriteHandler implements RowWriteHandler {
+    public static DefaultRowWriteHandler defaultRowWriteHandler=new DefaultRowWriteHandler();
 
     @Override
     public void afterRowDispose(RowWriteHandlerContext context) {

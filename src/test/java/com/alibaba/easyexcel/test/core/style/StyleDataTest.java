@@ -13,6 +13,7 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -73,6 +74,21 @@ public class StyleDataTest {
     @Test
     public void t03AbstractVerticalCellStyleStrategy() {
         AbstractVerticalCellStyleStrategy verticalCellStyleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            public void beforeCellCreate(CellWriteHandlerContext context) {
+
+            }
+
+            @Override
+            public void afterCellCreate(CellWriteHandlerContext context) {
+
+            }
+
+            @Override
+            public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+            }
+
             @Override
             protected WriteCellStyle headCellStyle(Head head) {
                 WriteCellStyle writeCellStyle = new WriteCellStyle();
@@ -137,6 +153,21 @@ public class StyleDataTest {
         final StyleProperty styleProperty = StyleProperty.build(StyleData.class.getAnnotation(HeadStyle.class));
         final FontProperty fontProperty = FontProperty.build(StyleData.class.getAnnotation(HeadFontStyle.class));
         AbstractVerticalCellStyleStrategy verticalCellStyleStrategy = new AbstractVerticalCellStyleStrategy() {
+            @Override
+            public void beforeCellCreate(CellWriteHandlerContext context) {
+
+            }
+
+            @Override
+            public void afterCellCreate(CellWriteHandlerContext context) {
+
+            }
+
+            @Override
+            public void afterCellDataConverted(CellWriteHandlerContext context) {
+
+            }
+
             @Override
             protected WriteCellStyle headCellStyle(Head head) {
                 WriteCellStyle writeCellStyle = WriteCellStyle.build(styleProperty, fontProperty);

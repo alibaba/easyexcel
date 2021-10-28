@@ -3,18 +3,20 @@ package com.alibaba.easyexcel.test.core.large;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.util.CostUtil;
+import com.alibaba.excel.write.handler.impl.FillStyleCellWriteHandler;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -84,29 +86,150 @@ public class LargeDataTest {
     }
 
     @Test
-    public void t04Write() throws Exception {
+    public void t04Write44() throws Exception {
+        //read();
         long start = System.currentTimeMillis();
-        ExcelWriter excelWriter = EasyExcel.write(fileWrite07, LargeData.class).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        for (int j = 0; j < 100; j++) {
-            excelWriter.write(data(), writeSheet);
-            LOGGER.info("{} write success.", j);
+
+        for (int j = 0; j < 20; j++) {
+            List<LargeData> data = data();
+            LOGGER.info("" + data.size());
         }
-        excelWriter.finish();
-        long cost = System.currentTimeMillis() - start;
-        LOGGER.info("write cost:{}", cost);
+
+        LOGGER.info("poi写入消费:{}", System.currentTimeMillis() - start);
+
+    }
+
+    @Test
+    public void t04Write445() throws Exception {
+        //read();
+        long start = System.currentTimeMillis();
+
+        for (int j = 0; j < 20; j++) {
+            List<LargeData> data = data2();
+            LOGGER.info("" + data.size());
+        }
+
+        LOGGER.info("poi写入消费:{}", System.currentTimeMillis() - start);
+
         start = System.currentTimeMillis();
+        LargeData largeData = new LargeData();
+        for (int j = 0; j < 20 * 5000; j++) {
+            largeData.setStr1("1");
+            largeData.setStr2("2");
+            largeData.setStr3("3");
+        }
+
+        LOGGER.info("poi写入消费:{}", System.currentTimeMillis() - start);
+
+    }
+
+    @Test
+    public void t04Writev3() throws Exception {
+        //read();
+        read();
+
+    }
+
+    @Test
+    public void t04Write() throws Exception {
+        Cellhanderl cellhanderl1 = new Cellhanderl();
+        Cellhanderl cellhanderl2 = new Cellhanderl();
+        Cellhanderl cellhanderl3 = new Cellhanderl();
+        Cellhanderl cellhanderl4 = new Cellhanderl();
+        List<Cellhanderl> list = new ArrayList<>();
+        list.add(cellhanderl1);
+        list.add(cellhanderl2);
+        list.add(cellhanderl3);
+        //list.add(cellhanderl4);
+
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 25000075; i++) {
+            for (int j = 0; j < list.size(); j++) {
+                Cellhanderl writeHandler = list.get(0);
+                writeHandler.beforeCellCreate(null);
+                writeHandler.afterCellCreate(null);
+                writeHandler.afterCellDataConverted(null);
+                writeHandler.afterCellDispose(null);
+            }
+        }
+        LOGGER.info("第一次:{}", System.currentTimeMillis() - start);
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 25000075; i++) {
+            for (Cellhanderl writeHandler : list) {
+                writeHandler.beforeCellCreate(null);
+                writeHandler.afterCellCreate(null);
+                writeHandler.afterCellDataConverted(null);
+                writeHandler.afterCellDispose(null);
+            }
+        }
+        LOGGER.info("第二次:{}", System.currentTimeMillis() - start);
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 25000075; i++) {
+            cellhanderl1.beforeCellCreate(null);
+            cellhanderl1.afterCellCreate(null);
+            cellhanderl1.afterCellDataConverted(null);
+            cellhanderl1.afterCellDispose(null);
+            cellhanderl2.beforeCellCreate(null);
+            cellhanderl2.afterCellCreate(null);
+            cellhanderl2.afterCellDataConverted(null);
+            cellhanderl2.afterCellDispose(null);
+            cellhanderl3.beforeCellCreate(null);
+            cellhanderl3.afterCellCreate(null);
+            cellhanderl3.afterCellDataConverted(null);
+            cellhanderl3.afterCellDispose(null);
+
+        }
+        LOGGER.info("第三次:{}", System.currentTimeMillis() - start);
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 25000075; i++) {
+            Iterator<Cellhanderl> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                Cellhanderl writeHandler = iterator.next();
+                writeHandler.beforeCellCreate(null);
+                writeHandler.afterCellCreate(null);
+                writeHandler.afterCellDataConverted(null);
+                writeHandler.afterCellDispose(null);
+            }
+        }
+
+        LOGGER.info("第四次:{}", System.currentTimeMillis() - start);
+
+        start = System.currentTimeMillis();
+        for (int i = 0; i < 25000075; i++) {
+            list.stream().forEach(writeHandler->{
+                writeHandler.beforeCellCreate(null);
+                writeHandler.afterCellCreate(null);
+                writeHandler.afterCellDataConverted(null);
+                writeHandler.afterCellDispose(null);
+            });
+        }
+
+        LOGGER.info("第五次:{}", System.currentTimeMillis() - start);
+    }
+
+    private void v2(Cellhanderl cellhanderl1) {
+        cellhanderl1.beforeCellCreate(null);
+        cellhanderl1.afterCellCreate(null);
+        cellhanderl1.afterCellDataConverted(null);
+        cellhanderl1.afterCellDispose(null);
+    }
+
+    private void read() throws Exception {
+        long start = System.currentTimeMillis();
         try (FileOutputStream fileOutputStream = new FileOutputStream(fileWritePoi07)) {
             SXSSFWorkbook workbook = new SXSSFWorkbook();
             SXSSFSheet sheet = workbook.createSheet("sheet1");
-            for (int i = 0; i < 100 * 5000; i++) {
+            for (int i = 0; i < 20 * 5000; i++) {
                 SXSSFRow row = sheet.createRow(i);
                 for (int j = 0; j < 25; j++) {
                     SXSSFCell cell = row.createCell(j);
                     cell.setCellValue("str-" + j + "-" + i);
                 }
                 if (i % 5000 == 0) {
-                    LOGGER.info("{} write success.", i);
+                    //LOGGER.info("{} write success.", i);
                 }
             }
             workbook.write(fileOutputStream);
@@ -114,8 +237,34 @@ public class LargeDataTest {
             workbook.close();
         }
         long costPoi = System.currentTimeMillis() - start;
-        LOGGER.info("poi write cost:{}", System.currentTimeMillis() - start);
-        Assert.assertTrue(costPoi * 3 > cost);
+        LOGGER.info("poi写入消费:{}", System.currentTimeMillis() - start);
+
+        start = System.currentTimeMillis();
+        ExcelWriter excelWriter = EasyExcel.write(fileWrite07, LargeData.class)
+            //.registerWriteHandler(new Cellhanderl())
+            //.registerWriteHandler(new Cellhanderl())
+            //.registerWriteHandler(new Cellhanderl())
+            //.registerWriteHandler(new Cellhanderl())
+            //.registerWriteHandler(new Cellhanderl())
+            //.registerWriteHandler(new Cellhanderl())
+            //.registerWriteHandler(new Cellhanderl())
+            .build();
+        WriteSheet writeSheet = EasyExcel.writerSheet().build();
+        for (int j = 0; j < 50; j++) {
+            long s1 = System.currentTimeMillis();
+            excelWriter.write(data(), writeSheet);
+            LOGGER.info("平均.{}", System.currentTimeMillis() - s1);
+        }
+        excelWriter.finish();
+        long cost = System.currentTimeMillis() - start;
+        LOGGER.info("easyxcel写入:{}", cost);
+        //LOGGER.info("easyxcel写入:{}", FillStyleCellWriteHandler.count);
+        LOGGER.info("easyxcel写入:{}", Cellhanderl.cout);
+        LOGGER.info("easyxcel写入:{}", CostUtil.count2);
+        LOGGER.info("easyxcel写入:{}", CostUtil.count);
+        LOGGER.info("easyxcel写入:{}", FillStyleCellWriteHandler.count);
+
+
     }
 
     private List<LargeData> data() {
@@ -149,6 +298,19 @@ public class LargeDataTest {
             largeData.setStr23("str23-" + i);
             largeData.setStr24("str24-" + i);
             largeData.setStr25("str25-" + i);
+        }
+        return list;
+    }
+
+    private List<LargeData> data2() {
+        List<LargeData> list = new ArrayList<>();
+        int size = i + 5000;
+        for (; i < size; i++) {
+            LargeData largeData = new LargeData();
+            list.add(largeData);
+            largeData.setStr1("1");
+            largeData.setStr2("2");
+            largeData.setStr3("3");
         }
         return list;
     }
