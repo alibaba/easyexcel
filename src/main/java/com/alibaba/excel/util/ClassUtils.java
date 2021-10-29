@@ -32,7 +32,9 @@ import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import net.sf.cglib.beans.BeanMap;
 
 /**
@@ -403,7 +405,9 @@ public class ClassUtils {
         }
     }
 
-    @Data
+    @Getter
+    @Setter
+    @EqualsAndHashCode
     @AllArgsConstructor
     public static class ContentPropertyKey {
         private Class<?> clazz;

@@ -33,7 +33,9 @@ import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.usermodel.PoiUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -232,6 +234,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 List<WriteCellData<?>> cellDataList = new ArrayList<>();
 
                 cellWriteHandlerContext.setExcelContentProperty(ExcelContentProperty.EMPTY);
+                cellWriteHandlerContext.setIgnoreFillStyle(Boolean.TRUE);
 
                 createCell(analysisCell, fillConfig, cellWriteHandlerContext);
                 Cell cell = cellWriteHandlerContext.getCell();
@@ -600,7 +603,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         return new UniqueDataFlagKey(writeSheetHolder.getSheetNo(), writeSheetHolder.getSheetName(), wrapperName);
     }
 
-    @Data
+    @Getter
+    @Setter
+    @EqualsAndHashCode
     @AllArgsConstructor
     public static class UniqueDataFlagKey {
         private Integer sheetNo;

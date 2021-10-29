@@ -2,14 +2,18 @@ package com.alibaba.easyexcel.test.demo.write;
 
 import com.alibaba.excel.metadata.data.WriteCellData;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 根据WriteCellData写
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class WriteCellDemoData {
     /**
      * 超链接

@@ -10,12 +10,16 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @ColumnWidth(50)
 @HeadRowHeight(50)
 @ContentRowHeight(100)

@@ -2,12 +2,16 @@ package com.alibaba.easyexcel.test.core.template;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class TemplateData {
     @ExcelProperty("字符串0")
     private String string0;

@@ -1,13 +1,17 @@
 package com.alibaba.excel.metadata;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * cell
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class AbstractCell implements Cell {
     /**
      * Row index

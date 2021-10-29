@@ -4,12 +4,16 @@ import java.lang.reflect.Field;
 
 import com.alibaba.excel.converters.Converter;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author jipengfei
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ExcelContentProperty {
     public static final ExcelContentProperty EMPTY = new ExcelContentProperty();
 

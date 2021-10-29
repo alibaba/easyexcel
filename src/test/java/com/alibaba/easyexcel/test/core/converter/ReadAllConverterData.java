@@ -5,12 +5,16 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ReadAllConverterData {
     private BigDecimal bigDecimalBoolean;
     private BigDecimal bigDecimalNumber;

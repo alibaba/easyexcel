@@ -2,7 +2,9 @@ package com.alibaba.excel.metadata.csv;
 
 import com.alibaba.excel.metadata.data.DataFormatData;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Color;
@@ -16,7 +18,9 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CsvCellStyle implements CellStyle {
 
     /**

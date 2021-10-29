@@ -3,12 +3,16 @@ package com.alibaba.easyexcel.test.core.celldata;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.metadata.data.ReadCellData;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CellDataReadData {
     @DateTimeFormat("yyyy年MM月dd日")
     private ReadCellData<String> date;

@@ -11,7 +11,9 @@ import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.MapUtils;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -21,7 +23,9 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
     /**
      * Package

@@ -24,7 +24,10 @@ import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString.Exclude;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -40,7 +43,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @Slf4j
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
@@ -147,6 +152,7 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
     /**
      * handler context
      */
+    @Exclude
     private WorkbookWriteHandlerContext workbookWriteHandlerContext;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {

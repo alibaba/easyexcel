@@ -3,14 +3,18 @@ package com.alibaba.excel.metadata.property;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.util.BooleanUtils;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Configuration from annotations
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class DateTimeFormatProperty {
     private String format;
     private Boolean use1904windowing;

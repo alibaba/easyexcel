@@ -4,15 +4,19 @@ import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * write converter context
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class WriteConverterContext<T> {

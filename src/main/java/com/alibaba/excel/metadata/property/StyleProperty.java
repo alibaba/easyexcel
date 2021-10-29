@@ -5,7 +5,9 @@ import com.alibaba.excel.annotation.write.style.HeadStyle;
 import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -19,7 +21,9 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class StyleProperty {
     /**
      * Set the data format (must be a valid format). Built in formats are defined at {@link BuiltinFormats}.

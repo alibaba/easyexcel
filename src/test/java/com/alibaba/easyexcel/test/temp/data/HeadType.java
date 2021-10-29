@@ -2,9 +2,13 @@ package com.alibaba.easyexcel.test.temp.data;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class HeadType {
 
 

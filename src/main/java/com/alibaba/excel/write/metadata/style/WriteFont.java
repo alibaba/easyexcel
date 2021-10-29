@@ -2,7 +2,9 @@ package com.alibaba.excel.write.metadata.style;
 
 import com.alibaba.excel.util.StringUtils;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.ss.usermodel.Font;
@@ -13,7 +15,9 @@ import org.apache.poi.ss.usermodel.IndexedColors;
  *
  * @author jipengfei
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class WriteFont {
     /**
      * The name for the font (i.e. Arial)

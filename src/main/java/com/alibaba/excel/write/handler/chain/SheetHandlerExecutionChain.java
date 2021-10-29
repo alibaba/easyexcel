@@ -3,14 +3,18 @@ package com.alibaba.excel.write.handler.chain;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Execute the sheet handler chain
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class SheetHandlerExecutionChain {
     /**
      * next chain

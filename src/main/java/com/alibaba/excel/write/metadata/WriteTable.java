@@ -1,13 +1,17 @@
 package com.alibaba.excel.write.metadata;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * table
  *
  * @author jipengfei
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class WriteTable extends WriteBasicParameter {
     /**
      * Starting from 0

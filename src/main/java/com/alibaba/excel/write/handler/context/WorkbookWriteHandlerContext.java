@@ -4,14 +4,18 @@ import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * workbook context
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 public class WorkbookWriteHandlerContext {
     /**

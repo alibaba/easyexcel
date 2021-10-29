@@ -4,15 +4,19 @@ import java.math.BigDecimal;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * read cell data
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class ReadCellData<T> extends CellData<T> {
     /**

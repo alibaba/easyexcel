@@ -26,14 +26,18 @@ import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Define the header attribute of excel
  *
  * @author jipengfei
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ExcelWriteHeadProperty extends ExcelHeadProperty {
 
     private RowHeightProperty headRowHeightProperty;

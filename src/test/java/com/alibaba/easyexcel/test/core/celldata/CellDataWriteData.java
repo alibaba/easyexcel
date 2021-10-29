@@ -5,12 +5,16 @@ import java.util.Date;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.metadata.data.WriteCellData;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CellDataWriteData {
     @DateTimeFormat("yyyy年MM月dd日")
     private WriteCellData<Date> date;

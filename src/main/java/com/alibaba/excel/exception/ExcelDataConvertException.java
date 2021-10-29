@@ -4,14 +4,18 @@ import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Data convert exception
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ExcelDataConvertException extends RuntimeException {
     /**
      * NotNull.

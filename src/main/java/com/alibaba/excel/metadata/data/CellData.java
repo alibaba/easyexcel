@@ -6,7 +6,9 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.AbstractCell;
 import com.alibaba.excel.util.StringUtils;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Excel internal cell data.
@@ -15,7 +17,9 @@ import lombok.Data;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CellData<T> extends AbstractCell {
     /**
      * cell type

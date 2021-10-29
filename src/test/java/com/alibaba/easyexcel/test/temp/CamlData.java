@@ -1,13 +1,17 @@
 package com.alibaba.easyexcel.test.temp;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * TODO
  *
  * @author 是仪
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CamlData {
     private String string1;
     private String String2;

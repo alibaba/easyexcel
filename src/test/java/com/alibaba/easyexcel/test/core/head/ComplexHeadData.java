@@ -2,12 +2,16 @@ package com.alibaba.easyexcel.test.core.head;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ComplexHeadData {
     @ExcelProperty({"顶格", "顶格", "两格"})
     private String string0;

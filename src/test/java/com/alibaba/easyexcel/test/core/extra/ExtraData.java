@@ -1,11 +1,15 @@
 package com.alibaba.easyexcel.test.core.extra;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ExtraData {
 
     private String row1;

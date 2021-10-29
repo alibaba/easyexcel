@@ -41,8 +41,10 @@ import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractHeadColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -50,7 +52,9 @@ import org.apache.commons.collections4.CollectionUtils;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 public abstract class AbstractWriteHolder extends AbstractHolder implements WriteHolder {
     /**
@@ -380,9 +384,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                 } else {
                     cellHandlerExecutionChain.addLast((CellWriteHandler)writeHandler);
                 }
-                this.writeHandlerList.add(writeHandler);
             }
-            return;
         }
         if (writeHandler instanceof RowWriteHandler) {
             if (!runOwn) {
@@ -391,9 +393,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                 } else {
                     rowHandlerExecutionChain.addLast((RowWriteHandler)writeHandler);
                 }
-                this.writeHandlerList.add(writeHandler);
             }
-            return;
         }
         if (writeHandler instanceof SheetWriteHandler) {
             if (!runOwn) {
@@ -402,7 +402,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                 } else {
                     sheetHandlerExecutionChain.addLast((SheetWriteHandler)writeHandler);
                 }
-                this.writeHandlerList.add(writeHandler);
             } else {
                 if (ownSheetHandlerExecutionChain == null) {
                     ownSheetHandlerExecutionChain = new SheetHandlerExecutionChain((SheetWriteHandler)writeHandler);
@@ -410,7 +409,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                     ownSheetHandlerExecutionChain.addLast((SheetWriteHandler)writeHandler);
                 }
             }
-            return;
         }
         if (writeHandler instanceof WorkbookWriteHandler) {
             if (!runOwn) {
@@ -420,7 +418,6 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                 } else {
                     workbookHandlerExecutionChain.addLast((WorkbookWriteHandler)writeHandler);
                 }
-                this.writeHandlerList.add(writeHandler);
             } else {
                 if (ownWorkbookHandlerExecutionChain == null) {
                     ownWorkbookHandlerExecutionChain = new WorkbookHandlerExecutionChain(
@@ -429,6 +426,9 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                     ownWorkbookHandlerExecutionChain.addLast((WorkbookWriteHandler)writeHandler);
                 }
             }
+        }
+        if (!runOwn) {
+            this.writeHandlerList.add(writeHandler);
         }
     }
 

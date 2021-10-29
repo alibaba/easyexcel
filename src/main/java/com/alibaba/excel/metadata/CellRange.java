@@ -1,11 +1,15 @@
 package com.alibaba.excel.metadata;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author jipengfei
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CellRange {
 
     private int firstRow;

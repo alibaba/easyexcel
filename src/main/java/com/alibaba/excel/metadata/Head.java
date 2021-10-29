@@ -10,14 +10,18 @@ import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * excel head
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Head {
     /**
      * Column index of head

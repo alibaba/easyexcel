@@ -6,7 +6,9 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.util.MapUtils;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Converter unique key.Consider that you can just use class as the key.
@@ -29,18 +31,20 @@ public class ConverterKeyBuild {
     }
 
     public static ConverterKey buildKey(Class<?> clazz) {
-        Class<?> boxingClass = BOXING_MAP.get(clazz);
-        if (boxingClass != null) {
-            return new ConverterKey(boxingClass, null);
-        }
-        return new ConverterKey(clazz, null);
+        return buildKey(clazz, null);
     }
 
     public static ConverterKey buildKey(Class<?> clazz, CellDataTypeEnum cellDataTypeEnum) {
+        Class<?> boxingClass = BOXING_MAP.get(clazz);
+        if (boxingClass != null) {
+            return new ConverterKey(boxingClass, cellDataTypeEnum);
+        }
         return new ConverterKey(clazz, cellDataTypeEnum);
     }
 
-    @Data
+    @Getter
+    @Setter
+    @EqualsAndHashCode
     @AllArgsConstructor
     public static class ConverterKey {
         private Class<?> clazz;
