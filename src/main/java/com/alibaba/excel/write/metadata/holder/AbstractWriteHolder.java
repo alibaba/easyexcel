@@ -243,14 +243,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         }
         Map<Integer, Head> headMap = getExcelWriteHeadProperty().getHeadMap();
         boolean hasColumnWidth = false;
-        boolean hasStyle = false;
 
         for (Head head : headMap.values()) {
             if (head.getColumnWidthProperty() != null) {
                 hasColumnWidth = true;
-            }
-            if (head.getHeadStyleProperty() != null || head.getHeadFontProperty() != null) {
-                hasStyle = true;
             }
             dealLoopMerge(handlerList, head);
         }
@@ -259,10 +255,7 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             dealColumnWidth(handlerList);
         }
 
-        //if (hasStyle) {
         dealStyle(handlerList);
-        //}
-
         dealRowHigh(handlerList);
         dealOnceAbsoluteMerge(handlerList);
     }

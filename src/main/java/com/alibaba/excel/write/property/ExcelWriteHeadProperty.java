@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadFontStyle;
@@ -17,6 +18,7 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.metadata.property.ColumnWidthProperty;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
@@ -50,8 +52,10 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
         this.onceAbsoluteMergeProperty =
             OnceAbsoluteMergeProperty.build(headClazz.getAnnotation(OnceAbsoluteMerge.class));
 
+        ColumnWidth parentColumnWidth = headClazz.getAnnotation(ColumnWidth.class);
         HeadStyle parentHeadStyle = headClazz.getAnnotation(HeadStyle.class);
         HeadFontStyle parentHeadFontStyle = headClazz.getAnnotation(HeadFontStyle.class);
+
 
         for (Map.Entry<Integer, Head> entry : getHeadMap().entrySet()) {
             Head headData = entry.getValue();
@@ -60,6 +64,13 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                     "Passing in the class and list the head, the two must be the same size.");
             }
             Field field = headData.getField();
+
+            ColumnWidth columnWidth = field.getAnnotation(ColumnWidth.class);
+            if (columnWidth == null) {
+                columnWidth = parentColumnWidth;
+            }
+            headData.setColumnWidthProperty(ColumnWidthProperty.build(columnWidth));
+
 
             HeadStyle headStyle = field.getAnnotation(HeadStyle.class);
             if (headStyle == null) {

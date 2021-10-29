@@ -16,16 +16,18 @@ import lombok.Data;
  * @author Jiaju Zhuang
  */
 @Data
-@ColumnWidth(30)
-@HeadRowHeight(15)
-@ContentRowHeight(20)
+@ColumnWidth(50)
+@HeadRowHeight(50)
+@ContentRowHeight(100)
 public class AnnotationData {
     @ExcelProperty("日期")
     @DateTimeFormat("yyyy年MM月dd日HH时mm分ss秒")
     private Date date;
+
     @ExcelProperty(value = "数字")
     @NumberFormat("#.##%")
     private Double number;
+
     @ExcelIgnore
     private String ignore;
     private static final String staticFinal = "test";
