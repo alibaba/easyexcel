@@ -1,13 +1,20 @@
 package com.alibaba.excel.read.metadata.holder.xlsx;
 
+import java.util.Map;
+
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xssf.model.StylesTable;
-
+import com.alibaba.excel.analysis.v07.StyleWrapper;
+import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.MapUtils;
+
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
 /**
  * Workbook holder
@@ -34,6 +41,8 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
      * Current style information
      */
     private StylesTable stylesTable;
+
+    private Map<Integer, StyleWrapper> map = MapUtils.newHashMap();
 
     public XlsxReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);
@@ -63,5 +72,21 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
 
     public void setStylesTable(StylesTable stylesTable) {
         this.stylesTable = stylesTable;
+    }
+
+    public StyleWrapper styleWrapper(int dateFormatIndexInteger) {
+        return map.computeIfAbsent(dateFormatIndexInteger, key -> {
+            StyleWrapper s = new StyleWrapper();
+            if (stylesTable == null) {
+                return s;
+            }
+            XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+            DataFormatData dataFormatData = new DataFormatData();
+            dataFormatData.setIndex(xssfCellStyle.getDataFormat());
+            dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormatData.getIndex(),
+                xssfCellStyle.getDataFormatString(), globalConfiguration().getLocale()));
+            return s;
+        });
+
     }
 }

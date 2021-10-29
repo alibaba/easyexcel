@@ -642,10 +642,14 @@ public class DataFormatter {
      * @param dataFormatString
      * @return a formatted number string
      */
+
+    private static final Pattern CELL_REF_PATTERN = Pattern.compile("E(\\d)");
+
     private String getFormattedNumberString(BigDecimal data, Short dataFormat, String dataFormatString) {
         Format numberFormat = getFormat(data.doubleValue(), dataFormat, dataFormatString);
         String formatted = numberFormat.format(data);
-        return formatted.replaceFirst("E(\\d)", "E+$1"); // to match Excel's E-notation
+        return   CELL_REF_PATTERN.matcher(formatted).replaceFirst("E+$1");
+        //return formatted.replaceFirst("E(\\d)", "E+$1"); // to match Excel's E-notation
     }
 
     /**

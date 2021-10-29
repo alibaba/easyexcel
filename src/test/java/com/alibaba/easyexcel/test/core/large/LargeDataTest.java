@@ -51,7 +51,9 @@ public class LargeDataTest {
     }
 
     @Test
-    public void t01Read() {
+    public void t01Read() throws Exception{
+        Thread.sleep(10*1000L);
+
         long start = System.currentTimeMillis();
         EasyExcel.read(TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx", LargeData.class,
             new LargeDataListener()).headRowNumber(2).sheet().doRead();
@@ -59,14 +61,19 @@ public class LargeDataTest {
     }
 
     @Test
-    public void t02Fill() {
+    public void t02Fill() throws Exception{
+        Thread.sleep(10*1000L);
+        long start = System.currentTimeMillis();
+
         ExcelWriter excelWriter = EasyExcel.write(fileFill07).withTemplate(template07).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        for (int j = 0; j < 100; j++) {
+        for (int j = 0; j < 50; j++) {
             excelWriter.fill(data(), writeSheet);
             LOGGER.info("{} fill success.", j);
         }
         excelWriter.finish();
+        LOGGER.info("Large data total time spent:{}", System.currentTimeMillis() - start);
+
     }
 
     @Test

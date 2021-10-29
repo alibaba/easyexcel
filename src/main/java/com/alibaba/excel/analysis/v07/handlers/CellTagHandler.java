@@ -2,19 +2,16 @@ package com.alibaba.excel.analysis.v07.handlers;
 
 import java.math.BigDecimal;
 
-import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.analysis.v07.StyleWrapper;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.util.StringUtils;
 
-import org.apache.poi.xssf.model.StylesTable;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.xml.sax.Attributes;
 
 /**
@@ -51,17 +48,28 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         } else {
             dateFormatIndexInteger = Integer.parseInt(dateFormatIndex);
         }
-        StylesTable stylesTable = xlsxReadContext.xlsxReadWorkbookHolder().getStylesTable();
-        if (stylesTable == null) {
-            return;
-        }
-        XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
-        short dataFormat = xssfCellStyle.getDataFormat();
-        DataFormatData dataFormatData = new DataFormatData();
-        dataFormatData.setIndex(dataFormat);
-        dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormat,
-            xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));
-        xlsxReadSheetHolder.getTempCellData().setDataFormatData(dataFormatData);
+
+
+
+        StyleWrapper styleWrapper = xlsxReadContext.xlsxReadWorkbookHolder().styleWrapper(dateFormatIndexInteger);
+
+
+
+        //XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+        //short dataFormat = xssfCellStyle.getDataFormat();
+        //DataFormatData dataFormatData = new DataFormatData();
+        //dataFormatData.setIndex(dataFormat);
+        //dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormat,
+        //    xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));
+        //xlsxReadSheetHolder.getTempCellData().setDataFormatData(dataFormatData);
+        //
+        //XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+        //short dataFormat = xssfCellStyle.getDataFormat();
+        //DataFormatData dataFormatData = new DataFormatData();
+        //dataFormatData.setIndex(dataFormat);
+        //dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormat,
+        //    xssfCellStyle.getDataFormatString(), xlsxReadSheetHolder.getGlobalConfiguration().getLocale()));
+        xlsxReadSheetHolder.getTempCellData().setDataFormatData(styleWrapper.getDataFormatData());
     }
 
     @Override
