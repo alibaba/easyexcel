@@ -46,7 +46,8 @@ public class LargeDataTest {
     }
 
     @Test
-    public void t01Read() {
+    public void t01Read()  throws Exception{
+        Thread.sleep(10*1000L);
         long start = System.currentTimeMillis();
         EasyExcel.read(TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx", LargeData.class,
             new LargeDataListener()).headRowNumber(2).sheet().doRead();

@@ -9,6 +9,7 @@ import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.MapUtils;
 
 import lombok.Data;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -50,6 +51,7 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
         super(readWorkbook);
         this.saxParserFactoryName = readWorkbook.getXlsxSAXParserFactoryName();
         setExcelType(ExcelTypeEnum.XLSX);
+        dataFormatDataCache = MapUtils.newHashMap();
     }
 
     public DataFormatData dataFormatData(int dateFormatIndexInteger) {
