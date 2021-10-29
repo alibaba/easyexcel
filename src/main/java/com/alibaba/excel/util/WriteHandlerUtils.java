@@ -1,22 +1,19 @@
 package com.alibaba.excel.util;
 
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.write.handler.CellWriteHandler;
-import com.alibaba.excel.write.handler.RowWriteHandler;
-import com.alibaba.excel.write.handler.SheetWriteHandler;
-import com.alibaba.excel.write.handler.WorkbookWriteHandler;
-import com.alibaba.excel.write.handler.WriteHandler;
+import com.alibaba.excel.write.handler.chain.CellHandlerExecutionChain;
+import com.alibaba.excel.write.handler.chain.RowHandlerExecutionChain;
+import com.alibaba.excel.write.handler.chain.SheetHandlerExecutionChain;
+import com.alibaba.excel.write.handler.chain.WorkbookHandlerExecutionChain;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
+import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 
-import org.apache.commons.collections4.CollectionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 
 /**
@@ -24,23 +21,14 @@ import org.apache.poi.ss.usermodel.Row;
  *
  * @author Jiaju Zhuang
  */
+@Slf4j
 public class WriteHandlerUtils {
 
     private WriteHandlerUtils() {}
 
     public static WorkbookWriteHandlerContext createWorkbookWriteHandlerContext(WriteContext writeContext) {
-        return createWorkbookWriteHandlerContext(writeContext, false);
-    }
-
-    public static WorkbookWriteHandlerContext createWorkbookWriteHandlerContext(WriteContext writeContext,
-        boolean runOwn) {
-        List<WriteHandler> handlerList = getHandlerList(writeContext, WorkbookWriteHandler.class, runOwn);
-        WorkbookWriteHandlerContext context = new WorkbookWriteHandlerContext(writeContext, null, null, null);
-        if (runOwn) {
-            context.setOwnHandlerList(handlerList);
-        } else {
-            context.setHandlerList(handlerList);
-        }
+        WorkbookWriteHandlerContext context = new WorkbookWriteHandlerContext(writeContext,
+            writeContext.writeWorkbookHolder());
         writeContext.writeWorkbookHolder().setWorkbookWriteHandlerContext(context);
         return context;
     }
@@ -50,16 +38,9 @@ public class WriteHandlerUtils {
     }
 
     public static void beforeWorkbookCreate(WorkbookWriteHandlerContext context, boolean runOwn) {
-        List<WriteHandler> handlerList;
-        if (runOwn) {
-            handlerList = context.getOwnHandlerList();
-        } else {
-            handlerList = context.getHandlerList();
-        }
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((WorkbookWriteHandler)writeHandler).beforeWorkbookCreate(context);
-            }
+        WorkbookHandlerExecutionChain workbookHandlerExecutionChain = getWorkbookHandlerExecutionChain(context, runOwn);
+        if (workbookHandlerExecutionChain != null) {
+            workbookHandlerExecutionChain.beforeWorkbookCreate(context);
         }
     }
 
@@ -68,42 +49,32 @@ public class WriteHandlerUtils {
     }
 
     public static void afterWorkbookCreate(WorkbookWriteHandlerContext context, boolean runOwn) {
-        List<WriteHandler> handlerList;
-        if (runOwn) {
-            handlerList = context.getOwnHandlerList();
-        } else {
-            handlerList = context.getHandlerList();
+        WorkbookHandlerExecutionChain workbookHandlerExecutionChain = getWorkbookHandlerExecutionChain(context, runOwn);
+        if (workbookHandlerExecutionChain != null) {
+            workbookHandlerExecutionChain.afterWorkbookCreate(context);
         }
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((WorkbookWriteHandler)writeHandler).afterWorkbookCreate(context);
-            }
+    }
+
+    private static WorkbookHandlerExecutionChain getWorkbookHandlerExecutionChain(WorkbookWriteHandlerContext context,
+        boolean runOwn) {
+        AbstractWriteHolder abstractWriteHolder = (AbstractWriteHolder)context.getWriteContext().currentWriteHolder();
+        if (runOwn) {
+            return abstractWriteHolder.getOwnWorkbookHandlerExecutionChain();
+        } else {
+            return abstractWriteHolder.getWorkbookHandlerExecutionChain();
         }
     }
 
     public static void afterWorkbookDispose(WorkbookWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((WorkbookWriteHandler)writeHandler).afterWorkbookDispose(context);
-            }
+        WorkbookHandlerExecutionChain workbookHandlerExecutionChain = getWorkbookHandlerExecutionChain(context, false);
+        if (workbookHandlerExecutionChain != null) {
+            workbookHandlerExecutionChain.afterWorkbookDispose(context);
         }
     }
 
     public static SheetWriteHandlerContext createSheetWriteHandlerContext(WriteContext writeContext) {
-        return createSheetWriteHandlerContext(writeContext, false);
-    }
-
-    public static SheetWriteHandlerContext createSheetWriteHandlerContext(WriteContext writeContext, boolean runOwn) {
-        List<WriteHandler> handlerList = getHandlerList(writeContext, SheetWriteHandler.class, runOwn);
-        SheetWriteHandlerContext context = new SheetWriteHandlerContext(writeContext,
-            writeContext.writeWorkbookHolder(), writeContext.writeSheetHolder(), null, null);
-        if (runOwn) {
-            context.setOwnHandlerList(handlerList);
-        } else {
-            context.setHandlerList(handlerList);
-        }
-        return context;
+        return new SheetWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
+            writeContext.writeSheetHolder());
     }
 
     public static void beforeSheetCreate(SheetWriteHandlerContext context) {
@@ -111,16 +82,9 @@ public class WriteHandlerUtils {
     }
 
     public static void beforeSheetCreate(SheetWriteHandlerContext context, boolean runOwn) {
-        List<WriteHandler> handlerList;
-        if (runOwn) {
-            handlerList = context.getOwnHandlerList();
-        } else {
-            handlerList = context.getHandlerList();
-        }
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((SheetWriteHandler)writeHandler).beforeSheetCreate(context);
-            }
+        SheetHandlerExecutionChain sheetHandlerExecutionChain = getSheetHandlerExecutionChain(context, runOwn);
+        if (sheetHandlerExecutionChain != null) {
+            sheetHandlerExecutionChain.beforeSheetCreate(context);
         }
     }
 
@@ -129,111 +93,90 @@ public class WriteHandlerUtils {
     }
 
     public static void afterSheetCreate(SheetWriteHandlerContext context, boolean runOwn) {
-        List<WriteHandler> handlerList;
-        if (runOwn) {
-            handlerList = context.getOwnHandlerList();
-        } else {
-            handlerList = context.getHandlerList();
+        SheetHandlerExecutionChain sheetHandlerExecutionChain = getSheetHandlerExecutionChain(context, runOwn);
+        if (sheetHandlerExecutionChain != null) {
+            sheetHandlerExecutionChain.afterSheetCreate(context);
         }
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((SheetWriteHandler)writeHandler).afterSheetCreate(context);
-            }
+    }
+
+    private static SheetHandlerExecutionChain getSheetHandlerExecutionChain(SheetWriteHandlerContext context,
+        boolean runOwn) {
+        AbstractWriteHolder abstractWriteHolder = (AbstractWriteHolder)context.getWriteContext().currentWriteHolder();
+        if (runOwn) {
+            return abstractWriteHolder.getOwnSheetHandlerExecutionChain();
+        } else {
+            return abstractWriteHolder.getSheetHandlerExecutionChain();
         }
     }
 
     public static CellWriteHandlerContext createCellWriteHandlerContext(WriteContext writeContext, Row row,
         Integer rowIndex, Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead,
         ExcelContentProperty excelContentProperty) {
-        List<WriteHandler> handlerList = writeContext.currentWriteHolder().writeHandlerMap().get(
-            CellWriteHandler.class);
         return new CellWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
             writeContext.writeSheetHolder(), writeContext.writeTableHolder(), row, rowIndex, null, columnIndex,
-            relativeRowIndex, head, null, null, isHead, excelContentProperty, handlerList);
+            relativeRowIndex, head, null, null, isHead, excelContentProperty);
     }
 
     public static void beforeCellCreate(CellWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((CellWriteHandler)writeHandler).beforeCellCreate(context);
-            }
+        CellHandlerExecutionChain cellHandlerExecutionChain = ((AbstractWriteHolder)context.getWriteContext()
+            .currentWriteHolder()).getCellHandlerExecutionChain();
+        if (cellHandlerExecutionChain != null) {
+            cellHandlerExecutionChain.beforeCellCreate(context);
         }
     }
 
     public static void afterCellCreate(CellWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((CellWriteHandler)writeHandler).afterCellCreate(context);
-            }
+        CellHandlerExecutionChain cellHandlerExecutionChain = ((AbstractWriteHolder)context.getWriteContext()
+            .currentWriteHolder()).getCellHandlerExecutionChain();
+        if (cellHandlerExecutionChain != null) {
+            cellHandlerExecutionChain.afterCellCreate(context);
         }
     }
 
     public static void afterCellDataConverted(CellWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((CellWriteHandler)writeHandler).afterCellDataConverted(context);
-            }
+        CellHandlerExecutionChain cellHandlerExecutionChain = ((AbstractWriteHolder)context.getWriteContext()
+            .currentWriteHolder()).getCellHandlerExecutionChain();
+        if (cellHandlerExecutionChain != null) {
+            cellHandlerExecutionChain.afterCellDataConverted(context);
         }
     }
 
     public static void afterCellDispose(CellWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((CellWriteHandler)writeHandler).afterCellDispose(context);
-            }
+        CellHandlerExecutionChain cellHandlerExecutionChain = ((AbstractWriteHolder)context.getWriteContext()
+            .currentWriteHolder()).getCellHandlerExecutionChain();
+        if (cellHandlerExecutionChain != null) {
+            cellHandlerExecutionChain.afterCellDispose(context);
         }
     }
 
     public static RowWriteHandlerContext createRowWriteHandlerContext(WriteContext writeContext, Integer rowIndex,
         Integer relativeRowIndex, Boolean isHead) {
-        List<WriteHandler> handlerList = writeContext.currentWriteHolder().writeHandlerMap().get(
-            RowWriteHandler.class);
-        return new RowWriteHandlerContext(writeContext,
-            writeContext.writeWorkbookHolder(),
-            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), rowIndex, null, relativeRowIndex,
-            isHead, handlerList);
+        return new RowWriteHandlerContext(writeContext, writeContext.writeWorkbookHolder(),
+            writeContext.writeSheetHolder(), writeContext.writeTableHolder(), rowIndex, null, relativeRowIndex, isHead);
     }
 
     public static void beforeRowCreate(RowWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((RowWriteHandler)writeHandler).beforeRowCreate(context);
-            }
+        RowHandlerExecutionChain rowHandlerExecutionChain = ((AbstractWriteHolder)context.getWriteContext()
+            .currentWriteHolder()).getRowHandlerExecutionChain();
+        if (rowHandlerExecutionChain != null) {
+            rowHandlerExecutionChain.beforeRowCreate(context);
         }
     }
 
     public static void afterRowCreate(RowWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((RowWriteHandler)writeHandler).afterRowCreate(context);
-            }
+        RowHandlerExecutionChain rowHandlerExecutionChain = ((AbstractWriteHolder)context.getWriteContext()
+            .currentWriteHolder()).getRowHandlerExecutionChain();
+        if (rowHandlerExecutionChain != null) {
+            rowHandlerExecutionChain.afterRowCreate(context);
         }
     }
 
     public static void afterRowDispose(RowWriteHandlerContext context) {
-        List<WriteHandler> handlerList = context.getHandlerList();
-        if (CollectionUtils.isNotEmpty(handlerList)) {
-            for (WriteHandler writeHandler : handlerList) {
-                ((RowWriteHandler)writeHandler).afterRowDispose(context);
-            }
+        RowHandlerExecutionChain rowHandlerExecutionChain = ((AbstractWriteHolder)context.getWriteContext()
+            .currentWriteHolder()).getRowHandlerExecutionChain();
+        if (rowHandlerExecutionChain != null) {
+            rowHandlerExecutionChain.afterRowDispose(context);
         }
     }
 
-    private static List<WriteHandler> getHandlerList(WriteContext writeContext, Class<? extends
-        WriteHandler> clazz,
-        boolean runOwn) {
-        Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap;
-        if (runOwn) {
-            writeHandlerMap = writeContext.currentWriteHolder().ownWriteHandlerMap();
-        } else {
-            writeHandlerMap = writeContext.currentWriteHolder().writeHandlerMap();
-        }
-        return writeHandlerMap.get(clazz);
-    }
 }

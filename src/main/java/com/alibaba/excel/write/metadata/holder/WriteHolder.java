@@ -1,10 +1,6 @@
 package com.alibaba.excel.write.metadata.holder;
 
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.excel.metadata.ConfigurationHolder;
-import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 
 /**
@@ -20,20 +16,6 @@ public interface WriteHolder extends ConfigurationHolder {
      * @return
      */
     ExcelWriteHeadProperty excelWriteHeadProperty();
-
-    /**
-     * What handler does the currently operated cell need to execute
-     *
-     * @return
-     */
-    Map<Class<? extends WriteHandler>, List<WriteHandler>> writeHandlerMap();
-
-    /**
-     * create your own write handler.
-     *
-     * @return
-     */
-    Map<Class<? extends WriteHandler>, List<WriteHandler>> ownWriteHandlerMap();
 
     /**
      * Is to determine if a field needs to be ignored

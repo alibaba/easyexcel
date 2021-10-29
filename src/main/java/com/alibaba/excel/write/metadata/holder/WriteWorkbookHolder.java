@@ -259,8 +259,6 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (writeCellStyle == null) {
             return originCellStyle;
         }
-        WriteCellStyle tempWriteCellStyle = new WriteCellStyle();
-        WriteCellStyle.merge(writeCellStyle, tempWriteCellStyle);
 
         short styleIndex = -1;
         Font originFont = null;
@@ -277,14 +275,17 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
         Map<WriteCellStyle, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
             key -> MapUtils.newHashMap());
-        CellStyle cellStyle = cellStyleMap.get(tempWriteCellStyle);
+        CellStyle cellStyle = cellStyleMap.get(writeCellStyle);
         if (cellStyle != null) {
             return cellStyle;
         }
         if (log.isDebugEnabled()) {
-            log.info("create new style:{},{}", tempWriteCellStyle, originCellStyle);
+            log.info("create new style:{},{}", writeCellStyle, originCellStyle);
         }
-        cellStyle = StyleUtil.buildCellStyle(workbook, originCellStyle, writeCellStyle);
+        WriteCellStyle tempWriteCellStyle = new WriteCellStyle();
+        WriteCellStyle.merge(writeCellStyle, tempWriteCellStyle);
+
+        cellStyle = StyleUtil.buildCellStyle(workbook, originCellStyle, tempWriteCellStyle);
         Short dataFormat = createDataFormat(tempWriteCellStyle.getDataFormatData(), useCache);
         if (dataFormat != null) {
             cellStyle.setDataFormat(dataFormat);

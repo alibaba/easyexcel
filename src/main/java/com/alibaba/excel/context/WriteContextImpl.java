@@ -127,7 +127,7 @@ public class WriteContextImpl implements WriteContext {
 
         // Workbook handler need to supplementary execution
         WorkbookWriteHandlerContext workbookWriteHandlerContext = WriteHandlerUtils.createWorkbookWriteHandlerContext(
-            this, true);
+            this);
         WriteHandlerUtils.beforeWorkbookCreate(workbookWriteHandlerContext, true);
         WriteHandlerUtils.afterWorkbookCreate(workbookWriteHandlerContext, true);
 
@@ -310,12 +310,11 @@ public class WriteContextImpl implements WriteContext {
 
         // Workbook and sheet handler need to supplementary execution
         WorkbookWriteHandlerContext workbookWriteHandlerContext = WriteHandlerUtils.createWorkbookWriteHandlerContext(
-            this, true);
+            this);
         WriteHandlerUtils.beforeWorkbookCreate(workbookWriteHandlerContext, true);
         WriteHandlerUtils.afterWorkbookCreate(workbookWriteHandlerContext, true);
 
-        SheetWriteHandlerContext sheetWriteHandlerContext = WriteHandlerUtils.createSheetWriteHandlerContext(this,
-            true);
+        SheetWriteHandlerContext sheetWriteHandlerContext = WriteHandlerUtils.createSheetWriteHandlerContext(this);
         WriteHandlerUtils.beforeSheetCreate(sheetWriteHandlerContext, true);
         WriteHandlerUtils.afterSheetCreate(sheetWriteHandlerContext, true);
 

@@ -7,7 +7,6 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.handler.impl.FillStyleCellWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
@@ -106,16 +105,11 @@ public class CellWriteHandlerContext {
      */
     private Boolean ignoreFillStyle;
 
-    /**
-     * handler
-     */
-    private List<WriteHandler> handlerList;
-
     public CellWriteHandlerContext(WriteContext writeContext,
         WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder,
         WriteTableHolder writeTableHolder, Row row, Integer rowIndex, Cell cell, Integer columnIndex,
         Integer relativeRowIndex, Head headData, List<WriteCellData<?>> cellDataList, WriteCellData<?> firstCellData,
-        Boolean head, ExcelContentProperty excelContentProperty, List<WriteHandler> handlerList) {
+        Boolean head, ExcelContentProperty excelContentProperty) {
         this.writeContext = writeContext;
         this.writeWorkbookHolder = writeWorkbookHolder;
         this.writeSheetHolder = writeSheetHolder;
@@ -130,6 +124,5 @@ public class CellWriteHandlerContext {
         this.firstCellData = firstCellData;
         this.head = head;
         this.excelContentProperty = excelContentProperty;
-        this.handlerList = handlerList;
     }
 }

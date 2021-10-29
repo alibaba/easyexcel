@@ -1,9 +1,6 @@
 package com.alibaba.excel.write.handler.context;
 
-import java.util.List;
-
 import com.alibaba.excel.context.WriteContext;
-import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
@@ -52,9 +49,4 @@ public class RowWriteHandlerContext {
      * Nullable.It is null in the case of fill data.
      */
     private Boolean head;
-
-    /**
-     * handler
-     */
-    private List<WriteHandler> handlerList;
 }
