@@ -86,9 +86,9 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         // set style table
         setStylesTable(xlsxReadWorkbookHolder, xssfReader);
 
-        sheetList = new ArrayList<ReadSheet>();
-        sheetMap = new HashMap<Integer, InputStream>();
-        commentsTableMap = new HashMap<Integer, CommentsTable>();
+        sheetList = new ArrayList<>();
+        sheetMap = new HashMap<>();
+        commentsTableMap = new HashMap<>();
         XSSFReader.SheetIterator ite = (XSSFReader.SheetIterator)xssfReader.getSheetsData();
         int index = 0;
         if (!ite.hasNext()) {
