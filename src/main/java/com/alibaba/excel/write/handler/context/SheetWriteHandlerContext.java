@@ -1,6 +1,9 @@
 package com.alibaba.excel.write.handler.context;
 
+import java.util.List;
+
 import com.alibaba.excel.context.WriteContext;
+import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
@@ -27,4 +30,13 @@ public class SheetWriteHandlerContext {
      * sheet
      */
     private WriteSheetHolder writeSheetHolder;
+
+    /**
+     * handler
+     */
+    private List<WriteHandler> handlerList;
+    /**
+     * handler
+     */
+    private List<WriteHandler> ownHandlerList;
 }

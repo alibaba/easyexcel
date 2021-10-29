@@ -15,10 +15,15 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
+import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
+import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
+import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
+import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
@@ -83,13 +88,16 @@ public class WriteContextImpl implements WriteContext {
             LOGGER.debug("Begin to Initialization 'WriteContextImpl'");
         }
         initCurrentWorkbookHolder(writeWorkbook);
-        WriteHandlerUtils.beforeWorkbookCreate(this);
+
+        WorkbookWriteHandlerContext workbookWriteHandlerContext = WriteHandlerUtils.createWorkbookWriteHandlerContext(
+            this);
+        WriteHandlerUtils.beforeWorkbookCreate(workbookWriteHandlerContext);
         try {
             WorkBookUtil.createWorkBook(writeWorkbookHolder);
         } catch (Exception e) {
             throw new ExcelGenerateException("Create workbook failure", e);
         }
-        WriteHandlerUtils.afterWorkbookCreate(this);
+        WriteHandlerUtils.afterWorkbookCreate(workbookWriteHandlerContext);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Initialization 'WriteContextImpl' complete");
         }
@@ -118,8 +126,10 @@ public class WriteContextImpl implements WriteContext {
         initCurrentSheetHolder(writeSheet);
 
         // Workbook handler need to supplementary execution
-        WriteHandlerUtils.beforeWorkbookCreate(this, true);
-        WriteHandlerUtils.afterWorkbookCreate(this, true);
+        WorkbookWriteHandlerContext workbookWriteHandlerContext = WriteHandlerUtils.createWorkbookWriteHandlerContext(
+            this, true);
+        WriteHandlerUtils.beforeWorkbookCreate(workbookWriteHandlerContext, true);
+        WriteHandlerUtils.afterWorkbookCreate(workbookWriteHandlerContext, true);
 
         // Initialization current sheet
         initSheet(writeType);
@@ -162,7 +172,8 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void initSheet(WriteTypeEnum writeType) {
-        WriteHandlerUtils.beforeSheetCreate(this);
+        SheetWriteHandlerContext sheetWriteHandlerContext = WriteHandlerUtils.createSheetWriteHandlerContext(this);
+        WriteHandlerUtils.beforeSheetCreate(sheetWriteHandlerContext);
         Sheet currentSheet;
         try {
             if (writeSheetHolder.getSheetNo() != null) {
@@ -192,7 +203,7 @@ public class WriteContextImpl implements WriteContext {
             currentSheet = createSheet();
         }
         writeSheetHolder.setSheet(currentSheet);
-        WriteHandlerUtils.afterSheetCreate(this);
+        WriteHandlerUtils.afterSheetCreate(sheetWriteHandlerContext);
         if (WriteTypeEnum.ADD.equals(writeType)) {
             // Initialization head
             initHead(writeSheetHolder.excelWriteHeadProperty());
@@ -226,11 +237,17 @@ public class WriteContextImpl implements WriteContext {
         }
         for (int relativeRowIndex = 0, i = newRowIndex; i < excelWriteHeadProperty.getHeadRowNumber()
             + newRowIndex; i++, relativeRowIndex++) {
-            WriteHandlerUtils.beforeRowCreate(this, newRowIndex, relativeRowIndex, Boolean.TRUE);
+
+            RowWriteHandlerContext rowWriteHandlerContext = WriteHandlerUtils.createRowWriteHandlerContext(this,
+                newRowIndex, relativeRowIndex, Boolean.TRUE);
+            WriteHandlerUtils.beforeRowCreate(rowWriteHandlerContext);
+
             Row row = WorkBookUtil.createRow(writeSheetHolder.getSheet(), i);
-            WriteHandlerUtils.afterRowCreate(this, row, relativeRowIndex, Boolean.TRUE);
-            addOneRowOfHeadDataToExcel(row, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
-            WriteHandlerUtils.afterRowDispose(this, row, relativeRowIndex, Boolean.TRUE);
+            rowWriteHandlerContext.setRow(row);
+
+            WriteHandlerUtils.afterRowCreate(rowWriteHandlerContext);
+            addOneRowOfHeadDataToExcel(row, i, excelWriteHeadProperty.getHeadMap(), relativeRowIndex);
+            WriteHandlerUtils.afterRowDispose(rowWriteHandlerContext);
         }
     }
 
@@ -242,25 +259,29 @@ public class WriteContextImpl implements WriteContext {
         }
     }
 
-    private void addOneRowOfHeadDataToExcel(Row row, Map<Integer, Head> headMap, int relativeRowIndex) {
+    private void addOneRowOfHeadDataToExcel(Row row, Integer rowIndex, Map<Integer, Head> headMap,
+        int relativeRowIndex) {
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Head head = entry.getValue();
             int columnIndex = entry.getKey();
             ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(null,
                 currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), head.getFieldName());
 
-            WriteHandlerUtils.beforeCellCreate(this, row, head, columnIndex, relativeRowIndex, Boolean.TRUE,
-                excelContentProperty);
+            CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(this, row,
+                rowIndex, head, columnIndex, relativeRowIndex, Boolean.TRUE, excelContentProperty);
+            WriteHandlerUtils.beforeCellCreate(cellWriteHandlerContext);
 
             Cell cell = row.createCell(columnIndex);
+            cellWriteHandlerContext.setCell(cell);
 
-            WriteHandlerUtils.afterCellCreate(this, cell, head, relativeRowIndex, Boolean.TRUE, excelContentProperty);
+            WriteHandlerUtils.afterCellCreate(cellWriteHandlerContext);
 
             WriteCellData<String> writeCellData = new WriteCellData<>(head.getHeadNameList().get(relativeRowIndex));
             cell.setCellValue(writeCellData.getStringValue());
+            cellWriteHandlerContext.setCellDataList(ListUtils.newArrayList(writeCellData));
+            cellWriteHandlerContext.setFirstCellData(writeCellData);
 
-            WriteHandlerUtils.afterCellDispose(this, writeCellData, cell, head, relativeRowIndex, Boolean.TRUE,
-                excelContentProperty);
+            WriteHandlerUtils.afterCellDispose(cellWriteHandlerContext);
         }
     }
 
@@ -288,10 +309,15 @@ public class WriteContextImpl implements WriteContext {
         initCurrentTableHolder(writeTable);
 
         // Workbook and sheet handler need to supplementary execution
-        WriteHandlerUtils.beforeWorkbookCreate(this, true);
-        WriteHandlerUtils.afterWorkbookCreate(this, true);
-        WriteHandlerUtils.beforeSheetCreate(this, true);
-        WriteHandlerUtils.afterSheetCreate(this, true);
+        WorkbookWriteHandlerContext workbookWriteHandlerContext = WriteHandlerUtils.createWorkbookWriteHandlerContext(
+            this, true);
+        WriteHandlerUtils.beforeWorkbookCreate(workbookWriteHandlerContext, true);
+        WriteHandlerUtils.afterWorkbookCreate(workbookWriteHandlerContext, true);
+
+        SheetWriteHandlerContext sheetWriteHandlerContext = WriteHandlerUtils.createSheetWriteHandlerContext(this,
+            true);
+        WriteHandlerUtils.beforeSheetCreate(sheetWriteHandlerContext, true);
+        WriteHandlerUtils.afterSheetCreate(sheetWriteHandlerContext, true);
 
         initHead(writeTableHolder.excelWriteHeadProperty());
     }
@@ -331,7 +357,7 @@ public class WriteContextImpl implements WriteContext {
             return;
         }
         finished = true;
-        WriteHandlerUtils.afterWorkbookDispose(this);
+        WriteHandlerUtils.afterWorkbookDispose(writeWorkbookHolder.getWorkbookWriteHandlerContext());
         if (writeWorkbookHolder == null) {
             return;
         }

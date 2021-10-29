@@ -430,4 +430,5 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     public boolean automaticMergeHead() {
         return getAutomaticMergeHead();
     }
+
 }

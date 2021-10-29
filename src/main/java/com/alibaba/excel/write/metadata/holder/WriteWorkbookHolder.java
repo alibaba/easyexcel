@@ -19,6 +19,7 @@ import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.IoUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
@@ -142,6 +143,11 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * Used to data format.
      */
     private Map<DataFormatData, Short> dataFormatMap;
+
+    /**
+     * handler context
+     */
+    private WorkbookWriteHandlerContext workbookWriteHandlerContext;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null);

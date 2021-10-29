@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKeyBuild.ConverterKey;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,7 +39,7 @@ public abstract class AbstractHolder implements ConfigurationHolder {
      * <p>
      * Write key:
      */
-    private Map<String, Converter<?>> converterMap;
+    private Map<ConverterKey, Converter<?>> converterMap;
 
     public AbstractHolder(BasicParameter basicParameter, AbstractHolder prentAbstractHolder) {
         this.newInitialization = Boolean.TRUE;
@@ -81,7 +82,7 @@ public abstract class AbstractHolder implements ConfigurationHolder {
     }
 
     @Override
-    public Map<String, Converter<?>> converterMap() {
+    public Map<ConverterKey, Converter<?>> converterMap() {
         return getConverterMap();
     }
 

@@ -1,16 +1,14 @@
 package com.alibaba.excel.write.handler.impl;
 
-import java.util.List;
-
 import com.alibaba.excel.constant.OrderConstant;
 import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 
 /**
@@ -28,12 +26,12 @@ public class FillStyleCellWriteHandler implements CellWriteHandler {
 
     @Override
     public void afterCellDispose(CellWriteHandlerContext context) {
-        List<WriteCellData<?>> cellDataList = context.getCellDataList();
-        if (CollectionUtils.size(cellDataList) != 1) {
+        if (BooleanUtils.isTrue(context.getIgnoreFillStyle())) {
             return;
         }
+
         WriteCellData<?> cellData = context.getFirstCellData();
-        if (cellData.getAnalysisCell() != null && !cellData.getAnalysisCell().getOnlyOneVariable()) {
+        if (cellData == null) {
             return;
         }
         WriteCellStyle writeCellStyle = cellData.getWriteCellStyle();

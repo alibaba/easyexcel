@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.util.ListUtils;
-import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
 import lombok.Data;
@@ -56,10 +55,6 @@ public class WriteCellData<T> extends CellData<T> {
      */
     private CellStyle originCellStyle;
 
-    /**
-     * Only in the case of the fill is not null
-     */
-    private AnalysisCell analysisCell;
 
     public WriteCellData(String stringValue) {
         this(CellDataTypeEnum.STRING, stringValue);
