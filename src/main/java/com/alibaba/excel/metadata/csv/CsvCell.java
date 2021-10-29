@@ -10,7 +10,7 @@ import com.alibaba.excel.enums.NumericCellTypeEnum;
 import com.alibaba.excel.metadata.data.FormulaData;
 
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.ss.SpreadsheetVersion;
@@ -29,7 +29,9 @@ import org.apache.poi.ss.util.CellRangeAddress;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CsvCell extends CellBase {
 
     /**

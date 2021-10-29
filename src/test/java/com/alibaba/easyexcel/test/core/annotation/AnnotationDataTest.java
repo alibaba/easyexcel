@@ -8,6 +8,11 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.DateUtils;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -46,6 +51,20 @@ public class AnnotationDataTest {
         EasyExcel.write().file(file).head(AnnotationData.class).sheet().doWrite(data());
         EasyExcel.read().file(file).head(AnnotationData.class).registerReadListener(new AnnotationDataListener())
             .sheet().doRead();
+
+        if (file == fileCsv) {
+            return;
+        }
+
+        Workbook workbook = WorkbookFactory.create(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Assert.assertEquals(50 * 256, sheet.getColumnWidth(0), 0);
+
+        Row row0 = sheet.getRow(0);
+        Assert.assertEquals(1000, row0.getHeight(), 0);
+
+        Row row1 = sheet.getRow(1);
+        Assert.assertEquals(2000, row1.getHeight(), 0);
     }
 
     private List<AnnotationData> data() throws Exception {

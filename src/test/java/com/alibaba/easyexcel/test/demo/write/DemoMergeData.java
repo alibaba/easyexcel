@@ -5,14 +5,18 @@ import java.util.Date;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 样式的数据类
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 // 将第6-7行的2-3列合并成一个单元格
 // @OnceAbsoluteMerge(firstRowIndex = 5, lastRowIndex = 6, firstColumnIndex = 1, lastColumnIndex = 2)
 public class DemoMergeData {

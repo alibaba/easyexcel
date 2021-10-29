@@ -8,6 +8,7 @@ import java.util.List;
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
@@ -146,5 +147,21 @@ public class Lock2Test {
         file.delete();
         Thread.sleep(500 * 1000);
     }
+
+    @Test
+    public void test335() throws Exception {
+
+
+        LOGGER.info("reslut:{}", PositionUtils.getCol("A10",null));
+        LOGGER.info("reslut:{}", PositionUtils.getRow("A10"));
+        LOGGER.info("reslut:{}", PositionUtils.getCol("AB10",null));
+        LOGGER.info("reslut:{}", PositionUtils.getRow("AB10"));
+
+        //LOGGER.info("reslut:{}", PositionUtils2.getCol("A10",null));
+        //LOGGER.info("reslut:{}", PositionUtils2.getRow("A10"));
+        //LOGGER.info("reslut:{}", PositionUtils2.getCol("AB10",null));
+        //LOGGER.info("reslut:{}", PositionUtils2.getRow("AB10"));
+    }
+
 
 }

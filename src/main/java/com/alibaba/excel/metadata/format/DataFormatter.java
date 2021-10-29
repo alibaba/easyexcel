@@ -111,6 +111,8 @@ public class DataFormatter {
      */
     private static final Pattern alternateGrouping = Pattern.compile("([#0]([^.#0])[#0]{3})");
 
+    private static final Pattern E_NOTATION_PATTERN = Pattern.compile("E(\\d)");
+
     /**
      * Cells formatted with a date or time format and which contain invalid date or time values show 255 pound signs
      * ("#").
@@ -644,8 +646,7 @@ public class DataFormatter {
      */
     private String getFormattedNumberString(BigDecimal data, Short dataFormat, String dataFormatString) {
         Format numberFormat = getFormat(data.doubleValue(), dataFormat, dataFormatString);
-        String formatted = numberFormat.format(data);
-        return formatted.replaceFirst("E(\\d)", "E+$1"); // to match Excel's E-notation
+        return E_NOTATION_PATTERN.matcher(numberFormat.format(data)).replaceFirst("E+$1");
     }
 
     /**

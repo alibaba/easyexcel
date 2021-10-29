@@ -2,13 +2,17 @@ package com.alibaba.easyexcel.test.temp;
 
 import java.util.List;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class StyleData {
     private byte[] byteValue;
     private Byte[] byteValue2;

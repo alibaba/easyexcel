@@ -8,10 +8,12 @@ import java.util.Map;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
+import com.alibaba.excel.converters.ConverterKeyBuild.ConverterKey;
 import com.alibaba.excel.converters.NullableObjectConverter;
 import com.alibaba.excel.converters.ReadConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
@@ -80,7 +82,7 @@ public class ConverterUtils {
      * @return
      */
     public static Object convertToJavaObject(ReadCellData<?> cellData, Field field,
-        ExcelContentProperty contentProperty, Map<String, Converter<?>> converterMap, AnalysisContext context,
+        ExcelContentProperty contentProperty, Map<ConverterKey, Converter<?>> converterMap, AnalysisContext context,
         Integer rowIndex, Integer columnIndex) {
         Class<?> clazz;
         if (field == null) {
@@ -88,7 +90,7 @@ public class ConverterUtils {
         } else {
             clazz = field.getType();
         }
-        if (clazz == ReadCellData.class) {
+        if (clazz == CellData.class || clazz == ReadCellData.class) {
             Class<?> classGeneric = getClassGeneric(field.getGenericType());
             ReadCellData<Object> cellDataReturn = cellData.clone();
             cellDataReturn.setData(doConvertToJavaObject(cellData, classGeneric, contentProperty, converterMap,
@@ -126,7 +128,7 @@ public class ConverterUtils {
      * @return
      */
     private static Object doConvertToJavaObject(ReadCellData<?> cellData, Class<?> clazz,
-        ExcelContentProperty contentProperty, Map<String, Converter<?>> converterMap, AnalysisContext context,
+        ExcelContentProperty contentProperty, Map<ConverterKey, Converter<?>> converterMap, AnalysisContext context,
         Integer rowIndex, Integer columnIndex) {
         Converter<?> converter = null;
         if (contentProperty != null) {

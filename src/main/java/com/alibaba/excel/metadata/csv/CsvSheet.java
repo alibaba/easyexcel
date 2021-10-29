@@ -16,7 +16,9 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.poi.ss.usermodel.AutoFilter;
@@ -45,7 +47,9 @@ import org.apache.poi.ss.util.PaneInformation;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CsvSheet implements Sheet, Closeable {
     /**
      * workbook

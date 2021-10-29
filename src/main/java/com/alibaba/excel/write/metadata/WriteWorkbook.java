@@ -7,14 +7,18 @@ import java.nio.charset.Charset;
 
 import com.alibaba.excel.support.ExcelTypeEnum;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Workbook
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class WriteWorkbook extends WriteBasicParameter {
     /**
      * Excel type.The default is xlsx

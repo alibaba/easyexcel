@@ -91,7 +91,6 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
                 "Can not instance class: " + excelReadHeadProperty.getHeadClazz().getName(), e);
         }
         Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();
-        Map<String, Object> map = MapUtils.newHashMapWithExpectedSize(headMap.size());
         BeanMap dataMap = BeanMapUtils.create(resultModel);
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Integer index = entry.getKey();
@@ -105,10 +104,9 @@ public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCe
                 ClassUtils.declaredExcelContentProperty(dataMap, readSheetHolder.excelReadHeadProperty().getHeadClazz(),
                     fieldName), readSheetHolder.converterMap(), context, context.readRowHolder().getRowIndex(), index);
             if (value != null) {
-                map.put(fieldName, value);
+                dataMap.put(fieldName, value);
             }
         }
-        dataMap.putAll(map);
         return resultModel;
     }
 

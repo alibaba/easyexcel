@@ -1,13 +1,18 @@
 package com.alibaba.easyexcel.test.temp.issue1662;
 
-import com.alibaba.excel.annotation.ExcelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.Date;
 
-@Data
+import com.alibaba.excel.annotation.ExcelProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Data1662 {

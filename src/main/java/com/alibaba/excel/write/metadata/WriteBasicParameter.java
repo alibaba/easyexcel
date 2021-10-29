@@ -7,14 +7,18 @@ import java.util.List;
 import com.alibaba.excel.metadata.BasicParameter;
 import com.alibaba.excel.write.handler.WriteHandler;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Write basic parameter
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class WriteBasicParameter extends BasicParameter {
     /**
      * Writes the head relative to the existing contents of the sheet. Indexes are zero-based.

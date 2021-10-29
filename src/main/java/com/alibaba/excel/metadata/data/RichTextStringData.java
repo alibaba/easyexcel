@@ -6,15 +6,19 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * rich text string
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class RichTextStringData {
     private String textString;
@@ -25,7 +29,9 @@ public class RichTextStringData {
         this.textString = textString;
     }
 
-    @Data
+    @Getter
+    @Setter
+    @EqualsAndHashCode
     @AllArgsConstructor
     public static class IntervalFont {
         private Integer startIndex;

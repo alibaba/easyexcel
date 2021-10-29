@@ -5,14 +5,18 @@ import java.util.Locale;
 
 import com.alibaba.excel.converters.Converter;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Basic parameter
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class BasicParameter {
     /**
      * You can only choose one of the {@link BasicParameter#head} and {@link BasicParameter#clazz}

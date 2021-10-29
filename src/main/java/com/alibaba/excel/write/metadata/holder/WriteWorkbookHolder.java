@@ -19,11 +19,15 @@ import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.IoUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StyleUtil;
+import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString.Exclude;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -39,7 +43,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @Slf4j
 public class WriteWorkbookHolder extends AbstractWriteHolder {
     /***
@@ -142,6 +148,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * Used to data format.
      */
     private Map<DataFormatData, Short> dataFormatMap;
+
+    /**
+     * handler context
+     */
+    @Exclude
+    private WorkbookWriteHandlerContext workbookWriteHandlerContext;
 
     public WriteWorkbookHolder(WriteWorkbook writeWorkbook) {
         super(writeWorkbook, null);
@@ -253,8 +265,6 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         if (writeCellStyle == null) {
             return originCellStyle;
         }
-        WriteCellStyle tempWriteCellStyle = new WriteCellStyle();
-        WriteCellStyle.merge(writeCellStyle, tempWriteCellStyle);
 
         short styleIndex = -1;
         Font originFont = null;
@@ -271,14 +281,17 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
 
         Map<WriteCellStyle, CellStyle> cellStyleMap = cellStyleIndexMap.computeIfAbsent(styleIndex,
             key -> MapUtils.newHashMap());
-        CellStyle cellStyle = cellStyleMap.get(tempWriteCellStyle);
+        CellStyle cellStyle = cellStyleMap.get(writeCellStyle);
         if (cellStyle != null) {
             return cellStyle;
         }
         if (log.isDebugEnabled()) {
-            log.info("create new style:{},{}", tempWriteCellStyle, originCellStyle);
+            log.info("create new style:{},{}", writeCellStyle, originCellStyle);
         }
-        cellStyle = StyleUtil.buildCellStyle(workbook, originCellStyle, writeCellStyle);
+        WriteCellStyle tempWriteCellStyle = new WriteCellStyle();
+        WriteCellStyle.merge(writeCellStyle, tempWriteCellStyle);
+
+        cellStyle = StyleUtil.buildCellStyle(workbook, originCellStyle, tempWriteCellStyle);
         Short dataFormat = createDataFormat(tempWriteCellStyle.getDataFormatData(), useCache);
         if (dataFormat != null) {
             cellStyle.setDataFormat(dataFormat);

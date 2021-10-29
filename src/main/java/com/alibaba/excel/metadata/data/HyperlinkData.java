@@ -1,14 +1,17 @@
 package com.alibaba.excel.metadata.data;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * hyperlink
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class HyperlinkData extends CoordinateData {
     /**
      * Depending on the hyperlink type it can be URL, e-mail, path to a file, etc

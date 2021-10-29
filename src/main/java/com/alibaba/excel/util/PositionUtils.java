@@ -1,10 +1,6 @@
 package com.alibaba.excel.util;
 
-import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.poi.ss.util.CellReference;
 
 /**
  * @author jipengfei
@@ -18,14 +14,6 @@ public class PositionUtils {
 
     private PositionUtils() {}
 
-    public static int getRowByRowTagt(String rowTagt) {
-        int row = 0;
-        if (rowTagt != null) {
-            row = Integer.parseInt(rowTagt) - 1;
-        }
-        return row;
-    }
-
     public static int getRowByRowTagt(String rowTagt, Integer before) {
         int row;
         if (rowTagt != null) {
@@ -37,47 +25,40 @@ public class PositionUtils {
             }
             return before + 1;
         }
-
     }
 
     public static int getRow(String currentCellIndex) {
-        if (currentCellIndex != null) {
-            int plingPos = currentCellIndex.lastIndexOf(SHEET_NAME_DELIMITER);
-            String cell = currentCellIndex.substring(plingPos + 1).toUpperCase(Locale.ROOT);
-            Matcher matcher = CELL_REF_PATTERN.matcher(cell);
-            if (!matcher.matches()) {
-                throw new IllegalArgumentException("Invalid CellReference: " + currentCellIndex);
-            }
-            String row = matcher.group(2);
-            return Integer.parseInt(row) - 1;
+        if (currentCellIndex == null) {
+            return -1;
         }
-        return -1;
+        int firstNumber = currentCellIndex.length() - 1;
+        for (; firstNumber >= 0; firstNumber--) {
+            char c = currentCellIndex.charAt(firstNumber);
+            if (c < '0' || c > '9') {
+                break;
+            }
+        }
+        return Integer.parseUnsignedInt(currentCellIndex.substring(firstNumber + 1)) - 1;
     }
 
     public static int getCol(String currentCellIndex, Integer before) {
-        if (currentCellIndex != null) {
-            int plingPos = currentCellIndex.lastIndexOf(SHEET_NAME_DELIMITER);
-            String cell = currentCellIndex.substring(plingPos + 1).toUpperCase(Locale.ROOT);
-            Matcher matcher = CELL_REF_PATTERN.matcher(cell);
-            if (!matcher.matches()) {
-                throw new IllegalArgumentException("Invalid CellReference: " + currentCellIndex);
-            }
-            String col = matcher.group(1);
-
-            if (col.length() > 0 && col.charAt(0) == REDUNDANT_CHARACTERS) {
-                col = col.substring(1);
-            }
-            if (col.length() == 0) {
-                return -1;
-            } else {
-                return CellReference.convertColStringToIndex(col);
-            }
-        } else {
+        if (currentCellIndex == null) {
             if (before == null) {
                 before = -1;
             }
             return before + 1;
         }
+        int firstNumber = currentCellIndex.charAt(0) == REDUNDANT_CHARACTERS ? 1 : 0;
+        int col = 0;
+        for (; firstNumber < currentCellIndex.length(); firstNumber++) {
+            char c = currentCellIndex.charAt(firstNumber);
+            boolean isNotLetter = c == REDUNDANT_CHARACTERS || (c >= '0' && c <= '9');
+            if (isNotLetter) {
+                break;
+            }
+            col = col * 26 + Character.toUpperCase(c) - 'A' + 1;
+        }
+        return col - 1;
     }
 
 }

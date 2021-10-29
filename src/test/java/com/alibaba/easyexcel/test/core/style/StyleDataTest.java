@@ -209,7 +209,10 @@ public class StyleDataTest {
 
         Workbook workbook = WorkbookFactory.create(file);
         Sheet sheet = workbook.getSheetAt(0);
+        Assert.assertEquals(50 * 256, sheet.getColumnWidth(0), 0);
+
         Row row0 = sheet.getRow(0);
+        Assert.assertEquals(800, row0.getHeight(), 0);
         Cell cell00 = row0.getCell(0);
         Assert.assertArrayEquals(new byte[] {-1, -1, 0}, StyleTestUtils.getFillForegroundColor(cell00));
         Assert.assertArrayEquals(new byte[] {-128, -128, 0}, StyleTestUtils.getFontColor(cell00, workbook));
@@ -221,6 +224,7 @@ public class StyleDataTest {
         Assert.assertEquals(20, StyleTestUtils.getFontHeightInPoints(cell01, workbook));
 
         Row row1 = sheet.getRow(1);
+        Assert.assertEquals(1000, row1.getHeight(), 0);
         Cell cell10 = row1.getCell(0);
         Assert.assertArrayEquals(new byte[] {0, -128, -128}, StyleTestUtils.getFillForegroundColor(cell10));
         Assert.assertArrayEquals(new byte[] {0, 51, 102}, StyleTestUtils.getFontColor(cell10, workbook));

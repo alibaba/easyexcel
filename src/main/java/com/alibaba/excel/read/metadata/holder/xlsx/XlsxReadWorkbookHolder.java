@@ -1,19 +1,31 @@
 package com.alibaba.excel.read.metadata.holder.xlsx;
 
+import java.util.Map;
+
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xssf.model.StylesTable;
-
+import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.MapUtils;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
 /**
  * Workbook holder
  *
  * @author Jiaju Zhuang
  */
+@Getter
+@Setter
+@EqualsAndHashCode
 public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
     /**
      * Package
@@ -34,34 +46,30 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
      * Current style information
      */
     private StylesTable stylesTable;
+    /**
+     * cache data format
+     */
+    private Map<Integer, DataFormatData> dataFormatDataCache;
 
     public XlsxReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);
         this.saxParserFactoryName = readWorkbook.getXlsxSAXParserFactoryName();
         setExcelType(ExcelTypeEnum.XLSX);
+        dataFormatDataCache = MapUtils.newHashMap();
     }
 
-    public OPCPackage getOpcPackage() {
-        return opcPackage;
+    public DataFormatData dataFormatData(int dateFormatIndexInteger) {
+        return dataFormatDataCache.computeIfAbsent(dateFormatIndexInteger, key -> {
+            DataFormatData dataFormatData = new DataFormatData();
+            if (stylesTable == null) {
+                return null;
+            }
+            XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+            dataFormatData.setIndex(xssfCellStyle.getDataFormat());
+            dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormatData.getIndex(),
+                xssfCellStyle.getDataFormatString(), globalConfiguration().getLocale()));
+            return dataFormatData;
+        });
     }
 
-    public void setOpcPackage(OPCPackage opcPackage) {
-        this.opcPackage = opcPackage;
-    }
-
-    public String getSaxParserFactoryName() {
-        return saxParserFactoryName;
-    }
-
-    public void setSaxParserFactoryName(String saxParserFactoryName) {
-        this.saxParserFactoryName = saxParserFactoryName;
-    }
-
-    public StylesTable getStylesTable() {
-        return stylesTable;
-    }
-
-    public void setStylesTable(StylesTable stylesTable) {
-        this.stylesTable = stylesTable;
-    }
 }

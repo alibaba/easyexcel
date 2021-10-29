@@ -14,14 +14,18 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Workbook
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ReadWorkbook extends ReadBasicParameter {
     /**
      * Excel type

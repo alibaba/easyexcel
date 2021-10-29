@@ -4,14 +4,18 @@ import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Data convert exception
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ExcelDataConvertException extends RuntimeException {
     /**
      * NotNull.
@@ -32,7 +36,7 @@ public class ExcelDataConvertException extends RuntimeException {
      */
     private ExcelContentProperty excelContentProperty;
 
-    public ExcelDataConvertException(Integer rowIndex, Integer columnIndex, CellData cellData,
+    public ExcelDataConvertException(Integer rowIndex, Integer columnIndex, CellData<?> cellData,
         ExcelContentProperty excelContentProperty, String message) {
         super(message);
         this.rowIndex = rowIndex;
@@ -41,7 +45,7 @@ public class ExcelDataConvertException extends RuntimeException {
         this.excelContentProperty = excelContentProperty;
     }
 
-    public ExcelDataConvertException(Integer rowIndex, Integer columnIndex, CellData cellData,
+    public ExcelDataConvertException(Integer rowIndex, Integer columnIndex, CellData<?> cellData,
         ExcelContentProperty excelContentProperty, String message, Throwable cause) {
         super(message, cause);
         this.rowIndex = rowIndex;

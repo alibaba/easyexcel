@@ -4,14 +4,18 @@ import java.util.List;
 
 import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Read the cells of the template while populating the data.
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class AnalysisCell {
     private int columnIndex;
     private int rowIndex;

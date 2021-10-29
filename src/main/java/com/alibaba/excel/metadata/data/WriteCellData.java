@@ -8,11 +8,12 @@ import java.util.List;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.util.ListUtils;
-import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.poi.ss.usermodel.CellStyle;
 
 /**
@@ -20,7 +21,9 @@ import org.apache.poi.ss.usermodel.CellStyle;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class WriteCellData<T> extends CellData<T> {
     /**
@@ -56,10 +59,6 @@ public class WriteCellData<T> extends CellData<T> {
      */
     private CellStyle originCellStyle;
 
-    /**
-     * Only in the case of the fill is not null
-     */
-    private AnalysisCell analysisCell;
 
     public WriteCellData(String stringValue) {
         this(CellDataTypeEnum.STRING, stringValue);

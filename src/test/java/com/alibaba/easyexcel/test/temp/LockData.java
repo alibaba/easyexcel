@@ -2,14 +2,18 @@ package com.alibaba.easyexcel.test.temp;
 
 import com.alibaba.excel.annotation.format.NumberFormat;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 基础数据类.这里的排序和excel里面的排序一致
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class LockData {
     @NumberFormat("#.##%")
     private Double string0;

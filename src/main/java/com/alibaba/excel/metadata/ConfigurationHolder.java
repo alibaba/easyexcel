@@ -3,9 +3,9 @@ package com.alibaba.excel.metadata;
 import java.util.Map;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.converters.ConverterKeyBuild.ConverterKey;
 
 /**
- *
  * Get the corresponding holder
  *
  * @author Jiaju Zhuang
@@ -13,7 +13,6 @@ import com.alibaba.excel.converters.Converter;
 public interface ConfigurationHolder extends Holder {
 
     /**
-     *
      * Record whether it's new or from cache
      *
      * @return Record whether it's new or from cache
@@ -32,5 +31,5 @@ public interface ConfigurationHolder extends Holder {
      *
      * @return Converter
      */
-    Map<String, Converter<?>> converterMap();
+    Map<ConverterKey, Converter<?>> converterMap();
 }

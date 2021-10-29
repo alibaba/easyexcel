@@ -1,11 +1,15 @@
 package com.alibaba.easyexcel.test.core.dataformat;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class DateFormatData {
     private String date;
     private String dateStringCn;

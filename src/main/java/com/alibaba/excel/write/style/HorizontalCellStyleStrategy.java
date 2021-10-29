@@ -7,7 +7,9 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -15,7 +17,9 @@ import org.apache.commons.collections4.CollectionUtils;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class HorizontalCellStyleStrategy extends AbstractCellStyleStrategy {
 
     private WriteCellStyle headWriteCellStyle;

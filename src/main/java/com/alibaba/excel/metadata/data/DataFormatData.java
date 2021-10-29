@@ -2,14 +2,18 @@ package com.alibaba.excel.metadata.data;
 
 import com.alibaba.excel.util.StringUtils;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * data format
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class DataFormatData {
     /**
      * index

@@ -2,12 +2,16 @@ package com.alibaba.easyexcel.test.core.annotation;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class AnnotationIndexAndNameData {
     @ExcelProperty(value = "第四个", index = 4)
     private String index4;

@@ -4,7 +4,9 @@ import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.csv.CSVFormat;
 
 /**
@@ -12,7 +14,9 @@ import org.apache.commons.csv.CSVFormat;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CsvReadWorkbookHolder extends ReadWorkbookHolder {
 
     private CSVFormat csvFormat;

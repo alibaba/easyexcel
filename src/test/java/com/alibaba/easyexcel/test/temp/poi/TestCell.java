@@ -4,14 +4,18 @@ import java.util.List;
 
 import com.alibaba.excel.metadata.data.CellData;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * TODO
  *
  * @author 罗成
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class TestCell {
     private CellData<?> c1;
     private CellData<List<String>> c2;

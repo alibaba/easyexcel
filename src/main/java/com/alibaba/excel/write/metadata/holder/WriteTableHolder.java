@@ -3,14 +3,18 @@ package com.alibaba.excel.write.metadata.holder;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.write.metadata.WriteTable;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * sheet holder
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class WriteTableHolder extends AbstractWriteHolder {
     /***
      * poi sheet

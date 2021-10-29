@@ -1,5 +1,7 @@
 package com.alibaba.excel.util;
 
+import java.util.Optional;
+
 import com.alibaba.excel.constant.BuiltinFormats;
 import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.data.HyperlinkData;
@@ -189,7 +191,11 @@ public class StyleUtil {
             xssfFont.setStrikeout(xssfOriginFont.getStrikeout());
             // Colors cannot be overwritten
             if (writeFont == null || writeFont.getColor() == null) {
-                xssfFont.setColor(new XSSFColor(xssfOriginFont.getXSSFColor().getRGB(), null));
+                xssfFont.setColor(Optional.of(xssfOriginFont)
+                    .map(XSSFFont::getXSSFColor)
+                    .map(XSSFColor::getRGB)
+                    .map(rgb -> new XSSFColor(rgb, null))
+                    .orElse(null));
             }
             xssfFont.setTypeOffset(xssfOriginFont.getTypeOffset());
             xssfFont.setUnderline(xssfOriginFont.getUnderline());

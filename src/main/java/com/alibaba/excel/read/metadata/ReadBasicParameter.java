@@ -6,14 +6,18 @@ import java.util.List;
 import com.alibaba.excel.metadata.BasicParameter;
 import com.alibaba.excel.read.listener.ReadListener;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Read basic parameter
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ReadBasicParameter extends BasicParameter {
     /**
      * Count the number of added heads when read sheet.

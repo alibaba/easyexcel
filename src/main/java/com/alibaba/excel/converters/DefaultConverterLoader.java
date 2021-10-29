@@ -2,6 +2,7 @@ package com.alibaba.excel.converters;
 
 import java.util.Map;
 
+import com.alibaba.excel.converters.ConverterKeyBuild.ConverterKey;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalBooleanConverter;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalNumberConverter;
 import com.alibaba.excel.converters.bigdecimal.BigDecimalStringConverter;
@@ -52,8 +53,8 @@ import com.alibaba.excel.util.MapUtils;
  * @author Jiaju Zhuang
  */
 public class DefaultConverterLoader {
-    private static Map<String, Converter<?>> defaultWriteConverter;
-    private static Map<String, Converter<?>> allConverter;
+    private static Map<ConverterKey, Converter<?>> defaultWriteConverter;
+    private static Map<ConverterKey, Converter<?>> allConverter;
 
     static {
         initDefaultWriteConverter();
@@ -153,7 +154,7 @@ public class DefaultConverterLoader {
      *
      * @return
      */
-    public static Map<String, Converter<?>> loadDefaultWriteConverter() {
+    public static Map<ConverterKey, Converter<?>> loadDefaultWriteConverter() {
         return defaultWriteConverter;
     }
 
@@ -171,7 +172,7 @@ public class DefaultConverterLoader {
      *
      * @return
      */
-    public static Map<String, Converter<?>> loadDefaultReadConverter() {
+    public static Map<ConverterKey, Converter<?>> loadDefaultReadConverter() {
         return loadAllConverter();
     }
 
@@ -180,7 +181,7 @@ public class DefaultConverterLoader {
      *
      * @return
      */
-    public static Map<String, Converter<?>> loadAllConverter() {
+    public static Map<ConverterKey, Converter<?>> loadAllConverter() {
         return allConverter;
     }
 

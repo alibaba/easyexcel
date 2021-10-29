@@ -2,14 +2,18 @@ package com.alibaba.excel.metadata;
 
 import java.util.Locale;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Global configuration
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class GlobalConfiguration {
     /**
      * Automatic trim includes sheet name and content

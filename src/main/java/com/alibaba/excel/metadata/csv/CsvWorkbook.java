@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.formula.udf.UDFFinder;
@@ -26,7 +28,9 @@ import org.apache.poi.ss.usermodel.Workbook;
  *
  * @author Jiaju Zhuang
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class CsvWorkbook implements Workbook {
     /**
      * output

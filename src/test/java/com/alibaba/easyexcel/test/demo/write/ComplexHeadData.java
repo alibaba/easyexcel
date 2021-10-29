@@ -4,14 +4,18 @@ import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 复杂头数据.这里最终效果是第一行就一个主标题，第二行分类
  *
  * @author Jiaju Zhuang
  **/
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ComplexHeadData {
     @ExcelProperty({"主标题", "字符串标题"})
     private String string;
