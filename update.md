@@ -1,6 +1,8 @@
 # 3.0.2
 * 大幅提升读写性能
 * 修复列宽注解没用的bug [Issue #2151](https://github.com/alibaba/easyexcel/issues/2151)
+* 修复`CellData`接收失败的的bug [Issue #2147](https://github.com/alibaba/easyexcel/issues/2147)
+
 
 # 3.0.1
 * 升级到正式版

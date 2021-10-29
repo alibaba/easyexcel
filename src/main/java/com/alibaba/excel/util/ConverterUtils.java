@@ -13,6 +13,7 @@ import com.alibaba.excel.converters.NullableObjectConverter;
 import com.alibaba.excel.converters.ReadConverterContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
@@ -89,7 +90,7 @@ public class ConverterUtils {
         } else {
             clazz = field.getType();
         }
-        if (clazz == ReadCellData.class) {
+        if (clazz == CellData.class || clazz == ReadCellData.class) {
             Class<?> classGeneric = getClassGeneric(field.getGenericType());
             ReadCellData<Object> cellDataReturn = cellData.clone();
             cellDataReturn.setData(doConvertToJavaObject(cellData, classGeneric, contentProperty, converterMap,
