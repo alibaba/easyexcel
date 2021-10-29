@@ -32,6 +32,7 @@ public class LargeDataTest {
     private static File template07;
     private static File fileCsv;
     private static File fileWrite07;
+    private static File fileWriteTemp07;
     private static File fileWritePoi07;
 
     private int i = 0;
@@ -40,14 +41,14 @@ public class LargeDataTest {
     public static void init() {
         fileFill07 = TestFileUtil.createNewFile("largefill07.xlsx");
         fileWrite07 = TestFileUtil.createNewFile("large" + File.separator + "fileWrite07.xlsx");
+        fileWriteTemp07 = TestFileUtil.createNewFile("large" + File.separator + "fileWriteTemp07.xlsx");
         fileWritePoi07 = TestFileUtil.createNewFile("large" + File.separator + "fileWritePoi07.xlsx");
         template07 = TestFileUtil.readFile("large" + File.separator + "fill.xlsx");
         fileCsv = TestFileUtil.createNewFile("largefileCsv.csv");
     }
 
     @Test
-    public void t01Read()  throws Exception{
-        Thread.sleep(10*1000L);
+    public void t01Read() throws Exception {
         long start = System.currentTimeMillis();
         EasyExcel.read(TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx", LargeData.class,
             new LargeDataListener()).headRowNumber(2).sheet().doRead();
@@ -86,9 +87,16 @@ public class LargeDataTest {
 
     @Test
     public void t04Write() throws Exception {
-        long start = System.currentTimeMillis();
-        ExcelWriter excelWriter = EasyExcel.write(fileWrite07, LargeData.class).build();
+        ExcelWriter excelWriter = EasyExcel.write(fileWriteTemp07, LargeData.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
+        for (int j = 0; j < 2; j++) {
+            excelWriter.write(data(), writeSheet);
+        }
+        excelWriter.finish();
+
+        long start = System.currentTimeMillis();
+        excelWriter = EasyExcel.write(fileWrite07, LargeData.class).build();
+        writeSheet = EasyExcel.writerSheet().build();
         for (int j = 0; j < 100; j++) {
             excelWriter.write(data(), writeSheet);
             LOGGER.info("{} write success.", j);
@@ -116,7 +124,8 @@ public class LargeDataTest {
         }
         long costPoi = System.currentTimeMillis() - start;
         LOGGER.info("poi write cost:{}", System.currentTimeMillis() - start);
-        Assert.assertTrue(costPoi * 3 > cost);
+        LOGGER.info("{} vs {}", cost, costPoi);
+        Assert.assertTrue(costPoi * 2 > cost);
     }
 
     private List<LargeData> data() {
