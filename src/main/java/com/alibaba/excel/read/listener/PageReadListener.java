@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.util.ListUtils;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 /**
  * page read listener
  *
@@ -40,7 +42,9 @@ public class PageReadListener<T> implements ReadListener<T> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        consumer.accept(cachedData);
+        if (CollectionUtils.isNotEmpty(cachedData)) {
+            consumer.accept(cachedData);
+        }
     }
 
 }
