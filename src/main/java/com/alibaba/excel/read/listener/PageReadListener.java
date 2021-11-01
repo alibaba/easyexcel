@@ -15,7 +15,7 @@ public class PageReadListener<T> implements ReadListener<T> {
     /**
      * Single handle the amount of data
      */
-    public static final int BATCH_COUNT = 3000;
+    public static int BATCH_COUNT = 3000;
     /**
      * Temporary storage of data
      */
@@ -34,7 +34,6 @@ public class PageReadListener<T> implements ReadListener<T> {
         cachedData.add(data);
         if (cachedData.size() >= BATCH_COUNT) {
             consumer.accept(cachedData);
-            // 存储完成清理 list
             cachedData = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
         }
     }
