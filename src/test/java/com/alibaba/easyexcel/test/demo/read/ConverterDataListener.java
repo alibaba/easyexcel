@@ -3,12 +3,12 @@ package com.alibaba.easyexcel.test.demo.read;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 模板的读取类
@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSON;
 public class ConverterDataListener extends AnalysisEventListener<ConverterData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConverterDataListener.class);
     /**
-     * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
+     * 每隔5条存储数据库，实际使用中可以100条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 5;
     List<ConverterData> list = new ArrayList<ConverterData>();

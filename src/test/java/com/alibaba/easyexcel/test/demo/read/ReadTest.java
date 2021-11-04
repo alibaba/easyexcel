@@ -64,7 +64,7 @@ public class ReadTest {
             /**
              * 单次缓存的数据量
              */
-            public static final int BATCH_COUNT = 3000;
+            public static final int BATCH_COUNT = 100;
             /**
              *临时存储
              */

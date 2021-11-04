@@ -24,7 +24,7 @@ import org.ehcache.config.units.MemoryUnit;
  */
 @Slf4j
 public class Ehcache implements ReadCache {
-    public static final int BATCH_COUNT = 1000;
+    public static final int BATCH_COUNT = 100;
     /**
      * Key index
      */

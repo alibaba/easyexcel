@@ -59,7 +59,7 @@ public class LargeDataTest {
     public void t02Fill() {
         ExcelWriter excelWriter = EasyExcel.write(fileFill07).withTemplate(template07).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        for (int j = 0; j < 100; j++) {
+        for (int j = 0; j < 5000; j++) {
             excelWriter.fill(data(), writeSheet);
             LOGGER.info("{} fill success.", j);
         }
@@ -72,7 +72,7 @@ public class LargeDataTest {
         long start = System.currentTimeMillis();
         ExcelWriter excelWriter = EasyExcel.write(fileCsv).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        for (int j = 0; j < 100; j++) {
+        for (int j = 0; j < 5000; j++) {
             excelWriter.write(data(), writeSheet);
             LOGGER.info("{} write success.", j);
         }
@@ -97,7 +97,7 @@ public class LargeDataTest {
         long start = System.currentTimeMillis();
         excelWriter = EasyExcel.write(fileWrite07, LargeData.class).build();
         writeSheet = EasyExcel.writerSheet().build();
-        for (int j = 0; j < 100; j++) {
+        for (int j = 0; j < 5000; j++) {
             excelWriter.write(data(), writeSheet);
             LOGGER.info("{} write success.", j);
         }
@@ -130,7 +130,7 @@ public class LargeDataTest {
 
     private List<LargeData> data() {
         List<LargeData> list = new ArrayList<>();
-        int size = i + 5000;
+        int size = i + 100;
         for (; i < size; i++) {
             LargeData largeData = new LargeData();
             list.add(largeData);

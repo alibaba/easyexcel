@@ -20,7 +20,7 @@ public class UploadDataListener extends AnalysisEventListener<UploadData> {
     private static final Logger LOGGER =
         LoggerFactory.getLogger(com.alibaba.easyexcel.test.demo.read.DemoDataListener.class);
     /**
-     * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
+     * 每隔5条存储数据库，实际使用中可以100条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 5;
     List<UploadData> list = new ArrayList<UploadData>();
