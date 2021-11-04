@@ -18,7 +18,9 @@ public class DemoExtraListener extends AnalysisEventListener<DemoExtraData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoDataListener.class);
 
     @Override
-    public void invoke(DemoExtraData data, AnalysisContext context) {}
+    public void invoke(DemoExtraData data, AnalysisContext context) {
+        LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
+    }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {}
@@ -33,12 +35,12 @@ public class DemoExtraListener extends AnalysisEventListener<DemoExtraData> {
                 break;
             case HYPERLINK:
                 if ("Sheet1!A1".equals(extra.getText())) {
-                    LOGGER.info("额外信息是超链接,在rowIndex:{},columnIndex;{},内容是:{}", extra.getRowIndex(),
+                LOGGER.info("额外信息是超链接,在rowIndex:{},columnIndex;{},内容是:{}", extra.getRowIndex(),
                         extra.getColumnIndex(), extra.getText());
                 } else if ("Sheet2!A1".equals(extra.getText())) {
                     LOGGER.info(
                         "额外信息是超链接,而且覆盖了一个区间,在firstRowIndex:{},firstColumnIndex;{},lastRowIndex:{},lastColumnIndex:{},"
-                            + "内容是:{}",
+                                + "内容是:{}",
                         extra.getFirstRowIndex(), extra.getFirstColumnIndex(), extra.getLastRowIndex(),
                         extra.getLastColumnIndex(), extra.getText());
                 } else {
