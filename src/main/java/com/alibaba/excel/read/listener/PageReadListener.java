@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.util.ListUtils;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 /**
  * page read listener
  *
@@ -15,7 +17,7 @@ public class PageReadListener<T> implements ReadListener<T> {
     /**
      * Single handle the amount of data
      */
-    public static final int BATCH_COUNT = 3000;
+    public static int BATCH_COUNT = 3000;
     /**
      * Temporary storage of data
      */
@@ -34,14 +36,15 @@ public class PageReadListener<T> implements ReadListener<T> {
         cachedData.add(data);
         if (cachedData.size() >= BATCH_COUNT) {
             consumer.accept(cachedData);
-            // 存储完成清理 list
             cachedData = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
         }
     }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        consumer.accept(cachedData);
+        if (CollectionUtils.isNotEmpty(cachedData)) {
+            consumer.accept(cachedData);
+        }
     }
 
 }
