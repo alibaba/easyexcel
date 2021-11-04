@@ -8,13 +8,16 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  * Annotation data test
  *
  * @author Jiaju Zhuang
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AnnotationIndexAndNameDataTest {
 
     private static File file07;

@@ -273,9 +273,11 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
 
             @Override
             protected WriteCellStyle headCellStyle(CellWriteHandlerContext context) {
-                ExcelContentProperty excelContentProperty = context.getExcelContentProperty();
-                return WriteCellStyle.build(excelContentProperty.getContentStyleProperty(),
-                    excelContentProperty.getContentFontProperty());
+                Head head = context.getHeadData();
+                if (head == null) {
+                    return null;
+                }
+                return WriteCellStyle.build(head.getHeadStyleProperty(), head.getHeadFontProperty());
             }
 
             @Override
