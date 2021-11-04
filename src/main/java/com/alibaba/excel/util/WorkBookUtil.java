@@ -26,8 +26,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class WorkBookUtil {
 
-    public static final int ROW_ACCESS_WINDOW_SIZE = 500;
-
     private WorkBookUtil() {}
 
     public static void createWorkBook(WriteWorkbookHolder writeWorkbookHolder) throws IOException {
@@ -39,7 +37,7 @@ public class WorkBookUtil {
                     if (writeWorkbookHolder.getInMemory()) {
                         writeWorkbookHolder.setWorkbook(xssfWorkbook);
                     } else {
-                        writeWorkbookHolder.setWorkbook(new SXSSFWorkbook(xssfWorkbook, ROW_ACCESS_WINDOW_SIZE));
+                        writeWorkbookHolder.setWorkbook(new SXSSFWorkbook(xssfWorkbook));
                     }
                     return;
                 }
@@ -47,7 +45,7 @@ public class WorkBookUtil {
                 if (writeWorkbookHolder.getInMemory()) {
                     workbook = new XSSFWorkbook();
                 } else {
-                    workbook = new SXSSFWorkbook(ROW_ACCESS_WINDOW_SIZE);
+                    workbook = new SXSSFWorkbook();
                 }
                 writeWorkbookHolder.setCachedWorkbook(workbook);
                 writeWorkbookHolder.setWorkbook(workbook);
