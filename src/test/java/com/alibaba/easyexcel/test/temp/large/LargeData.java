@@ -1,8 +1,8 @@
 package com.alibaba.easyexcel.test.temp.large;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-@Builder
+@NoArgsConstructor
 public class LargeData {
 
     private String str1;

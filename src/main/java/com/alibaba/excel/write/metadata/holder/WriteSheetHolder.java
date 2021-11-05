@@ -80,6 +80,10 @@ public class WriteSheetHolder extends AbstractWriteHolder {
 
     public WriteSheetHolder(WriteSheet writeSheet, WriteWorkbookHolder writeWorkbookHolder) {
         super(writeSheet, writeWorkbookHolder);
+
+        // init handler
+        initHandler(writeSheet, writeWorkbookHolder);
+
         this.writeSheet = writeSheet;
         if (writeSheet.getSheetNo() == null && StringUtils.isEmpty(writeSheet.getSheetName())) {
             this.sheetNo = 0;

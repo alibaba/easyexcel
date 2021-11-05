@@ -203,6 +203,21 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         // Initialization property
         this.excelWriteHeadProperty = new ExcelWriteHeadProperty(this, getClazz(), getHead());
 
+        // Set converterMap
+        if (parentAbstractWriteHolder == null) {
+            setConverterMap(DefaultConverterLoader.loadDefaultWriteConverter());
+        } else {
+            setConverterMap(new HashMap<>(parentAbstractWriteHolder.getConverterMap()));
+        }
+        if (writeBasicParameter.getCustomConverterList() != null
+            && !writeBasicParameter.getCustomConverterList().isEmpty()) {
+            for (Converter<?> converter : writeBasicParameter.getCustomConverterList()) {
+                getConverterMap().put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
+            }
+        }
+    }
+
+    protected void initHandler(WriteBasicParameter writeBasicParameter, AbstractWriteHolder parentAbstractWriteHolder) {
         // Set writeHandlerMap
         List<WriteHandler> handlerList = new ArrayList<>();
 
@@ -220,22 +235,12 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
                 handlerList.addAll(parentAbstractWriteHolder.getWriteHandlerList());
             }
         } else {
-            handlerList.addAll(DefaultWriteHandlerLoader.loadDefaultHandler(useDefaultStyle));
-        }
-        sortAndClearUpHandler(handlerList, false);
-
-        // Set converterMap
-        if (parentAbstractWriteHolder == null) {
-            setConverterMap(DefaultConverterLoader.loadDefaultWriteConverter());
-        } else {
-            setConverterMap(new HashMap<>(parentAbstractWriteHolder.getConverterMap()));
-        }
-        if (writeBasicParameter.getCustomConverterList() != null
-            && !writeBasicParameter.getCustomConverterList().isEmpty()) {
-            for (Converter<?> converter : writeBasicParameter.getCustomConverterList()) {
-                getConverterMap().put(ConverterKeyBuild.buildKey(converter.supportJavaTypeKey()), converter);
+            if (this instanceof WriteWorkbookHolder) {
+                handlerList.addAll(DefaultWriteHandlerLoader.loadDefaultHandler(useDefaultStyle,
+                    ((WriteWorkbookHolder)this).getExcelType()));
             }
         }
+        sortAndClearUpHandler(handlerList, false);
     }
 
     protected void initAnnotationConfig(List<WriteHandler> handlerList, WriteBasicParameter writeBasicParameter) {
