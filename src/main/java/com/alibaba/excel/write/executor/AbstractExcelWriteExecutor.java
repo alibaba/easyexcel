@@ -334,7 +334,8 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         }
         if (cellData == null || cellData.getType() == null) {
             throw new ExcelWriteDataConvertException(cellWriteHandlerContext,
-                "Convert data:" + cellWriteHandlerContext.getOriginalValue() + " return null, at row:"
+                "Convert data:" + cellWriteHandlerContext.getOriginalValue()
+                    + " return is null or return type is null, at row:"
                     + cellWriteHandlerContext.getRowIndex());
         }
         return cellData;
