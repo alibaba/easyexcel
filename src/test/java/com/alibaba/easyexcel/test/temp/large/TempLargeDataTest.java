@@ -133,10 +133,55 @@ public class TempLargeDataTest {
             ExcelWriter excelWriter = EasyExcel.write(fileWriteTemp07,
                 com.alibaba.easyexcel.test.core.large.LargeData.class).build();
             WriteSheet writeSheet = EasyExcel.writerSheet().build();
-            for (int j = 0; j < 2; j++) {
+            for (int j = 0; j < 5000; j++) {
                 excelWriter.write(data(), writeSheet);
             }
             excelWriter.finish();
+            LOGGER.info("{} 完成", index);
+        });
+    }
+
+    @Test
+    public void t04WriteExcelNo() throws Exception {
+        IntStream.rangeClosed(0, 10000).forEach(index -> {
+            ExcelWriter excelWriter = EasyExcel.write(fileWriteTemp07,
+                com.alibaba.easyexcel.test.core.large.LargeData.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+            for (int j = 0; j < 50; j++) {
+                excelWriter.write(data(), writeSheet);
+            }
+            excelWriter.finish();
+            LOGGER.info("{} 完成", index);
+        });
+    }
+
+    @Test
+    public void t04WriteExcelPoi() throws Exception {
+        IntStream.rangeClosed(0, 10000).forEach(index -> {
+            try (FileOutputStream fileOutputStream = new FileOutputStream(fileWritePoi07)) {
+                SXSSFWorkbook workbook = new SXSSFWorkbook(500);
+                //workbook.setCompressTempFiles(true);
+                SXSSFSheet sheet = workbook.createSheet("sheet1");
+                for (int i = 0; i < 100 * 50; i++) {
+                    SXSSFRow row = sheet.createRow(i);
+                    for (int j = 0; j < 25; j++) {
+                        String str = "str-" + j + "-" + i;
+                        //if (i + 10000 == j) {
+                            SXSSFCell cell = row.createCell(j);
+                            cell.setCellValue(str);
+                            //System.out.println(str);
+                        //}
+                    }
+                    if (i % 5000 == 0) {
+                        LOGGER.info("{} write success.", i);
+                    }
+                }
+                workbook.write(fileOutputStream);
+                workbook.dispose();
+                workbook.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             LOGGER.info("{} 完成", index);
         });
     }

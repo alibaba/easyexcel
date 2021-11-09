@@ -20,7 +20,7 @@ public @interface ContentLoopMerge {
      *
      * @return
      */
-    int eachRow() default -1;
+    int eachRow() default 1;
 
     /**
      * Extend column
