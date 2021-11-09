@@ -3,6 +3,7 @@ package com.alibaba.excel.write.handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.handler.impl.DefaultRowWriteHandler;
 import com.alibaba.excel.write.handler.impl.DimensionWorkbookWriteHandler;
 import com.alibaba.excel.write.handler.impl.FillStyleCellWriteHandler;
@@ -28,12 +29,30 @@ public class DefaultWriteHandlerLoader {
      *
      * @return
      */
-    public static List<WriteHandler> loadDefaultHandler(Boolean useDefaultStyle) {
+    public static List<WriteHandler> loadDefaultHandler(Boolean useDefaultStyle, ExcelTypeEnum excelType) {
         List<WriteHandler> handlerList = new ArrayList<>();
-        if (useDefaultStyle) {
-            handlerList.add(new DefaultStyle());
+        switch (excelType) {
+            case XLSX:
+                handlerList.add(new DimensionWorkbookWriteHandler());
+                handlerList.add(new DefaultRowWriteHandler());
+                handlerList.add(new FillStyleCellWriteHandler());
+                if (useDefaultStyle) {
+                    handlerList.add(new DefaultStyle());
+                }
+                break;
+            case XLS:
+                handlerList.add(new DefaultRowWriteHandler());
+                handlerList.add(new FillStyleCellWriteHandler());
+                if (useDefaultStyle) {
+                    handlerList.add(new DefaultStyle());
+                }
+                break;
+            case CSV:
+                handlerList.add(new DefaultRowWriteHandler());
+                break;
+            default:
+                break;
         }
-        handlerList.addAll(DEFAULT_WRITE_HANDLER_LIST);
         return handlerList;
     }
 

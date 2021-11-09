@@ -34,6 +34,9 @@ public class WriteTableHolder extends AbstractWriteHolder {
         this.parentWriteSheetHolder = writeSheetHolder;
         this.tableNo = writeTable.getTableNo();
         this.writeTable = writeTable;
+
+        // init handler
+        initHandler(writeTable, writeSheetHolder);
     }
 
     @Override

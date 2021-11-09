@@ -58,7 +58,8 @@ public interface RowWriteHandler extends WriteHandler {
         Integer relativeRowIndex, Boolean isHead) {}
 
     /**
-     * Called after all operations on the row have been completed.This method is not called when fill the data.
+     * Called after all operations on the row have been completed.
+     * In the case of the fill , may be called many times.
      *
      * @param context
      */
@@ -68,7 +69,8 @@ public interface RowWriteHandler extends WriteHandler {
     }
 
     /**
-     * Called after all operations on the row have been completed.This method is not called when fill the data.
+     * Called after all operations on the row have been completed.
+     * In the case of the fill , may be called many times.
      *
      * @param writeSheetHolder
      * @param writeTableHolder Nullable.It is null without using table writes.

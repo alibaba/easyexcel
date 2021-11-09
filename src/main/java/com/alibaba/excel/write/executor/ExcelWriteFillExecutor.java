@@ -200,6 +200,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
         Set<String> dataKeySet = new HashSet<>(dataMap.keySet());
 
+        RowWriteHandlerContext rowWriteHandlerContext = WriteHandlerUtils.createRowWriteHandlerContext(writeContext,
+            null, relativeRowIndex, Boolean.FALSE);
+
         for (AnalysisCell analysisCell : analysisCellList) {
             CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(
                 writeContext, null, analysisCell.getRowIndex(), null, analysisCell.getColumnIndex(),
@@ -215,7 +218,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(), variable);
                 cellWriteHandlerContext.setExcelContentProperty(excelContentProperty);
 
-                createCell(analysisCell, fillConfig, cellWriteHandlerContext);
+                createCell(analysisCell, fillConfig, cellWriteHandlerContext, rowWriteHandlerContext);
                 cellWriteHandlerContext.setOriginalValue(value);
                 cellWriteHandlerContext.setOriginalFieldClass(FieldUtils.getFieldClass(dataMap, variable, value));
 
@@ -236,7 +239,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 cellWriteHandlerContext.setExcelContentProperty(ExcelContentProperty.EMPTY);
                 cellWriteHandlerContext.setIgnoreFillStyle(Boolean.TRUE);
 
-                createCell(analysisCell, fillConfig, cellWriteHandlerContext);
+                createCell(analysisCell, fillConfig, cellWriteHandlerContext, rowWriteHandlerContext);
                 Cell cell = cellWriteHandlerContext.getCell();
 
                 for (String variable : analysisCell.getVariableList()) {
@@ -288,6 +291,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             }
             WriteHandlerUtils.afterCellDispose(cellWriteHandlerContext);
         }
+
+        // In the case of the fill line may be called many times
+        if (rowWriteHandlerContext.getRow() != null) {
+            WriteHandlerUtils.afterRowDispose(rowWriteHandlerContext);
+        }
     }
 
     private Integer getRelativeRowIndex() {
@@ -302,13 +310,16 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void createCell(AnalysisCell analysisCell, FillConfig fillConfig,
-        CellWriteHandlerContext cellWriteHandlerContext) {
+        CellWriteHandlerContext cellWriteHandlerContext, RowWriteHandlerContext rowWriteHandlerContext) {
         Sheet cachedSheet = writeContext.writeSheetHolder().getCachedSheet();
         if (WriteTemplateAnalysisCellTypeEnum.COMMON.equals(analysisCell.getCellType())) {
             Row row = cachedSheet.getRow(analysisCell.getRowIndex());
             cellWriteHandlerContext.setRow(row);
             Cell cell = row.getCell(analysisCell.getColumnIndex());
             cellWriteHandlerContext.setCell(cell);
+            rowWriteHandlerContext.setRow(row);
+            rowWriteHandlerContext.setRowIndex(analysisCell.getRowIndex());
+            return;
         }
         Sheet sheet = writeContext.writeSheetHolder().getSheet();
 
@@ -345,7 +356,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 throw new ExcelGenerateException("The wrong direction.");
         }
 
-        Row row = createRowIfNecessary(sheet, cachedSheet, lastRowIndex, fillConfig, analysisCell, isOriginalCell);
+        Row row = createRowIfNecessary(sheet, cachedSheet, lastRowIndex, fillConfig, analysisCell, isOriginalCell,
+            rowWriteHandlerContext);
         cellWriteHandlerContext.setRow(row);
 
         cellWriteHandlerContext.setRowIndex(lastRowIndex);
@@ -375,16 +387,17 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     private Row createRowIfNecessary(Sheet sheet, Sheet cachedSheet, Integer lastRowIndex, FillConfig fillConfig,
-        AnalysisCell analysisCell, boolean isOriginalCell) {
+        AnalysisCell analysisCell, boolean isOriginalCell, RowWriteHandlerContext rowWriteHandlerContext) {
+        rowWriteHandlerContext.setRowIndex(lastRowIndex);
         Row row = sheet.getRow(lastRowIndex);
         if (row != null) {
             checkRowHeight(analysisCell, fillConfig, isOriginalCell, row);
+            rowWriteHandlerContext.setRow(row);
             return row;
         }
         row = cachedSheet.getRow(lastRowIndex);
         if (row == null) {
-            RowWriteHandlerContext rowWriteHandlerContext = WriteHandlerUtils.createRowWriteHandlerContext(writeContext,
-                lastRowIndex, null, Boolean.FALSE);
+            rowWriteHandlerContext.setRowIndex(lastRowIndex);
             WriteHandlerUtils.beforeRowCreate(rowWriteHandlerContext);
 
             if (fillConfig.getForceNewRow()) {
@@ -405,6 +418,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             WriteHandlerUtils.afterRowCreate(rowWriteHandlerContext);
         } else {
             checkRowHeight(analysisCell, fillConfig, isOriginalCell, row);
+            rowWriteHandlerContext.setRow(row);
         }
         return row;
     }

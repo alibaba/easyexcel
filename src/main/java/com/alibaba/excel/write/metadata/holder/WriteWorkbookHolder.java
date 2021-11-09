@@ -199,6 +199,10 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
         } else {
             this.excelType = writeWorkbook.getExcelType();
         }
+
+        // init handler
+        initHandler(writeWorkbook, null);
+
         try {
             copyTemplate();
         } catch (IOException e) {

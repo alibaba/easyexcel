@@ -1,13 +1,10 @@
 package com.alibaba.excel.write.merge;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.util.CellRangeAddress;
-
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
-import com.alibaba.excel.write.handler.AbstractRowWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
+import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
+
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * The regions of the loop merge
@@ -55,15 +52,15 @@ public class LoopMergeStrategy implements RowWriteHandler {
     }
 
     @Override
-    public void afterRowDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
-        Integer relativeRowIndex, Boolean isHead) {
-        if (isHead) {
+    public void afterRowDispose(RowWriteHandlerContext context) {
+        if (context.getHead() || context.getRelativeRowIndex() == null) {
             return;
         }
-        if (relativeRowIndex % eachRow == 0) {
-            CellRangeAddress cellRangeAddress = new CellRangeAddress(row.getRowNum(), row.getRowNum() + eachRow - 1,
+        if (context.getRelativeRowIndex() % eachRow == 0) {
+            CellRangeAddress cellRangeAddress = new CellRangeAddress(context.getRowIndex(),
+                context.getRowIndex() + eachRow - 1,
                 columnIndex, columnIndex + columnExtend - 1);
-            writeSheetHolder.getSheet().addMergedRegionUnsafe(cellRangeAddress);
+            context.getWriteSheetHolder().getSheet().addMergedRegionUnsafe(cellRangeAddress);
         }
     }
 

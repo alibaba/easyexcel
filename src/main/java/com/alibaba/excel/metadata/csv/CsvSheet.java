@@ -85,7 +85,7 @@ public class CsvSheet implements Sheet, Closeable {
     public CsvSheet(CsvWorkbook csvWorkbook, Appendable out) {
         this.csvWorkbook = csvWorkbook;
         this.out = out;
-        this.rowCacheCount = 3000;
+        this.rowCacheCount = 100;
         this.csvFormat = CSVFormat.DEFAULT;
         this.lastRowIndex = -1;
     }
