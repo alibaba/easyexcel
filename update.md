@@ -1,3 +1,6 @@
+# 3.0.5
+* 修复`ReadListener` 转换异常不抛出的问题
+
 # 3.0.4
 * 调整读写默认大小，防止大批量写的时候可能会full gc
 * `fill`的情况新增 `afterRowDispose`事件

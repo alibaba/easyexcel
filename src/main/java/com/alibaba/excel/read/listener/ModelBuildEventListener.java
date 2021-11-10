@@ -23,7 +23,7 @@ import org.apache.commons.collections4.CollectionUtils;
  *
  * @author jipengfei
  */
-public class ModelBuildEventListener implements ReadListener<Map<Integer, ReadCellData<?>>> {
+public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<Integer, ReadCellData<?>>> {
 
     @Override
     public void invokeHead(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {

@@ -1,7 +1,6 @@
 package com.alibaba.easyexcel.test.demo.fill;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +10,8 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.enums.WriteDirectionEnum;
+import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
@@ -48,7 +49,7 @@ public class FillTest {
         // 方案2 根据Map填充
         fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";
         // 这里 会填充到第一个sheet， 然后文件流会自动关闭
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = MapUtils.newHashMap();
         map.put("name", "张三");
         map.put("number", 5.2);
         EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(map);
@@ -114,7 +115,7 @@ public class FillTest {
         FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
         excelWriter.fill(data(), fillConfig, writeSheet);
         excelWriter.fill(data(), fillConfig, writeSheet);
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = MapUtils.newHashMap();
         map.put("date", "2019年10月9日13:28:28");
         map.put("total", 1000);
         excelWriter.fill(map, writeSheet);
@@ -150,8 +151,8 @@ public class FillTest {
 
         // list 后面还有个统计 想办法手动写入
         // 这里偷懒直接用list 也可以用对象
-        List<List<String>> totalListList = new ArrayList<List<String>>();
-        List<String> totalList = new ArrayList<String>();
+        List<List<String>> totalListList = ListUtils.newArrayList();
+        List<String> totalList = ListUtils.newArrayList();
         totalListList.add(totalList);
         totalList.add(null);
         totalList.add(null);
@@ -227,7 +228,7 @@ public class FillTest {
     }
 
     private List<FillData> data() {
-        List<FillData> list = new ArrayList<FillData>();
+        List<FillData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
             FillData fillData = new FillData();
             list.add(fillData);

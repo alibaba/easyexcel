@@ -21,7 +21,9 @@ public interface ReadListener<T> extends Listener {
      * @param context
      * @throws Exception
      */
-    default void onException(Exception exception, AnalysisContext context) throws Exception {}
+    default void onException(Exception exception, AnalysisContext context) throws Exception {
+        throw exception;
+    }
 
     /**
      * When analysis one head row trigger invoke function.
