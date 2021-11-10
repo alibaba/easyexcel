@@ -100,6 +100,8 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
         }
 
         tempCellData.checkEmpty();
+        tempCellData.setRowIndex(xlsxReadSheetHolder.getRowIndex());
+        tempCellData.setColumnIndex(xlsxReadSheetHolder.getColumnIndex());
         xlsxReadSheetHolder.getCellMap().put(xlsxReadSheetHolder.getColumnIndex(), tempCellData);
     }
 }
