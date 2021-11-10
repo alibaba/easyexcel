@@ -21,7 +21,7 @@ public class PageReadListener<T> implements ReadListener<T> {
     /**
      * Temporary storage of data
      */
-    private List<T> cachedData = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    private List<T> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
     /**
      * consumer
      */
@@ -33,17 +33,17 @@ public class PageReadListener<T> implements ReadListener<T> {
 
     @Override
     public void invoke(T data, AnalysisContext context) {
-        cachedData.add(data);
-        if (cachedData.size() >= BATCH_COUNT) {
-            consumer.accept(cachedData);
-            cachedData = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+        cachedDataList.add(data);
+        if (cachedDataList.size() >= BATCH_COUNT) {
+            consumer.accept(cachedDataList);
+            cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
         }
     }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        if (CollectionUtils.isNotEmpty(cachedData)) {
-            consumer.accept(cachedData);
+        if (CollectionUtils.isNotEmpty(cachedDataList)) {
+            consumer.accept(cachedDataList);
         }
     }
 

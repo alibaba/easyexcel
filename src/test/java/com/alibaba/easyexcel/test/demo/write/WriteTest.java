@@ -29,6 +29,7 @@ import com.alibaba.excel.metadata.data.RichTextStringData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
@@ -263,18 +264,16 @@ public class WriteTest {
     @Test
     public void imageWrite() throws Exception {
         String fileName = TestFileUtil.getPath() + "imageWrite" + System.currentTimeMillis() + ".xlsx";
-        // 如果使用流 记得关闭
-        InputStream inputStream = null;
-        try {
-            List<ImageDemoData> list = new ArrayList<>();
+
+        String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
+        try (InputStream inputStream = FileUtils.openInputStream(new File(imagePath))) {
+            List<ImageDemoData> list =  ListUtils.newArrayList();
             ImageDemoData imageDemoData = new ImageDemoData();
             list.add(imageDemoData);
-            String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
             // 放入五种类型的图片 实际使用只要选一种即可
             imageDemoData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
             imageDemoData.setFile(new File(imagePath));
             imageDemoData.setString(imagePath);
-            inputStream = FileUtils.openInputStream(new File(imagePath));
             imageDemoData.setInputStream(inputStream);
             imageDemoData.setUrl(new URL(
                 "https://raw.githubusercontent.com/alibaba/easyexcel/master/src/test/resources/converter/img.jpg"));
@@ -328,10 +327,6 @@ public class WriteTest {
 
             // 写入数据
             EasyExcel.write(fileName, ImageDemoData.class).sheet().doWrite(list);
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
         }
     }
 
@@ -733,7 +728,7 @@ public class WriteTest {
     }
 
     private List<LongestMatchColumnWidthData> dataLong() {
-        List<LongestMatchColumnWidthData> list = new ArrayList<>();
+        List<LongestMatchColumnWidthData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
             LongestMatchColumnWidthData data = new LongestMatchColumnWidthData();
             data.setString("测试很长的字符串测试很长的字符串测试很长的字符串" + i);
@@ -745,12 +740,12 @@ public class WriteTest {
     }
 
     private List<List<String>> variableTitleHead() {
-        List<List<String>> list = new ArrayList<>();
-        List<String> head0 = new ArrayList<>();
+        List<List<String>> list = ListUtils.newArrayList();
+        List<String> head0 = ListUtils.newArrayList();
         head0.add("string" + System.currentTimeMillis());
-        List<String> head1 = new ArrayList<>();
+        List<String> head1 = ListUtils.newArrayList();
         head1.add("number" + System.currentTimeMillis());
-        List<String> head2 = new ArrayList<>();
+        List<String> head2 = ListUtils.newArrayList();
         head2.add("date" + System.currentTimeMillis());
         list.add(head0);
         list.add(head1);
@@ -759,12 +754,12 @@ public class WriteTest {
     }
 
     private List<List<String>> head() {
-        List<List<String>> list = new ArrayList<List<String>>();
-        List<String> head0 = new ArrayList<String>();
+        List<List<String>> list = ListUtils.newArrayList();
+        List<String> head0 = ListUtils.newArrayList();
         head0.add("字符串" + System.currentTimeMillis());
-        List<String> head1 = new ArrayList<String>();
+        List<String> head1 = ListUtils.newArrayList();
         head1.add("数字" + System.currentTimeMillis());
-        List<String> head2 = new ArrayList<String>();
+        List<String> head2 = ListUtils.newArrayList();
         head2.add("日期" + System.currentTimeMillis());
         list.add(head0);
         list.add(head1);
@@ -773,9 +768,9 @@ public class WriteTest {
     }
 
     private List<List<Object>> dataList() {
-        List<List<Object>> list = new ArrayList<>();
+        List<List<Object>> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
-            List<Object> data = new ArrayList<>();
+            List<Object> data = ListUtils.newArrayList();
             data.add("字符串" + i);
             data.add(new Date());
             data.add(0.56);
@@ -785,7 +780,7 @@ public class WriteTest {
     }
 
     private List<DemoData> data() {
-        List<DemoData> list = new ArrayList<>();
+        List<DemoData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
             DemoData data = new DemoData();
             data.setString("字符串" + i);

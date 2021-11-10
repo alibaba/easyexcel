@@ -1,7 +1,6 @@
 package com.alibaba.easyexcel.test.demo.read;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +16,12 @@ import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson.JSON;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 读的常见写法
@@ -30,9 +29,8 @@ import org.slf4j.LoggerFactory;
  * @author Jiaju Zhuang
  */
 @Ignore
+@Slf4j
 public class ReadTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReadTest.class);
 
     /**
      * 最简单的读
@@ -52,7 +50,7 @@ public class ReadTest {
         // 这里每次会读取3000条数据 然后返回过来 直接调用使用数据就行
         EasyExcel.read(fileName, DemoData.class, new PageReadListener<DemoData>(dataList -> {
             for (DemoData demoData : dataList) {
-                LOGGER.info("读取到一条数据{}", JSON.toJSONString(demoData));
+                log.info("读取到一条数据{}", JSON.toJSONString(demoData));
             }
         })).sheet().doRead();
 
@@ -68,15 +66,15 @@ public class ReadTest {
             /**
              *临时存储
              */
-            private List<DemoData> cachedData = new ArrayList<>(BATCH_COUNT);
+            private List<DemoData> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
 
             @Override
             public void invoke(DemoData data, AnalysisContext context) {
-                cachedData.add(data);
-                if (cachedData.size() >= BATCH_COUNT) {
+                cachedDataList.add(data);
+                if (cachedDataList.size() >= BATCH_COUNT) {
                     saveData();
                     // 存储完成清理 list
-                    cachedData = new ArrayList<>(BATCH_COUNT);
+                    cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
                 }
             }
 
@@ -89,8 +87,8 @@ public class ReadTest {
              * 加上存储数据库
              */
             private void saveData() {
-                LOGGER.info("{}条数据，开始存储数据库！", cachedData.size());
-                LOGGER.info("存储数据库成功！");
+                log.info("{}条数据，开始存储数据库！", cachedDataList.size());
+                log.info("存储数据库成功！");
             }
         }).sheet().doRead();
 
@@ -304,14 +302,14 @@ public class ReadTest {
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 同步读取会自动finish
         List<DemoData> list = EasyExcel.read(fileName).head(DemoData.class).sheet().doReadSync();
         for (DemoData data : list) {
-            LOGGER.info("读取到数据:{}", JSON.toJSONString(data));
+            log.info("读取到数据:{}", JSON.toJSONString(data));
         }
 
         // 这里 也可以不指定class，返回一个list，然后读取第一个sheet 同步读取会自动finish
         List<Map<Integer, String>> listMap = EasyExcel.read(fileName).sheet().doReadSync();
         for (Map<Integer, String> data : listMap) {
             // 返回每条数据的键值对 表示所在的列 和所在列的值
-            LOGGER.info("读取到数据:{}", JSON.toJSONString(data));
+            log.info("读取到数据:{}", JSON.toJSONString(data));
         }
     }
 

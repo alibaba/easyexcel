@@ -49,6 +49,7 @@ public class DefaultWriteHandlerLoader {
                 break;
             case CSV:
                 handlerList.add(new DefaultRowWriteHandler());
+                handlerList.add(new FillStyleCellWriteHandler());
                 break;
             default:
                 break;

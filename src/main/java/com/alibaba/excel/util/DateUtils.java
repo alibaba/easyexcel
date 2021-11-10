@@ -216,9 +216,9 @@ public class DateUtils {
             isDateCache = MapUtils.newHashMap();
             DATE_THREAD_LOCAL.set(isDateCache);
         } else {
-            Boolean isDateCachedData = isDateCache.get(formatIndex);
-            if (isDateCachedData != null) {
-                return isDateCachedData;
+            Boolean isDatecachedDataList = isDateCache.get(formatIndex);
+            if (isDatecachedDataList != null) {
+                return isDatecachedDataList;
             }
         }
         boolean isDate = isADateFormatUncached(formatIndex, formatString);

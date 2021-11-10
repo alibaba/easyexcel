@@ -1,48 +1,48 @@
 package com.alibaba.easyexcel.test.demo.read;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson.JSON;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 读取头
  *
  * @author Jiaju Zhuang
  */
-public class CellDataDemoHeadDataListener extends AnalysisEventListener<CellDataReadDemoData> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CellDataDemoHeadDataListener.class);
+@Slf4j
+public class CellDataDemoHeadDataListener implements ReadListener<CellDataReadDemoData> {
     /**
      * 每隔5条存储数据库，实际使用中可以100条，然后清理list ，方便内存回收
      */
     private static final int BATCH_COUNT = 100;
-    List<CellDataReadDemoData> list = new ArrayList<CellDataReadDemoData>();
+
+    private List<CellDataReadDemoData> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
 
     @Override
     public void invoke(CellDataReadDemoData data, AnalysisContext context) {
-        LOGGER.info("解析到一条数据:{}", JSON.toJSONString(data));
-        if (list.size() >= BATCH_COUNT) {
+        log.info("解析到一条数据:{}", JSON.toJSONString(data));
+        if (cachedDataList.size() >= BATCH_COUNT) {
             saveData();
-            list.clear();
+            cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
         }
     }
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         saveData();
-        LOGGER.info("所有数据解析完成！");
+        log.info("所有数据解析完成！");
     }
 
     /**
      * 加上存储数据库
      */
     private void saveData() {
-        LOGGER.info("{}条数据，开始存储数据库！", list.size());
-        LOGGER.info("存储数据库成功！");
+        log.info("{}条数据，开始存储数据库！", cachedDataList.size());
+        log.info("存储数据库成功！");
     }
 }
