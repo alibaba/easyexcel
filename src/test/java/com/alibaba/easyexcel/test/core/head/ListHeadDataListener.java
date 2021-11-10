@@ -4,21 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.fastjson.JSON;
+
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.fastjson.JSON;
-
 /**
  * @author Jiaju Zhuang
  */
-public class ListHeadDataListener extends AnalysisEventListener<Map<Integer, String>> {
+public class ListHeadDataListener implements ReadListener<Map<Integer, String>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NoHeadData.class);
     List<Map<Integer, String>> list = new ArrayList<Map<Integer, String>>();
+
+    @Override
+    public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context) {
+        Assert.assertNotNull(context.readRowHolder().getRowIndex());
+        headMap.forEach((key, value) -> {
+            Assert.assertEquals(value.getRowIndex(), context.readRowHolder().getRowIndex());
+            Assert.assertEquals(value.getColumnIndex(), key);
+        });
+    }
 
     @Override
     public void invoke(Map<Integer, String> data, AnalysisContext context) {
