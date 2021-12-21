@@ -66,7 +66,7 @@ public class WriteTest {
      */
     @Test
     public void simpleWrite() {
-        // 注意 simpleWrite在数据量不大的情况下可以使用 ，数据量大参照 重复多次写入
+        // 注意 simpleWrite在数据量不大的情况下可以使用（5000以内，具体也要看实际情况），数据量大参照 重复多次写入
 
         // 写法1 JDK8+
         // since: 3.0.0-beta1
