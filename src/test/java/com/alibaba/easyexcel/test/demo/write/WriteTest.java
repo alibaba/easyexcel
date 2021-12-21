@@ -66,6 +66,8 @@ public class WriteTest {
      */
     @Test
     public void simpleWrite() {
+        // 注意 simpleWrite在数据量不大的情况下可以使用 ，数据量大参照 重复多次写入
+
         // 写法1 JDK8+
         // since: 3.0.0-beta1
         String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
