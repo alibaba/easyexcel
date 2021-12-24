@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+ReadTest -> EasyExcelFactory: read(file)
+EasyExcelFactory -> ExcelReadSheetBuilder: doReadSync()
+ExcelReadSheetBuilder -> ExcelReader: read(sheet)
+ExcelReader -> ExcelAnalyserImpl: analysis(sheetList, readAll)
+ExcelAnalyserImpl -> XlsxSaxAnalyser: execute()
+XlsxSaxAnalyser -> XlsxSaxAnalyser: parseXmlSource(文件流, 标签处理器)
+note right: 这个地方, 可以自定义 openXml 的解析器
+XlsxSaxAnalyser -> AbstractSAXParser: setContentHandler(ContentHandler) 设置处理器
+XlsxSaxAnalyser -> SAXParserImpl: parse(InputSource) 开始解析
+SAXParserImpl -> AbstractSAXParser: parse(InputSource) 交给父类解析
+AbstractSAXParser -> XMLParser: parse(InputSource) 又交给父类解析
+XMLParser -> XML11Configuration: parse(XMLInputSource) 又往上？
+
+
+openXmlJar -> XlsxRowHandler: startElement 解析 xml 之后，调用 Row Handler
+note over CountTagHandler: 处理最后一行, 找到最后一行的下标
+XlsxRowHandler -> CountTagHandler: startElement 过滤需要处理的 Tag
+CountTagHandler -> XlsxRowHandler: 记录最大行
+note over RowTagHandler: 只是将行下标设置一下而已
+XlsxRowHandler -> RowTagHandler: startElement 获得 行 数据 (行标签处理器)
+RowTagHandler -> XlsxRowHandler: 继续找一行中的下一个 属性
+note over CellTagHandler: 单元格数据最终的解析入口
+XlsxRowHandler -> CellTagHandler: startElement "c" 对应 Cell 数据
+note over XlsxReadWorkbookHolder: 这个地方，就可以获取到单元格的样式、字体样式等
+CellTagHandler -> XlsxReadWorkbookHolder: dataFormatData() 获取数据格式化
+XlsxReadWorkbookHolder -> CellTagHandler
+CellTagHandler -> XlsxRowHandler
+XlsxRowHandler -> openXmlJar
+openXmlJar -> XlsxSaxAnalyser
+XlsxSaxAnalyser -> ExcelAnalyserImpl
+ExcelAnalyserImpl -> ExcelReader
+ExcelReader -> ExcelReadSheetBuilder
+ExcelReadSheetBuilder -> EasyExcelFactory
+EasyExcelFactory -> ReadTest
+
+
+@enduml
