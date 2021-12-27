@@ -80,6 +80,11 @@ public class WriteContextImpl implements WriteContext {
      */
     private boolean finished = false;
 
+    /**
+     * Lock for finished
+     */
+    final private Object lock = new Object();
+
     public WriteContextImpl(WriteWorkbook writeWorkbook) {
         if (writeWorkbook == null) {
             throw new IllegalArgumentException("Workbook argument cannot be null");
@@ -352,10 +357,13 @@ public class WriteContextImpl implements WriteContext {
 
     @Override
     public void finish(boolean onException) {
-        if (finished) {
-            return;
+        synchronized (lock) {
+            if (finished) {
+                return;
+            }
+            finished = true;
         }
-        finished = true;
+
         WriteHandlerUtils.afterWorkbookDispose(writeWorkbookHolder.getWorkbookWriteHandlerContext());
         if (writeWorkbookHolder == null) {
             return;
