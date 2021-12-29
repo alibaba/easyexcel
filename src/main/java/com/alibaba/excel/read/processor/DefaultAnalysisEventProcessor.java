@@ -37,7 +37,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
     public void endRow(AnalysisContext analysisContext) {
         if (RowTypeEnum.EMPTY.equals(analysisContext.readRowHolder().getRowType())) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.warn("Empty row!");
+                LOGGER.debug("Empty row!");
             }
             if (analysisContext.readWorkbookHolder().getIgnoreEmptyRow()) {
                 return;
