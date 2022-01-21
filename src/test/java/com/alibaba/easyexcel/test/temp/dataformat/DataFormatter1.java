@@ -17,45 +17,23 @@
  */
 package com.alibaba.easyexcel.test.temp.dataformat;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.FieldPosition;
-import java.text.Format;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.alibaba.excel.analysis.ExcelAnalyserImpl;
 import org.apache.poi.ss.format.CellFormat;
 import org.apache.poi.ss.format.CellFormatResult;
 import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.ExcelGeneralNumberFormat;
-import org.apache.poi.ss.usermodel.ExcelNumberFormat;
-import org.apache.poi.ss.usermodel.ExcelStyleDateFormatter;
-import org.apache.poi.ss.usermodel.FormulaError;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.FractionFormat;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.util.LocaleUtil;
-import org.apache.poi.util.POILogFactory;
-import org.apache.poi.util.POILogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * DataFormatter contains methods for formatting the value stored in an Cell. This can be useful for reports and GUI
@@ -227,7 +205,7 @@ public class DataFormatter1 implements Observer {
     private final LocaleChangeObservable localeChangedObservable = new LocaleChangeObservable();
 
     /** For logging any problems we find */
-    private static POILogger logger = POILogFactory.getLogger(DataFormatter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExcelAnalyserImpl.class);
 
     /**
      * Creates a formatter using the {@link Locale#getDefault() default locale}.
@@ -346,7 +324,7 @@ public class DataFormatter1 implements Observer {
                 // Wrap and return (non-cachable - CellFormat does that)
                 return new CellFormatResultWrapper(cfmt.apply(cellValueO));
             } catch (Exception e) {
-                logger.log(POILogger.WARN, "Formatting failed for format " + formatStr + ", falling back", e);
+                logger.error("Formatting failed for format {}, falling back", formatStr, e.getMessage());
             }
         }
 
@@ -589,7 +567,7 @@ public class DataFormatter1 implements Observer {
         try {
             return new ExcelStyleDateFormatter(formatStr, dateSymbols);
         } catch (IllegalArgumentException iae) {
-            logger.log(POILogger.DEBUG, "Formatting failed for format " + formatStr + ", falling back", iae);
+            logger.error("Formatting failed for format {}, falling back {}", formatStr, iae.getMessage());
             // the pattern could not be parsed correctly,
             // so fall back to the default number format
             return getDefaultFormat(cellValue);
@@ -750,7 +728,7 @@ public class DataFormatter1 implements Observer {
         try {
             return new InternalDecimalFormatWithScale(format, symbols);
         } catch (IllegalArgumentException iae) {
-            logger.log(POILogger.DEBUG, "Formatting failed for format " + formatStr + ", falling back", iae);
+            logger.error("Formatting failed for format {}, falling back {}", formatStr, iae.getMessage());
             // the pattern could not be parsed correctly,
             // so fall back to the default number format
             return getDefaultFormat(cellValue);

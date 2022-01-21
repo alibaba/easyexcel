@@ -35,6 +35,7 @@ import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.Comments;
 import org.apache.poi.xssf.model.CommentsTable;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFRelation;
@@ -99,9 +100,9 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             sheetList.add(new ReadSheet(index, ite.getSheetName()));
             sheetMap.put(index, inputStream);
             if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT)) {
-                CommentsTable commentsTable = ite.getSheetComments();
-                if (null != commentsTable) {
-                    commentsTableMap.put(index, commentsTable);
+                Comments comments = ite.getSheetComments();
+                if (null != comments && comments instanceof CommentsTable) {
+                    commentsTableMap.put(index, (CommentsTable) comments);
                 }
             }
             index++;

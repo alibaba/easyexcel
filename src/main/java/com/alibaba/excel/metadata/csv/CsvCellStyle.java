@@ -76,7 +76,7 @@ public class CsvCellStyle implements CellStyle {
     }
 
     @Override
-    public short getFontIndex() {
+    public int getFontIndex() {
         return 0;
     }
 
@@ -126,11 +126,6 @@ public class CsvCellStyle implements CellStyle {
     }
 
     @Override
-    public HorizontalAlignment getAlignmentEnum() {
-        return null;
-    }
-
-    @Override
     public void setWrapText(boolean wrapped) {
 
     }
@@ -147,11 +142,6 @@ public class CsvCellStyle implements CellStyle {
 
     @Override
     public VerticalAlignment getVerticalAlignment() {
-        return null;
-    }
-
-    @Override
-    public VerticalAlignment getVerticalAlignmentEnum() {
         return null;
     }
 
@@ -186,22 +176,12 @@ public class CsvCellStyle implements CellStyle {
     }
 
     @Override
-    public BorderStyle getBorderLeftEnum() {
-        return null;
-    }
-
-    @Override
     public void setBorderRight(BorderStyle border) {
 
     }
 
     @Override
     public BorderStyle getBorderRight() {
-        return null;
-    }
-
-    @Override
-    public BorderStyle getBorderRightEnum() {
         return null;
     }
 
@@ -216,22 +196,12 @@ public class CsvCellStyle implements CellStyle {
     }
 
     @Override
-    public BorderStyle getBorderTopEnum() {
-        return null;
-    }
-
-    @Override
     public void setBorderBottom(BorderStyle border) {
 
     }
 
     @Override
     public BorderStyle getBorderBottom() {
-        return null;
-    }
-
-    @Override
-    public BorderStyle getBorderBottomEnum() {
         return null;
     }
 
@@ -282,11 +252,6 @@ public class CsvCellStyle implements CellStyle {
 
     @Override
     public FillPatternType getFillPattern() {
-        return null;
-    }
-
-    @Override
-    public FillPatternType getFillPatternEnum() {
         return null;
     }
 
