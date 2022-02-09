@@ -1,3 +1,6 @@
+# 3.1.0
+* 去除cglib&asm依赖，改成重新拷贝一份 [Issue #2240](https://github.com/alibaba/easyexcel/issues/2240)
+
 # 3.0.5
 * 修复`ReadListener` 转换异常不抛出的问题
 
