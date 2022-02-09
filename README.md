@@ -12,7 +12,8 @@ EasyExcel
 [钉钉2群（已满）: 32796397](https://qr.dingtalk.com/action/joingroup?code=v1,k1,jyU9GtEuNU5S0QTyklqYcYJ8qDZtUuTPMM7uPZTS8Hs=&_dt_no_comment=1&origin=11)  
 [钉钉3群（已满）: 33797247](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3UGlEScTGQaHpW2cIRo+gkxJ9EVZ5fz26M6nW3uFP30=&_dt_no_comment=1&origin=11)  
 [钉钉4群（已满）: 33491624](https://qr.dingtalk.com/action/joingroup?code=v1,k1,V14Pb65Too70rQkEaJ9ohb6lZBZbtp6jIL/q9EWh9vA=&_dt_no_comment=1&origin=11)  
-[钉钉5群: 32134498](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingb9fa1325d9dccc3ecac589edd02f1650&5233a=71a83&cbdbhh=qwertyuiop)  
+[钉钉5群（已满）: 32134498](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingb9fa1325d9dccc3ecac589edd02f1650&5233a=71a83&cbdbhh=qwertyuiop)  
+[钉钉6群: 34707941](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingcf68008a1d443ac012d5427bdb061b7a&6ae36c3d-0c80-4=22398493-6c2a-4&cbdbhh=qwertyuiop)  
 [官方网站: https://yuque.com/easyexcel](https://www.yuque.com/easyexcel/doc/easyexcel)  
 
 [常见问题](https://www.yuque.com/easyexcel/faq)
@@ -45,9 +46,6 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
         </dependency>
 ```
 
-## 广告位
-### 阿里巴巴新零售事业部招募
-阿里巴巴新零售事业部--诚招JAVA资深开发、技术专家。有意向可以微信联系，简历可以发我邮箱jipengfei.jpf@alibaba-inc.com
 ### easyexcel人员招募
 由于工作较忙,有意愿做开源的同学可以报名,主要负责群里回答&issue处理，当然也可以做一些PR.   
 由于开源没有任何物质回报，然后现在的维护同学也是课余时间维护的，所以想加入的同学需要持之以恒，而不是一时兴起.   
