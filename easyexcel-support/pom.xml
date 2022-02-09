@@ -34,9 +34,19 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <createSourcesJar>true</createSourcesJar>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <!-- Make sure the transitive dependencies are written to the generated pom under <dependencies> -->
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.springframework:spring-core</include>
+                                </includes>
+                            </artifactSet>
                             <filters>
                                 <filter>
-                                    <artifact>cglib:cglib</artifact>
+                                    <artifact>org.springframework:spring-core</artifact>
                                     <includes>
                                         <include>org/springframework/asm/**</include>
                                         <include>org/springframework/cglib/**</include>
@@ -52,6 +62,10 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

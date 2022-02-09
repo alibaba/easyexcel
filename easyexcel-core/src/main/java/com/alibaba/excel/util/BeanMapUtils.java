@@ -1,8 +1,7 @@
 package com.alibaba.excel.util;
 
-import net.sf.cglib.beans.BeanMap;
-import net.sf.cglib.beans.BeanMap.Generator;
-import net.sf.cglib.core.DefaultNamingPolicy;
+import org.springframework.cglib.beans.BeanMap;
+import org.springframework.cglib.core.DefaultNamingPolicy;
 
 /**
  * bean utils
@@ -23,9 +22,10 @@ public class BeanMapUtils {
      * @return a new <code>BeanMap</code> instance
      */
     public static BeanMap create(Object bean) {
-        Generator gen = new Generator();
-        gen.setBean(bean);
-        gen.setNamingPolicy(EasyExcelNamingPolicy.INSTANCE);
+        BeanMap.Generator gen = new BeanMap.Generator();
+        //gen.setBean(student);
+        //gen.setContextClass(Student.class);
+        BeanMap beanMap = gen.create();
         return gen.create();
     }
 
