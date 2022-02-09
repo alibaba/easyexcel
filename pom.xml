@@ -385,6 +385,37 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Packaging spring's cglib -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>org.springframework:spring-core</artifact>
+                                    <includes>
+                                        <include>org/springframework/asm/**</include>
+                                        <include>org/springframework/cglib/**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.springframework</pattern>
+                                    <shadedPattern>com.alibaba.easyexcel.support</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

@@ -6,12 +6,12 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.fastjson.JSON;
 
-import net.sf.cglib.beans.BeanMap;
-import net.sf.cglib.core.DebuggingClassWriter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cglib.beans.BeanMap;
+import org.springframework.cglib.core.DebuggingClassWriter;
 
 /**
  * 临时测试

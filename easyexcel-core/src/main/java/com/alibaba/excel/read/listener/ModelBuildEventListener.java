@@ -15,8 +15,8 @@ import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.MapUtils;
 
-import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.cglib.beans.BeanMap;
 
 /**
  * Convert to the object the user needs

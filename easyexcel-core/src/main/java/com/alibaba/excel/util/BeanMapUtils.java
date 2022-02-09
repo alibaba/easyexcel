@@ -23,9 +23,9 @@ public class BeanMapUtils {
      */
     public static BeanMap create(Object bean) {
         BeanMap.Generator gen = new BeanMap.Generator();
-        //gen.setBean(student);
-        //gen.setContextClass(Student.class);
-        BeanMap beanMap = gen.create();
+        gen.setBean(bean);
+        gen.setContextClass(bean.getClass());
+        gen.setNamingPolicy(EasyExcelNamingPolicy.INSTANCE);
         return gen.create();
     }
 

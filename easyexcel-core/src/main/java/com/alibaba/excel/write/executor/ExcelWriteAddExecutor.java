@@ -25,10 +25,10 @@ import com.alibaba.excel.write.metadata.RowData;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
-import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.cglib.beans.BeanMap;
 
 /**
  * Add the data into excel
