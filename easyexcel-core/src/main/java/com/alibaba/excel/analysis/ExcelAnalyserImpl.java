@@ -18,6 +18,7 @@ import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
+import com.alibaba.excel.read.metadata.holder.csv.CsvReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -171,6 +172,18 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         } catch (Throwable t) {
             throwable = t;
         }
+
+        // close csv
+        // https://github.com/alibaba/easyexcel/issues/2309
+        try {
+            if ((readWorkbookHolder instanceof CsvReadWorkbookHolder)
+                && ((CsvReadWorkbookHolder)readWorkbookHolder).getCsvParser() != null) {
+                ((CsvReadWorkbookHolder)readWorkbookHolder).getCsvParser().close();
+            }
+        } catch (Throwable t) {
+            throwable = t;
+        }
+
         try {
             if (analysisContext.readWorkbookHolder().getAutoCloseStream()
                 && readWorkbookHolder.getInputStream() != null) {

@@ -25,6 +25,7 @@ import com.alibaba.excel.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 /**
@@ -53,9 +54,10 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
 
     @Override
     public void execute() {
-        Iterable<CSVRecord> parseRecords;
+        CSVParser csvParser;
         try {
-            parseRecords = parseRecords();
+            csvParser = csvParser();
+            csvReadContext.csvReadWorkbookHolder().setCsvParser(csvParser);
         } catch (IOException e) {
             throw new ExcelAnalysisException(e);
         }
@@ -68,7 +70,7 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
 
             int rowIndex = 0;
 
-            for (CSVRecord record : parseRecords) {
+            for (CSVRecord record : csvParser) {
                 dealRecord(record, rowIndex++);
             }
 
@@ -77,7 +79,7 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
         }
     }
 
-    private Iterable<CSVRecord> parseRecords() throws IOException {
+    private CSVParser csvParser() throws IOException {
         CsvReadWorkbookHolder csvReadWorkbookHolder = csvReadContext.csvReadWorkbookHolder();
         CSVFormat csvFormat = csvReadWorkbookHolder.getCsvFormat();
 

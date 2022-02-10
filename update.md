@@ -2,6 +2,8 @@
 * 支持jdk17,去除cglib&asm依赖，改成重新拷贝一份 [Issue #2240](https://github.com/alibaba/easyexcel/issues/2240)
 * 在有样式没有数据的情况下也算空行 [Issue #2294](https://github.com/alibaba/easyexcel/issues/2294)
 * 修复无法根据文件流判断csv的bug [Issue #2297](https://github.com/alibaba/easyexcel/issues/2297)
+* 修复CSV不关闭流的bug [Issue #2309](https://github.com/alibaba/easyexcel/issues/2309)
+
 
 # 3.0.5
 * 修复`ReadListener` 转换异常不抛出的问题

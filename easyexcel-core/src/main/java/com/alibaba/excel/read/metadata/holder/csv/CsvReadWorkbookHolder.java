@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 
 /**
  * Workbook holder
@@ -20,6 +21,8 @@ import org.apache.commons.csv.CSVFormat;
 public class CsvReadWorkbookHolder extends ReadWorkbookHolder {
 
     private CSVFormat csvFormat;
+    private CSVParser csvParser;
+
 
     public CsvReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);
