@@ -1,11 +1,16 @@
 package com.alibaba.easyexcel.test.core.simple;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -51,6 +56,26 @@ public class SimpleDataTest {
     }
 
     @Test
+    public void t04ReadAndWrite07() throws Exception {
+        readAndWriteInputStream(file07, ExcelTypeEnum.XLSX);
+    }
+
+    @Test
+    public void t05ReadAndWrite03() throws Exception {
+        readAndWriteInputStream(file03, ExcelTypeEnum.XLS);
+    }
+
+    @Test
+    public void t06ReadAndWriteCsv() throws Exception {
+        readAndWriteInputStream(fileCsv, ExcelTypeEnum.CSV);
+    }
+
+    private void readAndWriteInputStream(File file, ExcelTypeEnum excelTypeEnum) throws Exception {
+        EasyExcel.write(new FileOutputStream(file), SimpleData.class).excelType(excelTypeEnum).sheet().doWrite(data());
+        EasyExcel.read(new FileInputStream(file), SimpleData.class, new SimpleDataListener()).sheet().doRead();
+    }
+
+    @Test
     public void t11SynchronousRead07() {
         synchronousRead(file07);
     }
@@ -66,7 +91,7 @@ public class SimpleDataTest {
     }
 
     @Test
-    public void t05SheetNameRead07() {
+    public void t21SheetNameRead07() {
         EasyExcel.read(TestFileUtil.readFile("simple" + File.separator + "simple07.xlsx"), SimpleData.class,
             new SimpleDataSheetNameListener()).sheet("simple").doRead();
     }

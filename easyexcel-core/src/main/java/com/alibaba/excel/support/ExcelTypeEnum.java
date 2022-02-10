@@ -4,36 +4,45 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.util.StringUtils;
 
+import lombok.Getter;
 import org.apache.poi.poifs.filesystem.FileMagic;
+import org.apache.poi.util.IOUtils;
 
 /**
  * @author jipengfei
  */
+@Getter
 public enum ExcelTypeEnum {
+
     /**
      * csv
      */
-    CSV(".csv"),
+    CSV(".csv", new byte[] {-27, -89, -109, -27}),
     /**
      * xls
      */
-    XLS(".xls"),
+    XLS(".xls", new byte[] {-48, -49, 17, -32, -95, -79, 26, -31}),
     /**
      * xlsx
      */
-    XLSX(".xlsx");
+    XLSX(".xlsx", new byte[] {80, 75, 3, 4});
 
-    private String value;
+    final String value;
+    final byte[] magic;
 
-    ExcelTypeEnum(String value) {
-        this.setValue(value);
+    ExcelTypeEnum(String value, byte[] magic) {
+        this.value = value;
+        this.magic = magic;
     }
+
+    final static int MAX_PATTERN_LENGTH = 8;
 
     public static ExcelTypeEnum valueOf(ReadWorkbook readWorkbook) {
         ExcelTypeEnum excelType = readWorkbook.getExcelType();
@@ -85,22 +94,27 @@ public enum ExcelTypeEnum {
     }
 
     private static ExcelTypeEnum recognitionExcelType(InputStream inputStream) throws Exception {
-        FileMagic fileMagic = FileMagic.valueOf(inputStream);
-        if (FileMagic.OLE2.equals(fileMagic)) {
-            return XLS;
-        }
-        if (FileMagic.OOXML.equals(fileMagic)) {
+        // Grab the first bytes of this stream
+        byte[] data = IOUtils.peekFirstNBytes(inputStream, MAX_PATTERN_LENGTH);
+        if (findMagic(XLSX.magic, data)) {
             return XLSX;
+        } else if (findMagic(CSV.magic, data)) {
+            return CSV;
+        } else if (findMagic(XLS.magic, data)) {
+            return XLS;
         }
         throw new ExcelCommonException(
             "Convert excel format exception.You can try specifying the 'excelType' yourself");
     }
 
-    public String getValue() {
-        return value;
+    private static boolean findMagic(byte[] expected, byte[] actual) {
+        int i = 0;
+        for (byte expectedByte : expected) {
+            if (actual[i++] != expectedByte && expectedByte != '?') {
+                return false;
+            }
+        }
+        return true;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
 }
