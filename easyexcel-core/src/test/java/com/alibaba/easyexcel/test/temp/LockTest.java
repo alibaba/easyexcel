@@ -24,7 +24,7 @@ public class LockTest {
     @Test
     public void test() throws Exception {
         List<Object> list =
-            EasyExcel.read(new FileInputStream("/Users/zhuangjiaju/test/pic.xls")).doReadAllSync();
+            EasyExcel.read(new FileInputStream("/Users/zhuangjiaju/Downloads/test.xlsx")).useDefaultListener(false).doReadAllSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }
