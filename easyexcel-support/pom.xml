@@ -11,19 +11,25 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <packaging>jar</packaging>
     <artifactId>easyexcel-support</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-jcl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
 
     <build>
         <plugins>
-            <!-- Packaging spring's cglib -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -39,7 +45,7 @@
                             <createDependencyReducedPom>true</createDependencyReducedPom>
                             <!-- Make sure the transitive dependencies are written to the generated pom under <dependencies> -->
                             <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
-                            <artifactSet>
+                            <artifactSet combine.self="override">
                                 <includes>
                                     <include>org.springframework:spring-core</include>
                                 </includes>
@@ -53,20 +59,32 @@
                                     </includes>
                                 </filter>
                             </filters>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.springframework</pattern>
-                                    <shadedPattern>com.alibaba.easyexcel.support</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>flatten.process-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
+
     </build>
 </project>

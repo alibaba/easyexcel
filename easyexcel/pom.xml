@@ -11,7 +11,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <packaging>jar</packaging>
     <artifactId>easyexcel</artifactId>
+
 
     <dependencies>
         <dependency>
