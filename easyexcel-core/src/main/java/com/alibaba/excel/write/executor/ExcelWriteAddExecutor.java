@@ -1,13 +1,5 @@
 package com.alibaba.excel.write.executor;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.Head;
@@ -24,11 +16,21 @@ import com.alibaba.excel.write.metadata.MapRowData;
 import com.alibaba.excel.write.metadata.RowData;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.cglib.beans.BeanMap;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Add the data into excel
@@ -61,7 +63,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void addOneRowOfDataToExcel(Object oneRowData, int rowIndex, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFiledMap) {
+                                        Map<Integer, Field> sortedAllFiledMap) {
         if (oneRowData == null) {
             return;
         }
@@ -75,14 +77,82 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHandlerUtils.afterRowCreate(rowWriteHandlerContext);
 
         if (oneRowData instanceof Collection<?>) {
-            addBasicTypeToExcel(new CollectionRowData((Collection<?>)oneRowData), row, rowIndex, relativeRowIndex);
+            addBasicTypeToExcel(new CollectionRowData((Collection<?>) oneRowData), row, rowIndex, relativeRowIndex);
         } else if (oneRowData instanceof Map) {
-            addBasicTypeToExcel(new MapRowData((Map<Integer, ?>)oneRowData), row, rowIndex, relativeRowIndex);
+            addBasicTypeToExcel(new MapRowData((Map<Integer, ?>) oneRowData), row, rowIndex, relativeRowIndex);
+        } else if (writeContext.isDynamic()) {
+            addDynamicJavaObjectToExcel(oneRowData, row, rowIndex, relativeRowIndex, sortedAllFiledMap);
         } else {
             addJavaObjectToExcel(oneRowData, row, rowIndex, relativeRowIndex, sortedAllFiledMap);
         }
 
         WriteHandlerUtils.afterRowDispose(rowWriteHandlerContext);
+    }
+
+    private void addDynamicJavaObjectToExcel(Object oneRowData, Row row, int rowIndex, int relativeRowIndex,
+                                             Map<Integer, Field> sortedAllFiledMap) {
+        BeanMap beanMap = BeanMapUtils.create(oneRowData);
+        // Bean the contains of the Map Key method with poor performance,So to create a keySet here
+        Set<String> beanKeySet = new HashSet<>(beanMap.keySet());
+        Map<Integer, Head> headMap = writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadMap();
+        Map<String, List<Head>> fieldMap = headMap.values().stream()
+            .collect(Collectors.groupingBy(Head::getFieldName, LinkedHashMap::new, Collectors.toList()));
+
+        for (Map.Entry<String, List<Head>> entry : fieldMap.entrySet()) {
+            String name = entry.getKey();
+            List<Head> headList = entry.getValue();
+            if (!beanKeySet.contains(name)) {
+                continue;
+            }
+            Object fieldValue = beanMap.get(name);
+            if (fieldValue instanceof Collection) {
+                int index = 0;
+                for (Object o : (Collection<?>) fieldValue) {
+                    BeanMap curBeanMap = BeanMapUtils.create(o);
+                    for (int i = 0; i < curBeanMap.size(); i++) {
+                        Head head = headList.get(index++);
+                        doAddDynamicJavaObjectToExcel(curBeanMap, head, row, rowIndex, relativeRowIndex,
+                            head.getColumnIndex());
+                    }
+                }
+            } else if (fieldValue instanceof Object[]) {
+                int index = 0;
+                for (Object o : (Object[]) fieldValue) {
+                    BeanMap curBeanMap = BeanMapUtils.create(o);
+                    for (int i = 0; i < curBeanMap.size(); i++) {
+                        Head head = headList.get(index++);
+                        doAddDynamicJavaObjectToExcel(curBeanMap, head, row, rowIndex, relativeRowIndex,
+                            head.getColumnIndex());
+                    }
+                }
+            } else {
+                Head head = headList.get(0);
+                doAddDynamicJavaObjectToExcel(beanMap, head, row, rowIndex, relativeRowIndex, head.getColumnIndex());
+            }
+        }
+    }
+
+    private void doAddDynamicJavaObjectToExcel(BeanMap beanMap, Head head, Row row, int rowIndex,
+                                               int relativeRowIndex, int columnIndex) {
+        Field field = head.getField();
+        String fieldName = FieldUtils.resolveCglibFieldName(field);
+        ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(beanMap, null,
+            fieldName);
+        CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(
+            writeContext, row, rowIndex, head, columnIndex, relativeRowIndex, Boolean.FALSE,
+            excelContentProperty);
+        WriteHandlerUtils.beforeCellCreate(cellWriteHandlerContext);
+
+        Cell cell = WorkBookUtil.createCell(row, columnIndex);
+        cellWriteHandlerContext.setCell(cell);
+
+        WriteHandlerUtils.afterCellCreate(cellWriteHandlerContext);
+
+        cellWriteHandlerContext.setOriginalValue(beanMap.get(fieldName));
+        cellWriteHandlerContext.setOriginalFieldClass(field.getType());
+        converterAndSet(cellWriteHandlerContext);
+
+        WriteHandlerUtils.afterCellDispose(cellWriteHandlerContext);
     }
 
     private void addBasicTypeToExcel(RowData oneRowData, Row row, int rowIndex, int relativeRowIndex) {
@@ -116,7 +186,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void doAddBasicTypeToExcel(RowData oneRowData, Head head, Row row, int rowIndex, int relativeRowIndex,
-        int dataIndex, int columnIndex) {
+                                       int dataIndex, int columnIndex) {
         ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(null,
             writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(),
             head == null ? null : head.getFieldName());

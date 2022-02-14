@@ -1,14 +1,5 @@
 package com.alibaba.easyexcel.test.demo.write;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -39,7 +30,6 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -48,6 +38,16 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 写的常见写法
@@ -269,7 +269,7 @@ public class WriteTest {
 
         String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
         try (InputStream inputStream = FileUtils.openInputStream(new File(imagePath))) {
-            List<ImageDemoData> list =  ListUtils.newArrayList();
+            List<ImageDemoData> list = ListUtils.newArrayList();
             ImageDemoData imageDemoData = new ImageDemoData();
             list.add(imageDemoData);
             // 放入五种类型的图片 实际使用只要选一种即可
@@ -477,7 +477,7 @@ public class WriteTest {
         // 背景设置为红色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)20);
+        headWriteFont.setFontHeightInPoints((short) 20);
         headWriteCellStyle.setWriteFont(headWriteFont);
         // 内容的策略
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
@@ -487,7 +487,7 @@ public class WriteTest {
         contentWriteCellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
         WriteFont contentWriteFont = new WriteFont();
         // 字体大小
-        contentWriteFont.setFontHeightInPoints((short)20);
+        contentWriteFont.setFontHeightInPoints((short) 20);
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
@@ -729,6 +729,17 @@ public class WriteTest {
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
+    @Test
+    public void dynamicColumnWrite() {
+        String fileName = TestFileUtil.getPath() + "dynamicColumnWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        // 分页查询数据
+        EasyExcel.write(fileName, DemoDynamicData.class)
+            .sheet("模板")
+            .doWrite(dynamicData());
+    }
+
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
@@ -793,4 +804,32 @@ public class WriteTest {
         return list;
     }
 
+    private List<DemoDynamicData> dynamicData() {
+        List<DemoDynamicData> list = ListUtils.newArrayList();
+        for (int i = 0; i < 10; i++) {
+            DemoDynamicData data = new DemoDynamicData();
+            data.setString("字符串" + i);
+            data.setDate(new Date());
+            data.setDoubleData(0.56);
+
+            DemoDynamicData.DynamicData dynamicData = new DemoDynamicData.DynamicData();
+            dynamicData.setString("动态字符串" + i);
+            dynamicData.setDoubleData(0.57);
+            data.setDynamicDataList(Arrays.asList(dynamicData, dynamicData));
+            data.setDynamicArray(new DemoDynamicData.DynamicData[]{dynamicData, dynamicData});
+            list.add(data);
+        }
+        DemoDynamicData data = new DemoDynamicData();
+        data.setString("字符串" + 11);
+        data.setDate(new Date());
+        data.setDoubleData(0.56);
+
+        DemoDynamicData.DynamicData dynamicData = new DemoDynamicData.DynamicData();
+        dynamicData.setString("动态字符串" + 11);
+        dynamicData.setDoubleData(0.57);
+        data.setDynamicDataList(Arrays.asList(dynamicData, dynamicData, dynamicData));
+        data.setDynamicArray(new DemoDynamicData.DynamicData[]{dynamicData});
+        list.add(data);
+        return list;
+    }
 }
