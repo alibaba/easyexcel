@@ -8,7 +8,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 
 /**
- * @author hooray
+ * @author yarooh
  * @since 2022/2/11
  */
 public class TypeUtils {
