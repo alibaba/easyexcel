@@ -3,7 +3,6 @@ package com.alibaba.easyexcel.test.demo.write;
 import com.alibaba.excel.annotation.ExcelDynamicClass;
 import com.alibaba.excel.annotation.ExcelDynamicColumn;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.ContentStyle;
@@ -18,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author helei01_gza
+ * @author yarooh
  * @since 2022/2/11
  */
 @Getter
