@@ -1,6 +1,7 @@
 package com.alibaba.excel.context;
 
 import java.io.OutputStream;
+import java.util.Collection;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -22,11 +23,25 @@ public interface WriteContext {
     /**
      * If the current sheet already exists, select it; if not, create it
      *
-     * @param writeSheet
-     *            Current sheet
+     * @param writeSheet Current sheet
      * @param writeType
      */
     void currentSheet(WriteSheet writeSheet, WriteTypeEnum writeType);
+
+    /**
+     * Dynamically construct head from data
+     *
+     * @param writeSheet Current sheet
+     * @param data add data
+     */
+    void addCurrentSheet(WriteSheet writeSheet, Collection<?> data);
+
+    /**
+     * is dynamic excel
+     *
+     * @return
+     */
+    boolean isDynamic();
 
     /**
      * If the current table already exists, select it; if not, create it

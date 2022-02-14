@@ -1,7 +1,5 @@
 package com.alibaba.excel.write;
 
-import java.util.Collection;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.enums.WriteTypeEnum;
@@ -14,8 +12,9 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
-
 import org.apache.poi.ss.util.CellRangeAddress;
+
+import java.util.Collection;
 
 /**
  * @author jipengfei
@@ -51,7 +50,7 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     @Override
     public void addContent(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable) {
         try {
-            context.currentSheet(writeSheet, WriteTypeEnum.ADD);
+            context.addCurrentSheet(writeSheet, data);
             context.currentTable(writeTable);
             if (excelWriteAddExecutor == null) {
                 excelWriteAddExecutor = new ExcelWriteAddExecutor(context);
