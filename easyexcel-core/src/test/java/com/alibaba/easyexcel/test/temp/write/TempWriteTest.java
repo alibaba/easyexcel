@@ -3,6 +3,7 @@ package com.alibaba.easyexcel.test.temp.write;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.easyexcel.test.demo.read.CustomStringStringConverter;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.BeanMapUtils;
@@ -24,7 +25,15 @@ public class TempWriteTest {
         EasyExcel.write(TestFileUtil.getPath() + "TempWriteTest" + System.currentTimeMillis() + ".xlsx",
                 TempWriteData.class)
             .sheet()
+            .registerConverter(new CustomStringStringConverter())
             .doWrite(ListUtils.newArrayList(tempWriteData));
+
+
+        EasyExcel.write(TestFileUtil.getPath() + "TempWriteTest" + System.currentTimeMillis() + ".xlsx",
+                TempWriteData.class)
+            .sheet()
+            .doWrite(ListUtils.newArrayList(tempWriteData));
+
     }
 
     @Test
