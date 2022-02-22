@@ -64,7 +64,6 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
                 dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormatData.getIndex(),
                     xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatString(frec),
                     xlsReadContext.readSheetHolder().getGlobalConfiguration().getLocale()));
-                tempCellData.setDataFormatData(dataFormatData);
                 cellMap.put((int)frec.getColumn(), tempCellData);
                 break;
             case ERROR:
