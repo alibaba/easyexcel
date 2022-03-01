@@ -39,9 +39,11 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
             readSheetIndex = 0;
             xlsReadWorkbookHolder.setReadSheetIndex(readSheetIndex);
         }
+        // The currentSheet() method probably won't fire here, so migrate the code  to XlsSAXAnalyser.execute ()
+        /*
         ReadSheet actualReadSheet = xlsReadWorkbookHolder.getActualSheetDataList().get(readSheetIndex);
         assert actualReadSheet != null : "Can't find the sheet.";
-        // Copy the parameter to the current sheet
+         Copy the parameter to the current sheet
         ReadSheet readSheet = SheetUtils.match(actualReadSheet, xlsReadContext);
         if (readSheet != null) {
             xlsReadContext.currentSheet(readSheet);
@@ -49,6 +51,7 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
         } else {
             xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.TRUE);
         }
+        */
         // Go read the next one
         xlsReadWorkbookHolder.setReadSheetIndex(xlsReadWorkbookHolder.getReadSheetIndex() + 1);
     }
