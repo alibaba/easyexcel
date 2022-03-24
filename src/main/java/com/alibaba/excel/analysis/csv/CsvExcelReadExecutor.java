@@ -94,6 +94,7 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
         Map<Integer, Cell> cellMap = new LinkedHashMap<>();
         Iterator<String> cellIterator = record.iterator();
         int columnIndex = 0;
+        Boolean autoTrim = csvReadContext.currentReadHolder().globalConfiguration().getAutoTrim();
         while (cellIterator.hasNext()) {
             String cellString = cellIterator.next();
             ReadCellData<String> readCellData = new ReadCellData<>();
@@ -103,7 +104,7 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
             // csv is an empty string of whether <code>,,</code> is read or <code>,"",</code>
             if (StringUtils.isNotBlank(cellString)) {
                 readCellData.setType(CellDataTypeEnum.STRING);
-                readCellData.setStringValue(cellString);
+                readCellData.setStringValue(autoTrim ? cellString.trim() : cellString);
             } else {
                 readCellData.setType(CellDataTypeEnum.EMPTY);
             }
