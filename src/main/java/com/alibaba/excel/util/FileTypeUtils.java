@@ -47,13 +47,13 @@ public class FileTypeUtils {
     }
 
     private static String encodeHexStr(byte[] data) {
-        final int len = data.length;
-        final char[] out = new char[len << 1];
+        final int length = data.length;
+        final char[] chars = new char[length << 1];
         // two characters from the hex value.
-        for (int i = 0, j = 0; i < len; i++) {
-            out[j++] = DIGITS[(0xF0 & data[i]) >>> 4];
-            out[j++] = DIGITS[0x0F & data[i]];
+        for (int i = 0, j = 0; i < length; i++) {
+            chars[j++] = DIGITS[(0xF0 & data[i]) >>> 4];
+            chars[j++] = DIGITS[0x0F & data[i]];
         }
-        return new String(out);
+        return new String(chars);
     }
 }

@@ -90,6 +90,10 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
                 new ReadCellData<>(CellDataTypeEnum.EMPTY), null,
                 "Can not instance class: " + excelReadHeadProperty.getHeadClazz().getName(), e);
         }
+        return getObject(cellDataMap, readSheetHolder, context, excelReadHeadProperty, resultModel);
+    }
+
+    private Object getObject(Map<Integer, ReadCellData<?>> cellDataMap, ReadSheetHolder readSheetHolder, AnalysisContext context, ExcelReadHeadProperty excelReadHeadProperty, Object resultModel) {
         Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();
         BeanMap dataMap = BeanMapUtils.create(resultModel);
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
