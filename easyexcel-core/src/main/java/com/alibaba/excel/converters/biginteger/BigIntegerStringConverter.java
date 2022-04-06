@@ -37,6 +37,6 @@ public class BigIntegerStringConverter implements Converter<BigInteger> {
     @Override
     public WriteCellData<?> convertToExcelData(BigInteger value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
-        return NumberUtils.formatToCellData(value, contentProperty);
+        return NumberUtils.formatToCellDataString(value, contentProperty);
     }
 }

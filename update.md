@@ -4,6 +4,7 @@
 * 修复无法根据文件流判断csv的bug [Issue #2297](https://github.com/alibaba/easyexcel/issues/2297)
 * 修复CSV不关闭流的bug [Issue #2309](https://github.com/alibaba/easyexcel/issues/2309)
 * 修复`filed`拼接错误 [Issue #2390](https://github.com/alibaba/easyexcel/issues/2390)
+* 修复`BigIntegerStringConverter`无效的bug [Issue #2325](https://github.com/alibaba/easyexcel/issues/2325)
 
 
 # 3.0.5
