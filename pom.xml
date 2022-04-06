@@ -19,6 +19,7 @@
         <jdk.version>1.8</jdk.version>
         <gpg.skip>true</gpg.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
+        <linkXRef>false</linkXRef>
     </properties>
 
     <scm>
@@ -175,15 +176,6 @@
                         <exclude>com/alibaba/excel/write/executor/ExcelWriteFillExecutor.java</exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>pmd-check-verify</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>com.alibaba.p3c</groupId>

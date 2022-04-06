@@ -10,16 +10,21 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.cache.MapCache;
+import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.string.StringStringConverter;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+
+import static org.ehcache.shadow.org.terracotta.context.query.Queries.self;
 
 /**
  * @author Jiaju Zhuang
@@ -27,6 +32,7 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ParameterDataTest {
 
+    private static final org.apache.poi.ss.formula.functions.T T = null;
     private static File file07;
     private static File fileCsv;
 
@@ -102,6 +108,7 @@ public class ParameterDataTest {
         excelReader.read();
         excelReader.finish();
     }
+
 
     private void readAndWrite6(File file, ExcelTypeEnum type) throws Exception {
         ExcelWriter excelWriter =

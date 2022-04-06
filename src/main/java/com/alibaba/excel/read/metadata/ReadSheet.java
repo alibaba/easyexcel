@@ -14,7 +14,7 @@ public class ReadSheet extends ReadBasicParameter {
      * sheet name
      */
     private String sheetName;
-
+    public Integer headRowNumber;
     public ReadSheet() {}
 
     public ReadSheet(Integer sheetNo) {
@@ -40,6 +40,13 @@ public class ReadSheet extends ReadBasicParameter {
 
     public void setSheetName(String sheetName) {
         this.sheetName = sheetName;
+    }
+    public Integer getHeadRowNumber() {
+        return headRowNumber;
+    }
+
+    public void setHeadRowNumber(Integer headRowNumber) {
+        this.headRowNumber = headRowNumber;
     }
 
     public void copyBasicParameter(ReadSheet other) {

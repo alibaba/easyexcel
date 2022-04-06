@@ -68,7 +68,6 @@ public class ReadSheetHolder extends AbstractReadHolder {
     private Integer maxDataHeadSize;
 
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
-        super(readSheet, readWorkbookHolder);
         this.readSheet = readSheet;
         this.parentReadWorkbookHolder = readWorkbookHolder;
         this.sheetNo = readSheet.getSheetNo();

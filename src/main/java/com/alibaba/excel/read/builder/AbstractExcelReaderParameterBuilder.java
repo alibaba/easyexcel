@@ -25,6 +25,7 @@ public abstract class AbstractExcelReaderParameterBuilder<T extends AbstractExce
      * @param headRowNumber
      * @return
      */
+    public Integer headRowNumber;
     public T headRowNumber(Integer headRowNumber) {
         parameter().setHeadRowNumber(headRowNumber);
         return self();

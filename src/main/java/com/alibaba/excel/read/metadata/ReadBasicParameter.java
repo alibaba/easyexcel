@@ -29,7 +29,6 @@ public class ReadBasicParameter extends BasicParameter {
      * <p>
      * 2 - This Sheet has two row head ,since the third row is the data
      */
-    private Integer headRowNumber;
     /**
      * Custom type listener run after default
      */

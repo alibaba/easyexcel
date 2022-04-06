@@ -1,6 +1,7 @@
 package com.alibaba.excel.read.metadata.holder.xls;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.alibaba.excel.enums.RowTypeEnum;
@@ -26,9 +27,16 @@ public class XlsReadSheetHolder extends ReadSheetHolder {
      * Temp object index.
      */
     private Map<Integer, String> objectCacheMap;
-
+    public void ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
+        this.setReadSheet(readSheet);
+        this.setParentReadWorkbookHolder(readWorkbookHolder);
+        this.setSheetNo(readSheet.getSheetNo());
+        this.setSheetName(readSheet.getSheetName());
+        this.setCellMap(new LinkedHashMap<>());
+        this.setRowIndex(-1);
+    }
     public XlsReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
-        super(readSheet, readWorkbookHolder);
+        ReadSheetHolder(readSheet, readWorkbookHolder);
         tempRowType = RowTypeEnum.EMPTY;
         objectCacheMap = new HashMap<Integer, String>(16);
     }

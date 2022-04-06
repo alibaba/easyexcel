@@ -21,6 +21,7 @@ public class BasicParameter {
     /**
      * You can only choose one of the {@link BasicParameter#head} and {@link BasicParameter#clazz}
      */
+    public Integer headRowNumber;
     private List<List<String>> head;
     /**
      * You can only choose one of the {@link BasicParameter#head} and {@link BasicParameter#clazz}
@@ -54,4 +55,8 @@ public class BasicParameter {
      * default is false
      */
     private Boolean useScientificFormat;
+
+    public void setHeadRowNumber(Integer headRowNumber) {
+        this.headRowNumber = headRowNumber;
+    }
 }
