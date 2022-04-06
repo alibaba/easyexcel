@@ -9,17 +9,27 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.DateUtils;
 
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFPicture;
+import org.apache.poi.hssf.usermodel.HSSFShape;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.PictureData;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFAnchor;
+import org.apache.poi.xssf.usermodel.XSSFPicture;
+import org.apache.poi.xssf.usermodel.XSSFShape;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
 /**
  * @author Jiaju Zhuang
@@ -73,6 +83,26 @@ public class FillAnnotationDataTest {
             }
         }
         Assert.assertTrue(hasMerge);
+        if (sheet instanceof XSSFSheet) {
+            XSSFSheet xssfSheet = (XSSFSheet)sheet;
+            List<XSSFShape> shapeList = xssfSheet.getDrawingPatriarch().getShapes();
+            XSSFShape shape0 = shapeList.get(0);
+            Assert.assertTrue(shape0 instanceof XSSFPicture);
+            XSSFPicture picture0 = (XSSFPicture)shape0;
+            CTMarker ctMarker0 = picture0.getPreferredSize().getFrom();
+            Assert.assertEquals(1, ctMarker0.getRow());
+            Assert.assertEquals(4, ctMarker0.getCol());
+        } else {
+            HSSFSheet hssfSheet = (HSSFSheet)sheet;
+            List<HSSFShape> shapeList = hssfSheet.getDrawingPatriarch().getChildren();
+            HSSFShape shape0 = shapeList.get(0);
+            Assert.assertTrue(shape0 instanceof HSSFPicture);
+            HSSFPicture picture0 = (HSSFPicture)shape0;
+            HSSFClientAnchor anchor = (HSSFClientAnchor)picture0.getAnchor();
+            Assert.assertEquals(1, anchor.getRow1());
+            Assert.assertEquals(4, anchor.getCol1());
+        }
+
     }
 
     private List<FillAnnotationData> data() throws Exception {
@@ -82,6 +112,7 @@ public class FillAnnotationDataTest {
         data.setNumber(99.99);
         data.setString1("string1");
         data.setString2("string2");
+        data.setImage(TestFileUtil.getPath() + "converter" + File.separator + "img.jpg");
         list.add(data);
         list.add(data);
         list.add(data);

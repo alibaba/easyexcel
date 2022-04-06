@@ -7,6 +7,7 @@ import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
+import com.alibaba.excel.converters.string.StringImageConverter;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,4 +34,6 @@ public class FillAnnotationData {
     private String string1;
     @ExcelProperty("字符串2")
     private String string2;
+    @ExcelProperty(value = "图片", converter = StringImageConverter.class)
+    private String image;
 }
