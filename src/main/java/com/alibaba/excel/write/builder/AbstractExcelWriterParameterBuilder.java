@@ -80,7 +80,7 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
     /**
      * Ignore the custom columns.
      */
-    public T excludeColumnFiledNames(Collection<String> excludeColumnFiledNames) {
+    public T excludeColumnFieldNames(Collection<String> excludeColumnFiledNames) {
         parameter().setExcludeColumnFieldNames(excludeColumnFiledNames);
         return self();
     }
@@ -96,7 +96,7 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
     /**
      * Only output the custom columns.
      */
-    public T includeColumnFiledNames(Collection<String> includeColumnFiledNames) {
+    public T includeColumnFieldNames(Collection<String> includeColumnFiledNames) {
         parameter().setIncludeColumnFieldNames(includeColumnFiledNames);
         return self();
     }

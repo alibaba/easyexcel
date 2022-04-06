@@ -120,7 +120,7 @@ public class WriteTest {
         Set<String> excludeColumnFiledNames = new HashSet<>();
         excludeColumnFiledNames.add("date");
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName, DemoData.class).excludeColumnFiledNames(excludeColumnFiledNames).sheet("模板")
+        EasyExcel.write(fileName, DemoData.class).excludeColumnFieldNames(excludeColumnFiledNames).sheet("模板")
             .doWrite(data());
 
         fileName = TestFileUtil.getPath() + "excludeOrIncludeWrite" + System.currentTimeMillis() + ".xlsx";
@@ -128,7 +128,7 @@ public class WriteTest {
         Set<String> includeColumnFiledNames = new HashSet<>();
         includeColumnFiledNames.add("date");
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName, DemoData.class).includeColumnFiledNames(includeColumnFiledNames).sheet("模板")
+        EasyExcel.write(fileName, DemoData.class).includeColumnFieldNames(includeColumnFiledNames).sheet("模板")
             .doWrite(data());
     }
 

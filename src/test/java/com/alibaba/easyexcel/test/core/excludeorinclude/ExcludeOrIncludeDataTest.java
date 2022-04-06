@@ -132,7 +132,7 @@ public class ExcludeOrIncludeDataTest {
         excludeColumnFiledNames.add("column1");
         excludeColumnFiledNames.add("column3");
         excludeColumnFiledNames.add("column4");
-        EasyExcel.write(file, ExcludeOrIncludeData.class).excludeColumnFiledNames(excludeColumnFiledNames).sheet()
+        EasyExcel.write(file, ExcludeOrIncludeData.class).excludeColumnFieldNames(excludeColumnFiledNames).sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
         Assert.assertEquals(1, dataMap.size());
@@ -161,7 +161,7 @@ public class ExcludeOrIncludeDataTest {
         Set<String> includeColumnFiledNames = new HashSet<String>();
         includeColumnFiledNames.add("column2");
         includeColumnFiledNames.add("column3");
-        EasyExcel.write(file, ExcludeOrIncludeData.class).includeColumnFiledNames(includeColumnFiledNames).sheet()
+        EasyExcel.write(file, ExcludeOrIncludeData.class).includeColumnFieldNames(includeColumnFiledNames).sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
         Assert.assertEquals(1, dataMap.size());
