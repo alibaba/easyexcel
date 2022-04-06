@@ -3,7 +3,7 @@ package com.alibaba.excel.exception;
 /**
  * @author jipengfei
  */
-public class ExcelGenerateException extends ExcelException {
+public class ExcelGenerateException extends ExcelRuntimeException {
 
     public ExcelGenerateException(String message) {
         super(message);

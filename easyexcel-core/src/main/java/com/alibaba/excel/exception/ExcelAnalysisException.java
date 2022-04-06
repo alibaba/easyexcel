@@ -4,7 +4,7 @@ package com.alibaba.excel.exception;
  *
  * @author jipengfei
  */
-public class ExcelAnalysisException extends ExcelException {
+public class ExcelAnalysisException extends ExcelRuntimeException {
 
     public ExcelAnalysisException() {}
 

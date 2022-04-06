@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class ExcelDataConvertException extends ExcelException {
+public class ExcelDataConvertException extends ExcelRuntimeException {
     /**
      * NotNull.
      */
