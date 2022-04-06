@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class Head {
+public class Head implements Cloneable {
     /**
      * Column index of head
      */
@@ -67,7 +67,7 @@ public class Head {
     private FontProperty headFontProperty;
 
     public Head(Integer columnIndex, Field field, String fieldName, List<String> headNameList, Boolean forceIndex,
-        Boolean forceName) {
+                Boolean forceName) {
         this.columnIndex = columnIndex;
         this.field = field;
         this.fieldName = fieldName;
@@ -83,5 +83,10 @@ public class Head {
         }
         this.forceIndex = forceIndex;
         this.forceName = forceName;
+    }
+
+    @Override
+    public Head clone() throws CloneNotSupportedException {
+        return (Head) super.clone();
     }
 }

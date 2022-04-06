@@ -3,9 +3,21 @@ package com.alibaba.excel.context;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.alibaba.excel.annotation.ExcelDynamicClass;
+import com.alibaba.excel.annotation.ExcelDynamicColumn;
 import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.Head;
@@ -18,6 +30,7 @@ import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
+import com.alibaba.excel.util.TypeUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
@@ -33,6 +46,7 @@ import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
@@ -79,6 +93,8 @@ public class WriteContextImpl implements WriteContext {
      * Prevent multiple shutdowns
      */
     private boolean finished = false;
+
+    private final AtomicBoolean dynamic = new AtomicBoolean(false);
 
     public WriteContextImpl(WriteWorkbook writeWorkbook) {
         if (writeWorkbook == null) {
@@ -133,6 +149,159 @@ public class WriteContextImpl implements WriteContext {
 
         // Initialization current sheet
         initSheet(writeType);
+    }
+
+    @Override
+    public void addCurrentSheet(WriteSheet writeSheet, Collection<?> data) {
+        if (writeSheet == null) {
+            throw new IllegalArgumentException("Sheet argument cannot be null");
+        }
+        if (selectSheetFromCache(writeSheet)) {
+            return;
+        }
+
+        initCurrentSheetHolder(writeSheet);
+
+        // Workbook handler need to supplementary execution
+        WorkbookWriteHandlerContext workbookWriteHandlerContext = WriteHandlerUtils.createWorkbookWriteHandlerContext(
+            this);
+        WriteHandlerUtils.beforeWorkbookCreate(workbookWriteHandlerContext, true);
+        WriteHandlerUtils.afterWorkbookCreate(workbookWriteHandlerContext, true);
+
+        dynamicMergeHead(data);
+        // Initialization current sheet
+        initSheet(WriteTypeEnum.ADD);
+    }
+
+    private void dynamicMergeHead(Collection<?> data) {
+        WriteHolder writeHolder = currentWriteHolder();
+        ExcelWriteHeadProperty excelWriteHeadProperty = writeHolder.excelWriteHeadProperty();
+        boolean canDynamicMergeHead = !writeHolder.needHead() ||
+            !excelWriteHeadProperty.hasHead() ||
+            excelWriteHeadProperty.getHeadClazz() == null ||
+            CollectionUtils.isEmpty(data);
+        if (canDynamicMergeHead) {
+            dynamic.set(false);
+            return;
+        }
+        try {
+            Field[] fields = excelWriteHeadProperty.getHeadClazz().getDeclaredFields();
+            Map<String, List<Head>> dynamicColumnMap = getDynamicColumnMap(writeHolder, data, fields);
+            if (dynamicColumnMap.size() > 0) {
+                dynamic.set(true);
+                Map<Integer, Head> headMap = excelWriteHeadProperty.getHeadMap();
+                Map<Integer, Head> newHeadMap = new TreeMap<>();
+                int offset = 0;
+                for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
+                    Head currentHead = entry.getValue();
+                    String fieldName = currentHead.getFieldName();
+                    if (dynamicColumnMap.containsKey(fieldName)) {
+                        List<Head> dynamicHeads = dynamicColumnMap.get(fieldName);
+                        for (int i = 0; i < dynamicHeads.size(); i++) {
+                            Head dynamicHead = dynamicHeads.get(i).clone();
+                            dynamicHead.setFieldName(currentHead.getFieldName());
+                            dynamicHead.setColumnIndex(currentHead.getColumnIndex() + offset + i);
+                            newHeadMap.put(currentHead.getColumnIndex() + offset + i, dynamicHead);
+                        }
+                        offset += dynamicHeads.size() - 1;
+                    } else {
+                        currentHead.setColumnIndex(currentHead.getColumnIndex() + offset);
+                        newHeadMap.put(currentHead.getColumnIndex(), currentHead);
+                    }
+                }
+                excelWriteHeadProperty.setHeadMap(newHeadMap);
+            } else {
+                dynamic.set(false);
+            }
+        } catch (IllegalAccessException | CloneNotSupportedException e) {
+            throw new ExcelGenerateException(e);
+        }
+    }
+
+    @Override
+    public boolean isDynamic() {
+        return dynamic.get();
+    }
+
+    private Map<String, List<Head>> getDynamicColumnMap(WriteHolder writeHolder, Collection<?> data, Field[] fields)
+        throws IllegalAccessException {
+        Map<String, List<Head>> dynamicColumnMap = new HashMap<>(fields.length);
+        for (Field field : fields) {
+            Class<?> fieldType = field.getType();
+            // 如果对应Field没有ExcelDynamicColumn注解，跳过
+            if (!field.isAnnotationPresent(ExcelDynamicColumn.class)) {
+                continue;
+            }
+            if (Collection.class.isAssignableFrom(fieldType)) {
+                final Type argumentType = TypeUtils.getTypeArgument(field.getGenericType());
+                Class<?> typeArgument = TypeUtils.getClass(argumentType);
+                // 如果是集合类型，但其对应泛型是不支持处理的类，抛出异常
+                if (isExcelDynamicColumnNotSupportClass(typeArgument)) {
+                    throw new ExcelGenerateException("The class: " + typeArgument.getTypeName() + " of the dynamic " +
+                        "column can't support");
+                }
+                // 否则找到集合的最大值
+                int maxCollectionSize = 0;
+                for (Object obj : data) {
+                    field.setAccessible(true);
+                    Object fieldValue = field.get(obj);
+                    maxCollectionSize = Math.max(maxCollectionSize, fieldValue != null ?
+                        ((Collection<?>) fieldValue).size() : 0);
+                }
+                dynamicColumnMap.put(field.getName(), getDynamicHeads(writeHolder, typeArgument, maxCollectionSize));
+            } else if (fieldType.isArray()) {
+                Class<?> componentType = fieldType.getComponentType();
+                // 如果是数组类型，但其对应泛型是不支持处理的类，抛出异常
+                if (isExcelDynamicColumnNotSupportClass(componentType)) {
+                    throw new ExcelGenerateException("The class: " + componentType.getTypeName() + " of the dynamic " +
+                        "column can't support");
+                }
+                // 否则找到数组的最大值
+                int maxArraySize = 0;
+                for (Object obj : data) {
+                    field.setAccessible(true);
+                    Object fieldValue = field.get(obj);
+                    maxArraySize = Math.max(maxArraySize, fieldValue != null ? Array.getLength(fieldValue) : 0);
+                }
+                dynamicColumnMap.put(field.getName(), getDynamicHeads(writeHolder, componentType, maxArraySize));
+            } else {
+                // 单独的类不需要这样去使用
+                throw new ExcelGenerateException("The class: " + fieldType.getTypeName() + " of the dynamic " +
+                    "column can't support");
+            }
+        }
+        return dynamicColumnMap;
+    }
+
+    private List<Head> getDynamicHeads(WriteHolder writeHolder, Class<?> clazz, int size) {
+        ExcelWriteHeadProperty headProperty = new ExcelWriteHeadProperty(writeHolder, clazz, null);
+        List<Head> dynamicHeads = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            dynamicHeads.addAll(headProperty.getHeadMap().values());
+        }
+        return dynamicHeads;
+    }
+
+    private boolean isExcelDynamicColumnNotSupportClass(Class<?> clazz) {
+        return null == clazz
+            || clazz.isInterface()
+            || Modifier.isAbstract(clazz.getModifiers())
+            || clazz.isEnum()
+            || clazz.isAnnotation()
+            || clazz.isSynthetic()
+            || clazz.isPrimitive()
+            || !clazz.isAnnotationPresent(ExcelDynamicClass.class)
+            || isExcelDynamicColumnNested(clazz);
+    }
+
+    private boolean isExcelDynamicColumnNested(Class<?> clazz) {
+        for (Field declaredField : clazz.getDeclaredFields()) {
+            if (declaredField.isAnnotationPresent(ExcelDynamicColumn.class)) {
+                throw new ExcelGenerateException("The class: " + clazz.getName() + " of the dynamic column can't " +
+                    "be support nested use ExcelDynamicColumn");
+            }
+        }
+        return false;
     }
 
     private boolean selectSheetFromCache(WriteSheet writeSheet) {
@@ -260,7 +429,7 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void addOneRowOfHeadDataToExcel(Row row, Integer rowIndex, Map<Integer, Head> headMap,
-        int relativeRowIndex) {
+                                            int relativeRowIndex) {
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Head head = entry.getValue();
             int columnIndex = entry.getKey();
@@ -388,7 +557,7 @@ public class WriteContextImpl implements WriteContext {
         try {
             Workbook workbook = writeWorkbookHolder.getWorkbook();
             if (workbook instanceof SXSSFWorkbook) {
-                ((SXSSFWorkbook)workbook).dispose();
+                ((SXSSFWorkbook) workbook).dispose();
             }
         } catch (Throwable t) {
             throwable = t;
