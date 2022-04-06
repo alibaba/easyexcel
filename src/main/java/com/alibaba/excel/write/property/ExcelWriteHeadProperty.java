@@ -1,12 +1,5 @@
 package com.alibaba.excel.write.property;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
@@ -29,6 +22,14 @@ import com.alibaba.excel.metadata.property.StyleProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Define the header attribute of excel
@@ -68,6 +69,11 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
                     "Passing in the class and list the head, the two must be the same size.");
             }
             Field field = headData.getField();
+
+            // if head is List , no need config styles
+            if (Objects.isNull(field)) {
+                continue;
+            }
 
             ColumnWidth columnWidth = field.getAnnotation(ColumnWidth.class);
             if (columnWidth == null) {
