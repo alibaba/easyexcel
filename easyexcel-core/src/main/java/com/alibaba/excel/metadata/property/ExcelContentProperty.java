@@ -18,7 +18,7 @@ public class ExcelContentProperty {
     public static final ExcelContentProperty EMPTY = new ExcelContentProperty();
 
     /**
-     * Java filed
+     * Java field
      */
     private Field field;
     /**

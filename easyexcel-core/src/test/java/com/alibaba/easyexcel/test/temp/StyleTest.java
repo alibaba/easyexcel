@@ -164,18 +164,18 @@ public class StyleTest {
     public void testFormatter2() throws Exception {
         StyleData styleData = new StyleData();
         Field field = styleData.getClass().getDeclaredField("byteValue");
-        LOGGER.info("filed:{}", field.getType().getName());
+        LOGGER.info("field:{}", field.getType().getName());
         field = styleData.getClass().getDeclaredField("byteValue2");
-        LOGGER.info("filed:{}", field.getType().getName());
+        LOGGER.info("field:{}", field.getType().getName());
         field = styleData.getClass().getDeclaredField("byteValue4");
-        LOGGER.info("filed:{}", field.getType());
+        LOGGER.info("field:{}", field.getType());
         field = styleData.getClass().getDeclaredField("byteValue3");
-        LOGGER.info("filed:{}", field.getType());
+        LOGGER.info("field:{}", field.getType());
     }
 
     @Test
     public void testFormatter3() throws Exception {
-        LOGGER.info("filed:{}", Byte.class == Byte.class);
+        LOGGER.info("field:{}", Byte.class == Byte.class);
     }
 
     private void isDate(Cell cell) {

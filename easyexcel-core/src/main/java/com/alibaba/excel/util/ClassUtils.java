@@ -195,17 +195,17 @@ public class ClassUtils {
     }
 
     /**
-     * Parsing filed in the class
+     * Parsing field in the class
      *
      * @param clazz             Need to parse the class
-     * @param sortedAllFiledMap Complete the map of sorts
-     * @param indexFiledMap     Use the index to sort fields
+     * @param sortedAllFieldMap Complete the map of sorts
+     * @param indexFieldMap     Use the index to sort fields
      * @param ignoreMap         You want to ignore field map
      * @param needIgnore        If you want to ignore fields need to ignore
      * @param holder            holder
      */
-    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap,
-        Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap, Boolean needIgnore, Holder holder) {
+    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFieldMap,
+        Map<Integer, Field> indexFieldMap, Map<String, Field> ignoreMap, Boolean needIgnore, Holder holder) {
         FieldCache fieldCache = declaredFields(clazz);
         if (fieldCache == null) {
             return;
@@ -213,20 +213,20 @@ public class ClassUtils {
         if (ignoreMap != null) {
             ignoreMap.putAll(fieldCache.getIgnoreMap());
         }
-        Map<Integer, Field> tempIndexFieldMap = indexFiledMap;
+        Map<Integer, Field> tempIndexFieldMap = indexFieldMap;
         if (tempIndexFieldMap == null) {
             tempIndexFieldMap = MapUtils.newTreeMap();
         }
-        tempIndexFieldMap.putAll(fieldCache.getIndexFiledMap());
+        tempIndexFieldMap.putAll(fieldCache.getIndexFieldMap());
 
-        Map<Integer, Field> originSortedAllFiledMap = fieldCache.getSortedAllFiledMap();
+        Map<Integer, Field> originSortedAllFieldMap = fieldCache.getSortedAllFieldMap();
         if (!needIgnore) {
-            sortedAllFiledMap.putAll(originSortedAllFiledMap);
+            sortedAllFieldMap.putAll(originSortedAllFieldMap);
             return;
         }
 
         int index = 0;
-        for (Map.Entry<Integer, Field> entry : originSortedAllFiledMap.entrySet()) {
+        for (Map.Entry<Integer, Field> entry : originSortedAllFieldMap.entrySet()) {
             Integer key = entry.getKey();
             Field field = entry.getValue();
 
@@ -239,22 +239,22 @@ public class ClassUtils {
             } else {
                 // Mandatory sorted fields
                 if (tempIndexFieldMap.containsKey(key)) {
-                    sortedAllFiledMap.put(key, field);
+                    sortedAllFieldMap.put(key, field);
                 } else {
                     // Need to reorder automatically
                     // Check whether the current key is already in use
-                    while (sortedAllFiledMap.containsKey(index)) {
+                    while (sortedAllFieldMap.containsKey(index)) {
                         index++;
                     }
-                    sortedAllFiledMap.put(index++, field);
+                    sortedAllFieldMap.put(index++, field);
                 }
             }
         }
     }
 
-    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFiledMap, Boolean needIgnore,
+    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFieldMap, Boolean needIgnore,
         WriteHolder writeHolder) {
-        declaredFields(clazz, sortedAllFiledMap, null, null, needIgnore, writeHolder);
+        declaredFields(clazz, sortedAllFieldMap, null, null, needIgnore, writeHolder);
     }
 
     private static FieldCache declaredFields(Class<?> clazz) {
@@ -272,43 +272,43 @@ public class ClassUtils {
                 tempClass = tempClass.getSuperclass();
             }
             // Screening of field
-            Map<Integer, List<Field>> orderFiledMap = new TreeMap<Integer, List<Field>>();
-            Map<Integer, Field> indexFiledMap = new TreeMap<Integer, Field>();
+            Map<Integer, List<Field>> orderFieldMap = new TreeMap<Integer, List<Field>>();
+            Map<Integer, Field> indexFieldMap = new TreeMap<Integer, Field>();
             Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
 
             ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
             for (Field field : tempFieldList) {
-                declaredOneField(field, orderFiledMap, indexFiledMap, ignoreMap, excelIgnoreUnannotated);
+                declaredOneField(field, orderFieldMap, indexFieldMap, ignoreMap, excelIgnoreUnannotated);
             }
-            return new FieldCache(buildSortedAllFiledMap(orderFiledMap, indexFiledMap), indexFiledMap, ignoreMap);
+            return new FieldCache(buildSortedAllFieldMap(orderFieldMap, indexFieldMap), indexFieldMap, ignoreMap);
         });
     }
 
-    private static Map<Integer, Field> buildSortedAllFiledMap(Map<Integer, List<Field>> orderFiledMap,
-        Map<Integer, Field> indexFiledMap) {
+    private static Map<Integer, Field> buildSortedAllFieldMap(Map<Integer, List<Field>> orderFieldMap,
+        Map<Integer, Field> indexFieldMap) {
 
-        Map<Integer, Field> sortedAllFiledMap = new HashMap<Integer, Field>(
-            (orderFiledMap.size() + indexFiledMap.size()) * 4 / 3 + 1);
+        Map<Integer, Field> sortedAllFieldMap = new HashMap<Integer, Field>(
+            (orderFieldMap.size() + indexFieldMap.size()) * 4 / 3 + 1);
 
-        Map<Integer, Field> tempIndexFiledMap = new HashMap<Integer, Field>(indexFiledMap);
+        Map<Integer, Field> tempIndexFieldMap = new HashMap<Integer, Field>(indexFieldMap);
         int index = 0;
-        for (List<Field> fieldList : orderFiledMap.values()) {
+        for (List<Field> fieldList : orderFieldMap.values()) {
             for (Field field : fieldList) {
-                while (tempIndexFiledMap.containsKey(index)) {
-                    sortedAllFiledMap.put(index, tempIndexFiledMap.get(index));
-                    tempIndexFiledMap.remove(index);
+                while (tempIndexFieldMap.containsKey(index)) {
+                    sortedAllFieldMap.put(index, tempIndexFieldMap.get(index));
+                    tempIndexFieldMap.remove(index);
                     index++;
                 }
-                sortedAllFiledMap.put(index, field);
+                sortedAllFieldMap.put(index, field);
                 index++;
             }
         }
-        sortedAllFiledMap.putAll(tempIndexFiledMap);
-        return sortedAllFiledMap;
+        sortedAllFieldMap.putAll(tempIndexFieldMap);
+        return sortedAllFieldMap;
     }
 
-    private static void declaredOneField(Field field, Map<Integer, List<Field>> orderFiledMap,
-        Map<Integer, Field> indexFiledMap, Map<String, Field> ignoreMap,
+    private static void declaredOneField(Field field, Map<Integer, List<Field>> orderFieldMap,
+        Map<Integer, Field> indexFieldMap, Map<String, Field> ignoreMap,
         ExcelIgnoreUnannotated excelIgnoreUnannotated) {
 
         ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
@@ -330,11 +330,11 @@ public class ClassUtils {
             return;
         }
         if (excelProperty != null && excelProperty.index() >= 0) {
-            if (indexFiledMap.containsKey(excelProperty.index())) {
-                throw new ExcelCommonException("The index of '" + indexFiledMap.get(excelProperty.index()).getName()
+            if (indexFieldMap.containsKey(excelProperty.index())) {
+                throw new ExcelCommonException("The index of '" + indexFieldMap.get(excelProperty.index()).getName()
                     + "' and '" + field.getName() + "' must be inconsistent");
             }
-            indexFiledMap.put(excelProperty.index(), field);
+            indexFieldMap.put(excelProperty.index(), field);
             return;
         }
 
@@ -342,29 +342,29 @@ public class ClassUtils {
         if (excelProperty != null) {
             order = excelProperty.order();
         }
-        List<Field> orderFiledList = orderFiledMap.computeIfAbsent(order, key -> ListUtils.newArrayList());
-        orderFiledList.add(field);
+        List<Field> orderFieldList = orderFieldMap.computeIfAbsent(order, key -> ListUtils.newArrayList());
+        orderFieldList.add(field);
     }
 
     private static class FieldCache {
 
-        private final Map<Integer, Field> sortedAllFiledMap;
-        private final Map<Integer, Field> indexFiledMap;
+        private final Map<Integer, Field> sortedAllFieldMap;
+        private final Map<Integer, Field> indexFieldMap;
         private final Map<String, Field> ignoreMap;
 
-        public FieldCache(Map<Integer, Field> sortedAllFiledMap, Map<Integer, Field> indexFiledMap,
+        public FieldCache(Map<Integer, Field> sortedAllFieldMap, Map<Integer, Field> indexFieldMap,
             Map<String, Field> ignoreMap) {
-            this.sortedAllFiledMap = sortedAllFiledMap;
-            this.indexFiledMap = indexFiledMap;
+            this.sortedAllFieldMap = sortedAllFieldMap;
+            this.indexFieldMap = indexFieldMap;
             this.ignoreMap = ignoreMap;
         }
 
-        public Map<Integer, Field> getSortedAllFiledMap() {
-            return sortedAllFiledMap;
+        public Map<Integer, Field> getSortedAllFieldMap() {
+            return sortedAllFieldMap;
         }
 
-        public Map<Integer, Field> getIndexFiledMap() {
-            return indexFiledMap;
+        public Map<Integer, Field> getIndexFieldMap() {
+            return indexFieldMap;
         }
 
         public Map<String, Field> getIgnoreMap() {

@@ -30,9 +30,9 @@ public class FieldUtils {
 
     private static final int START_RESOLVE_FIELD_LENGTH = 2;
 
-    public static Class<?> getFieldClass(Map dataMap, String filedName, Object value) {
+    public static Class<?> getFieldClass(Map dataMap, String fieldName, Object value) {
         if (dataMap instanceof BeanMap) {
-            Class<?> fieldClass = ((BeanMap)dataMap).getPropertyType(filedName);
+            Class<?> fieldClass = ((BeanMap)dataMap).getPropertyType(fieldName);
             if (fieldClass != null) {
                 return fieldClass;
             }

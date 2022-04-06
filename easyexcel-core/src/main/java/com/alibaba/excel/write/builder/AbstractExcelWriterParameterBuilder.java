@@ -79,9 +79,19 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
 
     /**
      * Ignore the custom columns.
+     *
+     * @deprecated use {@link #excludeColumnFieldNames(Collection)}
      */
-    public T excludeColumnFiledNames(Collection<String> excludeColumnFiledNames) {
-        parameter().setExcludeColumnFieldNames(excludeColumnFiledNames);
+    public T excludeColumnFiledNames(Collection<String> excludeColumnFieldNames) {
+        parameter().setExcludeColumnFieldNames(excludeColumnFieldNames);
+        return self();
+    }
+
+    /**
+     * Ignore the custom columns.
+     */
+    public T excludeColumnFieldNames(Collection<String> excludeColumnFieldNames) {
+        parameter().setExcludeColumnFieldNames(excludeColumnFieldNames);
         return self();
     }
 
@@ -95,10 +105,19 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
 
     /**
      * Only output the custom columns.
+     *
+     * @deprecated use {@link  #includeColumnFieldNames(Collection)}
      */
-    public T includeColumnFiledNames(Collection<String> includeColumnFiledNames) {
-        parameter().setIncludeColumnFieldNames(includeColumnFiledNames);
+    public T includeColumnFiledNames(Collection<String> includeColumnFieldNames) {
+        parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
         return self();
     }
 
+    /**
+     * Only output the custom columns.
+     */
+    public T includeColumnFieldNames(Collection<String> includeColumnFieldNames) {
+        parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
+        return self();
+    }
 }

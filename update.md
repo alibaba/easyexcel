@@ -3,6 +3,7 @@
 * 在有样式没有数据的情况下也算空行 [Issue #2294](https://github.com/alibaba/easyexcel/issues/2294)
 * 修复无法根据文件流判断csv的bug [Issue #2297](https://github.com/alibaba/easyexcel/issues/2297)
 * 修复CSV不关闭流的bug [Issue #2309](https://github.com/alibaba/easyexcel/issues/2309)
+* 修复`filed`拼接错误 [Issue #2390](https://github.com/alibaba/easyexcel/issues/2390)
 
 
 # 3.0.5

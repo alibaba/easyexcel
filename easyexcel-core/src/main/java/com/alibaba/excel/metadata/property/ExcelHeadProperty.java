@@ -109,8 +109,8 @@ public class ExcelHeadProperty {
             return;
         }
         // Declared fields
-        Map<Integer, Field> sortedAllFiledMap = MapUtils.newTreeMap();
-        Map<Integer, Field> indexFiledMap = MapUtils.newTreeMap();
+        Map<Integer, Field> sortedAllFieldMap = MapUtils.newTreeMap();
+        Map<Integer, Field> indexFieldMap = MapUtils.newTreeMap();
 
         boolean needIgnore = (holder instanceof AbstractWriteHolder) && (
             !CollectionUtils.isEmpty(((AbstractWriteHolder)holder).getExcludeColumnFieldNames()) || !CollectionUtils
@@ -118,10 +118,10 @@ public class ExcelHeadProperty {
                 .isEmpty(((AbstractWriteHolder)holder).getIncludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(((AbstractWriteHolder)holder).getIncludeColumnIndexes()));
 
-        ClassUtils.declaredFields(headClazz, sortedAllFiledMap, indexFiledMap, ignoreMap, needIgnore, holder);
+        ClassUtils.declaredFields(headClazz, sortedAllFieldMap, indexFieldMap, ignoreMap, needIgnore, holder);
 
-        for (Map.Entry<Integer, Field> entry : sortedAllFiledMap.entrySet()) {
-            initOneColumnProperty(entry.getKey(), entry.getValue(), indexFiledMap.containsKey(entry.getKey()));
+        for (Map.Entry<Integer, Field> entry : sortedAllFieldMap.entrySet()) {
+            initOneColumnProperty(entry.getKey(), entry.getValue(), indexFieldMap.containsKey(entry.getKey()));
         }
         headKind = HeadKindEnum.CLASS;
     }

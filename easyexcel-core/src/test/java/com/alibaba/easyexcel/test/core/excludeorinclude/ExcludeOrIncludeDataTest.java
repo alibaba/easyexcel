@@ -25,30 +25,30 @@ public class ExcludeOrIncludeDataTest {
     private static File excludeIndex07;
     private static File excludeIndex03;
     private static File excludeIndexCsv;
-    private static File excludeFiledName07;
-    private static File excludeFiledName03;
-    private static File excludeFiledNameCsv;
+    private static File excludeFieldName07;
+    private static File excludeFieldName03;
+    private static File excludeFieldNameCsv;
     private static File includeIndex07;
     private static File includeIndex03;
     private static File includeIndexCsv;
-    private static File includeFiledName07;
-    private static File includeFiledName03;
-    private static File includeFiledNameCsv;
+    private static File includeFieldName07;
+    private static File includeFieldName03;
+    private static File includeFieldNameCsv;
 
     @BeforeClass
     public static void init() {
         excludeIndex07 = TestFileUtil.createNewFile("excludeIndex.xlsx");
         excludeIndex03 = TestFileUtil.createNewFile("excludeIndex.xls");
         excludeIndexCsv = TestFileUtil.createNewFile("excludeIndex.csv");
-        excludeFiledName07 = TestFileUtil.createNewFile("excludeFiledName.xlsx");
-        excludeFiledName03 = TestFileUtil.createNewFile("excludeFiledName.xls");
-        excludeFiledNameCsv = TestFileUtil.createNewFile("excludeFiledName.csv");
+        excludeFieldName07 = TestFileUtil.createNewFile("excludeFieldName.xlsx");
+        excludeFieldName03 = TestFileUtil.createNewFile("excludeFieldName.xls");
+        excludeFieldNameCsv = TestFileUtil.createNewFile("excludeFieldName.csv");
         includeIndex07 = TestFileUtil.createNewFile("includeIndex.xlsx");
         includeIndex03 = TestFileUtil.createNewFile("includeIndex.xls");
         includeIndexCsv = TestFileUtil.createNewFile("includeIndex.csv");
-        includeFiledName07 = TestFileUtil.createNewFile("includeFiledName.xlsx");
-        includeFiledName03 = TestFileUtil.createNewFile("includeFiledName.xls");
-        includeFiledNameCsv = TestFileUtil.createNewFile("includeFiledName.csv");
+        includeFieldName07 = TestFileUtil.createNewFile("includeFieldName.xlsx");
+        includeFieldName03 = TestFileUtil.createNewFile("includeFieldName.xls");
+        includeFieldNameCsv = TestFileUtil.createNewFile("includeFieldName.csv");
     }
 
     @Test
@@ -67,18 +67,18 @@ public class ExcludeOrIncludeDataTest {
     }
 
     @Test
-    public void t11ExcludeFiledName07() {
-        excludeFiledName(excludeFiledName07);
+    public void t11ExcludeFieldName07() {
+        excludeFieldName(excludeFieldName07);
     }
 
     @Test
-    public void t12ExcludeFiledName03() {
-        excludeFiledName(excludeFiledName03);
+    public void t12ExcludeFieldName03() {
+        excludeFieldName(excludeFieldName03);
     }
 
     @Test
-    public void t13ExcludeFiledNameCsv() {
-        excludeFiledName(excludeFiledNameCsv);
+    public void t13ExcludeFieldNameCsv() {
+        excludeFieldName(excludeFieldNameCsv);
     }
 
 
@@ -98,18 +98,18 @@ public class ExcludeOrIncludeDataTest {
     }
 
     @Test
-    public void t31IncludeFiledName07() {
-        includeFiledName(includeFiledName07);
+    public void t31IncludeFieldName07() {
+        includeFieldName(includeFieldName07);
     }
 
     @Test
-    public void t32IncludeFiledName03() {
-        includeFiledName(includeFiledName03);
+    public void t32IncludeFieldName03() {
+        includeFieldName(includeFieldName03);
     }
 
     @Test
-    public void t33IncludeFiledNameCsv() {
-        includeFiledName(includeFiledNameCsv);
+    public void t33IncludeFieldNameCsv() {
+        includeFieldName(includeFieldNameCsv);
     }
 
     private void excludeIndex(File file) {
@@ -127,12 +127,12 @@ public class ExcludeOrIncludeDataTest {
 
     }
 
-    private void excludeFiledName(File file) {
-        Set<String> excludeColumnFiledNames = new HashSet<String>();
-        excludeColumnFiledNames.add("column1");
-        excludeColumnFiledNames.add("column3");
-        excludeColumnFiledNames.add("column4");
-        EasyExcel.write(file, ExcludeOrIncludeData.class).excludeColumnFiledNames(excludeColumnFiledNames).sheet()
+    private void excludeFieldName(File file) {
+        Set<String> excludeColumnFieldNames = new HashSet<String>();
+        excludeColumnFieldNames.add("column1");
+        excludeColumnFieldNames.add("column3");
+        excludeColumnFieldNames.add("column4");
+        EasyExcel.write(file, ExcludeOrIncludeData.class).excludeColumnFieldNames(excludeColumnFieldNames).sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
         Assert.assertEquals(1, dataMap.size());
@@ -157,11 +157,11 @@ public class ExcludeOrIncludeDataTest {
 
     }
 
-    private void includeFiledName(File file) {
-        Set<String> includeColumnFiledNames = new HashSet<String>();
-        includeColumnFiledNames.add("column2");
-        includeColumnFiledNames.add("column3");
-        EasyExcel.write(file, ExcludeOrIncludeData.class).includeColumnFiledNames(includeColumnFiledNames).sheet()
+    private void includeFieldName(File file) {
+        Set<String> includeColumnFieldNames = new HashSet<String>();
+        includeColumnFieldNames.add("column2");
+        includeColumnFieldNames.add("column3");
+        EasyExcel.write(file, ExcludeOrIncludeData.class).includeColumnFieldNames(includeColumnFieldNames).sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
         Assert.assertEquals(1, dataMap.size());
