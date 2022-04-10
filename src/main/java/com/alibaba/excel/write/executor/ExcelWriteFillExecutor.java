@@ -511,6 +511,10 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     break out;
                 }
                 startIndex = suffixIndex + 1;
+                if (suffixIndex < prefixIndex) {
+                    suffixIndex = -1;
+                    continue;
+                }
                 char prefixSuffixChar = value.charAt(suffixIndex - 1);
                 if (prefixSuffixChar == IGNORE_CHAR) {
                     suffixIndex = -1;
