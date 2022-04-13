@@ -2,7 +2,6 @@ package com.alibaba.excel.analysis.v03.handlers;
 
 import java.util.LinkedHashMap;
 
-import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
 import org.apache.poi.hssf.record.Record;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;

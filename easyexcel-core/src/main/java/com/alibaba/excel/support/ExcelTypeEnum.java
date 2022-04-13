@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Arrays;
 
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelCommonException;
@@ -12,7 +11,6 @@ import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.util.StringUtils;
 
 import lombok.Getter;
-import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.util.IOUtils;
 
 /**
