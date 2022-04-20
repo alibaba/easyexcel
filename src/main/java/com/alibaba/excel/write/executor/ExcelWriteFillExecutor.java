@@ -511,6 +511,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     break out;
                 }
                 startIndex = suffixIndex + 1;
+                // fix https://github.com/alibaba/easyexcel/issues/2407
                 if (suffixIndex < prefixIndex) {
                     suffixIndex = -1;
                     continue;
