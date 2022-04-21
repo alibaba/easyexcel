@@ -112,7 +112,7 @@ public class ConverterDataTest {
     private List<ConverterWriteData> data() throws Exception {
         List<ConverterWriteData> list = new ArrayList<ConverterWriteData>();
         ConverterWriteData converterWriteData = new ConverterWriteData();
-        converterWriteData.setDate(DateUtils.parseDate("2020-01-01 01:01:01"));
+        converterWriteData.setDate(DateUtils.parseDate("2020-01-1 01:01:01"));
         converterWriteData.setLocalDateTime(DateUtils.parseLocalDateTime("2020-01-01 01:01:01", null, null));
         converterWriteData.setBooleanData(Boolean.TRUE);
         converterWriteData.setBigDecimal(BigDecimal.ONE);
@@ -125,6 +125,24 @@ public class ConverterDataTest {
         converterWriteData.setFloatData((float)1.0);
         converterWriteData.setString("测试");
         converterWriteData.setCellData(new WriteCellData<>("自定义"));
+        list.add(converterWriteData);
+        return list;
+    }
+    private List<ConverterWriteData> datadatetest() throws Exception {
+        List<ConverterWriteData> list = new ArrayList<ConverterWriteData>();
+        ConverterWriteData converterWriteData = new ConverterWriteData();
+        converterWriteData.setDate(DateUtils.parseDate("2020-01-1 01:01:01"));
+        converterWriteData.setDate(DateUtils.parseDate("2020-1-1 01:01:01"));
+        converterWriteData.setDate(DateUtils.parseDate("2022-01-1 9:01:6"));
+        converterWriteData.setDate(DateUtils.parseDate("2020-01-19 2:2:1"));
+        converterWriteData.setDate(DateUtils.parseDate("2021/01/11 01:01:01"));
+        converterWriteData.setDate(DateUtils.parseDate("20201101012221"));
+        converterWriteData.setDate(DateUtils.parseDate("20201121 01:01:01"));
+        converterWriteData.setDate(DateUtils.parseDate("2022/01/21 19:01:16"));
+        converterWriteData.setDate(DateUtils.parseDate("2020/01/19 2:2:1"));
+        converterWriteData.setDate(DateUtils.parseDate("2021/1/1 1:1:1"));
+        converterWriteData.setLocalDateTime(DateUtils.parseLocalDateTime("2020-01-01 01:01:01", null, null));
+
         list.add(converterWriteData);
         return list;
     }

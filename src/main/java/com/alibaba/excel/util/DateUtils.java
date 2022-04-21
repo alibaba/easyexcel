@@ -45,11 +45,12 @@ public class DateUtils {
     private static final Pattern date_ptrn6 = Pattern.compile("(年|月|日|时|分|秒)+");
 
     public static final String DATE_FORMAT_10 = "yyyy-MM-dd";
-    public static final String DATE_FORMAT_14 = "yyyyMMddHHmmss";
     public static final String DATE_FORMAT_16 = "yyyy-MM-dd HH:mm";
-    public static final String DATE_FORMAT_16_FORWARD_SLASH = "yyyy/MM/dd HH:mm";
-    public static final String DATE_FORMAT_17 = "yyyyMMdd HH:mm:ss";
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_14 = "yyyyMMddHHmmss";
+    public static final String DATE_FORMAT_17 = "yyyyMMdd HH:mm:ss";
+    public static final String DATE_FORMAT_10_FORWARD_SLASH = "yyyy/MM/dd";
+    public static final String DATE_FORMAT_16_FORWARD_SLASH = "yyyy/MM/dd HH:mm";
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
     private static final String MINUS = "-";
 
@@ -102,6 +103,9 @@ public class DateUtils {
         return parseDate(dateString, switchDateFormat(dateString));
     }
 
+    public static boolean isNumber(char a){
+        return a>=30&&a<=39;
+    }
     /**
      * switch date format
      *
@@ -109,29 +113,47 @@ public class DateUtils {
      * @return
      */
     public static String switchDateFormat(String dateString) {
-        int length = dateString.length();
-        switch (length) {
-            case 19:
-                if (dateString.contains(MINUS)) {
-                    return DATE_FORMAT_19;
-                } else {
-                    return DATE_FORMAT_19_FORWARD_SLASH;
-                }
-            case 16:
-                if (dateString.contains(MINUS)) {
-                    return DATE_FORMAT_16;
-                } else {
-                    return DATE_FORMAT_16_FORWARD_SLASH;
-                }
-            case 17:
-                return DATE_FORMAT_17;
-            case 14:
-                return DATE_FORMAT_14;
-            case 10:
-                return DATE_FORMAT_10;
-            default:
-                throw new IllegalArgumentException("can not find date format for：" + dateString);
+        String dateS=dateString;
+        if(dateS.contains(MINUS)) {
+            if (dateString.charAt(4) == '-' && dateString.charAt(6) == '-') { //YYYY-M-
+                dateS = dateString.substring(0, 5) + "0" + dateString.substring(5);
+            }
+            if (dateS.length() == 9 || dateS.length() == 10) return DATE_FORMAT_10;  //YYYY-MM-DD
+            if (dateS.charAt(7) == '-' && dateS.charAt(9) == ' ') { //YYYY-MM-D H
+                dateS = dateS.substring(0, 8) + "0" + dateS.substring(8);
+            }
+            if (dateS.charAt(10) == ' ' && dateS.charAt(12) == ':') { //YYYY-MM-DD H:
+                dateS = dateS.substring(0, 11) + "0" + dateS.substring(11);
+            }
+            if (dateS.length() == 15 || dateS.length() == 16) return DATE_FORMAT_16;
+            if (dateS.charAt(13) == ':' && dateS.charAt(15) == ':') { //YYYY-MM-DD HH:M:
+                dateS = dateS.substring(0, 14) + "0" + dateS.substring(14);
+            }
+            if (dateS.length() == 18 || dateS.length() == 19) return DATE_FORMAT_19;
         }
+        else if(dateString.contains("/")){
+            if (dateString.charAt(4) == '/' && dateString.charAt(6) == '/') { //YYYY/M/
+                dateS = dateString.substring(0, 5) + "0" + dateString.substring(5);
+            }
+            if (dateS.length() == 9 || dateS.length() == 10) return DATE_FORMAT_10_FORWARD_SLASH;  //YYYY/MM/DD
+            if (dateS.charAt(7) == '/' && dateS.charAt(9) == ' ') { //YYYY/MM/D H
+                dateS = dateS.substring(0, 8) + "0" + dateS.substring(8);
+            }
+            if (dateS.charAt(10) == ' ' && dateS.charAt(12) == ':') { //YYYY/MM/DD H:
+                dateS = dateS.substring(0, 11) + "0" + dateS.substring(11);
+            }
+            if (dateS.length() == 15 || dateS.length() == 16) return DATE_FORMAT_16_FORWARD_SLASH;
+            if (dateS.charAt(13) == ':' && dateS.charAt(15) == ':') { //YYYY-MM-DD HH:M:
+                dateS = dateS.substring(0, 14) + "0" + dateS.substring(14);
+            }
+            if (dateS.length() == 18 || dateS.length() == 19) return DATE_FORMAT_19_FORWARD_SLASH;
+
+        }else if(dateString.contains(":")){
+            return DATE_FORMAT_17;//有点难规避，比如2020111,难以判断往哪里补位，所以是文档日期的问题
+        }else if(dateString.length()==14) {
+            return DATE_FORMAT_14;
+        }
+        throw new IllegalArgumentException("can not find date format for：" + dateString);
     }
 
     /**
