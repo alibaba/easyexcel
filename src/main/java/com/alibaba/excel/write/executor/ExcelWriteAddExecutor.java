@@ -60,7 +60,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             relativeRowIndex++;
         }
     }
-    //----------------------------------------------------------------------------------
     public void add(Collection<?> data, int relativeHeadRowIndex) {
 
         if (CollectionUtils.isEmpty(data)) {
@@ -163,7 +162,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
 
         WriteHandlerUtils.afterCellDispose(cellWriteHandlerContext);
     }
-    //---------------------------------------------------------------------------------------------------------------------------------
     private void addJavaObjectToExcel(Object oneRowData, Row row, int rowIndex, int relativeRowIndex,
                                       Map<Integer, Field> sortedAllFiledMap) {
 

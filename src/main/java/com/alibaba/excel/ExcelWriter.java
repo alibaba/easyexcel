@@ -71,7 +71,6 @@ public class ExcelWriter {
      * @param writeTable Write to this table
      * @return this
      */
-    //------------------------------------------------------
     public ExcelWriter write(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable, int relativeHeadRowIndex) {
         excelBuilder.addContent(data, writeSheet, writeTable, relativeHeadRowIndex);
         return this;

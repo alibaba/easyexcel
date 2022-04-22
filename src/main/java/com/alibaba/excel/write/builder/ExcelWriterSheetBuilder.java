@@ -63,7 +63,6 @@ public class ExcelWriterSheetBuilder extends AbstractExcelWriterParameterBuilder
         excelWriter.write(data, build());
         excelWriter.finish();
     }
-    //---------------------------------------------------------------------------
     public void doWrite(Collection<?> data, int relativeHeadRowIndex) {
         if (excelWriter == null) {
             throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
@@ -88,7 +87,6 @@ public class ExcelWriterSheetBuilder extends AbstractExcelWriterParameterBuilder
     public void doWrite(Supplier<Collection<?>> supplier) {
         doWrite(supplier.get());
     }
-    //----------------------------------------------------------------------------------------
     public void doWrite(Supplier<Collection<?>> supplier, int relativeHeadRowIndex) {
         doWrite(supplier.get(), relativeHeadRowIndex);
     }
