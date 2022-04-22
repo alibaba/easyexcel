@@ -7,6 +7,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
+import com.sun.istack.Nullable;
 
 /**
  * Build sheet
@@ -62,6 +63,15 @@ public class ExcelWriterSheetBuilder extends AbstractExcelWriterParameterBuilder
         excelWriter.write(data, build());
         excelWriter.finish();
     }
+    //---------------------------------------------------------------------------
+    public void doWrite(Collection<?> data, int relativeHeadRowIndex) {
+        if (excelWriter == null) {
+            throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
+        }
+        excelWriter.write(data, build(), null, relativeHeadRowIndex);
+        excelWriter.finish();
+    }
+
 
     public void doFill(Object data) {
         doFill(data, null);
@@ -77,6 +87,10 @@ public class ExcelWriterSheetBuilder extends AbstractExcelWriterParameterBuilder
 
     public void doWrite(Supplier<Collection<?>> supplier) {
         doWrite(supplier.get());
+    }
+    //----------------------------------------------------------------------------------------
+    public void doWrite(Supplier<Collection<?>> supplier, int relativeHeadRowIndex) {
+        doWrite(supplier.get(), relativeHeadRowIndex);
     }
 
     public void doFill(Supplier<Object> supplier) {

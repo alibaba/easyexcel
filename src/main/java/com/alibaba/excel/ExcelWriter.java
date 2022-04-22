@@ -1,5 +1,6 @@
 package com.alibaba.excel;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -11,6 +12,7 @@ import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 
+import com.sun.istack.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +71,11 @@ public class ExcelWriter {
      * @param writeTable Write to this table
      * @return this
      */
+    //------------------------------------------------------
+    public ExcelWriter write(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable, int relativeHeadRowIndex) {
+        excelBuilder.addContent(data, writeSheet, writeTable, relativeHeadRowIndex);
+        return this;
+    }
     public ExcelWriter write(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable) {
         excelBuilder.addContent(data, writeSheet, writeTable);
         return this;

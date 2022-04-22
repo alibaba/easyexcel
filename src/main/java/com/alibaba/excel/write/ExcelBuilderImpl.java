@@ -67,6 +67,24 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     }
 
     @Override
+    public void addContent(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable, int relativeHeadRowIndex) {
+        try {
+            context.currentSheet(writeSheet, WriteTypeEnum.ADD);
+            context.currentTable(writeTable);
+            if (excelWriteAddExecutor == null) {
+                excelWriteAddExecutor = new ExcelWriteAddExecutor(context);
+            }
+            excelWriteAddExecutor.add(data, relativeHeadRowIndex);
+        } catch (RuntimeException e) {
+            finishOnException();
+            throw e;
+        } catch (Throwable e) {
+            finishOnException();
+            throw new ExcelGenerateException(e);
+        }
+    }
+
+    @Override
     public void fill(Object data, FillConfig fillConfig, WriteSheet writeSheet) {
         try {
             if (context.writeWorkbookHolder().getTempTemplateInputStream() == null) {

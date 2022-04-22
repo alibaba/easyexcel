@@ -38,6 +38,8 @@ public interface ExcelBuilder {
      */
     void addContent(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable);
 
+    void addContent(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable, int relativeHeadRowIndex);
+
     /**
      * WorkBook fill value
      *
