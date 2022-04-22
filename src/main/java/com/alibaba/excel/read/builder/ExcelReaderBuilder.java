@@ -48,6 +48,19 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
         return this;
     }
 
+/**
+     * Read InputStream
+     * <p>
+     * If 'excelTypeEnum' not empty, setExcelType
+     */
+    public ExcelReaderBuilder file(InputStream inputStream,ExcelTypeEnum excelTypeEnum) {
+        readWorkbook.setInputStream(inputStream);
+        if (excelTypeEnum!=null){
+            readWorkbook.setExcelType(excelTypeEnum);
+        }
+        return this;
+    }
+
     /**
      * Read file
      * <p>

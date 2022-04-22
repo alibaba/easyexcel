@@ -354,6 +354,31 @@ public class EasyExcelFactory {
         return excelReaderBuilder;
     }
 
+/**
+     * Build excel the read
+     *
+     * @param inputStream
+     *            Input stream to read.
+     * @param head
+     *            Annotate the class for configuration information.
+     * @param readListener
+     *            Read listener.
+     * @param excelTypeEnum
+     *            ExcelTypeEnum.
+     * @return Excel reader builder.
+     */
+    public static ExcelReaderBuilder read(InputStream inputStream, Class head, ReadListener readListener,ExcelTypeEnum excelTypeEnum) {
+        ExcelReaderBuilder excelReaderBuilder = new ExcelReaderBuilder();
+        excelReaderBuilder.file(inputStream,excelTypeEnum);
+        if (head != null) {
+            excelReaderBuilder.head(head);
+        }
+        if (readListener != null) {
+            excelReaderBuilder.registerReadListener(readListener);
+        }
+        return excelReaderBuilder;
+    }
+
     /**
      * Build excel the 'readSheet'
      *
