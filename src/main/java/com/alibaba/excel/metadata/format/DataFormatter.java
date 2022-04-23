@@ -469,6 +469,8 @@ public class DataFormatter {
         // remove those as we don't do spacing
         // If they requested full-column-width
         // padding, with "*", remove those too
+        // If the format end with a meaningless
+        // space, remove the " "
         for (int i = 0; i < sb.length(); i++) {
             char c = sb.charAt(i);
             if (c == '_' || c == '*') {
@@ -485,6 +487,10 @@ public class DataFormatter {
                 // Remove the _ too
                 sb.deleteCharAt(i);
                 i--;
+            }
+            // Remove the ' ' in the end
+            if (c == ' ' && i == sb.length() - 1){
+                sb.deleteCharAt(i);
             }
         }
 
