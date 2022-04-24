@@ -511,6 +511,11 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     break out;
                 }
                 startIndex = suffixIndex + 1;
+                // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2407
+                if (suffixIndex < prefixIndex) {
+                    suffixIndex = -1;
+                    continue;
+                }
                 char prefixSuffixChar = value.charAt(suffixIndex - 1);
                 if (prefixSuffixChar == IGNORE_CHAR) {
                     suffixIndex = -1;
@@ -525,12 +530,16 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             }
             int collectPrefixIndex = variable.indexOf(COLLECTION_PREFIX);
             if (collectPrefixIndex > -1) {
-                if (collectPrefixIndex != 0) {
-                    analysisCell.setPrefix(variable.substring(0, collectPrefixIndex));
-                }
-                variable = variable.substring(collectPrefixIndex + 1);
-                if (StringUtils.isEmpty(variable)) {
+                // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2407
+                String analysisCellPrefix = variable.substring(0, collectPrefixIndex);
+                String analysisCellSuffix = variable.substring(collectPrefixIndex + 1);
+
+                if (StringUtils.isEmpty(analysisCellSuffix)) {
                     continue;
+                }
+
+                if (collectPrefixIndex != 0) {
+                    analysisCell.setPrefix(analysisCellPrefix);
                 }
                 analysisCell.setCellType(WriteTemplateAnalysisCellTypeEnum.COLLECTION);
             }
