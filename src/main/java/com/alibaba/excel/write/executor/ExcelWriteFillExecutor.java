@@ -511,7 +511,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     break out;
                 }
                 startIndex = suffixIndex + 1;
-                // fix https://github.com/alibaba/easyexcel/issues/2407
+                // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2407
                 if (suffixIndex < prefixIndex) {
                     suffixIndex = -1;
                     continue;
@@ -530,7 +530,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             }
             int collectPrefixIndex = variable.indexOf(COLLECTION_PREFIX);
             if (collectPrefixIndex > -1) {
-                // fix https://github.com/alibaba/easyexcel/issues/2407
+                // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2407
                 String analysisCellPrefix = variable.substring(0, collectPrefixIndex);
                 String analysisCellSuffix = variable.substring(collectPrefixIndex + 1);
 
