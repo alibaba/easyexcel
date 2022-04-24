@@ -62,9 +62,9 @@ public class DateUtils {
     /**
      * convert string to date
      *
-     * @param dateString
-     * @param dateFormat
-     * @return
+     * @param dateString The date string read in
+     * @param dateFormat The date format to read in
+     * @return date
      * @throws ParseException
      */
     @SuppressWarnings("checkstyle:WhitespaceAround")
@@ -83,9 +83,9 @@ public class DateUtils {
     /**
      * convert string to date
      *
-     * @param dateString
-     * @param dateFormat
-     * @param local
+     * @param dateString The date string read in
+     * @param dateFormat The date format to read in
+     * @param local Current Environment information
      * @return
      */
     public static LocalDateTime parseLocalDateTime(String dateString, String dateFormat, Locale local) {
@@ -107,8 +107,8 @@ public class DateUtils {
     /**
      * convert string to date
      *
-     * @param dateString
-     * @return
+     * @param dateString The date string read in
+     * @return date
      * @throws ParseException
      */
     public static Date parseDate(String dateString) throws ParseException {
@@ -123,8 +123,8 @@ public class DateUtils {
     /**
      * switch date format
      *
-     * @param dateString
-     * @return
+     * @param dateString The date string read in
+     * @return DateFormat
      */
     public static String switchDateFormat(String dateString) {
         int length = dateString.length();
