@@ -29,9 +29,7 @@ public class NumberDataFormatterUtils {
      */
     public static String format(BigDecimal data, Short dataFormat, String dataFormatString,
         GlobalConfiguration globalConfiguration) {
-        if (globalConfiguration == null) {
-            return format(data, dataFormat, dataFormatString, null, null, null);
-        }
+
         //CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2322
         if (dataFormatString.equals("yyyy-m-d h:mm")) {
             dataFormatString = "yyyy-mm-dd hh:mm";
@@ -60,6 +58,11 @@ public class NumberDataFormatterUtils {
         else if (dataFormatString.equals("yyyy-m-dd")) {
             dataFormatString = "yyyy-mm-dd";
         }
+
+        if (globalConfiguration == null) {
+            return format(data, dataFormat, dataFormatString, null, null, null);
+        }
+
         return format(data, dataFormat, dataFormatString, globalConfiguration.getUse1904windowing(),
             globalConfiguration.getLocale(), globalConfiguration.getUseScientificFormat());
     }

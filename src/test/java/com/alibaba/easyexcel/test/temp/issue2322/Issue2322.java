@@ -11,6 +11,4 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class Issue2322 {
     private Date date;
-    private String string;
-    private Double doubleData;
 }

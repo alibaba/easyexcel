@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.temp.issue2322;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 import com.alibaba.easyexcel.test.demo.read.DemoData;
 import com.alibaba.easyexcel.test.demo.read.DemoDataListener;
@@ -11,11 +12,14 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.converters.string.StringNumberConverter;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 
 @Ignore
@@ -29,9 +33,7 @@ public class Issue2322Test {
         ExcelReader excelReader = null;
         try {
             excelReader = EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).build();
-            // 构建一个sheet 这里可以指定名字或者no
             ReadSheet readSheet = EasyExcel.readSheet(0).build();
-            // 读取一个sheet
             excelReader.read(readSheet);
         } finally {
             if (excelReader != null) {
@@ -68,4 +70,84 @@ public class Issue2322Test {
         EasyExcel.read(fileName, new NoModelDataListener()).registerConverter(new StringNumberConverter()).sheet(0).doRead();
     }
 
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest5() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-m-d h:mm", null);
+        assertEquals("2022-01-01 01:02", str);
+    }
+
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest6() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-m-d h:mm:ss", null);
+        assertEquals("2022-01-01 01:02:48", str);
+    }
+
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest7() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-m-d", null);
+        assertEquals("2022-01-01", str);
+    }
+
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest8() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-mm-d h:mm", null);
+        assertEquals("2022-01-01 01:02", str);
+    }
+
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest9() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-mm-d h:mm:ss", null);
+        assertEquals("2022-01-01 01:02:48", str);
+    }
+
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest10() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-mm-d", null);
+        assertEquals("2022-01-01", str);
+    }
+
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest11() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-m-dd h:mm", null);
+        assertEquals("2022-01-01 01:02", str);
+    }
+
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest12() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-m-dd h:mm:ss", null);
+        assertEquals("2022-01-01 01:02:48", str);
+    }
+
+    //CS304 (manually written) Issue link: https://github.com/alibaba/easyexcel/issues/2322
+    @Test
+    public void IssueTest13() {
+        BigDecimal bigDecimal =new BigDecimal(44562.0436111111);
+        short shortNum = 22;
+        String str = NumberDataFormatterUtils.format(bigDecimal, shortNum,"yyyy-m-dd", null);
+        assertEquals("2022-01-01", str);
+    }
 }
