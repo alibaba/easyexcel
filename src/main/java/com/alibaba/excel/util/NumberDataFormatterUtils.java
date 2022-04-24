@@ -21,11 +21,11 @@ public class NumberDataFormatterUtils {
     /**
      * Format number data.
      *
-     * @param data
-     * @param dataFormat          Not null.
-     * @param dataFormatString
-     * @param globalConfiguration
-     * @return
+     * @param data Data read from a file
+     * @param dataFormat The index of the date format (Not null).
+     * @param dataFormatString The date format of the data
+     * @param globalConfiguration The configuration
+     * @return A formatted String
      */
     public static String format(BigDecimal data, Short dataFormat, String dataFormatString,
         GlobalConfiguration globalConfiguration) {
