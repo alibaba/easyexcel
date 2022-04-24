@@ -211,6 +211,24 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             if (analysisCell.getOnlyOneVariable()) {
                 String variable = analysisCell.getVariableList().get(0);
                 if (!dataKeySet.contains(variable)) {
+                    Object value = null;
+                    ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(dataMap,
+                        writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(), variable);
+                    cellWriteHandlerContext.setExcelContentProperty(excelContentProperty);
+
+                    createCell(analysisCell, fillConfig, cellWriteHandlerContext, rowWriteHandlerContext);
+                    cellWriteHandlerContext.setOriginalValue(value);
+                    cellWriteHandlerContext.setOriginalFieldClass(FieldUtils.getFieldClass(dataMap, variable, value));
+
+                    converterAndSet(cellWriteHandlerContext);
+                    WriteCellData<?> cellData = cellWriteHandlerContext.getFirstCellData();
+
+                    // Restyle
+                    if (fillConfig.getAutoStyle()) {
+                        Optional.ofNullable(collectionFieldStyleCache.get(currentUniqueDataFlag))
+                            .map(collectionFieldStyleMap -> collectionFieldStyleMap.get(analysisCell))
+                            .ifPresent(cellData::setOriginCellStyle);
+                    }
                     continue;
                 }
                 Object value = dataMap.get(variable);
