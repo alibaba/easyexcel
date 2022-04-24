@@ -103,6 +103,19 @@ public class NumberUtils {
      */
     public static Integer parseInteger(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
+            // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2443
+            int stringLength = string.length();
+            if(stringLength>0){
+                int pointer = stringLength;
+                for(int i=0;i<stringLength;i++){
+                    if(string.charAt(i)=='.'){
+                        pointer = i;
+                        break;
+                    }
+                }
+                string = string.substring(0,pointer);
+            }
+
             return Integer.valueOf(string);
         }
         return parse(string, contentProperty).intValue();
