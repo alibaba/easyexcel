@@ -52,7 +52,9 @@ public class DateUtils {
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
     private static final String MINUS = "-";
-
+    private static final String SLASH = "/";
+    // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2419
+    public static final String DATE_FORMAT_10_FORWARD_SLASH = "yyyy/MM/dd";
     public static String defaultDateFormat = DATE_FORMAT_19;
 
     private DateUtils() {}
@@ -60,13 +62,19 @@ public class DateUtils {
     /**
      * convert string to date
      *
-     * @param dateString
-     * @param dateFormat
-     * @return
+     * @param dateString The date string read in
+     * @param dateFormat The date format to read in
+     * @return date
      * @throws ParseException
      */
+    @SuppressWarnings("checkstyle:WhitespaceAround")
     public static Date parseDate(String dateString, String dateFormat) throws ParseException {
         if (StringUtils.isEmpty(dateFormat)) {
+            // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2419
+            if(dateString.split(MINUS)[0].length() == 2 || dateString.split(SLASH)[0].length() == 2){
+                StringBuilder newDateString = new StringBuilder("20");
+                dateString = newDateString.append(dateString).toString();
+            }
             dateFormat = switchDateFormat(dateString);
         }
         return getCacheDateFormat(dateFormat).parse(dateString);
@@ -75,13 +83,18 @@ public class DateUtils {
     /**
      * convert string to date
      *
-     * @param dateString
-     * @param dateFormat
-     * @param local
+     * @param dateString The date string read in
+     * @param dateFormat The date format to read in
+     * @param local Current Environment information
      * @return
      */
     public static LocalDateTime parseLocalDateTime(String dateString, String dateFormat, Locale local) {
         if (StringUtils.isEmpty(dateFormat)) {
+            // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2419
+            if(dateString.split(MINUS)[0].length() == 2 || dateString.split(SLASH)[0].length() == 2){
+                StringBuilder newDateString = new StringBuilder("20");
+                dateString = newDateString.append(dateString).toString();
+            }
             dateFormat = switchDateFormat(dateString);
         }
         if (local == null) {
@@ -94,19 +107,24 @@ public class DateUtils {
     /**
      * convert string to date
      *
-     * @param dateString
-     * @return
+     * @param dateString The date string read in
+     * @return date
      * @throws ParseException
      */
     public static Date parseDate(String dateString) throws ParseException {
+        // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2419
+        if(dateString.split(MINUS)[0].length() == 2 || dateString.split(SLASH)[0].length() == 2){
+            StringBuilder newDateString = new StringBuilder("20");
+            dateString = newDateString.append(dateString).toString();
+        }
         return parseDate(dateString, switchDateFormat(dateString));
     }
 
     /**
      * switch date format
      *
-     * @param dateString
-     * @return
+     * @param dateString The date string read in
+     * @return DateFormat
      */
     public static String switchDateFormat(String dateString) {
         int length = dateString.length();
@@ -127,8 +145,15 @@ public class DateUtils {
                 return DATE_FORMAT_17;
             case 14:
                 return DATE_FORMAT_14;
+            // CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2419
             case 10:
-                return DATE_FORMAT_10;
+            case 9:
+            case 8:
+                if (dateString.contains(MINUS)) {
+                    return DATE_FORMAT_10;
+                } else {
+                    return DATE_FORMAT_10_FORWARD_SLASH;
+                }
             default:
                 throw new IllegalArgumentException("can not find date format for：" + dateString);
         }
