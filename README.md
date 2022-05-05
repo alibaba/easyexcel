@@ -26,9 +26,28 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
 当然还有极速模式能更快，但是内存占用会在100M多一点
 ![img](img/readme/large.png)
 
-## 版本支持
-* 2+ 版本支持 Java7和Java6
-* 3+ 版本至少 Java8
+## 关于版本选择
+| 版本                 | poi依赖版本(支持范围)       | jdk版本支持范围  | 备注                                          |
+|--------------------|---------------------|------------|---------------------------------------------|
+| 3.1.0+             | 4.1.2(4.1.2 - 5.2.2) | jkd8-jdk17 | 推荐使用，会更新的版本                                 |
+| 3.0.0-beta1 - 3.0.5 | 4.1.2(4.1.2 - 5.2.2) | jkd8-jdk11 | 不推荐项目新引入此版本，除非超级严重bug,否则不再更新                |
+| 2.0.0-beta1-2.2.11 | 3.17(3.17 - 4.1.2)  | jdk6-jdk11 | 不推荐项目新引入此版本，除非是jdk6否则不推荐使用，除非超级严重bug,否则不再更新 |
+| 1+版本               | 3.17(3.17 - 4.1.2)  | jdk6-jdk11 | 不推荐项目新引入此版本，超级严重bug,也不再更新                   |
+注意： 3+版本的的easyexcel，使用poi 5+版本时，需要手动排除：poi-ooxml-schemas，例如：
+```xml
+ <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>poi-ooxml-schemas</artifactId>
+                    <groupId>org.apache.poi</groupId>
+                </exclusion>
+            </exclusions>
+</dependency>
+```
+
 ### 关于版本升级
 * 不建议跨大版本升级 尤其跨2个大版本
 * 2+ 升级到 3+ 一些不兼容的地方
@@ -42,7 +61,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.0.5</version>
+            <version>3.1.0</version>
         </dependency>
 ```
 
