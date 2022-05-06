@@ -6,6 +6,7 @@
 * 修复`filed`拼接错误 [Issue #2390](https://github.com/alibaba/easyexcel/issues/2390)
 * 修复`BigIntegerStringConverter`无效的bug [Issue #2325](https://github.com/alibaba/easyexcel/issues/2325)
 * 修复03版本无法读取到公式格式的bug [Issue #2444](https://github.com/alibaba/easyexcel/issues/2444)
+* 提高类型转换兼容性 [Issue #2443](https://github.com/alibaba/easyexcel/issues/2443)
 
 
 # 3.0.5
