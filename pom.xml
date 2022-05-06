@@ -14,6 +14,7 @@
     <modules>
         <module>easyexcel-core</module>
         <module>easyexcel-support</module>
+        <module>easyexcel-test</module>
         <module>easyexcel</module>
     </modules>
 
