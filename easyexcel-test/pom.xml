@@ -16,8 +16,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel-core</artifactId>
         </dependency>
     </dependencies>
 

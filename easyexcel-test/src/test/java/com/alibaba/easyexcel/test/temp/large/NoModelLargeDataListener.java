@@ -2,7 +2,6 @@ package com.alibaba.easyexcel.test.temp.large;
 
 import java.util.Map;
 
-import org.apache.poi.ss.formula.functions.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
