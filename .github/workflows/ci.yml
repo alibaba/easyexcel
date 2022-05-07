@@ -38,6 +38,6 @@ jobs:
       - name: Chmod
         run:  chmod +x mvnw
       - name: Maven Build
-        run: ./mvnw install -B -V -Dmaven.test.skip=true
+        run: ./mvnw install -B -V -Dmaven.test.skip=false
       - name: Java Doc
         run: ./mvnw javadoc:javadoc

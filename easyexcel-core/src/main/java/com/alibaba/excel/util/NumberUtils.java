@@ -75,7 +75,7 @@ public class NumberUtils {
      */
     public static Short parseShort(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return Short.valueOf(string);
+            return new BigDecimal(string).shortValue();
         }
         return parse(string, contentProperty).shortValue();
     }
@@ -89,21 +89,21 @@ public class NumberUtils {
      */
     public static Long parseLong(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return Long.valueOf(string);
+            return new BigDecimal(string).longValue();
         }
         return parse(string, contentProperty).longValue();
     }
 
     /**
-     * parse
+     * parse Integer from string
      *
-     * @param string
-     * @param contentProperty
-     * @return
+     * @param string          An integer read in string format
+     * @param contentProperty Properties of the content read in
+     * @return An integer converted from a string
      */
     public static Integer parseInteger(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return Integer.valueOf(string);
+            return new BigDecimal(string).intValue();
         }
         return parse(string, contentProperty).intValue();
     }
@@ -117,7 +117,7 @@ public class NumberUtils {
      */
     public static Float parseFloat(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return Float.valueOf(string);
+            return new BigDecimal(string).floatValue();
         }
         return parse(string, contentProperty).floatValue();
     }
@@ -146,7 +146,7 @@ public class NumberUtils {
      */
     public static Byte parseByte(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return Byte.valueOf(string);
+            return new BigDecimal(string).byteValue();
         }
         return parse(string, contentProperty).byteValue();
     }
@@ -160,7 +160,7 @@ public class NumberUtils {
      */
     public static Double parseDouble(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return Double.valueOf(string);
+            return new BigDecimal(string).doubleValue();
         }
         return parse(string, contentProperty).doubleValue();
     }
