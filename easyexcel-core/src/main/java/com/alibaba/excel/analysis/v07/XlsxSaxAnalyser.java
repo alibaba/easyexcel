@@ -188,9 +188,15 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             } else {
                 saxFactory = SAXParserFactory.newInstance(xlsxSAXParserFactoryName, null);
             }
-            saxFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            try {
+                saxFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            } catch (Throwable ignore) {}
+            try {
+                saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            } catch (Throwable ignore) {}
+            try {
+                saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            } catch (Throwable ignore) {}
             SAXParser saxParser = saxFactory.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
             xmlReader.setContentHandler(handler);
