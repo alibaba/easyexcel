@@ -197,9 +197,6 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             try {
                 saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             } catch (Throwable ignore) {}
-
-            saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             SAXParser saxParser = saxFactory.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
             xmlReader.setContentHandler(handler);
