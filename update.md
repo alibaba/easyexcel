@@ -9,6 +9,7 @@
 * 提高类型转换兼容性 [Issue #2443](https://github.com/alibaba/easyexcel/issues/2443)
 * 捕获`setFeature`异常不影响主流程 [Issue #2054](https://github.com/alibaba/easyexcel/issues/2054)
 * 增加部分`xls`容错 [Issue #2236](https://github.com/alibaba/easyexcel/issues/2236)
+* 修复读取csv文件时`autoTrim`配置失效 [Issue #2227](https://github.com/alibaba/easyexcel/issues/2227)
 
 
 # 3.0.5
