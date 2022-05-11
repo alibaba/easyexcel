@@ -4,9 +4,11 @@ import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
+import com.alibaba.excel.util.StringUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.compress.utils.CharsetNames;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 
@@ -24,9 +26,12 @@ public class CsvReadWorkbookHolder extends ReadWorkbookHolder {
     private CSVParser csvParser;
 
 
+    private String encoding;
+
     public CsvReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);
         setExcelType(ExcelTypeEnum.CSV);
         this.csvFormat = CSVFormat.DEFAULT;
+        this.encoding = StringUtils.isEmpty(readWorkbook.getEncoding())? CharsetNames.UTF_8:readWorkbook.getEncoding();
     }
 }

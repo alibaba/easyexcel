@@ -84,12 +84,12 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
         CSVFormat csvFormat = csvReadWorkbookHolder.getCsvFormat();
 
         if (csvReadWorkbookHolder.getMandatoryUseInputStream()) {
-            return csvFormat.parse(new InputStreamReader(csvReadWorkbookHolder.getInputStream()));
+            return csvFormat.parse(new InputStreamReader(csvReadWorkbookHolder.getInputStream(),csvReadWorkbookHolder.getEncoding()));
         }
         if (csvReadWorkbookHolder.getFile() != null) {
             return csvFormat.parse(new FileReader(csvReadWorkbookHolder.getFile()));
         }
-        return csvFormat.parse(new InputStreamReader(csvReadWorkbookHolder.getInputStream()));
+        return csvFormat.parse(new InputStreamReader(csvReadWorkbookHolder.getInputStream(),csvReadWorkbookHolder.getEncoding()));
     }
 
     private void dealRecord(CSVRecord record, int rowIndex) {

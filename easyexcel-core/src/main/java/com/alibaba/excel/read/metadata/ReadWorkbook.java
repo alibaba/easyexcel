@@ -98,4 +98,6 @@ public class ReadWorkbook extends ReadBasicParameter {
      * @see CellExtraTypeEnum
      */
     private Set<CellExtraTypeEnum> extraReadSet;
+
+    private String encoding;
 }

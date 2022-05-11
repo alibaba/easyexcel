@@ -38,6 +38,11 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
         return this;
     }
 
+    public ExcelReaderBuilder encoding(String encoding){
+        readWorkbook.setEncoding(encoding);
+        return this;
+    }
+
     /**
      * Read InputStream
      * <p>
