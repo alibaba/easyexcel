@@ -35,11 +35,7 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
         if (!needSetWidth) {
             return;
         }
-        Map<Integer, Integer> maxColumnWidthMap = cache.get(writeSheetHolder.getSheetNo());
-        if (maxColumnWidthMap == null) {
-            maxColumnWidthMap = new HashMap<Integer, Integer>(16);
-            cache.put(writeSheetHolder.getSheetNo(), maxColumnWidthMap);
-        }
+        Map<Integer, Integer> maxColumnWidthMap = cache.computeIfAbsent(writeSheetHolder.getSheetNo(), key -> new HashMap<>(16));
         Integer columnWidth = dataLength(cellDataList, cell, isHead);
         if (columnWidth < 0) {
             return;
