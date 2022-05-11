@@ -45,10 +45,11 @@ public class CsvDataFormat implements DataFormat {
         if (index != null) {
             return index;
         }
-        index = (short)(formatList.size() + BuiltinFormats.MIN_CUSTOM_DATA_FORMAT_INDEX);
+        short indexPrimitive = (short)(formatList.size() + BuiltinFormats.MIN_CUSTOM_DATA_FORMAT_INDEX);
+        index = indexPrimitive;
         formatList.add(format);
         formatMap.put(format, index);
-        return index;
+        return indexPrimitive;
     }
 
     @Override
