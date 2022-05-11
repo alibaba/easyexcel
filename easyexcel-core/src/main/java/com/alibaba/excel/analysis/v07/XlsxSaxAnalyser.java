@@ -41,10 +41,7 @@ import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbookPr;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.WorkbookDocument;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
+import org.xml.sax.*;
 
 /**
  * @author jipengfei
@@ -197,6 +194,18 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             try {
                 saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             } catch (Throwable ignore) {}
+
+            try {
+                saxFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            } catch (SAXNotRecognizedException e) {
+                log.warn(
+                    "SAXNotRecognizedException occur, not supported feature: " +
+                        "http://apache.org/xml/features/disallow-doctype-decl, which will disable DOCTYPE declaration" +
+                        " if set true.");
+            }
+
+            saxFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            saxFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             SAXParser saxParser = saxFactory.newSAXParser();
             XMLReader xmlReader = saxParser.getXMLReader();
             xmlReader.setContentHandler(handler);
