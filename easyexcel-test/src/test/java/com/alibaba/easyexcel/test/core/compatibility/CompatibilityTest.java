@@ -1,17 +1,10 @@
 package com.alibaba.easyexcel.test.core.compatibility;
 
-import java.io.FileOutputStream;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.easyexcel.test.core.exception.ExceptionData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.converters.WriteConverterContext;
-import com.alibaba.excel.converters.floatconverter.FloatNumberConverter;
-import com.alibaba.excel.metadata.data.WriteCellData;
-import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
