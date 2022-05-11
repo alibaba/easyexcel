@@ -34,7 +34,10 @@ public class DummyRecordHandler extends AbstractXlsRecordHandler implements Igno
             xlsReadSheetHolder.setTempRowType(RowTypeEnum.EMPTY);
         } else if (record instanceof MissingCellDummyRecord) {
             MissingCellDummyRecord mcdr = (MissingCellDummyRecord)record;
-            xlsReadSheetHolder.getCellMap().put(mcdr.getColumn(),
+            // https://github.com/alibaba/easyexcel/issues/2236
+            // Some abnormal XLS, in the case of data already exist, or there will be a "MissingCellDummyRecord"
+            // records, so if the existing data, empty data is ignored
+            xlsReadSheetHolder.getCellMap().putIfAbsent(mcdr.getColumn(),
                 ReadCellData.newEmptyInstance(mcdr.getRow(), mcdr.getColumn()));
         }
     }

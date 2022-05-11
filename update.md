@@ -8,6 +8,7 @@
 * 修复03版本无法读取到公式格式的bug [Issue #2444](https://github.com/alibaba/easyexcel/issues/2444)
 * 提高类型转换兼容性 [Issue #2443](https://github.com/alibaba/easyexcel/issues/2443)
 * 捕获`setFeature`异常不影响主流程 [Issue #2054](https://github.com/alibaba/easyexcel/issues/2054)
+* 增加部分`xls`容错 [Issue #2236](https://github.com/alibaba/easyexcel/issues/2236)
 
 
 # 3.0.5
