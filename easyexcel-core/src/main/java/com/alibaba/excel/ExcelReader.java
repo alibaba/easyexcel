@@ -1,5 +1,7 @@
 package com.alibaba.excel;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,8 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jipengfei
  */
-public class ExcelReader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelReader.class);
+public class ExcelReader implements Closeable {
 
     /**
      * Analyser
@@ -50,8 +51,7 @@ public class ExcelReader {
     /**
      * Parse the specified sheet，SheetNo start from 0
      *
-     * @param readSheet
-     *            Read sheet
+     * @param readSheet Read sheet
      */
     public ExcelReader read(ReadSheet... readSheet) {
         return read(Arrays.asList(readSheet));
@@ -67,7 +67,6 @@ public class ExcelReader {
         excelAnalyser.analysis(readSheetList, Boolean.FALSE);
         return this;
     }
-
 
     /**
      * Context for the entire execution process
@@ -88,7 +87,6 @@ public class ExcelReader {
     }
 
     /**
-     *
      * @return
      * @deprecated please use {@link #analysisContext()}
      */
@@ -106,17 +104,8 @@ public class ExcelReader {
         }
     }
 
-    /**
-     * Prevents calls to {@link #finish} from freeing the cache
-     *
-     */
     @Override
-    protected void finalize() {
-        try {
-            finish();
-        } catch (Throwable e) {
-            LOGGER.warn("Destroy object failed", e);
-        }
+    public void close() {
+        finish();
     }
-
 }

@@ -162,7 +162,7 @@ public class ClassUtils {
                     Class<? extends Converter<?>> convertClazz = excelProperty.converter();
                     if (convertClazz != AutoConverter.class) {
                         try {
-                            Converter<?> converter = convertClazz.newInstance();
+                            Converter<?> converter = convertClazz.getDeclaredConstructor().newInstance();
                             excelContentProperty.setConverter(converter);
                         } catch (Exception e) {
                             throw new ExcelCommonException(

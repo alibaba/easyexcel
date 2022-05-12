@@ -12,6 +12,7 @@
 * 增加部分`xls`容错 [Issue #2236](https://github.com/alibaba/easyexcel/issues/2236)
 * 修复读取csv文件时`autoTrim`配置失效 [Issue #2227](https://github.com/alibaba/easyexcel/issues/2227)
 * csv支持设置读写编码 [Issue #2404](https://github.com/alibaba/easyexcel/issues/2404)
+* 读写支持`不使用 try-with-resources`语法糖
 
 
 # 3.0.5

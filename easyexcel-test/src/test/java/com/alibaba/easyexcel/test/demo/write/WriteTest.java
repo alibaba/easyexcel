@@ -86,7 +86,15 @@ public class WriteTest {
         // 如果这里想使用03 则 传入excelType参数即可
         EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
 
-        // 写法3
+        // 写法3:使用 try-with-resources @since 3.1.0
+        fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+            excelWriter.write(data(), writeSheet);
+        }
+
+        // 写法4: 不使用 try-with-resources
         fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = null;
@@ -95,9 +103,9 @@ public class WriteTest {
             WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
             excelWriter.write(data(), writeSheet);
         } finally {
-            // 千万别忘记finish 会帮忙关闭流
+            // 千万别忘记close 会帮忙关闭流
             if (excelWriter != null) {
-                excelWriter.finish();
+                excelWriter.close();
             }
         }
     }
@@ -177,12 +185,10 @@ public class WriteTest {
      */
     @Test
     public void repeatedWrite() {
-        // 方法1 如果写到同一个sheet
+        // 方法1.1: 如果写到同一个sheet 使用 try-with-resources @since 3.1.0
         String fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        ExcelWriter excelWriter = null;
-        try {
-            // 这里 需要指定写用哪个class去写
-            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+        // 这里 需要指定写用哪个class去写
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build()) {
             // 这里注意 如果同一个sheet只要创建一次
             WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
             // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
@@ -191,18 +197,33 @@ public class WriteTest {
                 List<DemoData> data = data();
                 excelWriter.write(data, writeSheet);
             }
+        }
+
+        // 方法1.2: 如果写到同一个sheet 不使用 try-with-resources
+        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        ExcelWriter writer = null;
+        try {
+            // 这里 需要指定写用哪个class去写
+            writer = EasyExcel.write(fileName, DemoData.class).build();
+            // 这里注意 如果同一个sheet只要创建一次
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来
+            for (int i = 0; i < 5; i++) {
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                writer.write(data, writeSheet);
+            }
         } finally {
-            // 千万别忘记finish 会帮忙关闭流
-            if (excelWriter != null) {
-                excelWriter.finish();
+            // 千万别忘记close 会帮忙关闭流
+            if (writer != null) {
+                writer.finish();
             }
         }
 
-        // 方法2 如果写到不同的sheet 同一个对象
+        // 方法2.1: 如果写到不同的sheet 同一个对象 使用 try-with-resources @since 3.1.0
         fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
-        try {
-            // 这里 指定文件
-            excelWriter = EasyExcel.write(fileName, DemoData.class).build();
+        // 这里 指定文件
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build()) {
             // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
             for (int i = 0; i < 5; i++) {
                 // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
@@ -211,18 +232,32 @@ public class WriteTest {
                 List<DemoData> data = data();
                 excelWriter.write(data, writeSheet);
             }
-        } finally {
-            // 千万别忘记finish 会帮忙关闭流
-            if (excelWriter != null) {
-                excelWriter.finish();
-            }
         }
 
-        // 方法3 如果写到不同的sheet 不同的对象
+        // 方法2.2: 如果写到不同的sheet 同一个对象 不使用 try-with-resources
         fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
         try {
             // 这里 指定文件
-            excelWriter = EasyExcel.write(fileName).build();
+            writer = EasyExcel.write(fileName, DemoData.class).build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+            for (int i = 0; i < 5; i++) {
+                // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样
+                WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).build();
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                writer.write(data, writeSheet);
+            }
+        } finally {
+            // 千万别忘记close 会帮忙关闭流
+            if (writer != null) {
+                writer.finish();
+            }
+        }
+
+        // 方法3.1 如果写到不同的sheet 不同的对象 使用 try-with-resources @since 3.1.0
+        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 指定文件
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName).build()) {
             // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
             for (int i = 0; i < 5; i++) {
                 // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样。这里注意DemoData.class 可以每次都变，我这里为了方便 所以用的同一个class
@@ -232,10 +267,26 @@ public class WriteTest {
                 List<DemoData> data = data();
                 excelWriter.write(data, writeSheet);
             }
+        }
+
+        // 方法3.2 如果写到不同的sheet 不同的对象 不使用 try-with-resources
+        fileName = TestFileUtil.getPath() + "repeatedWrite" + System.currentTimeMillis() + ".xlsx";
+        try {
+            // 这里 指定文件
+            writer = EasyExcel.write(fileName).build();
+            // 去调用写入,这里我调用了五次，实际使用时根据数据库分页的总的页数来。这里最终会写到5个sheet里面
+            for (int i = 0; i < 5; i++) {
+                // 每次都要创建writeSheet 这里注意必须指定sheetNo 而且sheetName必须不一样。这里注意DemoData.class 可以每次都变，我这里为了方便 所以用的同一个class
+                // 实际上可以一直变
+                WriteSheet writeSheet = EasyExcel.writerSheet(i, "模板" + i).head(DemoData.class).build();
+                // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+                List<DemoData> data = data();
+                writer.write(data, writeSheet);
+            }
         } finally {
-            // 千万别忘记finish 会帮忙关闭流
-            if (excelWriter != null) {
-                excelWriter.finish();
+            // 千万别忘记close 会帮忙关闭流
+            if (writer != null) {
+                writer.finish();
             }
         }
     }
@@ -269,7 +320,7 @@ public class WriteTest {
 
         String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
         try (InputStream inputStream = FileUtils.openInputStream(new File(imagePath))) {
-            List<ImageDemoData> list =  ListUtils.newArrayList();
+            List<ImageDemoData> list = ListUtils.newArrayList();
             ImageDemoData imageDemoData = new ImageDemoData();
             list.add(imageDemoData);
             // 放入五种类型的图片 实际使用只要选一种即可
@@ -598,7 +649,21 @@ public class WriteTest {
     @Test
     public void tableWrite() {
         String fileName = TestFileUtil.getPath() + "tableWrite" + System.currentTimeMillis() + ".xlsx";
-        // 这里直接写多个table的案例了，如果只有一个 也可以直一行代码搞定，参照其他案例
+        // 方法1 这里直接写多个table的案例了，如果只有一个 也可以直一行代码搞定，参照其他案, 使用 try-with-resources @since 3.1.0
+        // 这里 需要指定写用哪个class去写
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).build()) {
+            // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").needHead(Boolean.FALSE).build();
+            // 这里必须指定需要头，table 会继承sheet的配置，sheet配置了不需要，table 默认也是不需要
+            WriteTable writeTable0 = EasyExcel.writerTable(0).needHead(Boolean.TRUE).build();
+            WriteTable writeTable1 = EasyExcel.writerTable(1).needHead(Boolean.TRUE).build();
+            // 第一次写入会创建头
+            excelWriter.write(data(), writeSheet, writeTable0);
+            // 第二次写如也会创建头，然后在第一次的后面写入数据
+            excelWriter.write(data(), writeSheet, writeTable1);
+        }
+
+        // 方法2 这里直接写多个table的案例了，如果只有一个 也可以直一行代码搞定，参照其他案, 不使用 try-with-resources
         // 这里 需要指定写用哪个class去写
         ExcelWriter excelWriter = null;
         try {
@@ -613,9 +678,9 @@ public class WriteTest {
             // 第二次写如也会创建头，然后在第一次的后面写入数据
             excelWriter.write(data(), writeSheet, writeTable1);
         } finally {
-            // 千万别忘记finish 会帮忙关闭流
+            // 千万别忘记close 会帮忙关闭流
             if (excelWriter != null) {
-                excelWriter.finish();
+                excelWriter.close();
             }
         }
     }

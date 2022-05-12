@@ -1,5 +1,7 @@
 package com.alibaba.excel;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -25,8 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author jipengfei
  */
-public class ExcelWriter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelWriter.class);
+public class ExcelWriter implements Closeable {
 
     private ExcelBuilder excelBuilder;
 
@@ -145,23 +146,16 @@ public class ExcelWriter {
     }
 
     /**
-     * Prevents calls to {@link #finish} from freeing the cache
-     */
-    @Override
-    protected void finalize() {
-        try {
-            finish();
-        } catch (Throwable e) {
-            LOGGER.warn("Destroy object failed", e);
-        }
-    }
-
-    /**
      * The context of the entire writing process
      *
      * @return
      */
     public WriteContext writeContext() {
         return excelBuilder.writeContext();
+    }
+
+    @Override
+    public void close() {
+        finish();
     }
 }
