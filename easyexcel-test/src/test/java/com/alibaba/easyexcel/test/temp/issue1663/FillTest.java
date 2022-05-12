@@ -23,9 +23,9 @@ public class FillTest {
     @Test
     public void TestFillNullPoint(){
         String templateFileName =
-            TestFileUtil.getPath() + "easyexcel-test/test/resources/temp/issue1663" + File.separator + "template.xlsx";
+            TestFileUtil.getPath() + "temp/issue1663" + File.separator + "template.xlsx";
 
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/temp/issue1663" + File.separator + "issue1663.xlsx";
+        String fileName = TestFileUtil.getPath() + "temp/issue1663" + File.separator + "issue1663.xlsx";
         ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();
         FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.VERTICAL).build();

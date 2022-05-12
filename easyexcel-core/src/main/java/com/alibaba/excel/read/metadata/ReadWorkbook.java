@@ -2,6 +2,7 @@ package com.alibaba.excel.read.metadata;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Set;
 
 import javax.xml.parsers.SAXParserFactory;
@@ -43,6 +44,11 @@ public class ReadWorkbook extends ReadBasicParameter {
      * If 'inputStream' and 'file' all not empty, file first
      */
     private File file;
+    /**
+     * charset.
+     * Only work on the CSV file
+     */
+    private Charset charset;
     /**
      * Mandatory use 'inputStream' .Default is false.
      * <p>
@@ -98,6 +104,4 @@ public class ReadWorkbook extends ReadBasicParameter {
      * @see CellExtraTypeEnum
      */
     private Set<CellExtraTypeEnum> extraReadSet;
-
-    private String encoding;
 }

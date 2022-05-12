@@ -90,8 +90,8 @@ public class SimpleDataTest {
 
     @Test
     public void t21SheetNameRead07() {
-        EasyExcel.read(TestFileUtil.readFile("easyexcel-test/test/resources/simple" + File.separator + "simple07.xlsx"), SimpleData.class,
-            new SimpleDataSheetNameListener()).sheet("easyexcel-test/test/resources/simple").doRead();
+        EasyExcel.read(TestFileUtil.readFile("simple" + File.separator + "simple07.xlsx"), SimpleData.class,
+            new SimpleDataSheetNameListener()).sheet("simple").doRead();
     }
 
     private void synchronousRead(File file) {

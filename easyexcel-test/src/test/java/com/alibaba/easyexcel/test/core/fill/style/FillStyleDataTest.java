@@ -49,8 +49,8 @@ public class FillStyleDataTest {
         fileStyle03 = TestFileUtil.createNewFile("fileStyle03.xls");
         fileStyleHandler07 = TestFileUtil.createNewFile("fileStyleHandler07.xlsx");
         fileStyleHandler03 = TestFileUtil.createNewFile("fileStyleHandler03.xls");
-        fileStyleTemplate07 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "style.xlsx");
-        fileStyleTemplate03 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "style.xls");
+        fileStyleTemplate07 = TestFileUtil.readFile("fill" + File.separator + "style.xlsx");
+        fileStyleTemplate03 = TestFileUtil.readFile("fill" + File.separator + "style.xls");
     }
 
     @Test

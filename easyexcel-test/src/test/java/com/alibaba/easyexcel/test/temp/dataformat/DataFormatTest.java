@@ -132,7 +132,7 @@ public class DataFormatTest {
 
     @Test
     public void test355() throws IOException, InvalidFormatException {
-        File file = TestFileUtil.readFile("easyexcel-test/test/resources/dataformat" + File.separator + "dataformat.xlsx");
+        File file = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xlsx");
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
         DataFormatter d = new DataFormatter(Locale.CHINA);

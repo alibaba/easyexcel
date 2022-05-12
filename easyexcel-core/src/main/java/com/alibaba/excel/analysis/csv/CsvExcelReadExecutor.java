@@ -1,8 +1,10 @@
 package com.alibaba.excel.analysis.csv;
 
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -84,12 +86,15 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
         CSVFormat csvFormat = csvReadWorkbookHolder.getCsvFormat();
 
         if (csvReadWorkbookHolder.getMandatoryUseInputStream()) {
-            return csvFormat.parse(new InputStreamReader(csvReadWorkbookHolder.getInputStream(),csvReadWorkbookHolder.getEncoding()));
+            return csvFormat.parse(
+                new InputStreamReader(csvReadWorkbookHolder.getInputStream(), csvReadWorkbookHolder.getCharset()));
         }
         if (csvReadWorkbookHolder.getFile() != null) {
-            return csvFormat.parse(new FileReader(csvReadWorkbookHolder.getFile()));
+            return csvFormat.parse(new InputStreamReader(Files.newInputStream(csvReadWorkbookHolder.getFile().toPath()),
+                csvReadWorkbookHolder.getCharset()));
         }
-        return csvFormat.parse(new InputStreamReader(csvReadWorkbookHolder.getInputStream(),csvReadWorkbookHolder.getEncoding()));
+        return csvFormat.parse(
+            new InputStreamReader(csvReadWorkbookHolder.getInputStream(), csvReadWorkbookHolder.getCharset()));
     }
 
     private void dealRecord(CSVRecord record, int rowIndex) {

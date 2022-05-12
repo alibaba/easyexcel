@@ -40,17 +40,17 @@ public class LargeDataTest {
     @BeforeClass
     public static void init() {
         fileFill07 = TestFileUtil.createNewFile("largefill07.xlsx");
-        fileWrite07 = TestFileUtil.createNewFile("easyexcel-test/test/resources/large" + File.separator + "fileWrite07.xlsx");
-        fileWriteTemp07 = TestFileUtil.createNewFile("easyexcel-test/test/resources/large" + File.separator + "fileWriteTemp07.xlsx");
-        fileWritePoi07 = TestFileUtil.createNewFile("easyexcel-test/test/resources/large" + File.separator + "fileWritePoi07.xlsx");
-        template07 = TestFileUtil.readFile("easyexcel-test/test/resources/large" + File.separator + "fill.xlsx");
+        fileWrite07 = TestFileUtil.createNewFile("large" + File.separator + "fileWrite07.xlsx");
+        fileWriteTemp07 = TestFileUtil.createNewFile("large" + File.separator + "fileWriteTemp07.xlsx");
+        fileWritePoi07 = TestFileUtil.createNewFile("large" + File.separator + "fileWritePoi07.xlsx");
+        template07 = TestFileUtil.readFile("large" + File.separator + "fill.xlsx");
         fileCsv = TestFileUtil.createNewFile("largefileCsv.csv");
     }
 
     @Test
     public void t01Read() throws Exception {
         long start = System.currentTimeMillis();
-        EasyExcel.read(TestFileUtil.getPath() + "easyexcel-test/test/resources/large" + File.separator + "large07.xlsx", LargeData.class,
+        EasyExcel.read(TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx", LargeData.class,
             new LargeDataListener()).headRowNumber(2).sheet().doRead();
         LOGGER.info("Large data total time spent:{}", System.currentTimeMillis() - start);
     }

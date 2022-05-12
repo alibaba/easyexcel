@@ -2,6 +2,7 @@ package com.alibaba.excel.read.metadata.holder;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +52,12 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      * If 'inputStream' and 'file' all not empty, file first
      */
     private File file;
+
+    /**
+     * charset.
+     * Only work on the CSV file
+     */
+    private Charset charset;
     /**
      * Mandatory use 'inputStream' .Default is false.
      * <p>
@@ -68,7 +75,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
     /**
      * This object can be read in the Listener {@link AnalysisEventListener#invoke(Object, AnalysisContext)}
      * {@link AnalysisContext#getCustom()}
-     *
      */
     private Object customObject;
     /**
@@ -122,6 +128,13 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             this.inputStream = readWorkbook.getInputStream();
         }
         this.file = readWorkbook.getFile();
+
+        if (readWorkbook.getCharset() == null) {
+            this.charset = Charset.defaultCharset();
+        } else {
+            this.charset = readWorkbook.getCharset();
+        }
+
         if (readWorkbook.getMandatoryUseInputStream() == null) {
             this.mandatoryUseInputStream = Boolean.FALSE;
         } else {
@@ -159,7 +172,6 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
         this.hasReadSheet = new HashSet<Integer>();
         this.password = readWorkbook.getPassword();
     }
-
 
     @Override
     public HolderEnum holderType() {

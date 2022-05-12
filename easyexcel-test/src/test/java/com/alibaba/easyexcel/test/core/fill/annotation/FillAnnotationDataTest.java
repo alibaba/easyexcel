@@ -44,8 +44,8 @@ public class FillAnnotationDataTest {
     public static void init() {
         file07 = TestFileUtil.createNewFile("fillAnnotation07.xlsx");
         file03 = TestFileUtil.createNewFile("fillAnnotation03.xls");
-        fileTemplate07 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "annotation.xlsx");
-        fileTemplate03 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "annotation.xls");
+        fileTemplate07 = TestFileUtil.readFile("fill" + File.separator + "annotation.xlsx");
+        fileTemplate03 = TestFileUtil.readFile("fill" + File.separator + "annotation.xls");
     }
 
     @Test
@@ -110,7 +110,7 @@ public class FillAnnotationDataTest {
         data.setNumber(99.99);
         data.setString1("string1");
         data.setString2("string2");
-        data.setImage(TestFileUtil.getPath() + "easyexcel-test/test/resources/converter" + File.separator + "img.jpg");
+        data.setImage(TestFileUtil.getPath() + "converter" + File.separator + "img.jpg");
         list.add(data);
         list.add(data);
         list.add(data);

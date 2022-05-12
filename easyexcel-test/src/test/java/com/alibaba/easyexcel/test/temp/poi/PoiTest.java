@@ -176,7 +176,7 @@ public class PoiTest {
 
     @Test
     public void lastRowNum233() throws IOException {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
         Workbook xx = new XSSFWorkbook(file);
         System.out.println(new File(file).exists());
 
@@ -231,7 +231,7 @@ public class PoiTest {
 
     @Test
     public void lastRowNum2333() throws IOException, InvalidFormatException {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(new File(file));
         SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(xssfWorkbook);
         Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
@@ -248,14 +248,14 @@ public class PoiTest {
 
     @Test
     public void testread() throws IOException {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
 
         SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
         Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
         //
         // Cell cell = xssfSheet.getRow(0).createCell(9);
 
-        String file1 = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file1 = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
 
         SXSSFWorkbook xssfWorkbook1 = new SXSSFWorkbook(new XSSFWorkbook(file1));
         Sheet xssfSheet1 = xssfWorkbook1.getXSSFWorkbook().getSheetAt(0);
@@ -268,13 +268,13 @@ public class PoiTest {
 
     @Test
     public void testreadRead() throws IOException {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
         FileUtils.readFileToByteArray(new File(file));
     }
 
     @Test
     public void lastRowNum2332222() throws IOException {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
         SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
         Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
 
@@ -287,7 +287,7 @@ public class PoiTest {
 
     @Test
     public void lastRowNum23443() throws IOException {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
         SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
         Sheet xssfSheet = xssfWorkbook.getSheetAt(0);
 
@@ -298,7 +298,7 @@ public class PoiTest {
 
     @Test
     public void lastRowNum2() throws IOException {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
         SXSSFWorkbook xssfWorkbook = new SXSSFWorkbook(new XSSFWorkbook(file));
         Sheet xssfSheet = xssfWorkbook.getXSSFWorkbook().getSheetAt(0);
         LOGGER.info("一共行数:{}", xssfSheet.getPhysicalNumberOfRows());
@@ -309,7 +309,7 @@ public class PoiTest {
 
     @Test
     public void lastRowNumXSSF2() throws IOException {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx";
+        String file = TestFileUtil.getPath() + "fill" + File.separator + "simple.xlsx";
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file);
         LOGGER.info("一共:{}个sheet", xssfWorkbook.getNumberOfSheets());
         XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);

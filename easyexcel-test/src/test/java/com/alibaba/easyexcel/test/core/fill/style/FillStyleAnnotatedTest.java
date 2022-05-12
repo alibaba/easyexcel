@@ -46,8 +46,8 @@ public class FillStyleAnnotatedTest {
     public static void init() {
         FillStyleAnnotated07 = TestFileUtil.createNewFile("FillStyleAnnotated07.xlsx");
         FillStyleAnnotated03 = TestFileUtil.createNewFile("FillStyleAnnotated03.xls");
-        fileStyleTemplate07 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "style.xlsx");
-        fileStyleTemplate03 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "style.xls");
+        fileStyleTemplate07 = TestFileUtil.readFile("fill" + File.separator + "style.xlsx");
+        fileStyleTemplate03 = TestFileUtil.readFile("fill" + File.separator + "style.xls");
     }
 
     @Test

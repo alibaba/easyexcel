@@ -22,8 +22,8 @@ public class ExtraDataTest {
 
     @BeforeClass
     public static void init() {
-        file03 = TestFileUtil.readFile("easyexcel-test/test/resources/extra" + File.separator + "extra.xls");
-        file07 = TestFileUtil.readFile("easyexcel-test/test/resources/extra" + File.separator + "extra.xlsx");
+        file03 = TestFileUtil.readFile("extra" + File.separator + "extra.xls");
+        file07 = TestFileUtil.readFile("extra" + File.separator + "extra.xlsx");
     }
 
     @Test

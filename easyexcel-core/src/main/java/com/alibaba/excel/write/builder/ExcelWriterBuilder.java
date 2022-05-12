@@ -3,8 +3,10 @@ package com.alibaba.excel.write.builder;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 
@@ -83,6 +85,15 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
 
     public ExcelWriterBuilder file(String outputPathName) {
         return file(new File(outputPathName));
+    }
+
+    /**
+     * charset.
+     * Only work on the CSV file
+     */
+    public ExcelWriterBuilder charset(Charset charset) {
+        writeWorkbook.setCharset(charset);
+        return this;
     }
 
     public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {

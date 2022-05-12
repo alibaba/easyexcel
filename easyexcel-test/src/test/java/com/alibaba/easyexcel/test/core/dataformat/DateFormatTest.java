@@ -26,8 +26,8 @@ public class DateFormatTest {
 
     @BeforeClass
     public static void init() {
-        file07 = TestFileUtil.readFile("easyexcel-test/test/resources/dataformat" + File.separator + "dataformat.xlsx");
-        file03 = TestFileUtil.readFile("easyexcel-test/test/resources/dataformat" + File.separator + "dataformat.xls");
+        file07 = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xlsx");
+        file03 = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xls");
     }
 
     @Test

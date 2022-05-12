@@ -64,7 +64,7 @@ public class FillTempTest {
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
         // 填充list 的时候还要注意 模板中{.} 多了个点 表示list
         String templateFileName =
-            TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "fill" + File.separator + "list.xlsx";
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "list.xlsx";
 
         // 方案1 一下子全部放到内存里面 并填充
         String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
@@ -91,7 +91,7 @@ public class FillTempTest {
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
         // {} 代表普通变量 {.} 代表是list的变量
         String templateFileName =
-            TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "fill" + File.separator + "complex.xlsx";
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "complex.xlsx";
 
         String fileName = TestFileUtil.getPath() + "complexFill" + System.currentTimeMillis() + ".xlsx";
         ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
@@ -123,7 +123,7 @@ public class FillTempTest {
         // {} 代表普通变量 {.} 代表是list的变量
         // 这里模板 删除了list以后的数据，也就是统计的这一行
         String templateFileName =
-            TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "fill" + File.separator + "complexFillWithTable.xlsx";
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "complexFillWithTable.xlsx";
 
         String fileName = TestFileUtil.getPath() + "complexFillWithTable" + System.currentTimeMillis() + ".xlsx";
         ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
@@ -164,7 +164,7 @@ public class FillTempTest {
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
         // {} 代表普通变量 {.} 代表是list的变量
         String templateFileName =
-            TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "fill" + File.separator + "horizontal.xlsx";
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "horizontal.xlsx";
 
         String fileName = TestFileUtil.getPath() + "horizontalFill" + System.currentTimeMillis() + ".xlsx";
         ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();
@@ -191,7 +191,7 @@ public class FillTempTest {
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
         // {} 代表普通变量 {.} 代表是list的变量 {前缀.} 前缀可以区分不同的list
         String templateFileName =
-            TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "fill" + File.separator + "composite.xlsx";
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "composite.xlsx";
 
         String fileName = TestFileUtil.getPath() + "compositeFill" + System.currentTimeMillis() + ".xlsx";
         ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build();

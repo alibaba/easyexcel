@@ -26,8 +26,8 @@ public class MultipleSheetsDataTest {
 
     @BeforeClass
     public static void init() {
-        file07 = TestFileUtil.readFile("easyexcel-test/test/resources/multiplesheets" + File.separator + "multiplesheets.xlsx");
-        file03 = TestFileUtil.readFile("easyexcel-test/test/resources/multiplesheets" + File.separator + "multiplesheets.xls");
+        file07 = TestFileUtil.readFile("multiplesheets" + File.separator + "multiplesheets.xlsx");
+        file03 = TestFileUtil.readFile("multiplesheets" + File.separator + "multiplesheets.xls");
     }
 
     @Test

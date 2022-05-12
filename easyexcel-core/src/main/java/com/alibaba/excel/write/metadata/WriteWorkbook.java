@@ -37,7 +37,8 @@ public class WriteWorkbook extends WriteBasicParameter {
      */
     private OutputStream outputStream;
     /**
-     * output charset
+     * charset.
+     * Only work on the CSV file
      */
     private Charset charset;
     /**

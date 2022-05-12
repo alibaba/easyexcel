@@ -2,6 +2,7 @@ package com.alibaba.excel.read.builder;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.List;
 
@@ -38,11 +39,6 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
         return this;
     }
 
-    public ExcelReaderBuilder encoding(String encoding){
-        readWorkbook.setEncoding(encoding);
-        return this;
-    }
-
     /**
      * Read InputStream
      * <p>
@@ -70,6 +66,15 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
      */
     public ExcelReaderBuilder file(String pathName) {
         return file(new File(pathName));
+    }
+
+    /**
+     * charset.
+     * Only work on the CSV file
+     */
+    public ExcelReaderBuilder charset(Charset charset) {
+        readWorkbook.setCharset(charset);
+        return this;
     }
 
     /**
@@ -156,10 +161,10 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
      * <p>
      * Please pass in the name of a class ,like : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl"
      *
-     * @see SAXParserFactory#newInstance()
-     * @see SAXParserFactory#newInstance(String, ClassLoader)
      * @param xlsxSAXParserFactoryName
      * @return
+     * @see SAXParserFactory#newInstance()
+     * @see SAXParserFactory#newInstance(String, ClassLoader)
      */
     public ExcelReaderBuilder xlsxSAXParserFactoryName(String xlsxSAXParserFactoryName) {
         readWorkbook.setXlsxSAXParserFactoryName(xlsxSAXParserFactoryName);
@@ -169,8 +174,7 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     /**
      * Read some extra information, not by default
      *
-     * @param extraType
-     *            extra information type
+     * @param extraType extra information type
      * @return
      */
     public ExcelReaderBuilder extraRead(CellExtraTypeEnum extraType) {

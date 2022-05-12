@@ -30,7 +30,7 @@ public class Poi3Test {
 
     @Test
     public void Encryption() throws Exception {
-        String file = TestFileUtil.getPath() + "easyexcel-test/test/resources/large" + File.separator + "large07.xlsx";
+        String file = TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx";
         POIFSFileSystem fs = new POIFSFileSystem();
         EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile);
         Encryptor enc = info.getEncryptor();

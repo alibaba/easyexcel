@@ -33,7 +33,7 @@ public class WriteLargeTest {
     @Test
     public void test() throws Exception {
         // 方法2 如果写到不同的sheet 同一个对象
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/large" + System.currentTimeMillis() + ".xlsx";
+        String fileName = TestFileUtil.getPath() + "large" + System.currentTimeMillis() + ".xlsx";
         // 头的策略
         WriteCellStyle headWriteCellStyle = new WriteCellStyle();
         // 背景设置为红色
@@ -69,7 +69,7 @@ public class WriteLargeTest {
     @Test
     public void test2() throws Exception {
         // 方法2 如果写到不同的sheet 同一个对象
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/large" + System.currentTimeMillis() + ".xlsx";
+        String fileName = TestFileUtil.getPath() + "large" + System.currentTimeMillis() + ".xlsx";
 
         ExcelWriter excelWriter = EasyExcel.write(fileName, LargeData.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet().build();

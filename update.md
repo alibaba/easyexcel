@@ -10,6 +10,7 @@
 * 捕获`setFeature`异常不影响主流程 [Issue #2054](https://github.com/alibaba/easyexcel/issues/2054)
 * 增加部分`xls`容错 [Issue #2236](https://github.com/alibaba/easyexcel/issues/2236)
 * 修复读取csv文件时`autoTrim`配置失效 [Issue #2227](https://github.com/alibaba/easyexcel/issues/2227)
+* csv支持设置读写编码 [Issue #2404](https://github.com/alibaba/easyexcel/issues/2404)
 
 
 # 3.0.5

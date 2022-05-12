@@ -45,7 +45,7 @@ public class ReadTest {
     public void simpleRead() {
         // 写法1：JDK8+ ,不用额外写一个DemoDataListener
         // since: 3.0.0-beta1
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
         // 这里每次会读取3000条数据 然后返回过来 直接调用使用数据就行
         EasyExcel.read(fileName, DemoData.class, new PageReadListener<DemoData>(dataList -> {
@@ -56,7 +56,7 @@ public class ReadTest {
 
         // 写法2：
         // 匿名内部类 不用额外写一个DemoDataListener
-        fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
         EasyExcel.read(fileName, DemoData.class, new ReadListener<DemoData>() {
             /**
@@ -94,12 +94,12 @@ public class ReadTest {
 
         // 有个很重要的点 DemoDataListener 不能被spring管理，要每次读取excel都要new,然后里面用到spring可以构造方法传进去
         // 写法3：
-        fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
         EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet().doRead();
 
         // 写法4：
-        fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 一个文件一个reader
         ExcelReader excelReader = null;
         try {
@@ -128,7 +128,7 @@ public class ReadTest {
      */
     @Test
     public void indexOrNameRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里默认读取第一个sheet
         EasyExcel.read(fileName, IndexOrNameData.class, new IndexOrNameDataListener()).sheet().doRead();
     }
@@ -144,13 +144,13 @@ public class ReadTest {
      */
     @Test
     public void repeatedRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 读取全部sheet
         // 这里需要注意 DemoDataListener的doAfterAllAnalysed 会在每个sheet读取完毕后调用一次。然后所有sheet都会往同一个DemoDataListener里面写
         EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).doReadAll();
 
         // 读取部分sheet
-        fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         ExcelReader excelReader = null;
         try {
             excelReader = EasyExcel.read(fileName).build();
@@ -183,7 +183,7 @@ public class ReadTest {
      */
     @Test
     public void converterRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, ConverterData.class, new ConverterDataListener())
             // 这里注意 我们也可以registerConverter来指定自定义转换器， 但是这个转换变成全局了， 所有java为string,excel为string的都会用这个转换器。
@@ -206,7 +206,7 @@ public class ReadTest {
      */
     @Test
     public void complexHeaderRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, DemoData.class, new DemoDataListener()).sheet()
             // 这里可以设置1，因为头就是一行。如果多行头，可以设置其他值。不传入也可以，因为默认会根据DemoData 来解析，他没有指定头，也就是默认1行
@@ -225,7 +225,7 @@ public class ReadTest {
      */
     @Test
     public void headerRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, DemoData.class, new DemoHeadDataListener()).sheet().doRead();
     }
@@ -246,7 +246,7 @@ public class ReadTest {
      */
     @Test
     public void extraRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "extra.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "extra.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, DemoExtraData.class, new DemoExtraListener())
             // 需要读取批注 默认不读取
@@ -271,7 +271,7 @@ public class ReadTest {
      */
     @Test
     public void cellDataRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "cellDataDemo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "cellDataDemo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, CellDataReadDemoData.class, new CellDataDemoHeadDataListener()).sheet().doRead();
     }
@@ -288,7 +288,7 @@ public class ReadTest {
      */
     @Test
     public void exceptionRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet
         EasyExcel.read(fileName, ExceptionDemoData.class, new DemoExceptionListener()).sheet().doRead();
     }
@@ -298,7 +298,7 @@ public class ReadTest {
      */
     @Test
     public void synchronousRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 同步读取会自动finish
         List<DemoData> list = EasyExcel.read(fileName).head(DemoData.class).sheet().doReadSync();
         for (DemoData data : list) {
@@ -318,7 +318,7 @@ public class ReadTest {
      */
     @Test
     public void noModelRead() {
-        String fileName = TestFileUtil.getPath() + "easyexcel-test/test/resources/demo" + File.separator + "demo.xlsx";
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
     }

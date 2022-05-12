@@ -56,25 +56,25 @@ public class FillDataTest {
         file07 = TestFileUtil.createNewFile("fill07.xlsx");
         file03 = TestFileUtil.createNewFile("fill03.xls");
         fileCsv = TestFileUtil.createNewFile("fill.csv");
-        simpleTemplate07 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "simple.xlsx");
-        simpleTemplate03 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "simple.xls");
-        simpleTemplateCsv = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "simple.csv");
+        simpleTemplate07 = TestFileUtil.readFile("fill" + File.separator + "simple.xlsx");
+        simpleTemplate03 = TestFileUtil.readFile("fill" + File.separator + "simple.xls");
+        simpleTemplateCsv = TestFileUtil.readFile("fill" + File.separator + "simple.csv");
         fileComplex07 = TestFileUtil.createNewFile("fillComplex07.xlsx");
-        complexFillTemplate07 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "complex.xlsx");
+        complexFillTemplate07 = TestFileUtil.readFile("fill" + File.separator + "complex.xlsx");
         fileComplex03 = TestFileUtil.createNewFile("fillComplex03.xls");
-        complexFillTemplate03 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "complex.xls");
+        complexFillTemplate03 = TestFileUtil.readFile("fill" + File.separator + "complex.xls");
         fileHorizontal07 = TestFileUtil.createNewFile("fillHorizontal07.xlsx");
-        horizontalFillTemplate07 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "horizontal.xlsx");
+        horizontalFillTemplate07 = TestFileUtil.readFile("fill" + File.separator + "horizontal.xlsx");
         fileHorizontal03 = TestFileUtil.createNewFile("fillHorizontal03.xls");
-        horizontalFillTemplate03 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "horizontal.xls");
+        horizontalFillTemplate03 = TestFileUtil.readFile("fill" + File.separator + "horizontal.xls");
         byName07 = TestFileUtil.createNewFile("byName07.xlsx");
-        byNameTemplate07 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "byName.xlsx");
+        byNameTemplate07 = TestFileUtil.readFile("fill" + File.separator + "byName.xlsx");
         byName03 = TestFileUtil.createNewFile("byName03.xls");
-        byNameTemplate03 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "byName.xls");
+        byNameTemplate03 = TestFileUtil.readFile("fill" + File.separator + "byName.xls");
         fileComposite07 = TestFileUtil.createNewFile("fileComposite07.xlsx");
-        compositeFillTemplate07 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "composite.xlsx");
+        compositeFillTemplate07 = TestFileUtil.readFile("fill" + File.separator + "composite.xlsx");
         fileComposite03 = TestFileUtil.createNewFile("fileComposite03.xls");
-        compositeFillTemplate03 = TestFileUtil.readFile("easyexcel-test/test/resources/fill" + File.separator + "composite.xls");
+        compositeFillTemplate03 = TestFileUtil.readFile("fill" + File.separator + "composite.xls");
     }
 
     @Test

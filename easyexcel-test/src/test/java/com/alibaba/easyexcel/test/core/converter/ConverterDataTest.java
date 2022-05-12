@@ -61,17 +61,17 @@ public class ConverterDataTest {
 
     @Test
     public void t11ReadAllConverter07() {
-        readAllConverter("easyexcel-test/test/resources/converter" + File.separator + "converter07.xlsx");
+        readAllConverter("converter" + File.separator + "converter07.xlsx");
     }
 
     @Test
     public void t12ReadAllConverter03() {
-        readAllConverter("easyexcel-test/test/resources/converter" + File.separator + "converter03.xls");
+        readAllConverter("converter" + File.separator + "converter03.xls");
     }
 
     @Test
     public void t13ReadAllConverterCsv() {
-        readAllConverter("easyexcel-test/test/resources/converter" + File.separator + "converterCsv.csv");
+        readAllConverter("converter" + File.separator + "converterCsv.csv");
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ConverterDataTest {
             List<ImageData> list = new ArrayList<>();
             ImageData imageData = new ImageData();
             list.add(imageData);
-            String imagePath = TestFileUtil.getPath() + "easyexcel-test/test/resources/converter" + File.separator + "img.jpg";
+            String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
             imageData.setByteArray(FileUtils.readFileToByteArray(new File(imagePath)));
             imageData.setFile(new File(imagePath));
             imageData.setString(imagePath);
