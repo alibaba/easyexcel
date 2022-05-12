@@ -53,9 +53,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>demo/**/*.java</exclude>
-                        <exclude>test/temp/**/*.java</exclude>
-                        <exclude>util/**/*.java</exclude>
+                        <exclude>**/*.java</exclude>
                     </excludes>
                     <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
