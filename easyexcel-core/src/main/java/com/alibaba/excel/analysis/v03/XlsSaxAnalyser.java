@@ -77,7 +77,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XlsSaxAnalyser.class);
     private static final short DUMMY_RECORD_SID = -1;
-    private XlsReadContext xlsReadContext;
+    private final XlsReadContext xlsReadContext;
     private static final Map<Short, XlsRecordHandler> XLS_RECORD_HANDLER_MAP = new HashMap<Short, XlsRecordHandler>(32);
 
     static {

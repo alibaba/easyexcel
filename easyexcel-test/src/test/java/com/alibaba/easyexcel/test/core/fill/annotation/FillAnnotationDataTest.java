@@ -61,46 +61,47 @@ public class FillAnnotationDataTest {
     private void readAndWrite(File file, File fileTemplate) throws Exception {
         EasyExcel.write().file(file).head(FillAnnotationData.class).withTemplate(fileTemplate).sheet().doFill(data());
 
-        Workbook workbook = WorkbookFactory.create(file);
-        Sheet sheet = workbook.getSheetAt(0);
+        try (Workbook workbook = WorkbookFactory.create(file)) {
+            Sheet sheet = workbook.getSheetAt(0);
 
-        Row row1 = sheet.getRow(1);
-        Assert.assertEquals(2000, row1.getHeight(), 0);
-        Cell cell10 = row1.getCell(0);
-        Date date = cell10.getDateCellValue();
-        Assert.assertEquals(DateUtils.parseDate("2020-01-01 01:01:01").getTime(), date.getTime());
-        String dataFormatString = cell10.getCellStyle().getDataFormatString();
-        Assert.assertEquals("yyyy年MM月dd日HH时mm分ss秒", dataFormatString);
-        Cell cell11 = row1.getCell(1);
-        Assert.assertEquals(99.99, cell11.getNumericCellValue(), 2);
-        boolean hasMerge = false;
-        for (CellRangeAddress mergedRegion : sheet.getMergedRegions()) {
-            if (mergedRegion.getFirstRow() == 1 && mergedRegion.getLastRow() == 1
-                && mergedRegion.getFirstColumn() == 2 && mergedRegion.getLastColumn() == 3) {
-                hasMerge = true;
+            Row row1 = sheet.getRow(1);
+            Assert.assertEquals(2000, row1.getHeight(), 0);
+            Cell cell10 = row1.getCell(0);
+            Date date = cell10.getDateCellValue();
+            Assert.assertEquals(DateUtils.parseDate("2020-01-01 01:01:01").getTime(), date.getTime());
+            String dataFormatString = cell10.getCellStyle().getDataFormatString();
+            Assert.assertEquals("yyyy年MM月dd日HH时mm分ss秒", dataFormatString);
+            Cell cell11 = row1.getCell(1);
+            Assert.assertEquals(99.99, cell11.getNumericCellValue(), 2);
+            boolean hasMerge = false;
+            for (CellRangeAddress mergedRegion : sheet.getMergedRegions()) {
+                if (mergedRegion.getFirstRow() == 1 && mergedRegion.getLastRow() == 1
+                    && mergedRegion.getFirstColumn() == 2 && mergedRegion.getLastColumn() == 3) {
+                    hasMerge = true;
+                    break;
+                }
+            }
+            Assert.assertTrue(hasMerge);
+            if (sheet instanceof XSSFSheet) {
+                XSSFSheet xssfSheet = (XSSFSheet)sheet;
+                List<XSSFShape> shapeList = xssfSheet.getDrawingPatriarch().getShapes();
+                XSSFShape shape0 = shapeList.get(0);
+                Assert.assertTrue(shape0 instanceof XSSFPicture);
+                XSSFPicture picture0 = (XSSFPicture)shape0;
+                CTMarker ctMarker0 = picture0.getPreferredSize().getFrom();
+                Assert.assertEquals(1, ctMarker0.getRow());
+                Assert.assertEquals(4, ctMarker0.getCol());
+            } else {
+                HSSFSheet hssfSheet = (HSSFSheet)sheet;
+                List<HSSFShape> shapeList = hssfSheet.getDrawingPatriarch().getChildren();
+                HSSFShape shape0 = shapeList.get(0);
+                Assert.assertTrue(shape0 instanceof HSSFPicture);
+                HSSFPicture picture0 = (HSSFPicture)shape0;
+                HSSFClientAnchor anchor = (HSSFClientAnchor)picture0.getAnchor();
+                Assert.assertEquals(1, anchor.getRow1());
+                Assert.assertEquals(4, anchor.getCol1());
             }
         }
-        Assert.assertTrue(hasMerge);
-        if (sheet instanceof XSSFSheet) {
-            XSSFSheet xssfSheet = (XSSFSheet)sheet;
-            List<XSSFShape> shapeList = xssfSheet.getDrawingPatriarch().getShapes();
-            XSSFShape shape0 = shapeList.get(0);
-            Assert.assertTrue(shape0 instanceof XSSFPicture);
-            XSSFPicture picture0 = (XSSFPicture)shape0;
-            CTMarker ctMarker0 = picture0.getPreferredSize().getFrom();
-            Assert.assertEquals(1, ctMarker0.getRow());
-            Assert.assertEquals(4, ctMarker0.getCol());
-        } else {
-            HSSFSheet hssfSheet = (HSSFSheet)sheet;
-            List<HSSFShape> shapeList = hssfSheet.getDrawingPatriarch().getChildren();
-            HSSFShape shape0 = shapeList.get(0);
-            Assert.assertTrue(shape0 instanceof HSSFPicture);
-            HSSFPicture picture0 = (HSSFPicture)shape0;
-            HSSFClientAnchor anchor = (HSSFClientAnchor)picture0.getAnchor();
-            Assert.assertEquals(1, anchor.getRow1());
-            Assert.assertEquals(4, anchor.getCol1());
-        }
-
     }
 
     private List<FillAnnotationData> data() throws Exception {

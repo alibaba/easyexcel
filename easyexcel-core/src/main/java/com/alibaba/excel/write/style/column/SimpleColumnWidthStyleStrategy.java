@@ -8,7 +8,7 @@ import com.alibaba.excel.metadata.Head;
  * @author Jiaju Zhuang
  */
 public class SimpleColumnWidthStyleStrategy extends AbstractHeadColumnWidthStyleStrategy {
-    private Integer columnWidth;
+    private final Integer columnWidth;
 
     /**
      *

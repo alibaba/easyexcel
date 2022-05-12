@@ -25,7 +25,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 @Slf4j
 public class XlsxRowHandler extends DefaultHandler {
-    private XlsxReadContext xlsxReadContext;
+    private final XlsxReadContext xlsxReadContext;
     private static final Map<String, XlsxTagHandler> XLSX_CELL_HANDLER_MAP = new HashMap<String, XlsxTagHandler>(32);
 
     static {

@@ -216,7 +216,7 @@ public class WriteTest {
         } finally {
             // 千万别忘记close 会帮忙关闭流
             if (writer != null) {
-                writer.finish();
+                writer.close();
             }
         }
 
@@ -250,7 +250,7 @@ public class WriteTest {
         } finally {
             // 千万别忘记close 会帮忙关闭流
             if (writer != null) {
-                writer.finish();
+                writer.close();
             }
         }
 
@@ -286,7 +286,7 @@ public class WriteTest {
         } finally {
             // 千万别忘记close 会帮忙关闭流
             if (writer != null) {
-                writer.finish();
+                writer.close();
             }
         }
     }

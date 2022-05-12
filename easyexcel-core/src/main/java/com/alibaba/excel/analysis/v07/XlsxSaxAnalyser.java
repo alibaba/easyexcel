@@ -52,13 +52,13 @@ import org.xml.sax.XMLReader;
 @Slf4j
 public class XlsxSaxAnalyser implements ExcelReadExecutor {
 
-    private XlsxReadContext xlsxReadContext;
-    private List<ReadSheet> sheetList;
-    private Map<Integer, InputStream> sheetMap;
+    private final XlsxReadContext xlsxReadContext;
+    private final List<ReadSheet> sheetList;
+    private final Map<Integer, InputStream> sheetMap;
     /**
      * excel comments key: sheetNo value: CommentsTable
      */
-    private Map<Integer, CommentsTable> commentsTableMap;
+    private final Map<Integer, CommentsTable> commentsTableMap;
 
     public XlsxSaxAnalyser(XlsxReadContext xlsxReadContext, InputStream decryptedStream) throws Exception {
         this.xlsxReadContext = xlsxReadContext;

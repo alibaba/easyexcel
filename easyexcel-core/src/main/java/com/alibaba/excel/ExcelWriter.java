@@ -1,7 +1,6 @@
 package com.alibaba.excel;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -12,9 +11,6 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Excel Writer This tool is used to write value out to Excel via POI. This object can perform the following two
@@ -29,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ExcelWriter implements Closeable {
 
-    private ExcelBuilder excelBuilder;
+    private final ExcelBuilder excelBuilder;
 
     /**
      * Create new writer

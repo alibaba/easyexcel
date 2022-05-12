@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 public class WriteLargeTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteLargeTest.class);
-    private int i = 0;
 
     @Test
     public void test() throws Exception {

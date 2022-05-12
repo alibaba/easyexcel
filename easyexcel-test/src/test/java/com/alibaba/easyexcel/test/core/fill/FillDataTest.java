@@ -142,20 +142,20 @@ public class FillDataTest {
     }
 
     private void compositeFill(File file, File template) {
-        ExcelWriter excelWriter = EasyExcel.write(file).withTemplate(template).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
+        try (ExcelWriter excelWriter = EasyExcel.write(file).withTemplate(template).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
 
-        FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
-        excelWriter.fill(new FillWrapper("data1", data()), fillConfig, writeSheet);
-        excelWriter.fill(new FillWrapper("data1", data()), fillConfig, writeSheet);
-        excelWriter.fill(new FillWrapper("data2", data()), writeSheet);
-        excelWriter.fill(new FillWrapper("data2", data()), writeSheet);
-        excelWriter.fill(new FillWrapper("data3", data()), writeSheet);
-        excelWriter.fill(new FillWrapper("data3", data()), writeSheet);
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("date", "2019年10月9日13:28:28");
-        excelWriter.fill(map, writeSheet);
-        excelWriter.finish();
+            FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+            excelWriter.fill(new FillWrapper("data1", data()), fillConfig, writeSheet);
+            excelWriter.fill(new FillWrapper("data1", data()), fillConfig, writeSheet);
+            excelWriter.fill(new FillWrapper("data2", data()), writeSheet);
+            excelWriter.fill(new FillWrapper("data2", data()), writeSheet);
+            excelWriter.fill(new FillWrapper("data3", data()), writeSheet);
+            excelWriter.fill(new FillWrapper("data3", data()), writeSheet);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("date", "2019年10月9日13:28:28");
+            excelWriter.fill(map, writeSheet);
+        }
 
         List<Object> list = EasyExcel.read(file).ignoreEmptyRow(false).sheet().headRowNumber(0).doReadSync();
         Map<String, String> map0 = (Map<String, String>)list.get(0);
@@ -167,15 +167,16 @@ public class FillDataTest {
     }
 
     private void horizontalFill(File file, File template) {
-        ExcelWriter excelWriter = EasyExcel.write(file).withTemplate(template).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
-        excelWriter.fill(data(), fillConfig, writeSheet);
-        excelWriter.fill(data(), fillConfig, writeSheet);
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("date", "2019年10月9日13:28:28");
-        excelWriter.fill(map, writeSheet);
-        excelWriter.finish();
+        try (ExcelWriter excelWriter = EasyExcel.write(file).withTemplate(template).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+            FillConfig fillConfig = FillConfig.builder().direction(WriteDirectionEnum.HORIZONTAL).build();
+            excelWriter.fill(data(), fillConfig, writeSheet);
+            excelWriter.fill(data(), fillConfig, writeSheet);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("date", "2019年10月9日13:28:28");
+            excelWriter.fill(map, writeSheet);
+            excelWriter.finish();
+        }
 
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(0).doReadSync();
         Assert.assertEquals(list.size(), 5L);
@@ -184,16 +185,16 @@ public class FillDataTest {
     }
 
     private void complexFill(File file, File template) {
-        ExcelWriter excelWriter = EasyExcel.write(file).withTemplate(template).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().registerWriteHandler(new LoopMergeStrategy(2, 0)).build();
-        FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
-        excelWriter.fill(data(), fillConfig, writeSheet);
-        excelWriter.fill(data(), fillConfig, writeSheet);
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("date", "2019年10月9日13:28:28");
-        map.put("total", 1000);
-        excelWriter.fill(map, writeSheet);
-        excelWriter.finish();
+        try (ExcelWriter excelWriter = EasyExcel.write(file).withTemplate(template).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet().registerWriteHandler(new LoopMergeStrategy(2, 0)).build();
+            FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.TRUE).build();
+            excelWriter.fill(data(), fillConfig, writeSheet);
+            excelWriter.fill(data(), fillConfig, writeSheet);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("date", "2019年10月9日13:28:28");
+            map.put("total", 1000);
+            excelWriter.fill(map, writeSheet);
+        }
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(3).doReadSync();
         Assert.assertEquals(list.size(), 21L);
         Map<String, String> map19 = (Map<String, String>)list.get(19);

@@ -8,8 +8,8 @@ import org.apache.poi.ss.usermodel.Row;
  * @author Jiaju Zhuang
  */
 public class SimpleRowHeightStyleStrategy extends AbstractRowHeightStyleStrategy {
-    private Short headRowHeight;
-    private Short contentRowHeight;
+    private final Short headRowHeight;
+    private final Short contentRowHeight;
 
     public SimpleRowHeightStyleStrategy(Short headRowHeight, Short contentRowHeight) {
         this.headRowHeight = headRowHeight;

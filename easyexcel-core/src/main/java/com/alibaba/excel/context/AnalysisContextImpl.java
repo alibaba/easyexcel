@@ -46,7 +46,7 @@ public class AnalysisContextImpl implements AnalysisContext {
     /**
      * Event processor
      */
-    private AnalysisEventProcessor analysisEventProcessor;
+    private final AnalysisEventProcessor analysisEventProcessor;
 
     public AnalysisContextImpl(ReadWorkbook readWorkbook, ExcelTypeEnum actualExcelType) {
         if (readWorkbook == null) {

@@ -28,7 +28,7 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     /**
      * Workbook
      */
-    private ReadWorkbook readWorkbook;
+    private final ReadWorkbook readWorkbook;
 
     public ExcelReaderBuilder() {
         this.readWorkbook = new ReadWorkbook();
@@ -203,9 +203,9 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     }
 
     public void doReadAll() {
-        ExcelReader excelReader = build();
-        excelReader.readAll();
-        excelReader.finish();
+        try (ExcelReader excelReader = build()) {
+            excelReader.readAll();
+        }
     }
 
     /**
@@ -216,9 +216,10 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
     public <T> List<T> doReadAllSync() {
         SyncReadListener syncReadListener = new SyncReadListener();
         registerReadListener(syncReadListener);
-        ExcelReader excelReader = build();
-        excelReader.readAll();
-        excelReader.finish();
+        try (ExcelReader excelReader = build()) {
+            excelReader.readAll();
+            excelReader.finish();
+        }
         return (List<T>)syncReadListener.getList();
     }
 

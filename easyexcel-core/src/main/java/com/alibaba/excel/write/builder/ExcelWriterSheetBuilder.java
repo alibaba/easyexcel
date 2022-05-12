@@ -18,7 +18,7 @@ public class ExcelWriterSheetBuilder extends AbstractExcelWriterParameterBuilder
     /**
      * Sheet
      */
-    private WriteSheet writeSheet;
+    private final WriteSheet writeSheet;
 
     public ExcelWriterSheetBuilder() {
         this.writeSheet = new WriteSheet();

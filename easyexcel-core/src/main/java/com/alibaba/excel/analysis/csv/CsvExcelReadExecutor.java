@@ -1,7 +1,5 @@
 package com.alibaba.excel.analysis.csv;
 
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -38,8 +36,8 @@ import org.apache.commons.csv.CSVRecord;
 @Slf4j
 public class CsvExcelReadExecutor implements ExcelReadExecutor {
 
-    private List<ReadSheet> sheetList;
-    private CsvReadContext csvReadContext;
+    private final List<ReadSheet> sheetList;
+    private final CsvReadContext csvReadContext;
 
     public CsvExcelReadExecutor(CsvReadContext csvReadContext) {
         this.csvReadContext = csvReadContext;

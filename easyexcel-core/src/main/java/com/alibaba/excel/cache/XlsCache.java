@@ -11,7 +11,7 @@ import com.alibaba.excel.context.AnalysisContext;
  * @author Jiaju Zhuang
  */
 public class XlsCache implements ReadCache {
-    private SSTRecord sstRecord;
+    private final SSTRecord sstRecord;
 
     public XlsCache(SSTRecord sstRecord) {
         this.sstRecord = sstRecord;

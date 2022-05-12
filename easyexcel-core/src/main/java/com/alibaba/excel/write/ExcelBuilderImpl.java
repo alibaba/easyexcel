@@ -22,7 +22,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
  */
 public class ExcelBuilderImpl implements ExcelBuilder {
 
-    private WriteContext context;
+    private final WriteContext context;
     private ExcelWriteFillExecutor excelWriteFillExecutor;
     private ExcelWriteAddExecutor excelWriteAddExecutor;
 

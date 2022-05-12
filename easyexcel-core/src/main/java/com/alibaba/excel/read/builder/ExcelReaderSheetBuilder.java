@@ -18,7 +18,7 @@ public class ExcelReaderSheetBuilder extends AbstractExcelReaderParameterBuilder
     /**
      * Sheet
      */
-    private ReadSheet readSheet;
+    private final ReadSheet readSheet;
 
     public ExcelReaderSheetBuilder() {
         this.readSheet = new ReadSheet();

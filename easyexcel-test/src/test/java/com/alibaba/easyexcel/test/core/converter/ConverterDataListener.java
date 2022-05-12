@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ConverterDataListener extends AnalysisEventListener<ConverterReadData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConverterDataListener.class);
-    private List<ConverterReadData> list = new ArrayList<>();
+    private final List<ConverterReadData> list = new ArrayList<>();
 
     @Override
     public void invoke(ConverterReadData data, AnalysisContext context) {

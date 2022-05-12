@@ -1,7 +1,6 @@
 package com.alibaba.excel;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,9 +10,6 @@ import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Excel readers are all read in event mode.
@@ -25,7 +21,7 @@ public class ExcelReader implements Closeable {
     /**
      * Analyser
      */
-    private ExcelAnalyser excelAnalyser;
+    private final ExcelAnalyser excelAnalyser;
 
     public ExcelReader(ReadWorkbook readWorkbook) {
         excelAnalyser = new ExcelAnalyserImpl(readWorkbook);

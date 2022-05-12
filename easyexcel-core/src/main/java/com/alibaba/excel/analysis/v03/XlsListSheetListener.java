@@ -25,7 +25,7 @@ import com.alibaba.excel.exception.ExcelAnalysisException;
  * @author Jiaju Zhuang
  */
 public class XlsListSheetListener implements HSSFListener {
-    private XlsReadContext xlsReadContext;
+    private final XlsReadContext xlsReadContext;
     private static final Map<Short, XlsRecordHandler> XLS_RECORD_HANDLER_MAP = new HashMap<Short, XlsRecordHandler>();
 
     static {

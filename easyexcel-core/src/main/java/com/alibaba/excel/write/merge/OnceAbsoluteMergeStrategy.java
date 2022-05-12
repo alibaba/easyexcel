@@ -16,19 +16,19 @@ public class OnceAbsoluteMergeStrategy implements SheetWriteHandler {
     /**
      * First row
      */
-    private int firstRowIndex;
+    private final int firstRowIndex;
     /**
      * Last row
      */
-    private int lastRowIndex;
+    private final int lastRowIndex;
     /**
      * First column
      */
-    private int firstColumnIndex;
+    private final int firstColumnIndex;
     /**
      * Last row
      */
-    private int lastColumnIndex;
+    private final int lastColumnIndex;
 
     public OnceAbsoluteMergeStrategy(int firstRowIndex, int lastRowIndex, int firstColumnIndex, int lastColumnIndex) {
         if (firstRowIndex < 0 || lastRowIndex < 0 || firstColumnIndex < 0 || lastColumnIndex < 0) {

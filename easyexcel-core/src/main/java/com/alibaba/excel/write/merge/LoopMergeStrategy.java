@@ -15,15 +15,15 @@ public class LoopMergeStrategy implements RowWriteHandler {
     /**
      * Each row
      */
-    private int eachRow;
+    private final int eachRow;
     /**
      * Extend column
      */
-    private int columnExtend;
+    private final int columnExtend;
     /**
      * The number of the current column
      */
-    private int columnIndex;
+    private final int columnIndex;
 
     public LoopMergeStrategy(int eachRow, int columnIndex) {
         this(eachRow, 1, columnIndex);

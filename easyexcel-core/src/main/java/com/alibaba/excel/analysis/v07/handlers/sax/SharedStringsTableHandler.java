@@ -27,7 +27,7 @@ public class SharedStringsTableHandler extends DefaultHandler {
      */
     private StringBuilder currentElementData;
 
-    private ReadCache readCache;
+    private final ReadCache readCache;
     /**
      * Some fields in the T tag need to be ignored
      */

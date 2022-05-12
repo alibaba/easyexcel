@@ -33,12 +33,12 @@ public class SimpleReadCacheSelector implements ReadCacheSelector {
     /**
      * Shared strings exceeding this value will use {@link Ehcache},or use {@link MapCache}.unit MB.
      */
-    private long maxUseMapCacheSize;
+    private final long maxUseMapCacheSize;
 
     /**
      * Maximum size of cache activation.unit MB.
      */
-    private int maxCacheActivateSize;
+    private final int maxCacheActivateSize;
 
     public SimpleReadCacheSelector() {
         this(DEFAULT_MAX_USE_MAP_CACHE_SIZE, DEFAULT_MAX_EHCACHE_ACTIVATE_SIZE);

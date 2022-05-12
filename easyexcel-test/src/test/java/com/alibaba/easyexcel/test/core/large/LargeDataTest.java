@@ -57,26 +57,26 @@ public class LargeDataTest {
 
     @Test
     public void t02Fill() {
-        ExcelWriter excelWriter = EasyExcel.write(fileFill07).withTemplate(template07).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        for (int j = 0; j < 5000; j++) {
-            excelWriter.fill(data(), writeSheet);
-            LOGGER.info("{} fill success.", j);
+        try (ExcelWriter excelWriter = EasyExcel.write(fileFill07).withTemplate(template07).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+            for (int j = 0; j < 5000; j++) {
+                excelWriter.fill(data(), writeSheet);
+                LOGGER.info("{} fill success.", j);
+            }
         }
-        excelWriter.finish();
     }
 
     @Test
     public void t03ReadAndWriteCsv() {
         // write
         long start = System.currentTimeMillis();
-        ExcelWriter excelWriter = EasyExcel.write(fileCsv).build();
-        WriteSheet writeSheet = EasyExcel.writerSheet().build();
-        for (int j = 0; j < 5000; j++) {
-            excelWriter.write(data(), writeSheet);
-            LOGGER.info("{} write success.", j);
+        try (ExcelWriter excelWriter = EasyExcel.write(fileCsv).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+            for (int j = 0; j < 5000; j++) {
+                excelWriter.write(data(), writeSheet);
+                LOGGER.info("{} write success.", j);
+            }
         }
-        excelWriter.finish();
         LOGGER.info("CSV large data total time spent:{}", System.currentTimeMillis() - start);
 
         //  read

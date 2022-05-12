@@ -21,7 +21,7 @@ public class ExcelWriterTableBuilder extends AbstractExcelWriterParameterBuilder
     /**
      * table
      */
-    private WriteTable writeTable;
+    private final WriteTable writeTable;
 
     public ExcelWriterTableBuilder() {
         this.writeTable = new WriteTable();

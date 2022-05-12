@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 /**
- *
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -52,15 +51,15 @@ public class MultipleSheetsDataTest {
 
     private void read(File file) {
         MultipleSheetsListener multipleSheetsListener = new MultipleSheetsListener();
-        ExcelReader excelReader = EasyExcel.read(file, MultipleSheetsData.class, multipleSheetsListener).build();
-        List<ReadSheet> sheets = excelReader.excelExecutor().sheetList();
-        int count = 1;
-        for (ReadSheet readSheet : sheets) {
-            excelReader.read(readSheet);
-            Assert.assertEquals(multipleSheetsListener.getList().size(), count);
-            count++;
+        try (ExcelReader excelReader = EasyExcel.read(file, MultipleSheetsData.class, multipleSheetsListener).build()) {
+            List<ReadSheet> sheets = excelReader.excelExecutor().sheetList();
+            int count = 1;
+            for (ReadSheet readSheet : sheets) {
+                excelReader.read(readSheet);
+                Assert.assertEquals(multipleSheetsListener.getList().size(), count);
+                count++;
+            }
         }
-        excelReader.finish();
     }
 
     private void readAll(File file) {

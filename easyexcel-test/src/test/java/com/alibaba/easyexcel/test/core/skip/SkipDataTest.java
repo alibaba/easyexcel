@@ -53,32 +53,32 @@ public class SkipDataTest {
     }
 
     private void readAndWrite(File file) {
-        ExcelWriter excelWriter = EasyExcel.write(file, SimpleData.class).build();
-        WriteSheet writeSheet0 = EasyExcel.writerSheet(0, "第一个").build();
-        WriteSheet writeSheet1 = EasyExcel.writerSheet(1, "第二个").build();
-        WriteSheet writeSheet2 = EasyExcel.writerSheet(2, "第三个").build();
-        WriteSheet writeSheet3 = EasyExcel.writerSheet(3, "第四个").build();
-        excelWriter.write(data("name1"), writeSheet0);
-        excelWriter.write(data("name2"), writeSheet1);
-        excelWriter.write(data("name3"), writeSheet2);
-        excelWriter.write(data("name4"), writeSheet3);
-        excelWriter.finish();
+        try (ExcelWriter excelWriter = EasyExcel.write(file, SimpleData.class).build();) {
+            WriteSheet writeSheet0 = EasyExcel.writerSheet(0, "第一个").build();
+            WriteSheet writeSheet1 = EasyExcel.writerSheet(1, "第二个").build();
+            WriteSheet writeSheet2 = EasyExcel.writerSheet(2, "第三个").build();
+            WriteSheet writeSheet3 = EasyExcel.writerSheet(3, "第四个").build();
+            excelWriter.write(data("name1"), writeSheet0);
+            excelWriter.write(data("name2"), writeSheet1);
+            excelWriter.write(data("name3"), writeSheet2);
+            excelWriter.write(data("name4"), writeSheet3);
+        }
 
         List<SkipData> list = EasyExcel.read(file, SkipData.class, null).sheet("第二个").doReadSync();
         Assert.assertEquals(1, list.size());
         Assert.assertEquals("name2", list.get(0).getName());
 
         SyncReadListener syncReadListener = new SyncReadListener();
-        ExcelReader excelReader = EasyExcel.read(file, SkipData.class, null).registerReadListener(syncReadListener)
-            .build();
-        ReadSheet readSheet1 = EasyExcel.readSheet("第二个").build();
-        ReadSheet readSheet3 = EasyExcel.readSheet("第四个").build();
-        excelReader.read(readSheet1, readSheet3);
-        List<Object> syncList = syncReadListener.getList();
-        Assert.assertEquals(2, syncList.size());
-        Assert.assertEquals("name2", ((SkipData)syncList.get(0)).getName());
-        Assert.assertEquals("name4", ((SkipData)syncList.get(1)).getName());
-        excelReader.finish();
+        try (ExcelReader excelReader = EasyExcel.read(file, SkipData.class, null).registerReadListener(syncReadListener)
+            .build()) {
+            ReadSheet readSheet1 = EasyExcel.readSheet("第二个").build();
+            ReadSheet readSheet3 = EasyExcel.readSheet("第四个").build();
+            excelReader.read(readSheet1, readSheet3);
+            List<Object> syncList = syncReadListener.getList();
+            Assert.assertEquals(2, syncList.size());
+            Assert.assertEquals("name2", ((SkipData)syncList.get(0)).getName());
+            Assert.assertEquals("name4", ((SkipData)syncList.get(1)).getName());
+        }
     }
 
     private List<SkipData> data(String name) {

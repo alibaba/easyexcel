@@ -3,25 +3,16 @@ package com.alibaba.easyexcel.test.core.charset;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.easyexcel.test.core.simple.SimpleData;
-import com.alibaba.easyexcel.test.core.simple.SimpleDataListener;
-import com.alibaba.easyexcel.test.demo.read.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.metadata.data.ReadCellData;
-import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.read.listener.ReadListener;
-import com.alibaba.excel.util.ConverterUtils;
-import com.alibaba.excel.util.ListUtils;
-import com.alibaba.fastjson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.Charsets;
 import org.apache.commons.compress.utils.Lists;
 import org.junit.Assert;
 import org.junit.BeforeClass;

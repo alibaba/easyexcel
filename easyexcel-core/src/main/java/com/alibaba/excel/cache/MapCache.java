@@ -11,7 +11,7 @@ import com.alibaba.excel.context.AnalysisContext;
  * @author Jiaju Zhuang
  */
 public class MapCache implements ReadCache {
-    private List<String> cache = new ArrayList<>();
+    private final List<String> cache = new ArrayList<>();
 
     @Override
     public void init(AnalysisContext analysisContext) {}
