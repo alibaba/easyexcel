@@ -49,7 +49,7 @@ public class WebTest {
         String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
 
-        EasyExcel.write(response.getOutputStream()).sheet("模板").doWrite(data());
+        EasyExcel.write(response.getOutputStream(), DownloadData.class).sheet("模板").doWrite(data());
     }
 
     /**
