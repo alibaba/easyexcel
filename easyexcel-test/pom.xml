@@ -53,7 +53,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <includes>
-                        <include>com/alibaba/easyexcel/test/core/**/*.java</include>
+                        <include>/com/alibaba/easyexcel/test/core/**/*.java</include>
                     </includes>
                     <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
