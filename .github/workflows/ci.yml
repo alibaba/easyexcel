@@ -37,7 +37,9 @@ jobs:
           restore-keys: m2
       - name: Chmod
         run:  chmod +x mvnw
+      - name: Test with Maven
+        run: ./mvnw test -B
       - name: Maven Build
-        run: ./mvnw install -B -V -Dmaven.test.skip=false
+        run: ./mvnw install -B -V
       - name: Java Doc
         run: ./mvnw javadoc:javadoc
