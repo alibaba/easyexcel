@@ -19,18 +19,25 @@ name: Java CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 8, 11, 17]
+        distribution: [ 'adopt' ]
+      fail-fast: false
+      max-parallel: 4
+    name: Test JDK ${{ matrix.java }}
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 8
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
-          distribution: 'adopt'
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
       - name: Cache Maven
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2
         with:
           path: ~/.m2
           key: m2
