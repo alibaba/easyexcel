@@ -65,6 +65,9 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
                 return null;
             }
             XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+            if (xssfCellStyle == null) {
+                return null;
+            }
             dataFormatData.setIndex(xssfCellStyle.getDataFormat());
             dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormatData.getIndex(),
                 xssfCellStyle.getDataFormatString(), globalConfiguration().getLocale()));
