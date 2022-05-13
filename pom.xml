@@ -45,6 +45,11 @@
             <name>jipengfei</name>
             <email>1558143046@qq.com</email>
         </developer>
+        <developer>
+            <id>zhuangjiaju</id>
+            <name>Jiaju Zhuang</name>
+            <email>zhuangjiaju@qq.com</email>
+        </developer>
     </developers>
 
     <licenses>
@@ -345,7 +350,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.springframework</pattern>
-                                    <shadedPattern>com.alibaba.easyexcel.support</shadedPattern>
+                                    <shadedPattern>com.alibaba.excel.support</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -358,7 +363,7 @@
                 <artifactId>flatten-maven-plugin</artifactId>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <flattenMode>oss</flattenMode>
                 </configuration>
                 <executions>
                     <execution>
