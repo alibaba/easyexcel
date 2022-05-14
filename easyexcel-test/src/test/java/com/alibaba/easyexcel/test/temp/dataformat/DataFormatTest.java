@@ -13,7 +13,7 @@ import com.alibaba.easyexcel.test.core.dataformat.DateFormatData;
 import com.alibaba.easyexcel.test.temp.Lock2Test;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
