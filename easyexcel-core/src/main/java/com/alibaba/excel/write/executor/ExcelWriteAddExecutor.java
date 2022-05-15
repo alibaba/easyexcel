@@ -1,12 +1,7 @@
 package com.alibaba.excel.write.executor;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
@@ -22,12 +17,14 @@ import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.CollectionRowData;
 import com.alibaba.excel.write.metadata.MapRowData;
 import com.alibaba.excel.write.metadata.RowData;
+import com.alibaba.excel.write.metadata.WriteTreeData;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.cglib.beans.BeanMap;
 
 /**
@@ -50,18 +47,41 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
             newRowIndex += writeContext.currentWriteHolder().relativeHeadRowIndex();
         }
-        // BeanMap is out of order, so use sortedAllFieldMap
-        Map<Integer, Field> sortedAllFieldMap = new TreeMap<>();
         int relativeRowIndex = 0;
         for (Object oneRowData : data) {
-            int lastRowIndex = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(oneRowData, lastRowIndex, relativeRowIndex, sortedAllFieldMap);
-            relativeRowIndex++;
+            relativeRowIndex = loopDataByLevel(oneRowData, relativeRowIndex, newRowIndex);
         }
     }
 
+    private int loopDataByLevel(Object oneRowData, int relativeRowIndex, int newRowIndex) {
+        // BeanMap is out of order, so use sortedAllFieldMap
+        Map<Integer, Field> sortedAllFieldMap = new TreeMap<>();
+        int lastRowIndex = relativeRowIndex + newRowIndex;
+        if (oneRowData instanceof WriteTreeData) {
+            addOneRowOfDataToExcel(((WriteTreeData<?, ?>) oneRowData).getParentData(), lastRowIndex, relativeRowIndex, sortedAllFieldMap);
+            relativeRowIndex++;
+            List<?> childList = ((WriteTreeData<?, ?>) oneRowData).getChildDataList();
+            if (CollectionUtils.isNotEmpty(childList)) {
+                int fromRow = relativeRowIndex;
+                for (Object childData : childList) {
+                    relativeRowIndex = loopDataByLevel(childData, relativeRowIndex, newRowIndex);
+                }
+                setGroup(fromRow, relativeRowIndex);
+            }
+        } else {
+            addOneRowOfDataToExcel(oneRowData, lastRowIndex, relativeRowIndex, sortedAllFieldMap);
+            relativeRowIndex++;
+        }
+        return relativeRowIndex;
+    }
+
+    private void setGroup(int fromRow, int toRow) {
+        Sheet sheet = writeContext.writeSheetHolder().getSheet();
+        sheet.groupRow(fromRow + 1, toRow);
+    }
+
     private void addOneRowOfDataToExcel(Object oneRowData, int rowIndex, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFieldMap) {
+                                        Map<Integer, Field> sortedAllFieldMap) {
         if (oneRowData == null) {
             return;
         }
@@ -75,9 +95,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHandlerUtils.afterRowCreate(rowWriteHandlerContext);
 
         if (oneRowData instanceof Collection<?>) {
-            addBasicTypeToExcel(new CollectionRowData((Collection<?>)oneRowData), row, rowIndex, relativeRowIndex);
+            addBasicTypeToExcel(new CollectionRowData((Collection<?>) oneRowData), row, rowIndex, relativeRowIndex);
         } else if (oneRowData instanceof Map) {
-            addBasicTypeToExcel(new MapRowData((Map<Integer, ?>)oneRowData), row, rowIndex, relativeRowIndex);
+            addBasicTypeToExcel(new MapRowData((Map<Integer, ?>) oneRowData), row, rowIndex, relativeRowIndex);
         } else {
             addJavaObjectToExcel(oneRowData, row, rowIndex, relativeRowIndex, sortedAllFieldMap);
         }
@@ -116,7 +136,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void doAddBasicTypeToExcel(RowData oneRowData, Head head, Row row, int rowIndex, int relativeRowIndex,
-        int dataIndex, int columnIndex) {
+                                       int dataIndex, int columnIndex) {
         ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(null,
             writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(),
             head == null ? null : head.getFieldName());
@@ -139,7 +159,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void addJavaObjectToExcel(Object oneRowData, Row row, int rowIndex, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFieldMap) {
+                                      Map<Integer, Field> sortedAllFieldMap) {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
         BeanMap beanMap = BeanMapUtils.create(oneRowData);
         // Bean the contains of the Map Key method with poor performance,So to create a keySet here
@@ -156,7 +176,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 if (!beanKeySet.contains(name)) {
                     continue;
                 }
-
                 ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(beanMap,
                     currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), name);
                 CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(

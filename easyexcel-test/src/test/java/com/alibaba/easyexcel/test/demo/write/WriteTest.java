@@ -3,11 +3,7 @@ package com.alibaba.easyexcel.test.demo.write;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -35,6 +31,7 @@ import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
+import com.alibaba.excel.write.metadata.WriteTreeData;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
@@ -528,7 +525,7 @@ public class WriteTest {
         // 背景设置为红色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)20);
+        headWriteFont.setFontHeightInPoints((short) 20);
         headWriteCellStyle.setWriteFont(headWriteFont);
         // 内容的策略
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
@@ -538,7 +535,7 @@ public class WriteTest {
         contentWriteCellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
         WriteFont contentWriteFont = new WriteFont();
         // 字体大小
-        contentWriteFont.setFontHeightInPoints((short)20);
+        contentWriteFont.setFontHeightInPoints((short) 20);
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
@@ -794,6 +791,16 @@ public class WriteTest {
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
+    /**
+     * 支持树形结构的写
+     */
+    @Test
+    public void treeWrite() {
+        String fileName = TestFileUtil.getPath() + "treeWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(treeData());
+    }
+
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
@@ -858,4 +865,43 @@ public class WriteTest {
         return list;
     }
 
+    private List<WriteTreeData> treeData() {
+        List<WriteTreeData> list = ListUtils.newArrayList();
+        for (int i = 0; i < 10; i++) {
+            DemoData school = new DemoData();
+            school.setString("XX学校" + i);
+            school.setDate(new Date());
+            school.setDoubleData(0.56);
+
+            DemoData grade1 = new DemoData();
+            grade1.setString("1年级" + i);
+            grade1.setDate(new Date());
+            grade1.setDoubleData(1.0);
+            DemoData grade2 = new DemoData();
+            grade2.setString("2年级" + i);
+            grade2.setDate(new Date());
+            grade2.setDoubleData(2.0);
+            List<WriteTreeData> gradeWithClass = ListUtils.newArrayList();
+
+            List<DemoData> classList = ListUtils.newArrayList();
+            DemoData class1 = new DemoData();
+            class1.setString("1班级" + i);
+            class1.setDate(new Date());
+            class1.setDoubleData(1.0);
+            DemoData class2 = new DemoData();
+            class2.setString("2班级" + i);
+            class2.setDate(new Date());
+            class2.setDoubleData(1.0);
+
+            classList.add(class1);
+            classList.add(class2);
+
+            gradeWithClass.add(new WriteTreeData(grade1, classList));
+            gradeWithClass.add(new WriteTreeData(grade2, classList));
+
+            WriteTreeData parentData = new WriteTreeData(school, gradeWithClass);
+            list.add(parentData);
+        }
+        return list;
+    }
 }
