@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.UUID;
+import java.util.HashMap;
 
 import com.alibaba.excel.enums.WriteTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
@@ -79,6 +80,19 @@ public class WriteContextImpl implements WriteContext {
      * Prevent multiple shutdowns
      */
     private boolean finished = false;
+    /**
+     * Dynamic data max count map
+     */
+    private Map<String, Integer> dynamicMap = new HashMap<>();
+
+    public Map<String, Integer> getDynamicMap() {
+        return dynamicMap;
+    }
+
+    public void setDynamicMap(Map<String, Integer> dynamicMap) {
+        this.dynamicMap = dynamicMap;
+    }
+
 
     public WriteContextImpl(WriteWorkbook writeWorkbook) {
         if (writeWorkbook == null) {
