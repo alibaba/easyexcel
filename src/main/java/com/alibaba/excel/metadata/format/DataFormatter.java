@@ -471,11 +471,20 @@ public class DataFormatter {
         // padding, with "*", remove those too
         // If the format end with a meaningless
         // space, remove the " "
+        // If there is a '.' before '*', remove
+        // the '.'
         for (int i = 0; i < sb.length(); i++) {
             char c = sb.charAt(i);
             if (c == '_' || c == '*') {
                 if (i > 0 && sb.charAt((i - 1)) == '\\') {
                     // It's escaped, don't worry
+                    continue;
+                }
+                if (i > 0 && sb.charAt((i - 1)) == '.' && sb.charAt(i) == '*') {
+                    // if there is a '.' before '*', remove it
+                    sb.deleteCharAt(i);
+                    sb.deleteCharAt(i - 1);
+                    i -= 2;
                     continue;
                 }
                 if (i < sb.length() - 1) {
@@ -488,7 +497,7 @@ public class DataFormatter {
                 sb.deleteCharAt(i);
                 i--;
             }
-            // Remove the ' ' in the end
+//             Remove the ' ' in the end
             if (c == ' ' && i == sb.length() - 1){
                 sb.deleteCharAt(i);
             }
