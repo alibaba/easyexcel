@@ -52,9 +52,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Map<Integer, Field> sortedAllFieldMap = new TreeMap<>();
         int relativeRowIndex = 0;
         for (Object oneRowData : data) {
-            if (needConvertToList(oneRowData)) {
-                List<List<Object>> dynamicDataList = changeJavaObject2BasicType(oneRowData);
-                for (List list : dynamicDataList) {
+            if (haveList(oneRowData)) {
+                List<List<Object>> dynamicDataList = analysisList(oneRowData);
+                for (List<?> list : dynamicDataList) {
                     int n = relativeRowIndex + newRowIndex;
                     addOneRowOfDataToExcel(list, n, relativeRowIndex, sortedAllFieldMap);
                     relativeRowIndex++;
@@ -66,76 +66,49 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             }
         }
     }
-    private boolean needConvertToList(Object oneRowData) {
-        boolean isNeed = false;
-
-        Class<?> aClass = oneRowData.getClass();
-        Field[] declaredFields = aClass.getDeclaredFields();
-
-        for (Field field : declaredFields) {
-
-            ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
-            if (excelIgnore != null) {
-                continue;
-            }
-            ExcelListProperty excelList = field.getAnnotation(ExcelListProperty.class);
-            if (excelList != null) {
-                isNeed = true;
+    private boolean haveList(Object oneRowData) {
+        boolean flag = false;
+        Field[] fields = oneRowData.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getAnnotation(ExcelIgnore.class) != null) continue;
+            if (field.getAnnotation(ExcelListProperty.class) != null) {
+                flag = true;
                 break;
             }
         }
-        return isNeed;
+        return flag;
     }
 
-    private List<List<Object>> changeJavaObject2BasicType(Object oneRowData) {
+    private List<List<Object>> analysisList(Object oneRowData) {
         List<Object> dataList = new ArrayList<>();
-
-        Class<?> aClass = oneRowData.getClass();
-
-        Field[] declaredFields = aClass.getDeclaredFields();
-
-        //Map<Integer, List<Object>> listMap = new HashMap<>();
-        Map<Integer, List<Object>> listMap = new HashMap<>(2 * declaredFields.length);
-        for (Field field : declaredFields) {
+        Field[] fields = oneRowData.getClass().getDeclaredFields();
+        Map<Integer, List<?>> listMap = new HashMap<>();
+        for (Field field : fields) {
             field.setAccessible(true);
-
-            ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
-            if (excelIgnore != null) {
-                continue;
-            }
-            ExcelListProperty excelList = field.getAnnotation(ExcelListProperty.class);
-
+            if (field.getAnnotation(ExcelIgnore.class) != null) continue;
             try {
-                Object fieldValue = field.get(oneRowData);
-                if (fieldValue instanceof List && excelList != null) {
-
-                    List tmpList = (List) field.get(oneRowData);
-
+                if (field.getAnnotation(ExcelListProperty.class) != null) {
+                    List<?> tmpList = (List<?>) field.get(oneRowData);
                     if (!CollectionUtils.isEmpty(tmpList)) {
                         dataList.add(tmpList.get(0));
                         listMap.put(dataList.size() - 1, tmpList);
                     } else {
                         dataList.add(null);
                     }
-
                 } else {
                     dataList.add(field.get(oneRowData));
                 }
-
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
-
         List<List<Object>> allDataList = new ArrayList<>();
         if (listMap.size() > 0) {
-
             allDataList.add(dataList);
             List<List<Object>> tmpList = new ArrayList<>();
-
-            for (Map.Entry<Integer, List<Object>> entry : listMap.entrySet()) {
+            for (Map.Entry<Integer, List<?>> entry : listMap.entrySet()) {
                 Integer key = entry.getKey();
-                List<Object> fieldValueList = entry.getValue();
+                List<?> fieldValueList = entry.getValue();
                 for (Object fieldValue : fieldValueList) {
                     for (List<Object> rows : allDataList) {
                         rows.set(key, fieldValue);

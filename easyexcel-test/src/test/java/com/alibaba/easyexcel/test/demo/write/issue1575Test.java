@@ -30,6 +30,11 @@ public class issue1575Test {
             lessonList.add("高数");
             lessonList.add("大物");
             data.setLessonList(lessonList);
+            List<Integer> gradeList = new ArrayList<>();
+            gradeList.add(89);
+            gradeList.add(79);
+            gradeList.add(50);
+            data.setGradeList(gradeList);
             list.add(data);
         }
         return list;

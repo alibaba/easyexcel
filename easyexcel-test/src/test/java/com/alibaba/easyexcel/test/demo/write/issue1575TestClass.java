@@ -12,6 +12,9 @@ public class issue1575TestClass {
     @ExcelProperty("课程")
     @ExcelListProperty()
     private List<String> lessonList;
+    @ExcelProperty("成绩")
+    @ExcelListProperty()
+    private List<Integer> gradeList;
     public String getName() {
         return name;
     }
@@ -41,4 +44,11 @@ public class issue1575TestClass {
     }
 
 
+    public List<Integer> getGradeList() {
+        return gradeList;
+    }
+
+    public void setGradeList(List<Integer> gradeList) {
+        this.gradeList = gradeList;
+    }
 }
