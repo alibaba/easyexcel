@@ -50,11 +50,15 @@ public class NumberDataFormatterUtils {
     public static String format(BigDecimal data, Short dataFormat, String dataFormatString, Boolean use1904windowing,
         Locale locale, Boolean useScientificFormat) {
         DataFormatter dataFormatter = DATA_FORMATTER_THREAD_LOCAL.get();
+        //CS304 Issue link: https://github.com/alibaba/easyexcel/issues/1956
+        Double data1 = data.setScale(6, BigDecimal.ROUND_UP).doubleValue();
+        BigDecimal data2 = new BigDecimal(data1);
+
         if (dataFormatter == null) {
             dataFormatter = new DataFormatter(use1904windowing, locale, useScientificFormat);
             DATA_FORMATTER_THREAD_LOCAL.set(dataFormatter);
         }
-        return dataFormatter.format(data, dataFormat, dataFormatString);
+        return dataFormatter.format(data2, dataFormat, dataFormatString);
     }
 
     public static void removeThreadLocalCache() {
