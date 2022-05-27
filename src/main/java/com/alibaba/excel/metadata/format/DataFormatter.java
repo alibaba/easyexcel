@@ -512,6 +512,7 @@ public class DataFormatter {
         private static final Pattern endsWithCommas = Pattern.compile("(,+)$");
         private BigDecimal divider;
         private static final BigDecimal ONE_THOUSAND = new BigDecimal(1000);
+        private static final BigDecimal TEN = new BigDecimal(10);
         private final DecimalFormat df;
 
         private static String trimTrailingCommas(String s) {
@@ -523,11 +524,23 @@ public class DataFormatter {
             setExcelStyleRoundingMode(df);
             Matcher endsWithCommasMatcher = endsWithCommas.matcher(pattern);
             if (endsWithCommasMatcher.find()) {
+
+                //CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2319
+                int index_point = pattern.indexOf(".");
+                int index_comma = pattern.indexOf(",");
+                int cnt = index_comma - index_point - 1;
+
                 String commas = (endsWithCommasMatcher.group(1));
                 BigDecimal temp = BigDecimal.ONE;
                 for (int i = 0; i < commas.length(); ++i) {
                     temp = temp.multiply(ONE_THOUSAND);
                 }
+
+                //CS304 Issue link: https://github.com/alibaba/easyexcel/issues/2319
+                for (int i = 0; i < cnt ; i++) {
+                    temp = temp.multiply(TEN);
+                }
+
                 divider = temp;
             } else {
                 divider = null;
