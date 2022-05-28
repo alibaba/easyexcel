@@ -1,3 +1,20 @@
+# 3.1.0
+* 支持jdk17,去除cglib&asm依赖，改成重新拷贝一份 [Issue #2240](https://github.com/alibaba/easyexcel/issues/2240)
+* 升级ehcache 到 3.9.9 ,为了兼容jdk17
+* 在有样式没有数据的情况下也算空行 [Issue #2294](https://github.com/alibaba/easyexcel/issues/2294)
+* 修复无法根据文件流判断csv的bug [Issue #2297](https://github.com/alibaba/easyexcel/issues/2297)
+* 修复CSV不关闭流的bug [Issue #2309](https://github.com/alibaba/easyexcel/issues/2309)
+* 修复`filed`拼接错误 [Issue #2390](https://github.com/alibaba/easyexcel/issues/2390)
+* 修复`BigIntegerStringConverter`无效的bug [Issue #2325](https://github.com/alibaba/easyexcel/issues/2325)
+* 修复03版本无法读取到公式格式的bug [Issue #2444](https://github.com/alibaba/easyexcel/issues/2444)
+* 提高类型转换兼容性 [Issue #2443](https://github.com/alibaba/easyexcel/issues/2443)
+* 捕获`setFeature`异常不影响主流程 [Issue #2054](https://github.com/alibaba/easyexcel/issues/2054)
+* 增加部分`xls`容错 [Issue #2236](https://github.com/alibaba/easyexcel/issues/2236)
+* 修复读取csv文件时`autoTrim`配置失效 [Issue #2227](https://github.com/alibaba/easyexcel/issues/2227)
+* csv支持设置读写编码 [Issue #2404](https://github.com/alibaba/easyexcel/issues/2404)
+* 读写支持`try-with-resources`语法糖
+
+
 # 3.0.5
 * 修复`ReadListener` 转换异常不抛出的问题
 
