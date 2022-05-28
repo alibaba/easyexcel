@@ -30,8 +30,10 @@ import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
+import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -289,6 +291,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                         .ifPresent(cell::setCellStyle);
                 }
             }
+            WriteCellStyle writeCellStyle = new WriteCellStyle();
+            writeCellStyle = writeCellStyle.build(cellWriteHandlerContext.getExcelContentProperty().getContentStyleProperty(),cellWriteHandlerContext.getExcelContentProperty().getContentFontProperty());
+            cellWriteHandlerContext.getFirstCellData().setWriteCellStyle(writeCellStyle);
             WriteHandlerUtils.afterCellDispose(cellWriteHandlerContext);
         }
 
