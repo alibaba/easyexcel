@@ -51,7 +51,7 @@ public class DateUtils {
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
     private static final String MINUS = "-";
 
-    public static String defaultDateFormat = DATE_FORMAT_19;
+    public static final String defaultDateFormat = DATE_FORMAT_19;
 
     private DateUtils() {}
 

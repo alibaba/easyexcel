@@ -38,13 +38,14 @@ public class DataFormatTest {
 
     @Test
     public void test() throws Exception {
-        File file = new File("D:\\test\\dataformat.xlsx");
-
+     //   File file = new File("D:\\test\\dataformat.xlsx");
+        File file = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xlsx");
         List<DataFormatData> list =
             EasyExcel.read(file, DataFormatData.class, null).sheet().headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (DataFormatData data : list) {
             Short dataFormat = data.getDate().getDataFormatData().getIndex();
+            LOGGER.info("返回数据：{}", JSON.toJSONString(data));
 
             String dataFormatString = data.getDate().getFormulaData().getFormulaValue();
 
