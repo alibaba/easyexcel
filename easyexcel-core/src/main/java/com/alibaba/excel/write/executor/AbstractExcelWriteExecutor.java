@@ -109,13 +109,51 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
 
     }
 
+    private static boolean isDraggedFormula = false;
+    private static String lastFormulaValue = "";
+
     private void fillFormula(CellWriteHandlerContext cellWriteHandlerContext, FormulaData formulaData) {
+//        if (formulaData == null) {
+//            return;
+//        }
+//        Cell cell = cellWriteHandlerContext.getCell();
+//        if (formulaData.getFormulaValue() != null) {
+//            cell.setCellFormula(formulaData.getFormulaValue());
+//        }
         if (formulaData == null) {
+            isDraggedFormula = false;
+            lastFormulaValue = "";
             return;
         }
         Cell cell = cellWriteHandlerContext.getCell();
         if (formulaData.getFormulaValue() != null) {
-            cell.setCellFormula(formulaData.getFormulaValue());
+            String formulaValue = formulaData.getFormulaValue();
+            if (formulaValue.length() != 0) {
+                cell.setCellFormula(formulaValue);
+                isDraggedFormula = true;
+                lastFormulaValue = formulaValue;
+            } else {
+                if (isDraggedFormula) {
+                    int leftParenthesisID = lastFormulaValue.indexOf("(");
+                    int rightParenthesisID = lastFormulaValue.indexOf(")");
+                    String cellArguments = lastFormulaValue.substring(leftParenthesisID, rightParenthesisID);
+                    String[] cellArgument = cellArguments.split(",");
+                    StringBuilder newFormula = new StringBuilder(lastFormulaValue.substring(0, leftParenthesisID));
+                    for (String c : cellArgument) {
+                        for (int j = 0; j < c.length(); j++) {
+                            if (Character.isDigit(c.charAt(j))) {
+                                c = c.substring(0, j) + (Integer.parseInt(c.substring(j)) + 1);
+                                break;
+                            }
+                        }
+                        newFormula.append(c).append(",");
+                    }
+                    String addedFormula = newFormula.substring(0,newFormula.length()-1) + ")";
+                    cell.setCellFormula(addedFormula);
+                    lastFormulaValue = addedFormula;
+                }
+            }
+
         }
     }
 
@@ -170,11 +208,11 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                 StyleUtil.getCoordinate(commentData.getTop()),
                 StyleUtil.getCoordinate(commentData.getRight()),
                 StyleUtil.getCoordinate(commentData.getBottom()),
-                (short)StyleUtil.getCellCoordinate(columnIndex, commentData.getFirstColumnIndex(),
+                (short) StyleUtil.getCellCoordinate(columnIndex, commentData.getFirstColumnIndex(),
                     commentData.getRelativeFirstColumnIndex()),
                 StyleUtil.getCellCoordinate(rowIndex, commentData.getFirstRowIndex(),
                     commentData.getRelativeFirstRowIndex()),
-                (short)(StyleUtil.getCellCoordinate(columnIndex, commentData.getLastColumnIndex(),
+                (short) (StyleUtil.getCellCoordinate(columnIndex, commentData.getLastColumnIndex(),
                     commentData.getRelativeLastColumnIndex()) + 1),
                 StyleUtil.getCellCoordinate(rowIndex, commentData.getLastRowIndex(),
                     commentData.getRelativeLastRowIndex()) + 1);
@@ -242,7 +280,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             if (cellWriteHandlerContext.getOriginalValue() == null) {
                 return new WriteCellData<>(CellDataTypeEnum.EMPTY);
             }
-            WriteCellData<?> cellDataValue = (WriteCellData<?>)cellWriteHandlerContext.getOriginalValue();
+            WriteCellData<?> cellDataValue = (WriteCellData<?>) cellWriteHandlerContext.getOriginalValue();
             if (cellDataValue.getType() != null) {
                 // Configuration information may not be read here
                 fillProperty(cellDataValue, cellWriteHandlerContext.getExcelContentProperty());
@@ -324,7 +362,7 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
         }
         WriteCellData<?> cellData;
         try {
-            cellData = ((Converter<Object>)converter).convertToExcelData(
+            cellData = ((Converter<Object>) converter).convertToExcelData(
                 new WriteConverterContext<>(cellWriteHandlerContext.getOriginalValue(), excelContentProperty,
                     writeContext));
         } catch (Exception e) {
