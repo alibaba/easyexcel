@@ -39,13 +39,13 @@ public class NumberDataFormatterUtils {
     /**
      * Format number data.
      *
-     * @param data
+     * @param data reading data number
      * @param dataFormat          Not null.
-     * @param dataFormatString
-     * @param use1904windowing
-     * @param locale
-     * @param useScientificFormat
-     * @return
+     * @param dataFormatString dataFormat in String
+     * @param use1904windowing whether using 1904windowing
+     * @param locale The locale dataformatter need
+     * @param useScientificFormat whether using scientific format
+     * @return The data on correct format
      */
     public static String format(BigDecimal data, Short dataFormat, String dataFormatString, Boolean use1904windowing,
         Locale locale, Boolean useScientificFormat) {
