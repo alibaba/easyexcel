@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
-import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,30 +20,19 @@ import org.junit.runners.MethodSorters;
 @Slf4j
 public class DateFormatTest {
 
-    private static File file07;
-    private static File file03;
+    private static File file1;
+    private static File file2;
 
     @BeforeClass
     public static void init() {
-        file07 = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xlsx");
-        file03 = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xls");
+        file1 = new File("./test1.xlsx");
+        file2 = new File("./test2.xlsx");
     }
 
     @Test
-    public void t01Read07() {
-        readCn(file07);
-        readUs(file07);
-    }
-
-    @Test
-    public void t02Read03() {
-        readCn(file03);
-        readUs(file03);
-    }
-
-    private void readCn(File file) {
+    public void testRead1() {
         List<DateFormatData> list =
-            EasyExcel.read(file, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
+            EasyExcel.read(file1, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
         for (DateFormatData data : list) {
             if (data.getDateStringCn() != null && !data.getDateStringCn().equals(data.getDate())) {
                 log.info("date:cn:{},{}", data.getDateStringCn(), data.getDate());
@@ -59,20 +47,22 @@ public class DateFormatTest {
         }
     }
 
-    private void readUs(File file) {
+    @Test
+    public void testRead2() {
         List<DateFormatData> list =
-            EasyExcel.read(file, DateFormatData.class, null).locale(Locale.US).sheet().doReadSync();
+            EasyExcel.read(file2, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
         for (DateFormatData data : list) {
-            if (data.getDateStringUs() != null && !data.getDateStringUs().equals(data.getDate())) {
-                log.info("date:us:{},{}", data.getDateStringUs(), data.getDate());
+            if (data.getDateStringCn() != null && !data.getDateStringCn().equals(data.getDate())) {
+                log.info("date:cn:{},{}", data.getDateStringCn(), data.getDate());
             }
-            if (data.getNumberStringUs() != null && !data.getNumberStringUs().equals(data.getNumber())) {
-                log.info("number:us{},{}", data.getNumberStringUs(), data.getNumber());
+            if (data.getNumberStringCn() != null && !data.getNumberStringCn().equals(data.getNumber())) {
+                log.info("number:cn{},{}", data.getNumberStringCn(), data.getNumber());
             }
         }
         for (DateFormatData data : list) {
-            Assert.assertEquals(data.getDateStringUs(), data.getDate());
-            Assert.assertEquals(data.getNumberStringUs(), data.getNumber());
+            Assert.assertEquals(data.getDateStringCn(), data.getDate());
+            Assert.assertEquals(data.getNumberStringCn(), data.getNumber());
         }
     }
+
 }
