@@ -38,11 +38,11 @@ Of course, there is also a very fast mode can be faster, but the memory consumpt
 
 ### Latest Version
 ```xml
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>3.0.2</version>
-        </dependency>
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>easyexcel</artifactId>
+    <version>3.1.0</version>
+</dependency>
 ```
 
 ## Advertising space
@@ -65,7 +65,7 @@ The requirements are as follows:
 * [Code Contribution](https://www.yuque.com/easyexcel/doc/contribute)
 
 ## Maintainers
-姬朋飞（玉霄)、庄家钜、怀宇
+姬朋飞（玉霄）、庄家钜、怀宇
 ## Quick Start
 ### Read Excel File
 DEMO：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/alibaba/easyexcel/demo/read/ReadTest.java](/src/test/java/com/alibaba/easyexcel/test/demo/read/ReadTest.java)
