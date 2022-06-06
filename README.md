@@ -26,7 +26,7 @@ EasyExcel
 # JAVA 解析 Excel 工具 EasyExcel
 Java 解析、生成 Excel 比较有名的框架有 Apache poi、jxl。但他们都存在一个严重的问题就是非常的耗内存，poi 有一套 SAX 模式的 API 可以一定程度的解决一些内存溢出的问题，但 POI 还是有一些缺陷，比如 07 版 Excel 解压缩以及解压后存储都是在内存中完成的，内存消耗依然很大。easyexcel 重写了 poi 对 07 版 Excel 的解析，一个 3M 的 excel 用 POI sax 解析依然需要 100M 左右内存，改用 easyexcel 可以降低到几 M，并且再大的 excel 也不会出现内存溢出；03 版依赖 POI 的 sax 模式，在上层做了模型转换的封装，让使用者更加简单方便
 
-## 64M 内存 20 秒读取 75M(46W 行 25 列）的 Excel（3.0.2+版本）
+## 64M 内存 20 秒读取 75M（46W 行 25 列）的 Excel（3.0.2+版本）
 当然还有极速模式能更快，但是内存占用会在 100M 多一点
 ![img](img/readme/large.png)
 
