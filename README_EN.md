@@ -38,11 +38,11 @@ Of course, there is also a very fast mode can be faster, but the memory consumpt
 
 ### Latest Version
 ```xml
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>3.0.2</version>
-        </dependency>
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>easyexcel</artifactId>
+    <version>3.1.0</version>
+</dependency>
 ```
 
 ## Advertising space
