@@ -13,6 +13,8 @@
 
     <packaging>jar</packaging>
     <artifactId>easyexcel-support</artifactId>
+    <name>easyexcel-support</name>
+
 
     <dependencies>
         <dependency>

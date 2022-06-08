@@ -13,6 +13,7 @@
 
     <packaging>jar</packaging>
     <artifactId>easyexcel-test</artifactId>
+    <name>easyexcel-test</name>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
