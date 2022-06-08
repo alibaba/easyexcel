@@ -15,6 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageRelationshipCollection;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
@@ -50,6 +51,11 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
      * cache data format
      */
     private Map<Integer, DataFormatData> dataFormatDataCache;
+
+    /**
+     * excel Relationship, key: sheetNo value: PackageRelationshipCollection
+     */
+    private Map<Integer, PackageRelationshipCollection> packageRelationshipCollectionMap;
 
     public XlsxReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);

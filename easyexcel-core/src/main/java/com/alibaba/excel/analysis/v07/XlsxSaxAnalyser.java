@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,17 +26,23 @@ import com.alibaba.excel.metadata.CellExtra;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.util.FileUtils;
+import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.SheetUtils;
 import com.alibaba.excel.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.openxml4j.opc.PackagePart;
+import org.apache.poi.openxml4j.opc.PackagePartName;
+import org.apache.poi.openxml4j.opc.PackageRelationshipCollection;
+import org.apache.poi.openxml4j.opc.PackagingURIHelper;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.CommentsTable;
+import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.apache.poi.xssf.usermodel.XSSFRelation;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTWorkbook;
@@ -51,6 +58,20 @@ import org.xml.sax.XMLReader;
  */
 @Slf4j
 public class XlsxSaxAnalyser implements ExcelReadExecutor {
+
+    /**
+     * Storage sheet SharedStrings
+     */
+    public static final PackagePartName SHARED_STRINGS_PART_NAME;
+
+    static {
+        try {
+            SHARED_STRINGS_PART_NAME = PackagingURIHelper.createPartName("/xl/sharedStrings.xml");
+        } catch (InvalidFormatException e) {
+            log.error("Initialize the XlsxSaxAnalyser failure", e);
+            throw new ExcelAnalysisException("Initialize the XlsxSaxAnalyser failure", e);
+        }
+    }
 
     private final XlsxReadContext xlsxReadContext;
     private final List<ReadSheet> sheetList;
@@ -68,11 +89,9 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         OPCPackage pkg = readOpcPackage(xlsxReadWorkbookHolder, decryptedStream);
         xlsxReadWorkbookHolder.setOpcPackage(pkg);
 
-        ArrayList<PackagePart> packageParts = pkg.getPartsByContentType(XSSFRelation.SHARED_STRINGS.getContentType());
-
-        if (!CollectionUtils.isEmpty(packageParts)) {
-            PackagePart sharedStringsTablePackagePart = packageParts.get(0);
-
+        // Read the Shared information Strings
+        PackagePart sharedStringsTablePackagePart = pkg.getPart(SHARED_STRINGS_PART_NAME);
+        if (sharedStringsTablePackagePart != null) {
             // Specify default cache
             defaultReadCache(xlsxReadWorkbookHolder, sharedStringsTablePackagePart);
 
@@ -89,6 +108,9 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         sheetList = new ArrayList<>();
         sheetMap = new HashMap<>();
         commentsTableMap = new HashMap<>();
+        Map<Integer, PackageRelationshipCollection> packageRelationshipCollectionMap = MapUtils.newHashMap();
+        xlsxReadWorkbookHolder.setPackageRelationshipCollectionMap(packageRelationshipCollectionMap);
+
         XSSFReader.SheetIterator ite = (XSSFReader.SheetIterator)xssfReader.getSheetsData();
         int index = 0;
         if (!ite.hasNext()) {
@@ -102,6 +124,20 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
                 CommentsTable commentsTable = ite.getSheetComments();
                 if (null != commentsTable) {
                     commentsTableMap.put(index, commentsTable);
+                }
+            }
+            if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.HYPERLINK)) {
+                PackageRelationshipCollection packageRelationshipCollection = Optional.ofNullable(ite.getSheetPart())
+                    .map(packagePart -> {
+                        try {
+                            return packagePart.getRelationships();
+                        } catch (InvalidFormatException e) {
+                            log.warn("Reading the Relationship failed", e);
+                            return null;
+                        }
+                    }).orElse(null);
+                if (packageRelationshipCollection != null) {
+                    packageRelationshipCollectionMap.put(index, packageRelationshipCollection);
                 }
             }
             index++;

@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.core.extra;
 
 import java.io.File;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -9,10 +10,13 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellExtraTypeEnum;
+import com.alibaba.excel.metadata.CellExtra;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.fastjson.JSON;
 
 /**
- *
  * @author Jiaju Zhuang
  */
 public class ExtraDataTest {
@@ -20,10 +24,13 @@ public class ExtraDataTest {
     private static File file03;
     private static File file07;
 
+    private static File extraRelationships;
+
     @BeforeClass
     public static void init() {
         file03 = TestFileUtil.readFile("extra" + File.separator + "extra.xls");
         file07 = TestFileUtil.readFile("extra" + File.separator + "extra.xlsx");
+        extraRelationships = TestFileUtil.readFile("extra" + File.separator + "extraRelationships.xlsx");
     }
 
     @Test
@@ -34,6 +41,41 @@ public class ExtraDataTest {
     @Test
     public void t02Read03() {
         read(file03);
+    }
+
+    @Test
+    public void t03Read() {
+        EasyExcel.read(extraRelationships, ExtraData.class, new ReadListener() {
+                @Override
+                public void invoke(Object data, AnalysisContext context) {
+                }
+
+                @Override
+                public void doAfterAllAnalysed(AnalysisContext context) {
+                }
+
+                @Override
+                public void extra(CellExtra extra, AnalysisContext context) {
+                    LOGGER.info("extra data:{}", JSON.toJSONString(extra));
+                    switch (extra.getType()) {
+                        case HYPERLINK:
+                            if ("222222222".equals(extra.getText())) {
+                                Assert.assertEquals(1, (int)extra.getRowIndex());
+                                Assert.assertEquals(0, (int)extra.getColumnIndex());
+                            } else if ("333333333333".equals(extra.getText())) {
+                                Assert.assertEquals(1, (int)extra.getRowIndex());
+                                Assert.assertEquals(1, (int)extra.getColumnIndex());
+                            } else {
+                                Assert.fail("Unknown hyperlink!");
+                            }
+                            break;
+                        default:
+                    }
+                }
+            })
+            .extraRead(CellExtraTypeEnum.HYPERLINK)
+            .sheet()
+            .doRead();
     }
 
     private void read(File file) {
