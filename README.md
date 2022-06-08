@@ -26,66 +26,22 @@ EasyExcel
 Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都存在一个严重的问题就是非常的耗内存，poi有一套SAX模式的API可以一定程度的解决一些内存溢出的问题，但POI还是有一些缺陷，比如07版Excel解压缩以及解压后存储都是在内存中完成的，内存消耗依然很大。easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析依然需要100M左右内存，改用easyexcel可以降低到几M，并且再大的excel也不会出现内存溢出；03版依赖POI的sax模式，在上层做了模型转换的封装，让使用者更加简单方便
 
 ## 64M内存20秒读取75M(46W行25列)的Excel（3.0.2+版本）
-当然还有极速模式能更快，但是内存占用会在100M多一点
+当然还有[极速模式](https://easyexcel.opensource.alibaba.com/qa/read#%E5%BC%80%E5%90%AF%E6%80%A5%E9%80%9F%E6%A8%A1%E5%BC%8F)能更快，但是内存占用会在100M多一点
 ![img](img/readme/large.png)
-
-## 关于版本选择
-如果项目中没有使用过poi,且jdk版本在8-17之间，直接使用最新版本，别犹豫。以下表格适用于不满足以上2个情况的。
-
-| 版本                 | poi依赖版本 (支持范围)        | jdk版本支持范围    | 备注                                          |
-|--------------------|-----------------------|--------------|---------------------------------------------|
-| 3.1.0+             | 4.1.2 (4.1.2 - 5.2.2) | jkd8 - jdk17 | 推荐使用，会更新的版本                                 |
-| 3.0.0-beta1 - 3.0.5 | 4.1.2 (4.1.2 - 5.2.2) | jkd8 - jdk11 | 不推荐项目新引入此版本，除非超级严重bug,否则不再更新                |
-| 2.0.0-beta1-2.2.11 | 3.17 (3.17 - 4.1.2)   | jdk6 - jdk11 | 不推荐项目新引入此版本，除非是jdk6否则不推荐使用，除非超级严重bug,否则不再更新 |
-| 1+版本               | 3.17 (3.17 - 4.1.2)   | jdk6 - jdk11 | 不推荐项目新引入此版本，超级严重bug,也不再更新                   |
-
-注意： 3+版本的的easyexcel，使用poi 5+版本时，需要手动排除：poi-ooxml-schemas，例如：
-```xml
- <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>3.1.0</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>poi-ooxml-schemas</artifactId>
-                    <groupId>org.apache.poi</groupId>
-                </exclusion>
-            </exclusions>
-</dependency>
-```
-
-### 关于版本升级
-* 不建议跨大版本升级 尤其跨2个大版本
-* 2+ 升级到 3+ 一些不兼容的地方
-  * 使用了自定义拦截器去修改样式的会出问题（不会编译报错）
-  * 读的时候`invoke`里面抛出异常，不会再额外封装一层`ExcelAnalysisException` （不会编译报错）
-  * 样式等注解涉及到 `boolean` or 一些枚举 值的 有变动，新增默认值（会编译报错，注解改就行）
-* 大版本升级后建议相关内容重新测试下
 
 ### 最新版本
 ```xml
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.1.0</version>
+            <version>3.1.1</version>
         </dependency>
 ```
 
-### easyexcel人员招募
-由于工作较忙,有意愿做开源的同学可以报名,主要负责群里回答&issue处理，当然也可以做一些PR.   
-由于开源没有任何物质回报，然后现在的维护同学也是课余时间维护的，所以想加入的同学需要持之以恒，而不是一时兴起.   
-要求如下：
-* 有一定java编码能力 & 良好的编码习惯
-* 了解easyexcel 读&写的原理
-* 热爱开源项目
-* 能长期坚持的去做
-* 相对工作没那么忙
-
 ## 相关文档
-* [快速开始](https://www.yuque.com/easyexcel/doc/easyexcel)
-* [关于软件](/abouteasyexcel.md)
+* [快速开始](https://easyexcel.opensource.alibaba.com/docs/current/)
 * [更新记事](/update.md)
-* [贡献代码](https://www.yuque.com/easyexcel/doc/contribute)
+* [贡献代码](https://easyexcel.opensource.alibaba.com/community/contribute)
 
 ## 维护者
 姬朋飞（玉霄)、庄家钜、怀宇

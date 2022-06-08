@@ -50,6 +50,11 @@ public class ExcelXmlConstants {
     public static final String ATTRIBUTE_LOCATION = "location";
 
     /**
+     * rId attribute
+     */
+    public static final String ATTRIBUTE_RID = "r:id";
+
+    /**
      * Cell range split
      */
     public static final String CELL_RANGE_SPLIT = ":";

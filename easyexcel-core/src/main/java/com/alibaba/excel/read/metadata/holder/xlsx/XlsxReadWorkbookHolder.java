@@ -15,6 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageRelationshipCollection;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 
@@ -51,6 +52,11 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
      */
     private Map<Integer, DataFormatData> dataFormatDataCache;
 
+    /**
+     * excel Relationship, key: sheetNo value: PackageRelationshipCollection
+     */
+    private Map<Integer, PackageRelationshipCollection> packageRelationshipCollectionMap;
+
     public XlsxReadWorkbookHolder(ReadWorkbook readWorkbook) {
         super(readWorkbook);
         this.saxParserFactoryName = readWorkbook.getXlsxSAXParserFactoryName();
@@ -65,6 +71,9 @@ public class XlsxReadWorkbookHolder extends ReadWorkbookHolder {
                 return null;
             }
             XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(dateFormatIndexInteger);
+            if (xssfCellStyle == null) {
+                return null;
+            }
             dataFormatData.setIndex(xssfCellStyle.getDataFormat());
             dataFormatData.setFormat(BuiltinFormats.getBuiltinFormat(dataFormatData.getIndex(),
                 xssfCellStyle.getDataFormatString(), globalConfiguration().getLocale()));

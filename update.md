@@ -1,3 +1,6 @@
+# 3.1.1
+* 修复部分xlsx无法读取超链接的bug
+
 # 3.1.0
 * 支持jdk17,去除cglib&asm依赖，改成重新拷贝一份 [Issue #2240](https://github.com/alibaba/easyexcel/issues/2240)
 * 升级ehcache 到 3.9.9 ,为了兼容jdk17
