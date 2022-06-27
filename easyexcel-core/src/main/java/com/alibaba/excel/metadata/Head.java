@@ -66,6 +66,17 @@ public class Head {
      */
     private FontProperty headFontProperty;
 
+    public Head(Integer columnIndex, Field field, String fieldName, String headName) {
+        this.columnIndex = columnIndex;
+        this.field = field;
+        this.fieldName = fieldName;
+        List<String> headNameList = new ArrayList<>();
+        headNameList.add(headName);
+        this.headNameList = headNameList;
+        this.forceIndex = true;
+        this.forceName = true;
+    }
+
     public Head(Integer columnIndex, Field field, String fieldName, List<String> headNameList, Boolean forceIndex,
         Boolean forceName) {
         this.columnIndex = columnIndex;

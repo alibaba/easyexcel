@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.alibaba.excel.metadata.AbstractParameterBuilder;
+import com.alibaba.excel.metadata.entity.ExcelExportEntity;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteBasicParameter;
 
@@ -118,6 +119,28 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
      */
     public T includeColumnFieldNames(Collection<String> includeColumnFieldNames) {
         parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
+        return self();
+    }
+
+    public T setDynamicColumnFieldNames(Collection<String> dynamicColumnFieldNames) {
+        return setDynamicColumnFieldNames(true, dynamicColumnFieldNames);
+    }
+
+    public T setDynamicColumnFieldNames(Boolean bool, Collection<String> dynamicColumnFieldNames) {
+        if (bool) {
+            parameter().setDynamicColumnFieldNames(dynamicColumnFieldNames);
+        }
+        return self();
+    }
+
+    public T setDynamicColumnEntities(Collection<ExcelExportEntity> dynamicColumnEntities) {
+        return setDynamicColumnEntities(true, dynamicColumnEntities);
+    }
+
+    public T setDynamicColumnEntities(Boolean bool, Collection<ExcelExportEntity> dynamicColumnEntities) {
+        if (bool) {
+            parameter().setDynamicColumnEntities(dynamicColumnEntities);
+        }
         return self();
     }
 }

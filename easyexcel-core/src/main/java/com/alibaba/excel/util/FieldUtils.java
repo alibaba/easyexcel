@@ -2,6 +2,9 @@ package com.alibaba.excel.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.metadata.NullObject;
@@ -164,6 +167,20 @@ public class FieldUtils {
             }
         }
         return match;
+    }
+
+    /**
+     * Gets the fields of the current class and its parent class
+     * @param clazz
+     * @return
+     */
+    public static List<Field> getAllFields(Class<?> clazz) {
+        List<Field> fields = new ArrayList<>();
+        while (clazz != null) {
+            Collections.addAll(fields, clazz.getDeclaredFields());
+            clazz = clazz.getSuperclass();
+        }
+        return fields;
     }
 
 }
