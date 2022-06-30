@@ -15,7 +15,8 @@ EasyExcel
 [钉钉4群（已满）: 33491624](https://qr.dingtalk.com/action/joingroup?code=v1,k1,V14Pb65Too70rQkEaJ9ohb6lZBZbtp6jIL/q9EWh9vA=&_dt_no_comment=1&origin=11)  
 [钉钉5群（已满）: 32134498](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingb9fa1325d9dccc3ecac589edd02f1650&5233a=71a83&cbdbhh=qwertyuiop)  
 [钉钉6群（已满）: 34707941](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingcf68008a1d443ac012d5427bdb061b7a&6ae36c3d-0c80-4=22398493-6c2a-4&cbdbhh=qwertyuiop)  
-[钉钉7群: 35235427](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=ding532b9018c06c7fc8660273c4b78e6440&167fb=ed003&cbdbhh=qwertyuiop)  
+[钉钉7群（已满）: 35235427](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=ding532b9018c06c7fc8660273c4b78e6440&167fb=ed003&cbdbhh=qwertyuiop)  
+[钉钉8群: 44752220](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingea96808beee421693fd4ba7542d6e5da&0380092a-fa46=a6a40905-7951&cbdbhh=qwertyuiop)  
 
 [官方网站: https://easyexcel.opensource.alibaba.com/](https://easyexcel.opensource.alibaba.com/)  
 
