@@ -1,5 +1,30 @@
 package com.alibaba.excel.util;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
+import com.alibaba.excel.annotation.format.EnumFormat;
+import com.alibaba.excel.annotation.format.NumberFormat;
+import com.alibaba.excel.annotation.write.style.ContentFontStyle;
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.alibaba.excel.converters.AutoConverter;
+import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.exception.ExcelCommonException;
+import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.metadata.property.DateTimeFormatProperty;
+import com.alibaba.excel.metadata.property.EnumFormatProperty;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.NumberFormatProperty;
+import com.alibaba.excel.metadata.property.StyleProperty;
+import com.alibaba.excel.write.metadata.holder.WriteHolder;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.cglib.beans.BeanMap;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -12,30 +37,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.alibaba.excel.annotation.ExcelIgnore;
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.format.DateTimeFormat;
-import com.alibaba.excel.annotation.format.NumberFormat;
-import com.alibaba.excel.annotation.write.style.ContentFontStyle;
-import com.alibaba.excel.annotation.write.style.ContentStyle;
-import com.alibaba.excel.converters.AutoConverter;
-import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.exception.ExcelCommonException;
-import com.alibaba.excel.metadata.Holder;
-import com.alibaba.excel.metadata.property.DateTimeFormatProperty;
-import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.metadata.property.FontProperty;
-import com.alibaba.excel.metadata.property.NumberFormatProperty;
-import com.alibaba.excel.metadata.property.StyleProperty;
-import com.alibaba.excel.write.metadata.holder.WriteHolder;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.cglib.beans.BeanMap;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -124,6 +125,9 @@ public class ClassUtils {
         if (excelContentProperty.getNumberFormatProperty() != null) {
             combineExcelContentProperty.setNumberFormatProperty(excelContentProperty.getNumberFormatProperty());
         }
+        if (excelContentProperty.getEnumFormatProperty() != null) {
+            combineExcelContentProperty.setEnumFormatProperty(excelContentProperty.getEnumFormatProperty());
+        }
         if (excelContentProperty.getContentStyleProperty() != null) {
             combineExcelContentProperty.setContentStyleProperty(excelContentProperty.getContentStyleProperty());
         }
@@ -187,6 +191,8 @@ public class ClassUtils {
                     DateTimeFormatProperty.build(field.getAnnotation(DateTimeFormat.class)));
                 excelContentProperty.setNumberFormatProperty(
                     NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
+                excelContentProperty.setEnumFormatProperty(
+                    EnumFormatProperty.build(field.getAnnotation(EnumFormat.class)));
 
                 fieldContentMap.put(field.getName(), excelContentProperty);
             }

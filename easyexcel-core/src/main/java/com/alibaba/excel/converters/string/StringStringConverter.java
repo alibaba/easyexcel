@@ -6,6 +6,8 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.EnumUtils;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * String and string converter
@@ -32,6 +34,11 @@ public class StringStringConverter implements Converter<String> {
     @Override
     public WriteCellData<?> convertToExcelData(String value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
+        if (contentProperty != null && contentProperty.getEnumFormatProperty() != null
+            && contentProperty.getEnumFormatProperty().getTargetClass() != null
+            && StringUtils.isNotBlank(contentProperty.getEnumFormatProperty().getConvertToExcelDataMethod())) {
+            value = EnumUtils.formatToCellData(value, contentProperty);
+        }
         return new WriteCellData<>(value);
     }
 
