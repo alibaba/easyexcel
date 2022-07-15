@@ -19,13 +19,11 @@ public class KeyValueData {
     private String name;
 
     @ExcelProperty(value = "单位类型")
-    @KeyValueFormat(targetClass = DepartmentEnum.class, javaify = "getKeyByDesc",
-        excelify = "getDescByKey")
+    @KeyValueFormat(targetClass = DepartmentEnum.class, javaify = "getKeyByDesc", excelify = "getDescByKey")
     private Integer ouType;
 
     @ExcelProperty(value = "性别")
-    @KeyValueFormat(targetClass = SexTypeEnum.class, javaify = "getKeyByDesc",
-        excelify = "getDescByKey")
+    @KeyValueFormat(targetClass = SexTypeEnum.class, javaify = "getKeyByDesc", excelify = "getDescByKey")
     private String sexType;
 
 }

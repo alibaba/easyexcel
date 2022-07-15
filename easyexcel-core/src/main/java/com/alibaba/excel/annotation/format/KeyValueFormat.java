@@ -7,12 +7,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Convert key value format.
+ * Convert key&value format.
  *
  * <p>
  * write: It can be used on classes {@link String} or {@link Integer}
  * <p>
- * read: It can be used on classes {@link String}
+ * read: It can be used on classes {@link String} or {@link Integer}
  *
  * @author xiajiafu
  * @since 2022/7/13
@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 public @interface KeyValueFormat {
 
     /**
-     * the class which converts java data or excel data.It may be a enum class.
+     * the class which converts java data or excel data.
      *
      * @return class
      */
