@@ -4,7 +4,7 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
-import com.alibaba.excel.annotation.format.EnumFormat;
+import com.alibaba.excel.annotation.format.KeyValueFormat;
 import com.alibaba.excel.annotation.format.NumberFormat;
 import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.ContentStyle;
@@ -13,9 +13,9 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.metadata.property.DateTimeFormatProperty;
-import com.alibaba.excel.metadata.property.EnumFormatProperty;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
+import com.alibaba.excel.metadata.property.KeyValueFormatProperty;
 import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
@@ -125,8 +125,8 @@ public class ClassUtils {
         if (excelContentProperty.getNumberFormatProperty() != null) {
             combineExcelContentProperty.setNumberFormatProperty(excelContentProperty.getNumberFormatProperty());
         }
-        if (excelContentProperty.getEnumFormatProperty() != null) {
-            combineExcelContentProperty.setEnumFormatProperty(excelContentProperty.getEnumFormatProperty());
+        if (excelContentProperty.getKeyValueFormatProperty() != null) {
+            combineExcelContentProperty.setKeyValueFormatProperty(excelContentProperty.getKeyValueFormatProperty());
         }
         if (excelContentProperty.getContentStyleProperty() != null) {
             combineExcelContentProperty.setContentStyleProperty(excelContentProperty.getContentStyleProperty());
@@ -191,8 +191,8 @@ public class ClassUtils {
                     DateTimeFormatProperty.build(field.getAnnotation(DateTimeFormat.class)));
                 excelContentProperty.setNumberFormatProperty(
                     NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
-                excelContentProperty.setEnumFormatProperty(
-                    EnumFormatProperty.build(field.getAnnotation(EnumFormat.class)));
+                excelContentProperty.setKeyValueFormatProperty(
+                    KeyValueFormatProperty.build(field.getAnnotation(KeyValueFormat.class)));
 
                 fieldContentMap.put(field.getName(), excelContentProperty);
             }

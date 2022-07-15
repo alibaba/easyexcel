@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Convert enum format.
+ * Convert key value format.
  *
  * <p>
  * write: It can be used on classes {@link String} or {@link Integer}
@@ -20,20 +20,27 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface EnumFormat {
+public @interface KeyValueFormat {
 
     /**
-     * the class of enum which to convert the java data or excel data.
+     * the class which converts java data or excel data.It may be a enum class.
      *
-     * @return Format pattern
+     * @return class
      */
-    Class<? extends Enum<?>> targetClass();
+    Class<?> targetClass();
 
     /**
-     * the enum method which converts the java data to excel data.
+     * the method which converts excel data to java data.
      *
      * @return method name
      */
-    String convertToExcelDataMethod() default "";
+    String javaify() default "";
+
+    /**
+     * the method which converts java data to excel data.
+     *
+     * @return method name
+     */
+    String excelify() default "";
 
 }

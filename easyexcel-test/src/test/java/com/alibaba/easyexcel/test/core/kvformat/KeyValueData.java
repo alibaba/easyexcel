@@ -1,7 +1,7 @@
-package com.alibaba.easyexcel.test.core.enumformat;
+package com.alibaba.easyexcel.test.core.kvformat;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.format.EnumFormat;
+import com.alibaba.excel.annotation.format.KeyValueFormat;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,17 +13,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class EnumValueData {
+public class KeyValueData {
 
     @ExcelProperty("姓名")
     private String name;
 
     @ExcelProperty(value = "单位类型")
-    @EnumFormat(targetClass = OuTypeEnum.class, convertToExcelDataMethod = "getDescByKey")
+    @KeyValueFormat(targetClass = DepartmentEnum.class, javaify = "getKeyByDesc",
+        excelify = "getDescByKey")
     private Integer ouType;
 
     @ExcelProperty(value = "性别")
-    @EnumFormat(targetClass = SexTypeEnum.class, convertToExcelDataMethod = "getDescByKey")
+    @KeyValueFormat(targetClass = SexTypeEnum.class, javaify = "getKeyByDesc",
+        excelify = "getDescByKey")
     private String sexType;
 
 }

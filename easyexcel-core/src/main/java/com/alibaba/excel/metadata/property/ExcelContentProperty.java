@@ -36,7 +36,7 @@ public class ExcelContentProperty {
     /**
      * enum format
      */
-    private EnumFormatProperty enumFormatProperty;
+    private KeyValueFormatProperty keyValueFormatProperty;
     /**
      * Content style
      */

@@ -63,10 +63,10 @@ public class NumberUtils {
             && StringUtils.isNotBlank(contentProperty.getNumberFormatProperty().getFormat())) {
             WorkBookUtil.fillDataFormat(cellData, contentProperty.getNumberFormatProperty().getFormat(), null);
         }
-        if (contentProperty != null && contentProperty.getEnumFormatProperty() != null
-            && contentProperty.getEnumFormatProperty().getTargetClass() != null
-            && StringUtils.isNotBlank(contentProperty.getEnumFormatProperty().getConvertToExcelDataMethod())) {
-            String format = EnumUtils.formatToCellData(num, contentProperty);
+        if (contentProperty != null && contentProperty.getKeyValueFormatProperty() != null
+            && contentProperty.getKeyValueFormatProperty().getTargetClass() != null
+            && StringUtils.isNotBlank(contentProperty.getKeyValueFormatProperty().getExcelify())) {
+            String format = KeyValueFormatUtils.formatToCellData(num, contentProperty);
             return StringUtils.isBlank(format) ? new WriteCellData<>("") : new WriteCellData<>(format);
         }
         return cellData;
