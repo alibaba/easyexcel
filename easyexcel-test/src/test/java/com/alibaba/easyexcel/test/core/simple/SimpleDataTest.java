@@ -36,6 +36,7 @@ public class SimpleDataTest {
 
     @Test
     public void simpleCsvByWrite() throws IOException {
+
         File csvFile = TestFileUtil.readFile("simple" + File.separator + "simpleCsv.csv");
 
         EasyExcel.read(Files.newInputStream(csvFile.toPath()), SimpleData.class,
