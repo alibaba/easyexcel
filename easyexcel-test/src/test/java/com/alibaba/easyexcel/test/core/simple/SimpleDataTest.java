@@ -1,20 +1,21 @@
 package com.alibaba.easyexcel.test.core.simple;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jiaju Zhuang
@@ -31,6 +32,30 @@ public class SimpleDataTest {
         file07 = TestFileUtil.createNewFile("simple07.xlsx");
         file03 = TestFileUtil.createNewFile("simple03.xls");
         fileCsv = TestFileUtil.createNewFile("simpleCsv.csv");
+    }
+
+    @Test
+    public void simpleCsvByWrite() throws IOException {
+        File csvFile = TestFileUtil.readFile("simple" + File.separator + "simpleCsv.csv");
+
+        EasyExcel.read(Files.newInputStream(csvFile.toPath()), SimpleData.class,
+            new SimpleDataSheetNameListener()).sheet("simple").doRead();
+    }
+
+    @Test
+    public void simpleCsvRenameByXlsx() throws IOException {
+        File csvFile = TestFileUtil.readFile("simple" + File.separator + "simpleCsvRenameByXlsx.csv");
+
+        EasyExcel.read(Files.newInputStream(csvFile.toPath()), SimpleData.class,
+            new SimpleDataSheetNameListener()).sheet("simple").doRead();
+    }
+
+    @Test
+    public void simpleCsvRenameByXls() throws IOException {
+        File csvFile = TestFileUtil.readFile("simple" + File.separator + "simpleCsvRenameByXls.csv");
+
+        EasyExcel.read(Files.newInputStream(csvFile.toPath()), SimpleData.class,
+            new SimpleDataSheetNameListener()).sheet("simple").doRead();
     }
 
     @Test
@@ -99,7 +124,7 @@ public class SimpleDataTest {
         List<Object> list = EasyExcel.read(file).head(SimpleData.class).sheet().doReadSync();
         Assert.assertEquals(list.size(), 10);
         Assert.assertTrue(list.get(0) instanceof SimpleData);
-        Assert.assertEquals(((SimpleData)list.get(0)).getName(), "姓名0");
+        Assert.assertEquals(((SimpleData) list.get(0)).getName(), "姓名0");
     }
 
     private List<SimpleData> data() {

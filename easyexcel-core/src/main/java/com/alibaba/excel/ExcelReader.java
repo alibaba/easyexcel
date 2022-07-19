@@ -95,9 +95,7 @@ public class ExcelReader implements Closeable {
      * Complete the entire read file.Release the cache and close stream.
      */
     public void finish() {
-        if (excelAnalyser != null) {
-            excelAnalyser.finish();
-        }
+        excelAnalyser.finish();
     }
 
     @Override

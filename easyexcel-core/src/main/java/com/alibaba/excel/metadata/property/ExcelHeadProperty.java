@@ -136,7 +136,7 @@ public class ExcelHeadProperty {
      */
     private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-        List<String> tmpHeadList = new ArrayList<String>();
+        List<String> tmpHeadList = new ArrayList<>();
         String fieldName = FieldUtils.resolveCglibFieldName(field);
         boolean notForceName = excelProperty == null || excelProperty.value().length <= 0
             || (excelProperty.value().length == 1 && StringUtils.isEmpty((excelProperty.value())[0]));
