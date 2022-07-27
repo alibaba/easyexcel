@@ -29,8 +29,8 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
 
     @Override
     protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<WriteCellData<?>> cellDataList, Cell cell,
-        Head head,
-        Integer relativeRowIndex, Boolean isHead) {
+                                  Head head,
+                                  Integer relativeRowIndex, Boolean isHead) {
         boolean needSetWidth = isHead || !CollectionUtils.isEmpty(cellDataList);
         if (!needSetWidth) {
             return;
@@ -46,7 +46,7 @@ public class LongestMatchColumnWidthStyleStrategy extends AbstractColumnWidthSty
         Integer maxColumnWidth = maxColumnWidthMap.get(cell.getColumnIndex());
         if (maxColumnWidth == null || columnWidth > maxColumnWidth) {
             maxColumnWidthMap.put(cell.getColumnIndex(), columnWidth);
-        }else {
+        } else {
             columnWidth = maxColumnWidth;
         }
         writeSheetHolder.getSheet().setColumnWidth(cell.getColumnIndex(), columnWidth * 256);
