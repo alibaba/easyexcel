@@ -19,6 +19,7 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.AbstractVerticalCellStyleStrategy;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.row.SimpleRowHeightStyleStrategy;
 
@@ -50,6 +51,9 @@ public class StyleDataTest {
     private static File fileVerticalCellStyleStrategy07;
     private static File fileVerticalCellStyleStrategy207;
     private static File fileLoopMergeStrategy;
+    private static File longestMatchColumnWidthStyleStrategyFile1;
+    private static File longestMatchColumnWidthStyleStrategyFile2;
+    private final LongestMatchColumnWidthStyleStrategy longestMatchColumnWidthStyleStrategy = new LongestMatchColumnWidthStyleStrategy();
 
     @BeforeClass
     public static void init() {
@@ -58,6 +62,8 @@ public class StyleDataTest {
         fileVerticalCellStyleStrategy07 = TestFileUtil.createNewFile("verticalCellStyle.xlsx");
         fileVerticalCellStyleStrategy207 = TestFileUtil.createNewFile("verticalCellStyle2.xlsx");
         fileLoopMergeStrategy = TestFileUtil.createNewFile("loopMergeStrategy.xlsx");
+        longestMatchColumnWidthStyleStrategyFile1 = TestFileUtil.createNewFile("longestMatchColumnWidthStyleStrategyFile1.xlsx");
+        longestMatchColumnWidthStyleStrategyFile2 = TestFileUtil.createNewFile("longestMatchColumnWidthStyleStrategyFile2.xlsx");
     }
 
     @Test
@@ -253,6 +259,37 @@ public class StyleDataTest {
         for (int i = 0; i < 10; i++) {
             StyleData data = new StyleData();
             data.setString("字符串0");
+            data.setString1("字符串01");
+            list.add(data);
+        }
+        return list;
+    }
+
+    /**
+     * fix(style): 修复当LongestMatchColumnWidthStyleStrategy的bug
+     *
+     * 复现必要条件
+     * 1.LongestMatchColumnWidthStyleStrategy是成员变量
+     * 2.数据前后一致或者数据的长度始终比缓存中的小
+     */
+    @Test
+    public void testDuplicateWriteWhenLongestMatchColumnWidthStyleStrategyIsMemberVariable() {
+        List<StyleData> styleData = dataFortTestDuplicateWriteWhenLongestMatchColumnWidthDataIsMemberVariable();
+        EasyExcel.write(longestMatchColumnWidthStyleStrategyFile1, StyleData.class)
+            .registerWriteHandler(longestMatchColumnWidthStyleStrategy)
+            .sheet()
+            .doWrite(styleData);
+        EasyExcel.write(longestMatchColumnWidthStyleStrategyFile2, StyleData.class)
+            .registerWriteHandler(longestMatchColumnWidthStyleStrategy)
+            .sheet()
+            .doWrite(styleData);
+    }
+
+    private List<StyleData> dataFortTestDuplicateWriteWhenLongestMatchColumnWidthDataIsMemberVariable() {
+        List<StyleData> list = new ArrayList<StyleData>();
+        for (int i = 0; i < 10; i++) {
+            StyleData data = new StyleData();
+            data.setString("字符串000000000000000000000000000");
             data.setString1("字符串01");
             list.add(data);
         }
