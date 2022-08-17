@@ -24,7 +24,7 @@ import com.alibaba.excel.write.metadata.MapRowData;
 import com.alibaba.excel.write.metadata.RowData;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-
+import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -45,9 +45,10 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         if (CollectionUtils.isEmpty(data)) {
             data = new ArrayList<>();
         }
+        WriteTableHolder writeTableHolder = writeContext.writeTableHolder();
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();
-        if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
+        if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead() && (writeTableHolder ==null || !writeTableHolder.needHead())) {
             newRowIndex += writeContext.currentWriteHolder().relativeHeadRowIndex();
         }
         // BeanMap is out of order, so use sortedAllFieldMap
