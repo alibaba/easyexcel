@@ -523,7 +523,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             if (StringUtils.isEmpty(variable)) {
                 continue;
             }
-            int collectPrefixIndex = variable.indexOf(COLLECTION_PREFIX);
+            int collectPrefixIndex = variable.startsWith(COLLECTION_PREFIX);
             if (collectPrefixIndex > -1) {
                 if (collectPrefixIndex != 0) {
                     analysisCell.setPrefix(variable.substring(0, collectPrefixIndex));
