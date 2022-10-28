@@ -35,7 +35,7 @@ Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都�
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.1.1</version>
+            <version>3.1.2</version>
         </dependency>
 ```
 
