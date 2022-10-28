@@ -58,6 +58,7 @@ public class FileUtils {
         // Create a temporary directory in advance
         File tempFile = new File(tempFilePrefix);
         createDirectory(tempFile);
+        tempFile.deleteOnExit();
         // Initialize the cache directory
         File cacheFile = new File(cachePath);
         createDirectory(cacheFile);
