@@ -1,3 +1,6 @@
+# 3.1.2
+* 修复长时间运行会产生大对象的bug [Issue #2725](https://github.com/alibaba/easyexcel/issues/2725)
+
 # 3.1.1
 * 修复部分xlsx无法读取超链接的bug
 

@@ -62,7 +62,6 @@ public class FileUtils {
         // Initialize the cache directory
         File cacheFile = new File(cachePath);
         createDirectory(cacheFile);
-        cacheFile.deleteOnExit();
     }
 
     /**
@@ -160,7 +159,6 @@ public class FileUtils {
         File poiFilesPathFile = new File(poiFilesPath);
         createDirectory(poiFilesPathFile);
         TempFile.setTempFileCreationStrategy(new DefaultTempFileCreationStrategy(poiFilesPathFile));
-        poiFilesPathFile.deleteOnExit();
     }
 
     public static File createCacheTmpFile() {
