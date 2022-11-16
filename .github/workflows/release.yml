@@ -34,14 +34,20 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-      - name: Cache Maven
+      - name: Cache local Maven m2
         uses: actions/cache@v3
         with:
           path: ~/.m2
-          key: m2
-          restore-keys: m2
-      - name: Release Maven package
-        run: mvn --batch-mode deploy
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2
+      - id: install-secret-key
+        name: Install GPG secret key
+        run: |
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
+      - name: Publish package
+        run: |
+          mvn --batch-mode -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}  clean deploy -Dmaven.test.skip=false -Dmaven.javadoc.skip=false -Dgpg.skip=false
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}

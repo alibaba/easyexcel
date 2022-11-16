@@ -36,12 +36,13 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: ${{ matrix.distribution }}
-      - name: Cache Maven
+      - name: Cache local Maven m2
         uses: actions/cache@v3
         with:
           path: ~/.m2
-          key: m2
-          restore-keys: m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2
       - name: Chmod
         run:  chmod +x mvnw
       - name: Test with Maven
