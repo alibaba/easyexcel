@@ -4,6 +4,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.constant.ExcelXmlConstants;
 
 /**
  * Sax read sharedStringsTable.xml
@@ -11,12 +12,6 @@ import com.alibaba.excel.cache.ReadCache;
  * @author Jiaju Zhuang
  */
 public class SharedStringsTableHandler extends DefaultHandler {
-    private static final String T_TAG = "t";
-    private static final String SI_TAG = "si";
-    /**
-     * Mac 2016 2017 will have this extra field to ignore
-     */
-    private static final String RPH_TAG = "rPh";
 
     /**
      * The final piece of data
@@ -43,34 +38,58 @@ public class SharedStringsTableHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String name, Attributes attributes) {
-        if (T_TAG.equals(name)) {
-            currentElementData = null;
-            isTagt = true;
-        } else if (SI_TAG.equals(name)) {
-            currentData = null;
-        } else if (RPH_TAG.equals(name)) {
-            ignoreTagt = true;
+        if (name == null) {
+            return;
+        }
+        switch (name) {
+            case ExcelXmlConstants.SHAREDSTRINGS_T_TAG:
+            case ExcelXmlConstants.SHAREDSTRINGS_X_T_TAG:
+                currentElementData = null;
+                isTagt = true;
+                break;
+            case ExcelXmlConstants.SHAREDSTRINGS_SI_TAG:
+            case ExcelXmlConstants.SHAREDSTRINGS_X_SI_TAG:
+                currentData = null;
+                break;
+            case ExcelXmlConstants.SHAREDSTRINGS_RPH_TAG:
+            case ExcelXmlConstants.SHAREDSTRINGS_X_RPH_TAG:
+                ignoreTagt = true;
+                break;
+            default:
+                // ignore
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String name) {
-        if (T_TAG.equals(name)) {
-            if (currentElementData != null) {
-                if (currentData == null) {
-                    currentData = new StringBuilder();
+        if (name == null) {
+            return;
+        }
+        switch (name) {
+            case ExcelXmlConstants.SHAREDSTRINGS_T_TAG:
+            case ExcelXmlConstants.SHAREDSTRINGS_X_T_TAG:
+                if (currentElementData != null) {
+                    if (currentData == null) {
+                        currentData = new StringBuilder();
+                    }
+                    currentData.append(currentElementData);
                 }
-                currentData.append(currentElementData);
-            }
-            isTagt = false;
-        } else if (SI_TAG.equals(name)) {
-            if (currentData == null) {
-                readCache.put(null);
-            } else {
-                readCache.put(currentData.toString());
-            }
-        } else if (RPH_TAG.equals(name)) {
-            ignoreTagt = false;
+                isTagt = false;
+                break;
+            case ExcelXmlConstants.SHAREDSTRINGS_SI_TAG:
+            case ExcelXmlConstants.SHAREDSTRINGS_X_SI_TAG:
+                if (currentData == null) {
+                    readCache.put(null);
+                } else {
+                    readCache.put(currentData.toString());
+                }
+                break;
+            case ExcelXmlConstants.SHAREDSTRINGS_RPH_TAG:
+            case ExcelXmlConstants.SHAREDSTRINGS_X_RPH_TAG:
+                ignoreTagt = false;
+                break;
+            default:
+                // ignore
         }
     }
 
