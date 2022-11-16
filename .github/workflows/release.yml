@@ -17,8 +17,8 @@
 name: Publish package to the Maven Central Repository
 
 on:
-  push:
-    tags: [ "*" ]
+  release:
+    types: [created]
 
 jobs:
   publish:
@@ -31,15 +31,11 @@ jobs:
         with:
           java-version: 8
           distribution: 'adopt'
-          server-id: sonatype-nexus-staging
-          server-username: ${{ secrets.NEXUS_USERNAME }}
-          server-password: ${{ secrets.NEXUS_PASSWORD }}
-          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: Release Maven package
-        uses: samuelmeuli/action-maven-publish@v1
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          nexus_username: ${{ secrets.NEXUS_USERNAME }}
-          nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          maven_args: -Dmaven.test.skip=false -Dmaven.javadoc.skip=false -Dgpg.skip=false
+        run: mvn --batch-mode deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
