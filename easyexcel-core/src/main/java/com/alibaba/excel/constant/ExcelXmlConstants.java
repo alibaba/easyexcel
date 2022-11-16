@@ -63,16 +63,12 @@ public class ExcelXmlConstants {
 
     /**
      * text
-     * https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet
-     * .text?redirectedfrom=MSDN&view=openxml-2.8.1
      */
     public static final String SHAREDSTRINGS_T_TAG = "t";
     public static final String SHAREDSTRINGS_X_T_TAG = "x:t";
 
     /**
      * SharedStringItem
-     * https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet
-     * .sharedstringitem?redirectedfrom=MSDN&view=openxml-2.8.1
      */
     public static final String SHAREDSTRINGS_SI_TAG = "si";
     public static final String SHAREDSTRINGS_X_SI_TAG = "x:si";
