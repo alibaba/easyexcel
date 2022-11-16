@@ -30,6 +30,7 @@ jobs:
         uses: actions/setup-java@main
         with:
           java-version: 8
+          distribution: 'adopt'
       - name: Release Maven package
         uses: samuelmeuli/action-maven-publish@v1
         with:
