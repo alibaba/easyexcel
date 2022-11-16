@@ -30,14 +30,14 @@ jobs:
     name: Test JDK ${{ matrix.java }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@main
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@main
         with:
           java-version: ${{ matrix.java }}
           distribution: ${{ matrix.distribution }}
       - name: Cache Maven
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.m2
           key: m2

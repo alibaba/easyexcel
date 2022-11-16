@@ -24,22 +24,16 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Maven Central Repository
-        uses: actions/setup-java@v2
+      - name: Check out Git repository
+        uses: actions/checkout@main
+      - name: Install Java and Maven
+        uses: actions/setup-java@main
         with:
-          java-version: '8'
-          distribution: 'adopt'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-      - id: install-secret-key
-        name: Install gpg secret key
-        run: |
-          cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
-          gpg --list-secret-keys --keyid-format LONG
-      - name: Publish package
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-        run: mvn --batch-mode -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} clean deploy -Dmaven.test.skip=false -Dmaven.javadoc.skip=false -Dgpg.skip=false
+          java-version: 8
+      - name: Release Maven package
+        uses: samuelmeuli/action-maven-publish@v1
+        with:
+          gpg_private_key: ${{ secrets.gpg_private_key }}
+          gpg_passphrase: ${{ secrets.gpg_passphrase }}
+          nexus_username: ${{ secrets.nexus_username }}
+          nexus_password: ${{ secrets.nexus_password }}
