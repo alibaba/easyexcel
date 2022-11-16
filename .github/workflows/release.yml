@@ -14,7 +14,7 @@
 #    limitations under the License.
 #
 
-name: Publish package to the Maven Central Repository
+name: Publish to Maven
 
 on:
   push:
