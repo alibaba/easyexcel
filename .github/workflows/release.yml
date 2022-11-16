@@ -16,6 +16,8 @@
 
 name: Publish package to the Maven Central Repository
 
+
+
 on:
   release:
     types: [created]
@@ -44,10 +46,10 @@ jobs:
       - id: install-secret-key
         name: Install GPG secret key
         run: |
-          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}")
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
       - name: Publish package
         run: |
-          mvn --batch-mode -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}  clean deploy -Dmaven.test.skip=false -Dmaven.javadoc.skip=false -Dgpg.skip=false
+          mvn --batch-mode -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}  clean deploy -Dmaven.test.skip=true -Dmaven.javadoc.skip=false -Dgpg.skip=false
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
