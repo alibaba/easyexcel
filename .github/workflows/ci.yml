@@ -1,53 +1,53 @@
-##
-##    Copyright 2009-2021 the original author or authors.
-##
-##    Licensed under the Apache License, Version 2.0 (the "License");
-##    you may not use this file except in compliance with the License.
-##    You may obtain a copy of the License at
-##
-##       http://www.apache.org/licenses/LICENSE-2.0
-##
-##    Unless required by applicable law or agreed to in writing, software
-##    distributed under the License is distributed on an "AS IS" BASIS,
-##    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-##    See the License for the specific language governing permissions and
-##    limitations under the License.
-##
 #
-#name: Java CI
+#    Copyright 2009-2021 the original author or authors.
 #
-#on: [push, pull_request]
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
 #
-#jobs:
-#  test:
-#    runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        java: [ 8, 11, 17]
-#        distribution: [ 'adopt' ]
-#      fail-fast: false
-#      max-parallel: 4
-#    name: Test JDK ${{ matrix.java }}
+#       http://www.apache.org/licenses/LICENSE-2.0
 #
-#    steps:
-#      - uses: actions/checkout@main
-#      - name: Set up JDK
-#        uses: actions/setup-java@main
-#        with:
-#          java-version: ${{ matrix.java }}
-#          distribution: ${{ matrix.distribution }}
-#      - name: Cache local Maven m2
-#        uses: actions/cache@v3
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: |
-#            ${{ runner.os }}-m2
-#      - name: Chmod
-#        run:  chmod +x mvnw
-#      - name: Test with Maven
-#        run: ./mvnw test -B -Dmaven.test.skip=false
-#      - name: Maven Build
-#        run: ./mvnw install -B -V
-#      - name: Java Doc
-#        run: ./mvnw javadoc:javadoc
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+#
+
+name: Java CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 8, 11, 17]
+        distribution: [ 'adopt' ]
+      fail-fast: false
+      max-parallel: 4
+    name: Test JDK ${{ matrix.java }}
+
+    steps:
+      - uses: actions/checkout@main
+      - name: Set up JDK
+        uses: actions/setup-java@main
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
+      - name: Cache local Maven m2
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2
+      - name: Chmod
+        run:  chmod +x mvnw
+      - name: Test with Maven
+        run: ./mvnw test -B -Dmaven.test.skip=false
+      - name: Maven Build
+        run: ./mvnw install -B -V
+      - name: Java Doc
+        run: ./mvnw javadoc:javadoc
