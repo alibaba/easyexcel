@@ -59,4 +59,24 @@ public class ExcelXmlConstants {
      */
     public static final String CELL_RANGE_SPLIT = ":";
 
+    // The following is a constant read the `SharedStrings.xml`
+
+    /**
+     * text
+     */
+    public static final String SHAREDSTRINGS_T_TAG = "t";
+    public static final String SHAREDSTRINGS_X_T_TAG = "x:t";
+
+    /**
+     * SharedStringItem
+     */
+    public static final String SHAREDSTRINGS_SI_TAG = "si";
+    public static final String SHAREDSTRINGS_X_SI_TAG = "x:si";
+
+    /**
+     * Mac 2016 2017 will have this extra field to ignore
+     */
+    public static final String SHAREDSTRINGS_RPH_TAG = "rPh";
+    public static final String SHAREDSTRINGS_X_RPH_TAG = "x:rPh";
+
 }
