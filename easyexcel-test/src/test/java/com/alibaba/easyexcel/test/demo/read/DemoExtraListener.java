@@ -46,7 +46,7 @@ public class DemoExtraListener implements ReadListener<DemoExtraData> {
                 break;
             case MERGE:
                 log.info(
-                    "额外信息是超链接,而且覆盖了一个区间,在firstRowIndex:{},firstColumnIndex;{},lastRowIndex:{},lastColumnIndex:{}",
+                    "额外信息是合并单元格,而且覆盖了一个区间,在firstRowIndex:{},firstColumnIndex;{},lastRowIndex:{},lastColumnIndex:{}",
                     extra.getFirstRowIndex(), extra.getFirstColumnIndex(), extra.getLastRowIndex(),
                     extra.getLastColumnIndex());
                 break;
