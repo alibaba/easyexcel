@@ -42,4 +42,14 @@ public class CompatibilityTest {
         Map<Integer, Object> row2 = list.get(2);
         Assert.assertEquals("1，2-戊二醇", row2.get(2));
     }
+
+    @Test
+    public void t03() {
+        // Exist in `sharedStrings.xml` `x:t` start tag, need to be compatible
+        List<Map<Integer, Object>> list = EasyExcel.read(TestFileUtil.getPath() + "compatibility/t03.xlsx").sheet().doReadSync();
+        log.info("data:{}", JSON.toJSONString(list));
+        Assert.assertEquals(1, list.size());
+        Map<Integer, Object> row0 = list.get(0);
+        Assert.assertEquals(12, row0.size());
+    }
 }
