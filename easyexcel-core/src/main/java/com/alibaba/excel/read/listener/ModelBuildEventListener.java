@@ -26,14 +26,6 @@ import org.springframework.cglib.beans.BeanMap;
 public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<Integer, ReadCellData<?>>> {
 
     @Override
-    public void invokeHead(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {
-        if (context.readSheetHolder().getMaxDataHeadSize() == null
-            || context.readSheetHolder().getMaxDataHeadSize() < CollectionUtils.size(cellDataMap)) {
-            context.readSheetHolder().setMaxDataHeadSize(CollectionUtils.size(cellDataMap));
-        }
-    }
-
-    @Override
     public void invoke(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {
         ReadSheetHolder readSheetHolder = context.readSheetHolder();
         if (HeadKindEnum.CLASS.equals(readSheetHolder.excelReadHeadProperty().getHeadKind())) {
@@ -73,8 +65,8 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
         if (readSheetHolder.excelReadHeadProperty().getHeadMap().size() > 0) {
             return readSheetHolder.excelReadHeadProperty().getHeadMap().size();
         }
-        if (readSheetHolder.getMaxDataHeadSize() != null) {
-            return readSheetHolder.getMaxDataHeadSize();
+        if (readSheetHolder.getMaxNotEmptyDataHeadSize() != null) {
+            return readSheetHolder.getMaxNotEmptyDataHeadSize();
         }
         return 0;
     }
