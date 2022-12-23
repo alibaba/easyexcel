@@ -1,17 +1,16 @@
 package com.alibaba.excel.support;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 import com.alibaba.excel.util.StringUtils;
-
 import lombok.Getter;
 import org.apache.poi.util.IOUtils;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
 
 /**
  * @author jipengfei
@@ -22,15 +21,15 @@ public enum ExcelTypeEnum {
     /**
      * csv
      */
-    CSV(".csv", new byte[] {-27, -89, -109, -27}),
+    CSV(".csv", new byte[]{-27, -89, -109, -27}),
     /**
      * xls
      */
-    XLS(".xls", new byte[] {-48, -49, 17, -32, -95, -79, 26, -31}),
+    XLS(".xls", new byte[]{-48, -49, 17, -32, -95, -79, 26, -31}),
     /**
      * xlsx
      */
-    XLSX(".xlsx", new byte[] {80, 75, 3, 4});
+    XLSX(".xlsx", new byte[]{80, 75, 3, 4});
 
     final String value;
     final byte[] magic;
@@ -59,7 +58,7 @@ public enum ExcelTypeEnum {
                 }
                 // If there is a password, use the FileMagic first
                 if (!StringUtils.isEmpty(readWorkbook.getPassword())) {
-                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
+                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
                         return recognitionExcelType(bufferedInputStream);
                     }
                 }
@@ -73,7 +72,7 @@ public enum ExcelTypeEnum {
                     return CSV;
                 }
                 if (StringUtils.isEmpty(readWorkbook.getPassword())) {
-                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
+                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
                         return recognitionExcelType(bufferedInputStream);
                     }
                 }
@@ -94,11 +93,13 @@ public enum ExcelTypeEnum {
     private static ExcelTypeEnum recognitionExcelType(InputStream inputStream) throws Exception {
         // Grab the first bytes of this stream
         byte[] data = IOUtils.peekFirstNBytes(inputStream, MAX_PATTERN_LENGTH);
-        if (findMagic(XLSX.magic, data)) {
+        if (findMagic(XLSX.getMagic(), data)) {
             return XLSX;
-        } else if (findMagic(CSV.magic, data)) {
+        }
+        if (findMagic(CSV.magic, data)) {
             return CSV;
-        } else if (findMagic(XLS.magic, data)) {
+        }
+        if (findMagic(XLS.magic, data)) {
             return XLS;
         }
         throw new ExcelCommonException(
@@ -107,12 +108,15 @@ public enum ExcelTypeEnum {
 
     private static boolean findMagic(byte[] expected, byte[] actual) {
         int i = 0;
-        for (byte expectedByte : expected) {
-            if (actual[i++] != expectedByte && expectedByte != '?') {
-                return false;
+        for (byte actualByte : actual) {
+            if (actualByte == expected[i]) {
+                i++;
+            }
+            if (i == expected.length - 1) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
 }
