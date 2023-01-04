@@ -45,11 +45,23 @@ public class CompatibilityTest {
 
     @Test
     public void t03() {
-        // Exist in `sharedStrings.xml` `x:t` start tag, need to be compatible
-        List<Map<Integer, Object>> list = EasyExcel.read(TestFileUtil.getPath() + "compatibility/t03.xlsx").sheet().doReadSync();
+        // In the presence of the first line of a lot of null columns, ignore null columns
+        List<Map<Integer, Object>> list = EasyExcel.read(TestFileUtil.getPath() + "compatibility/t03.xlsx").sheet()
+            .doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
         Assert.assertEquals(1, list.size());
         Map<Integer, Object> row0 = list.get(0);
         Assert.assertEquals(12, row0.size());
+    }
+
+    @Test
+    public void t04() {
+        // Exist in `sheet1.xml` `ns2:t` start tag, need to be compatible
+        List<Map<Integer, Object>> list = EasyExcel.read(TestFileUtil.getPath() + "compatibility/t04.xlsx").sheet()
+            .doReadSync();
+        log.info("data:{}", JSON.toJSONString(list));
+        Assert.assertEquals(56, list.size());
+        Map<Integer, Object> row0 = list.get(0);
+        Assert.assertEquals("QQSJK28F152A012242S0081", row0.get(5));
     }
 }
