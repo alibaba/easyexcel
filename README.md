@@ -9,7 +9,7 @@ EasyExcel
 [QQ3群(已满): 453928496](https://qm.qq.com/cgi-bin/qm/qr?k=e2ULsA5A0GldhV2CXJ8sIbAyu9I6qqs7&jump_from=webapi)  
 [QQ4群(已满): 496594404](https://qm.qq.com/cgi-bin/qm/qr?k=e_aVG1Q7gi0PJUBkbrUGAgbeO3kUEInK&jump_from=webapi)   
 [QQ5群(已满): 451925680](https://jq.qq.com/?_wv=1027&k=6VHhvxyf)   
-[QQ6群: 784741035](https://jq.qq.com/?_wv=1027&k=BbLBIo9P)
+[QQ6群: 784741035](https://jq.qq.com/?_wv=1027&k=BbLBIo9P)   
 [钉钉1群（已满）: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)  
 [钉钉2群（已满）: 32796397](https://qr.dingtalk.com/action/joingroup?code=v1,k1,jyU9GtEuNU5S0QTyklqYcYJ8qDZtUuTPMM7uPZTS8Hs=&_dt_no_comment=1&origin=11)  
 [钉钉3群（已满）: 33797247](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3UGlEScTGQaHpW2cIRo+gkxJ9EVZ5fz26M6nW3uFP30=&_dt_no_comment=1&origin=11)  
@@ -18,8 +18,8 @@ EasyExcel
 [钉钉6群（已满）: 34707941](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingcf68008a1d443ac012d5427bdb061b7a&6ae36c3d-0c80-4=22398493-6c2a-4&cbdbhh=qwertyuiop)  
 [钉钉7群（已满）: 35235427](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=ding532b9018c06c7fc8660273c4b78e6440&167fb=ed003&cbdbhh=qwertyuiop)  
 [钉钉8群（已满）: 44752220](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingea96808beee421693fd4ba7542d6e5da&0380092a-fa46=a6a40905-7951&cbdbhh=qwertyuiop)   
-[钉钉9群（已满）: 11045002277](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dinge338d2215891c0459c13cd6b2cb108a6&6972d=b92f9&cbdbhh=qwertyuiop)
-[钉钉10群: 27360019755](https://qr.dingtalk.com/action/joingroup?code=v1,k1,v25LHn2liWmrWUKlkhIzOTcK7s7onp/sZP8mO5oIYSs=&_dt_no_comment=1&origin=11)
+[钉钉9群（已满）: 11045002277](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dinge338d2215891c0459c13cd6b2cb108a6&6972d=b92f9&cbdbhh=qwertyuiop)   
+[钉钉10群: 27360019755](https://qr.dingtalk.com/action/joingroup?code=v1,k1,v25LHn2liWmrWUKlkhIzOTcK7s7onp/sZP8mO5oIYSs=&_dt_no_comment=1&origin=11)   
 
 [官方网站: https://easyexcel.opensource.alibaba.com/](https://easyexcel.opensource.alibaba.com/)  
 
@@ -27,7 +27,7 @@ EasyExcel
 * 加入钉钉或QQ群，看完公告可以获得帮助
 * 自己参照 [文档](https://easyexcel.opensource.alibaba.com/docs/current/) 去尝试自己解决
 * 上面文档的右下角有个`?`，在尝试过文档无法自助解决的情况下，可以寻求人工在线帮助
-* 开源不易，如果觉得EasyExcel对您的工作还是有帮助的话，请帮忙在右上角点个⭐，您的支持是使EasyExcel变得更好最大的动力
+* 开源不易，如果觉得EasyExcel对您的工作还是有帮助的话，请帮忙在右上角点个⭐Star，您的支持是使EasyExcel变得更好最大的动力
 
 # JAVA解析Excel工具EasyExcel
 Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都存在一个严重的问题就是非常的耗内存，poi有一套SAX模式的API可以一定程度的解决一些内存溢出的问题，但POI还是有一些缺陷，比如07版Excel解压缩以及解压后存储都是在内存中完成的，内存消耗依然很大。easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析依然需要100M左右内存，改用easyexcel可以降低到几M，并且再大的excel也不会出现内存溢出；03版依赖POI的sax模式，在上层做了模型转换的封装，让使用者更加简单方便
