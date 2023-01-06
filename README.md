@@ -26,7 +26,7 @@ EasyExcel
 ## 获取帮助
 * 加入钉钉或QQ群，看完公告可以获得帮助
 * 自己参照 [文档](https://easyexcel.opensource.alibaba.com/docs/current/) 去尝试自己解决
-* 上面文档的右下角有个`?`，在尝试过文档无法自助解决的情况下，可以寻求人工在线帮助
+* 上面文档的右下角有个`?`，在尝试过文档无法自助解决的情况下，可以点击人工支持
 * 开源不易，如果觉得EasyExcel对您的工作还是有帮助的话，请帮忙在右上角点个⭐Star，您的支持是使EasyExcel变得更好最大的动力
 
 # JAVA解析Excel工具EasyExcel
