@@ -1,8 +1,8 @@
 package com.alibaba.excel.write.executor;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -41,9 +41,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         super(writeContext);
     }
 
-    public void add(Collection<?> data) {
-        if (CollectionUtils.isEmpty(data)) {
-            data = new ArrayList<>();
+    public void add(Iterable<?> data) {
+        if (data == null) {
+            data = Collections.emptyList();
         }
         WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
         int newRowIndex = writeSheetHolder.getNewRowIndexAndStartDoWrite();

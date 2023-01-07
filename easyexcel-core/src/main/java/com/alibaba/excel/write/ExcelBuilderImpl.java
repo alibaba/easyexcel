@@ -1,7 +1,5 @@
 package com.alibaba.excel.write;
 
-import java.util.Collection;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
 import com.alibaba.excel.enums.WriteTypeEnum;
@@ -44,12 +42,12 @@ public class ExcelBuilderImpl implements ExcelBuilder {
     }
 
     @Override
-    public void addContent(Collection<?> data, WriteSheet writeSheet) {
+    public void addContent(Iterable<?> data, WriteSheet writeSheet) {
         addContent(data, writeSheet, null);
     }
 
     @Override
-    public void addContent(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable) {
+    public void addContent(Iterable<?> data, WriteSheet writeSheet, WriteTable writeTable) {
         try {
             context.currentSheet(writeSheet, WriteTypeEnum.ADD);
             context.currentTable(writeTable);

@@ -1,7 +1,6 @@
 package com.alibaba.excel;
 
 import java.io.Closeable;
-import java.util.Collection;
 import java.util.function.Supplier;
 
 import com.alibaba.excel.context.WriteContext;
@@ -43,7 +42,7 @@ public class ExcelWriter implements Closeable {
      * @param writeSheet Write to this sheet
      * @return this current writer
      */
-    public ExcelWriter write(Collection<?> data, WriteSheet writeSheet) {
+    public ExcelWriter write(Iterable<?> data, WriteSheet writeSheet) {
         return write(data, writeSheet, null);
     }
 
@@ -54,7 +53,7 @@ public class ExcelWriter implements Closeable {
      * @param writeSheet Write to this sheet
      * @return this current writer
      */
-    public ExcelWriter write(Supplier<Collection<?>> supplier, WriteSheet writeSheet) {
+    public ExcelWriter write(Supplier<Iterable<?>> supplier, WriteSheet writeSheet) {
         return write(supplier.get(), writeSheet, null);
     }
 
@@ -66,7 +65,7 @@ public class ExcelWriter implements Closeable {
      * @param writeTable Write to this table
      * @return this
      */
-    public ExcelWriter write(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable) {
+    public ExcelWriter write(Iterable<?> data, WriteSheet writeSheet, WriteTable writeTable) {
         excelBuilder.addContent(data, writeSheet, writeTable);
         return this;
     }
@@ -79,7 +78,7 @@ public class ExcelWriter implements Closeable {
      * @param writeTable Write to this table
      * @return this
      */
-    public ExcelWriter write(Supplier<Collection<?>> supplier, WriteSheet writeSheet, WriteTable writeTable) {
+    public ExcelWriter write(Supplier<Iterable<?>> supplier, WriteSheet writeSheet, WriteTable writeTable) {
         excelBuilder.addContent(supplier.get(), writeSheet, writeTable);
         return this;
     }
