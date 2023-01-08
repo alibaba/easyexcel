@@ -52,7 +52,7 @@ public class ReadTest {
             for (DemoData demoData : dataList) {
                 log.info("读取到一条数据{}", JSON.toJSONString(demoData));
             }
-        })).sheet().doRead();
+        },3)).sheet().doRead();
 
         // 写法2：
         // 匿名内部类 不用额外写一个DemoDataListener
