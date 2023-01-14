@@ -24,3 +24,5 @@ jobs:
           dst_token:  ${{ secrets.GITEE_TOKEN }}
           # 如果是组织，指定组织即可，默认为用户 user
           # account_type: org
+          # 直接取当前项目的仓库名
+          static_list: "easyexcel"
