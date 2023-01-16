@@ -10,11 +10,18 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.write.handler.RowWriteHandler;
+import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
+import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
+import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.junit.Ignore;
@@ -70,6 +77,55 @@ public class WriteTest {
             }
             log.info("写入完毕，开始准备迁移压缩文件。");
         }
+    }
+
+    /**
+     * 在指定单元格写入数据
+     */
+    @Test
+    public void specifiedCellWrite() {
+        File file = TestFileUtil.createNewFile("rare/specifiedCellWrite" + System.currentTimeMillis()
+            + ".xlsx");
+
+        // 需要区分是在 最后一行之前 还是之后
+        // 区分的原因是：excel只能一直向前，而且内存里面只存储100条，而afterRowDispose是在每一行写入完成的时候调用，所以修改一行需要拦截这个事件
+        // 如果是在最后一行之后，由于后面不会再有数据了，所以只要拦截afterWorkbookDispose，在整个excel快写完的时候调用，继续写入数据即可
+
+        EasyExcel.write(file, DemoData.class)
+            // 写入的值在最后一行之前
+            .registerWriteHandler(new RowWriteHandler() {
+                @Override
+                public void afterRowDispose(RowWriteHandlerContext context) {
+                    if (context.getRow().getRowNum() == 2) {
+                        Cell cell = context.getRow().getCell(2);
+                        if (cell == null) {
+                            cell = context.getRow().createCell(2);
+                        }
+                        cell.setCellValue("测试的第二行数据呀");
+                    }
+                }
+            })
+            // 写入的值 在最后一一行之后
+            .registerWriteHandler(new WorkbookWriteHandler() {
+                @Override
+                public void afterWorkbookDispose(WorkbookWriteHandlerContext context) {
+                    Workbook workbook = context.getWriteWorkbookHolder().getWorkbook();
+                    Sheet sheet = workbook.getSheetAt(0);
+                    Row row = sheet.getRow(99);
+                    if (row == null) {
+                        row = sheet.createRow(99);
+                    }
+                    Cell cell = row.getCell(2);
+                    if (cell == null) {
+                        cell = row.createCell(2);
+                    }
+                    cell.setCellValue("测试地99行数据呀");
+                }
+            })
+            .sheet("模板")
+            .doWrite(data());
+
+        log.info("写入到文件完成:{}", file);
     }
 
     private List<DemoData> data() {
