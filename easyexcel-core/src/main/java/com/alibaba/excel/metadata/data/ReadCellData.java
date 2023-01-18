@@ -40,7 +40,7 @@ public class ReadCellData<T> extends CellData<T> {
      * for example, originalNumberValue = `44729.99998836806` ,time is:`2022-06-17 23:59:58.995`,
      * But in excel is displayed:` 2022-06-17 23:59:59`, dateValue = `2022-06-17 23:59:59`
      * </li>
-     * <ol/>
+     * </ol>
      * {@link CellDataTypeEnum#NUMBER} {@link CellDataTypeEnum#DATE}
      */
     private BigDecimal originalNumberValue;
