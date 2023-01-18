@@ -18,17 +18,17 @@ public interface RowData {
 
     /**
      * Returns the number of elements in this collection.  If this collection
-     * contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
-     * <tt>Integer.MAX_VALUE</tt>.
+     * contains more than <code>Integer.MAX_VALUE</code> elements, returns
+     * <code>Integer.MAX_VALUE</code>.
      *
      * @return the number of elements in this collection
      */
     int size();
 
     /**
-     * Returns <tt>true</tt> if this collection contains no elements.
+     * Returns <code>true</code> if this collection contains no elements.
      *
-     * @return <tt>true</tt> if this collection contains no elements
+     * @return <code>true</code> if this collection contains no elements
      */
     boolean isEmpty();
 

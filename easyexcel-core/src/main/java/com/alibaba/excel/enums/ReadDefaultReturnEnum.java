@@ -23,11 +23,11 @@ public enum ReadDefaultReturnEnum {
      * Returns the actual type.
      * Will be automatically selected according to the cell contents what return type, will return the following class:
      * <ol>
-     *     <li>{@link BigDecimal}<li/>
-     *     <li>{@link Boolean}<li/>
-     *     <li>{@link String}<li/>
-     *     <li>{@link LocalDateTime}<li/>
-     * <ol/>
+     *     <li>{@link BigDecimal}</li>
+     *     <li>{@link Boolean}</li>
+     *     <li>{@link String}</li>
+     *     <li>{@link LocalDateTime}</li>
+     * </ol>
      */
     ACTUAL_DATA,
 
