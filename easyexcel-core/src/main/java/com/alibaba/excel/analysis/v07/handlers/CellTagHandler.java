@@ -88,7 +88,7 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
                     break;
                 }
                 tempCellData.setType(CellDataTypeEnum.NUMBER);
-                tempCellData.setNumberValue(BigDecimal.valueOf(Double.parseDouble(tempDataString)));
+                tempCellData.setNumberValue(new BigDecimal(tempDataString));
                 break;
             default:
                 throw new IllegalStateException("Cannot set values now");

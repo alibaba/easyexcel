@@ -1,32 +1,45 @@
 package com.alibaba.easyexcel.test.temp;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.util.NumberDataFormatterUtils;
+import com.alibaba.excel.util.NumberUtils;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.fastjson.JSON;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * 临时测试
  *
  * @author Jiaju Zhuang
  **/
+@Slf4j
 public class Lock2Test {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Lock2Test.class);
@@ -37,7 +50,10 @@ public class Lock2Test {
         //        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
         File file = new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/src/test/resources/converter/converter07.xlsx");
 
-        List<Object> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/测试格式.xlsx").sheet(0).headRowNumber(0).doReadSync();
+        List<Object> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/number1x.xls")
+            //.useDefaultListener(false)
+            .sheet(0)
+            .headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
         for (Object data : list) {
             LOGGER.info("返回数据：{}", CollectionUtils.size(data));
@@ -109,17 +125,7 @@ public class Lock2Test {
         return list;
     }
 
-    private List<DemoData> data() {
-        List<DemoData> list = new ArrayList<DemoData>();
-        for (int i = 0; i < 10; i++) {
-            DemoData data = new DemoData();
-            data.setString("字符串" + i);
-            data.setDate(new Date());
-            data.setDoubleData(0.56);
-            list.add(data);
-        }
-        return list;
-    }
+
 
     @Test
     public void testc() throws Exception {
@@ -151,10 +157,9 @@ public class Lock2Test {
     @Test
     public void test335() throws Exception {
 
-
-        LOGGER.info("reslut:{}", PositionUtils.getCol("A10",null));
+        LOGGER.info("reslut:{}", PositionUtils.getCol("A10", null));
         LOGGER.info("reslut:{}", PositionUtils.getRow("A10"));
-        LOGGER.info("reslut:{}", PositionUtils.getCol("AB10",null));
+        LOGGER.info("reslut:{}", PositionUtils.getCol("AB10", null));
         LOGGER.info("reslut:{}", PositionUtils.getRow("AB10"));
 
         //LOGGER.info("reslut:{}", PositionUtils2.getCol("A10",null));
@@ -163,5 +168,191 @@ public class Lock2Test {
         //LOGGER.info("reslut:{}", PositionUtils2.getRow("AB10"));
     }
 
+    @Test
+    public void numberforamt() throws Exception {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
+        //LOGGER.info("date:{}",
+        //    NumberDataFormatterUtils.format(BigDecimal.valueOf(44727.99998842592), (short)200, "yyyy-MM-dd HH:mm:ss",
+        //        null,
+        //        null, null));
+        //
+        //LOGGER.info("date:{}",
+        //    NumberDataFormatterUtils.format(BigDecimal.valueOf(44728.99998842592), (short)200, "yyyy-MM-dd HH:mm:ss",
+        //        null,
+        //        null, null));
+        //
+        //LOGGER.info("date:{}",
+        //    NumberDataFormatterUtils.format(BigDecimal.valueOf(44729.99998836806), (short)200, "yyyy-MM-dd HH:mm:ss",
+        //        null,
+        //        null, null));
+        //
+        //LOGGER.info("date:{}",
+        //    NumberDataFormatterUtils.format(BigDecimal.valueOf(44727.99998842592).setScale(10, RoundingMode
+        //    .HALF_UP), (short)200, "yyyy-MM-dd HH:mm:ss",
+        //        null,
+        //        null, null));
+        //
+        //LOGGER.info("date:{}",
+        //    NumberDataFormatterUtils.format(BigDecimal.valueOf(44728.99998842592).setScale(10, RoundingMode
+        //    .HALF_UP), (short)200, "yyyy-MM-dd HH:mm:ss",
+        //        null,
+        //        null, null));
+
+        //44729.9999883681
+        //44729.999988368058
+        //LOGGER.info("date:{}",
+        //    NumberDataFormatterUtils.format(BigDecimal.valueOf(44729.999988368058).setScale(10, RoundingMode
+        //    .HALF_UP), (short)200, "yyyy-MM-dd HH:mm:ss",
+        //        null,
+        //        null, null));
+        //LOGGER.info("date:{}",BigDecimal.valueOf(44729.999988368058).setScale(10, RoundingMode.HALF_UP).doubleValue
+        // ());
+
+        // 2022/6/17 23:59:59
+        // 期望 44729.99998842592
+        //LOGGER.info("data:{}", DateUtil.getJavaDate(44729.9999883681, true));
+        LOGGER.info("data4:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.999988368058)
+            .setScale(4, RoundingMode.HALF_UP).doubleValue(), false));
+        LOGGER.info("data5:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.999988368058)
+            .setScale(5, RoundingMode.HALF_UP).doubleValue(), false));
+        LOGGER.info("data6:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.999988368058)
+            .setScale(6, RoundingMode.HALF_UP).doubleValue(), false));
+        LOGGER.info("data7:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.999988368058)
+            .setScale(7, RoundingMode.HALF_UP).doubleValue(), false));
+        LOGGER.info("data8:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.999988368058)
+            .setScale(8, RoundingMode.HALF_UP).doubleValue(), false));
+
+        LOGGER.info("data:{}", format.format(DateUtil.getJavaDate(44729.999988368058, false)));
+        LOGGER.info("data:{}", format.format(DateUtil.getJavaDate(44729.9999883681, false)));
+
+        LOGGER.info("data:{}", DateUtil.getJavaDate(Double.parseDouble("44729.999988368058"), false));
+        LOGGER.info("data:{}", DateUtil.getJavaDate(Double.parseDouble("44729.9999883681"), false));
+
+        // 44729.999976851854
+        // 44729.999988368058
+        LOGGER.info("data:{}", DateUtil.getExcelDate(format.parse("2022-06-17 23:59:58")));
+        // 44729.99998842592
+        LOGGER.info("data:{}", DateUtil.getExcelDate(format.parse("2022-06-17 23:59:59")));
+
+        LOGGER.info("data:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.999976851854)
+            .setScale(10, RoundingMode.HALF_UP).doubleValue(), false));
+        LOGGER.info("data:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.99998842592)
+            .setScale(10, RoundingMode.HALF_UP).doubleValue(), false));
+
+        LOGGER.info("data:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.999976851854)
+            .setScale(5, RoundingMode.HALF_UP).doubleValue(), false));
+        LOGGER.info("data:{}", DateUtil.getJavaDate(BigDecimal.valueOf(44729.99998842592)
+            .setScale(5, RoundingMode.HALF_UP).doubleValue(), false));
+    }
+
+    @Test
+    public void testDate() throws Exception {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        log.info("TT:{}", format.format(new Date(100L)));
+        log.info("TT:{}", new Date().getTime());
+    }
+
+    @Test
+    public void testDateAll() throws Exception {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+        long dateTime = 0L;
+        while (true) {
+            Date date = new Date(dateTime);
+            double excelDate = DateUtil.getExcelDate(date);
+
+            Assert.assertEquals("测试基本转换错误" + dateTime, format.format(date),
+                format.format(DateUtil.getJavaDate(excelDate, false)));
+            Assert.assertEquals("测试精度5转换错误" + dateTime, format.format(date),
+                format.format(DateUtil.getJavaDate(BigDecimal.valueOf(excelDate)
+                    .setScale(10, RoundingMode.HALF_UP).doubleValue(), false)));
+            LOGGER.info("date:{}", format2.format(DateUtil.getJavaDate(BigDecimal.valueOf(excelDate)
+                .setScale(10, RoundingMode.HALF_UP).doubleValue())));
+            dateTime += 1000L;
+            // 30天输出
+            if (dateTime % (24 * 60 * 60 * 1000) == 0) {
+                log.info("{}成功", format.format(date));
+            }
+            if (dateTime > 1673957544750L) {
+                log.info("结束啦");
+                break;
+            }
+        }
+        log.info("结束啦");
+
+    }
+
+    @Test
+    public void numberforamt3() throws Exception {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+        List<Map<Integer,ReadCellData>> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/date3.xlsx")
+            .useDefaultListener(false)
+            .sheet(0)
+            .headRowNumber(0).doReadSync();
+        LOGGER.info("数据：{}", list.size());
+        for (Map<Integer,ReadCellData> readCellDataMap : list) {
+            ReadCellData data=readCellDataMap.get(0);
+            LOGGER.info("data:{}", format.format(
+                DateUtil.getJavaDate(data.getNumberValue().setScale(10, RoundingMode.HALF_UP).doubleValue(), false)));
+
+        }
+        //
+        //LOGGER.info("data:{}", format.format(DateUtil.getJavaDate(44727.999988425923, false)));
+        //LOGGER.info("data:{}", format.format(DateUtil.getJavaDate(44729.999988368058, false)));
+
+    }
+
+    @Test
+    public void numberforamt4() throws Exception {
+        String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        EasyExcel.write(fileName, DemoData.class)
+            .sheet("模板")
+            .doWrite(() -> {
+                // 分页查询数据
+                return data2();
+            });
+
+
+    }
+
+    private List<DemoData> data()  {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+        List<DemoData> list = new ArrayList<DemoData>();
+        for (int i = 0; i < 10; i++) {
+            DemoData data = new DemoData();
+            data.setString("字符串" + i);
+            try {
+                data.setDate(format.parse("2032-01-18 09:00:01.995"));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            data.setDoubleData(0.56);
+            list.add(data);
+        }
+        return list;
+    }
+
+    private List<DemoData> data2()  {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+        List<DemoData> list = new ArrayList<DemoData>();
+        for (int i = 0; i < 10; i++) {
+            DemoData data = new DemoData();
+            data.setString("字符串" + i);
+            try {
+                data.setDate(format.parse("2032-01-18 09:00:00."));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            data.setDoubleData(0.56);
+            list.add(data);
+        }
+        return list;
+    }
 }
