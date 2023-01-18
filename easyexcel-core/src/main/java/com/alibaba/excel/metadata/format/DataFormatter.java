@@ -212,10 +212,10 @@ public class DataFormatter {
                 CellFormat cfmt = CellFormat.getInstance(locale, formatStr);
                 // CellFormat requires callers to identify date vs not, so do so
                 Object cellValueO = data;
-                if (DateUtil.isADateFormat(dataFormat, formatStr) &&
+                if (DateUtils.isADateFormat(dataFormat, formatStr) &&
                     // don't try to handle Date value 0, let a 3 or 4-part format take care of it
                     data.doubleValue() != 0.0) {
-                    cellValueO = DateUtil.getJavaDate(data, use1904windowing);
+                    cellValueO = DateUtils.getJavaDate(data, use1904windowing);
                 }
                 // Wrap and return (non-cachable - CellFormat does that)
                 return new CellFormatResultWrapper(cfmt.apply(cellValueO));
@@ -242,6 +242,8 @@ public class DataFormatter {
         addFormat(formatStr, format);
         return format;
     }
+
+
 
     private Format createFormat(Short dataFormat, String dataFormatString) {
         String formatStr = dataFormatString;
@@ -628,7 +630,7 @@ public class DataFormatter {
             // Hint about the raw excel value
             ((ExcelStyleDateFormatter)dateFormat).setDateToBeFormatted(data);
         }
-        return performDateFormatting(DateUtil.getJavaDate(data, use1904windowing), dateFormat);
+        return performDateFormatting(DateUtils.getJavaDate(data, use1904windowing), dateFormat);
     }
 
     /**
