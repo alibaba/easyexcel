@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.RowTypeEnum;
@@ -56,7 +57,9 @@ public class FormulaRecordHandler extends AbstractXlsRecordHandler implements Ig
                 break;
             case NUMERIC:
                 tempCellData.setType(CellDataTypeEnum.NUMBER);
-                tempCellData.setNumberValue(BigDecimal.valueOf(frec.getValue()));
+                tempCellData.setOriginalNumberValue(BigDecimal.valueOf(frec.getValue()));
+                tempCellData.setNumberValue(
+                    tempCellData.getOriginalNumberValue().round(EasyExcelConstants.EXCEL_MATH_CONTEXT));
                 int dataFormat =
                     xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatIndex(frec);
                 DataFormatData dataFormatData = new DataFormatData();

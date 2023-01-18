@@ -1,5 +1,6 @@
-package com.alibaba.easyexcel.test.demo.write;
+package com.alibaba.easyexcel.test.temp;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
@@ -17,14 +18,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class DemoData {
+public class DemoData2 {
     @ExcelProperty("字符串标题")
     private String string;
     @ExcelProperty("日期标题")
     private Date date;
     @ExcelProperty("数字标题")
     private Double doubleData;
-
+    @ExcelProperty("数字标题2")
+    private BigDecimal bigDecimal;
     /**
      * 忽略这个字段
      */

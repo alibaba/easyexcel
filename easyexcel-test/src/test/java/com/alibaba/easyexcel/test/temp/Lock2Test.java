@@ -2,9 +2,13 @@ package com.alibaba.easyexcel.test.temp;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,7 +54,8 @@ public class Lock2Test {
         //        File file = TestFileUtil.readUserHomeFile("test/test6.xls");
         File file = new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/src/test/resources/converter/converter07.xlsx");
 
-        List<Object> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/number1x.xls")
+        List<Object> list = EasyExcel.read(
+                "/Users/zhuangjiaju/IdeaProjects/easyexcel/easyexcel-test/target/test-classes/simpleWrite1674051907397.xlsx")
             //.useDefaultListener(false)
             .sheet(0)
             .headRowNumber(0).doReadSync();
@@ -124,8 +129,6 @@ public class Lock2Test {
         list.add(data);
         return list;
     }
-
-
 
     @Test
     public void testc() throws Exception {
@@ -288,13 +291,13 @@ public class Lock2Test {
     public void numberforamt3() throws Exception {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-        List<Map<Integer,ReadCellData>> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/date3.xlsx")
+        List<Map<Integer, ReadCellData>> list = EasyExcel.read("/Users/zhuangjiaju/Downloads/date3.xlsx")
             .useDefaultListener(false)
             .sheet(0)
             .headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
-        for (Map<Integer,ReadCellData> readCellDataMap : list) {
-            ReadCellData data=readCellDataMap.get(0);
+        for (Map<Integer, ReadCellData> readCellDataMap : list) {
+            ReadCellData data = readCellDataMap.get(0);
             LOGGER.info("data:{}", format.format(
                 DateUtil.getJavaDate(data.getNumberValue().setScale(10, RoundingMode.HALF_UP).doubleValue(), false)));
 
@@ -317,10 +320,98 @@ public class Lock2Test {
                 return data2();
             });
 
+    }
+
+    @Test
+    public void numberforamt77() throws Exception {
+        String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        EasyExcel.write(fileName, DemoData3.class)
+            .sheet("模板")
+            .doWrite(() -> {
+                List<DemoData3> list = new ArrayList<>();
+                DemoData3 demoData3 = new DemoData3();
+                demoData3.setLocalDateTime(LocalDateTime.of(2023, 1, 1, 0, 0, 0, 400000000));
+                list.add(demoData3);
+                demoData3 = new DemoData3();
+                demoData3.setLocalDateTime(LocalDateTime.of(2023, 1, 1, 0, 0, 0, 499000000));
+                list.add(demoData3);
+                demoData3 = new DemoData3();
+                demoData3.setLocalDateTime(LocalDateTime.of(2023, 1, 1, 0, 0, 0, 500000000));
+                list.add(demoData3);
+                demoData3 = new DemoData3();
+                demoData3.setLocalDateTime(LocalDateTime.of(2023, 1, 1, 0, 0, 0, 501000000));
+                list.add(demoData3);
+                demoData3 = new DemoData3();
+                demoData3.setLocalDateTime(LocalDateTime.of(2023, 1, 1, 0, 0, 0, 995000000));
+                list.add(demoData3);
+                return list;
+            });
 
     }
 
-    private List<DemoData> data()  {
+    @Test
+    public void numberforamt99() throws Exception {
+        LocalDateTime localDateTime=LocalDateTime.of(2023, 1, 1, 0, 0, 0, 995000000);
+        log.info("date:{}",localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
+
+
+    }
+
+    @Test
+    public void numberforamt5() throws Exception {
+        String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        EasyExcel.write(fileName, DemoData.class)
+            .sheet("模板")
+            .doWrite(() -> {
+                // 分页查询数据
+                return data3();
+            });
+
+    }
+
+    @Test
+    public void numberforamt6() throws Exception {
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        BigDecimal bigDecimal = new BigDecimal(3101011021236149800L);
+        log.info("b:{}", bigDecimal);
+        log.info("b:{}", bigDecimal.setScale(-4, RoundingMode.HALF_UP));
+        log.info("b:{}", decimalFormat.format(bigDecimal.setScale(-4, RoundingMode.HALF_UP)));
+
+    }
+
+    @Test
+    public void numberforamt7() throws Exception {
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        BigDecimal bigDecimal = new BigDecimal(3.1010110212361498E+18).round(new MathContext(15, RoundingMode.HALF_UP));
+        //bigDecimal.
+
+        // bigDecimal
+        log.info("b:{}", bigDecimal);
+        log.info("b:{}", bigDecimal.setScale(-4, RoundingMode.HALF_UP));
+        log.info("b:{}", decimalFormat.format(bigDecimal.setScale(-4, RoundingMode.HALF_UP)));
+        log.info("b:{}", decimalFormat.format(bigDecimal));
+
+    }
+
+    private List<DemoData2> data3() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+        List<DemoData2> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DemoData2 data = new DemoData2();
+            data.setString("字符串" + i);
+            data.setDoubleData(0.56);
+            data.setBigDecimal(BigDecimal.valueOf(3101011021236149800L));
+            list.add(data);
+        }
+        return list;
+    }
+
+    private List<DemoData> data() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
         List<DemoData> list = new ArrayList<DemoData>();
@@ -338,7 +429,7 @@ public class Lock2Test {
         return list;
     }
 
-    private List<DemoData> data2()  {
+    private List<DemoData> data2() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
         List<DemoData> list = new ArrayList<DemoData>();

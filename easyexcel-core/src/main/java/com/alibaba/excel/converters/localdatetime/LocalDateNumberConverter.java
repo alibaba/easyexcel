@@ -9,6 +9,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.DateUtils;
 
 import org.apache.poi.ss.usermodel.DateUtil;
 
@@ -33,10 +34,10 @@ public class LocalDateNumberConverter implements Converter<LocalDateTime> {
     public LocalDateTime convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
-            return DateUtil.getLocalDateTime(cellData.getNumberValue().doubleValue(),
+            return DateUtils.getLocalDateTime(cellData.getNumberValue().doubleValue(),
                 globalConfiguration.getUse1904windowing());
         } else {
-            return DateUtil.getLocalDateTime(cellData.getNumberValue().doubleValue(),
+            return DateUtils.getLocalDateTime(cellData.getNumberValue().doubleValue(),
                 contentProperty.getDateTimeFormatProperty().getUse1904windowing());
         }
     }
