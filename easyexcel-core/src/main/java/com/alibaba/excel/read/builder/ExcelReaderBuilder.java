@@ -13,6 +13,7 @@ import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellExtraTypeEnum;
+import com.alibaba.excel.enums.ReadDefaultReturnEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.event.SyncReadListener;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
@@ -195,6 +196,17 @@ public class ExcelReaderBuilder extends AbstractExcelReaderParameterBuilder<Exce
      */
     public ExcelReaderBuilder useDefaultListener(Boolean useDefaultListener) {
         readWorkbook.setUseDefaultListener(useDefaultListener);
+        return this;
+    }
+
+    /**
+     * Read not to {@code com.alibaba.excel.metadata.BasicParameter#clazz} value, the default will return type.
+     * Is only effective when set `useDefaultListener=true` or `useDefaultListener=null`.
+     *
+     * @see ReadDefaultReturnEnum
+     */
+    public ExcelReaderBuilder readDefaultReturn(ReadDefaultReturnEnum readDefaultReturn) {
+        readWorkbook.setReadDefaultReturn(readDefaultReturn);
         return this;
     }
 

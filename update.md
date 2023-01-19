@@ -1,3 +1,13 @@
+# 3.2.0
+
+* 修复部分xlsx读取日期可能相差1秒的bug [Issue #1956](https://github.com/alibaba/easyexcel/issues/1956)
+* 修复部分数据精度和excel不匹配的bug [Issue #2805](https://github.com/alibaba/easyexcel/issues/2805)
+* 不创建对象的读支持读取原始的数据类型
+
+# 3.1.5
+
+* 提高xlsx读取兼容性：兼用ns2开头的标签
+
 # 3.1.4
 
 * 提高xlsx读取兼容性：在存在第一行很多空列的情况下，忽略空列
