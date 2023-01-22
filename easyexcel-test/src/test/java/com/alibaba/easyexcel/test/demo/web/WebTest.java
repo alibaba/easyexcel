@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class WebTest {
 
     @Autowired
-    private UploadDAO uploadDAO;
+    private UploadDataListener uploadDataListener;
 
     /**
      * 文件下载（失败了会返回一个有部分数据的Excel）
@@ -93,7 +93,7 @@ public class WebTest {
     @PostMapping("upload")
     @ResponseBody
     public String upload(MultipartFile file) throws IOException {
-        EasyExcel.read(file.getInputStream(), UploadData.class, new UploadDataListener(uploadDAO)).sheet().doRead();
+        EasyExcel.read(file.getInputStream(), UploadData.class, uploadDataListener).sheet().doRead();
         return "success";
     }
 
