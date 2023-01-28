@@ -1,5 +1,6 @@
 package com.alibaba.easyexcel.test.core.localdate;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -25,22 +27,32 @@ import com.alibaba.fastjson2.JSON;
 public class LocalDateTest {
 
 	private static final Logger log = LoggerFactory.getLogger(LocalDateTest.class);
+	private static File file1;
+	private static File file2;
+	private static File file3;
+
+	@BeforeClass
+	public static void init() {
+		file1 = TestFileUtil.readFile("localdate/local-date-time.xlsx");
+		file2 = TestFileUtil.readFile("localdate/local-date-time2.xlsx");
+		file3 = TestFileUtil.readFile("localdate/local-date-time-fill.xlsx");
+	}
 
 	// 读取
 	@Test
 	public void read() throws Exception {
-		String fileName = TestFileUtil.getPath() + "localdate/local-date-time.xlsx";
+//		String fileName = TestFileUtil.getPath() + "localdate/local-date-time.xlsx";
 		EntryListener entryListener = new EntryListener();
-		EasyExcel.read(fileName, DataEntry.class, entryListener).sheet().doRead();
+		EasyExcel.read(file1, DataEntry.class, entryListener).sheet().doRead();
 		log.info("读取到的数据==>{}", JSON.toJSONString(entryListener.getEntries()));
 	}
 
 	// 读取
 	@Test
 	public void read2() throws Exception {
-		String fileName = TestFileUtil.getPath() + "localdate/local-date-time2.xlsx";
+//		String fileName = TestFileUtil.getPath() + "localdate/local-date-time2.xlsx";
 		EntryListener entryListener = new EntryListener();
-		EasyExcel.read(fileName, DataEntry.class, entryListener).sheet().doRead();
+		EasyExcel.read(file2, DataEntry.class, entryListener).sheet().doRead();
 		log.info("读取到的数据==>{}", JSON.toJSONString(entryListener.getEntries()));
 	}
 
@@ -59,11 +71,11 @@ public class LocalDateTest {
 	@Test
 	public void fill() throws Exception {
 		List<DataEntry> entries = buildData();
-		String templateFileName = TestFileUtil.getPath() + "localdate/local-date-time-fill.xlsx";
+//		String templateFileName = TestFileUtil.getPath() + "localdate/local-date-time-fill.xlsx";
 
 		String fileName = TestFileUtil.getPath() + "local-date-time-fill-" + System.currentTimeMillis() + ".xlsx";
 
-		EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(entries);
+		EasyExcel.write(fileName).withTemplate(file3).sheet().doFill(entries);
 	}
 
 	private List<DataEntry> buildData() {
