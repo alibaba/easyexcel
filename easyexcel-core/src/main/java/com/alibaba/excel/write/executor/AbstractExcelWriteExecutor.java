@@ -1,6 +1,21 @@
 package com.alibaba.excel.write.executor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Comment;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Hyperlink;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.converters.Converter;
@@ -23,18 +38,6 @@ import com.alibaba.excel.util.StyleUtil;
 import com.alibaba.excel.util.WorkBookUtil;
 import com.alibaba.excel.util.WriteHandlerUtils;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.ClientAnchor;
-import org.apache.poi.ss.usermodel.Comment;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Drawing;
-import org.apache.poi.ss.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 
 /**
  * Excel write Executor
@@ -92,7 +95,20 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                 cell.setCellValue(cellData.getNumberValue().doubleValue());
                 return;
             case DATE:
-                cell.setCellValue(cellData.getDateValue());
+                // cell.setCellValue(cellData.getDateValue());
+            	
+            	Object dateValue = cellData.getDateValue();
+    			if (dateValue instanceof Date) {
+    				cell.setCellValue((Date) dateValue);
+    			}
+
+    			if (dateValue instanceof LocalDate) {
+    				cell.setCellValue((LocalDate) dateValue);
+    			}
+
+    			if (dateValue instanceof LocalDateTime) {
+    				cell.setCellValue((LocalDateTime) dateValue);
+    			}
                 return;
             case RICH_TEXT_STRING:
                 cell.setCellValue(StyleUtil

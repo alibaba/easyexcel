@@ -1,10 +1,12 @@
 package com.alibaba.excel.metadata.data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.poi.ss.usermodel.CellStyle;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.util.ListUtils;
@@ -14,7 +16,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.poi.ss.usermodel.CellStyle;
 
 /**
  * wirte cell data
@@ -29,7 +30,7 @@ public class WriteCellData<T> extends CellData<T> {
     /**
      * Support only when writing.{@link CellDataTypeEnum#DATE}
      */
-    private LocalDateTime dateValue;
+    private Object dateValue;
 
     /**
      * rich text.{@link CellDataTypeEnum#RICH_TEXT_STRING}
@@ -105,8 +106,18 @@ public class WriteCellData<T> extends CellData<T> {
             throw new IllegalArgumentException("DateValue can not be null");
         }
         setType(CellDataTypeEnum.DATE);
-        this.dateValue = LocalDateTime.ofInstant(dateValue.toInstant(), ZoneId.systemDefault());
+        // this.dateValue = LocalDateTime.ofInstant(dateValue.toInstant(), ZoneId.systemDefault());
+        this.dateValue = dateValue;
     }
+    
+    public WriteCellData(LocalDate dateValue) {
+		super();
+		if (dateValue == null) {
+			throw new IllegalArgumentException("DateValue can not be null");
+		}
+		setType(CellDataTypeEnum.DATE);
+		this.dateValue = dateValue;
+	}
 
     public WriteCellData(LocalDateTime dateValue) {
         super();

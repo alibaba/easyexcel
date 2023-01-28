@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -95,6 +96,26 @@ public class DateUtils {
         }
     }
 
+	/**
+	 * convert string to LocalDate
+	 *
+	 * @param dateString
+	 * @param dateFormat
+	 * @param local
+	 * @return
+	 */
+	public static LocalDate parseLocalDate(String dateString, String dateFormat, Locale local) {
+		if (StringUtils.isEmpty(dateFormat)) {
+			dateFormat = switchDateFormat(dateString);
+		}
+
+		if (local == null) {
+			return LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat));
+		} else {
+			return LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, local));
+		}
+	}
+    
     /**
      * convert string to date
      *
@@ -198,6 +219,29 @@ public class DateUtils {
     public static String format(LocalDateTime date, String dateFormat) {
         return format(date, dateFormat, null);
     }
+    
+	/**
+	 * Format date
+	 *
+	 * @param date
+	 * @param dateFormat
+	 * @return
+	 */
+	public static String format(LocalDate date, String dateFormat, Locale local) {
+		if (date == null) {
+			return null;
+		}
+
+		if (StringUtils.isEmpty(dateFormat)) {
+			dateFormat = DATE_FORMAT_10;
+		}
+
+		if (local == null) {
+			return date.format(DateTimeFormatter.ofPattern(dateFormat));
+		} else {
+			return date.format(DateTimeFormatter.ofPattern(dateFormat, local));
+		}
+	}
 
     /**
      * Format date
@@ -271,6 +315,10 @@ public class DateUtils {
         return DateUtil.getLocalDateTime(date, use1904windowing, true);
     }
 
+    public static LocalDate getLocalDate(double date, boolean use1904windowing) {
+		return getLocalDateTime(date, use1904windowing).toLocalDate();
+	}
+    
     /**
      * Determine if it is a date format.
      *
