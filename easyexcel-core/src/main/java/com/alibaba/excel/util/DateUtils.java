@@ -106,7 +106,7 @@ public class DateUtils {
 	 */
 	public static LocalDate parseLocalDate(String dateString, String dateFormat, Locale local) {
 		if (StringUtils.isEmpty(dateFormat)) {
-			dateFormat = switchDateFormat(dateString);
+			dateFormat = DATE_FORMAT_10;
 		}
 
 		if (local == null) {
@@ -316,8 +316,8 @@ public class DateUtils {
     }
 
     public static LocalDate getLocalDate(double date, boolean use1904windowing) {
-		return getLocalDateTime(date, use1904windowing).toLocalDate();
-	}
+	    return getLocalDateTime(date, use1904windowing).toLocalDate();
+    }
     
     /**
      * Determine if it is a date format.
