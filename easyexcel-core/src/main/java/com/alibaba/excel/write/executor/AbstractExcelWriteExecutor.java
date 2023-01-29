@@ -97,17 +97,17 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             case DATE:
                 // cell.setCellValue(cellData.getDateValue());
             	Object dateValue = cellData.getDateValue();
-    			if (dateValue instanceof Date) {
-    				cell.setCellValue((Date) dateValue);
-    			}
-    			
-    			if (dateValue instanceof LocalDate) {
-    				cell.setCellValue((LocalDate) dateValue);
-    			}
-    			
-    			if (dateValue instanceof LocalDateTime) {
-    				cell.setCellValue((LocalDateTime) dateValue);
-    			}
+                if (dateValue instanceof Date) {
+                    cell.setCellValue((Date) dateValue);
+                }
+                
+                if (dateValue instanceof LocalDate) {
+                    cell.setCellValue((LocalDate) dateValue);
+                }
+                
+                if (dateValue instanceof LocalDateTime) {
+                    cell.setCellValue((LocalDateTime) dateValue);
+                }
                 return;
             case RICH_TEXT_STRING:
                 cell.setCellValue(StyleUtil
