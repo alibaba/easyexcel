@@ -300,7 +300,13 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                 if (excelContentProperty != null && excelContentProperty.getDateTimeFormatProperty() != null) {
                     dateFormat = excelContentProperty.getDateTimeFormatProperty().getFormat();
                 }
-                WorkBookUtil.fillDataFormat(cellDataValue, dateFormat, DateUtils.defaultDateFormat);
+                // WorkBookUtil.fillDataFormat(cellDataValue, dateFormat, DateUtils.defaultDateFormat);
+                String defaultFormat = DateUtils.defaultDateFormat;
+                Object dateValue = cellDataValue.getDateValue();
+                if (dateValue instanceof LocalDate) {
+                    defaultFormat = DateUtils.DATE_FORMAT_10;
+                }
+                WorkBookUtil.fillDataFormat(cellDataValue, dateFormat, defaultFormat);
                 return;
             case NUMBER:
                 String numberFormat = null;
