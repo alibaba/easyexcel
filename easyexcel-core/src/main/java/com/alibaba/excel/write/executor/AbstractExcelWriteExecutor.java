@@ -96,8 +96,8 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
                 return;
             case DATE:
                 // cell.setCellValue(cellData.getDateValue());
-            	Object dateValue = cellData.getDateValue();
-    			if (dateValue instanceof Date) {
+                Object dateValue = cellData.getDateValue();
+                if (dateValue instanceof Date) {
     				cell.setCellValue((Date) dateValue);
     			}
     			if (dateValue instanceof LocalDate) {
