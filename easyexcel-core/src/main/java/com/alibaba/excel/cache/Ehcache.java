@@ -32,9 +32,10 @@ public class Ehcache implements ReadCache {
     public static final int DEBUG_CACHE_MISS_SIZE = 1000;
     public static final int DEBUG_WRITE_SIZE = 100 * 10000;
     private ArrayList<String> dataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
-    private static final CacheManager FILE_CACHE_MANAGER;
-    private static final CacheConfiguration<Integer, ArrayList> FILE_CACHE_CONFIGURATION;
-    private static final CacheManager ACTIVE_CACHE_MANAGER;
+    private static CacheManager FILE_CACHE_MANAGER;
+    private static CacheConfiguration<Integer, ArrayList> FILE_CACHE_CONFIGURATION;
+    private static CacheManager ACTIVE_CACHE_MANAGER;
+    private static final File CAHCE_PATH;
     private final CacheConfiguration<Integer, ArrayList> activeCacheConfiguration;
     /**
      * Bulk storage data
@@ -59,9 +60,9 @@ public class Ehcache implements ReadCache {
     }
 
     static {
-        File cacheFile = FileUtils.createCacheTmpFile();
+        CAHCE_PATH = FileUtils.createCacheTmpFile();
         FILE_CACHE_MANAGER =
-            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile)).build(true);
+            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(CAHCE_PATH)).build(true);
         ACTIVE_CACHE_MANAGER = CacheManagerBuilder.newCacheManagerBuilder().build(true);
         FILE_CACHE_CONFIGURATION = CacheConfigurationBuilder
             .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
@@ -72,6 +73,9 @@ public class Ehcache implements ReadCache {
     @Override
     public void init(AnalysisContext analysisContext) {
         cacheAlias = UUID.randomUUID().toString();
+        if (!CAHCE_PATH.exists()) {
+            FileUtils.createDirectory(CAHCE_PATH);
+        }
         fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
         activeCache = ACTIVE_CACHE_MANAGER.createCache(cacheAlias, activeCacheConfiguration);
     }
