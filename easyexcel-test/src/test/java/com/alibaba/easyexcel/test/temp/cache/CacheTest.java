@@ -1,9 +1,17 @@
 package com.alibaba.easyexcel.test.temp.cache;
 
 import java.io.File;
+import java.lang.reflect.Field;
+
 import java.util.HashMap;
 import java.util.UUID;
 
+import com.alibaba.excel.cache.Ehcache;
+import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.context.xlsx.DefaultXlsxReadContext;
+import com.alibaba.excel.read.metadata.ReadWorkbook;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -20,7 +28,6 @@ import com.alibaba.excel.util.FileUtils;
 import com.alibaba.fastjson.JSON;
 
 /**
- *
  * @author Jiaju Zhuang
  **/
 @Ignore
@@ -49,6 +56,21 @@ public class CacheTest {
         cache.clear();
 
         LOGGER.info("dd2:{}", JSON.toJSONString(cache.get(1)));
+    }
+
+    @Test
+    public void cacheClean() throws Exception{
+        ReadCache readCache = new Ehcache(10);
+        readCache.put("1");
+        Field field = readCache.getClass().getDeclaredField("CACHE_PATH");
+        field.setAccessible(true);
+        File cachePath = (File) field.get(readCache);
+        if (cachePath.exists()) {
+            FileUtils.delete(cachePath.getParentFile().getParentFile());
+        }
+        AnalysisContext context = new DefaultXlsxReadContext(new ReadWorkbook(), ExcelTypeEnum.XLSX);
+        readCache.init(context);
+        readCache.put("ddddd");
     }
 
 }
