@@ -17,7 +17,7 @@ import lombok.Setter;
 import org.apache.poi.ss.usermodel.CellStyle;
 
 /**
- * wirte cell data
+ * write cell data
  *
  * @author Jiaju Zhuang
  */
