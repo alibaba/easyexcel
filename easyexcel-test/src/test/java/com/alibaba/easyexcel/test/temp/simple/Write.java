@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
  **/
 @Ignore
 @Slf4j
-public class Wirte {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Wirte.class);
+public class Write {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Write.class);
 
     @Test
     public void simpleWrite1() {
