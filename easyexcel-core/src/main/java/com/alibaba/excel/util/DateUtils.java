@@ -7,10 +7,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -57,7 +54,7 @@ public class DateUtils {
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
     private static final String MINUS = "-";
 
-    public static String defaultDateFormat = DATE_FORMAT_19;
+    public static final String defaultDateFormat = DATE_FORMAT_19;
 
     private DateUtils() {}
 
@@ -83,6 +80,7 @@ public class DateUtils {
      * @param dateFormat
      * @param local
      * @return
+     * @throws ParseException
      */
     public static LocalDateTime parseLocalDateTime(String dateString, String dateFormat, Locale local) {
         if (StringUtils.isEmpty(dateFormat)) {
@@ -93,6 +91,67 @@ public class DateUtils {
         } else {
             return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, local));
         }
+    }
+
+
+    /**
+     * 2022/5/26 issue2501
+     * 以区域id来解析本地日期时间区域id
+     * 现支持以下id，比local方法的十几个国家更有通用性
+     * EST - -05:00
+     * HST - -10:00
+     * MST - -07:00
+     * ACT - Australia/Darwin
+     * AET - Australia/Sydney
+     * AGT - America/Argentina/Buenos_Aires
+     * ART - Africa/Cairo
+     * AST - America/Anchorage
+     * BET - America/Sao_Paulo
+     * BST - Asia/Dhaka
+     * CAT - Africa/Harare
+     * CNT - America/St_Johns
+     * CST - America/Chicago
+     * CTT - Asia/Shanghai
+     * EAT - Africa/Addis_Ababa
+     * ECT - Europe/Paris
+     * IET - America/Indiana/Indianapolis
+     * IST - Asia/Kolkata
+     * JST - Asia/Tokyo
+     * MIT - Pacific/Apia
+     * NET - Asia/Yerevan
+     * NST - Pacific/Auckland
+     * PLT - Asia/Karachi
+     * PNT - America/Phoenix
+     * PRT - America/Puerto_Rico
+     * PST - America/Los_Angeles
+     * SST - Pacific/Guadalcanal
+     * VST - Asia/Ho_Chi_Minh
+     *
+     * @param dateString 日期字符串
+     * @param dateFormat 日期格式
+     * @param local      当地
+     * @return {@link LocalDateTime}
+     */
+    public static LocalDateTime parseLocalDateTimeWithZoneID(String dateString, String dateFormat, String local) {
+        try {
+            if (StringUtils.isEmpty(dateFormat)) {
+                dateFormat = switchDateFormat(dateString);
+            }
+            if (local == null) {
+
+                return  parseDate(dateString,dateFormat).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            } else {
+                if(ZoneId.SHORT_IDS.containsKey(local))
+                return parseDate(dateString,dateFormat).toInstant().atZone(ZoneId.of(ZoneId.SHORT_IDS.get(local))).toLocalDateTime();
+                else {
+                    System.out.println("Your local Zone id is not supported. The time will be default.");
+                    return  parseDate(dateString,dateFormat).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();}
+
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
