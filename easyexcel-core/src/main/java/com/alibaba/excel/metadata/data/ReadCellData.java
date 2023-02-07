@@ -1,7 +1,9 @@
 package com.alibaba.excel.metadata.data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
+import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 
 import lombok.EqualsAndHashCode;
@@ -11,6 +13,7 @@ import lombok.Setter;
 
 /**
  * read cell data
+ * <p>
  *
  * @author Jiaju Zhuang
  */
@@ -19,6 +22,29 @@ import lombok.Setter;
 @EqualsAndHashCode
 @NoArgsConstructor
 public class ReadCellData<T> extends CellData<T> {
+
+    /**
+     * originalNumberValue vs numberValue
+     * <ol>
+     * <li>
+     * NUMBER：
+     * originalNumberValue: Original data and the accuracy of his is 17, but in fact the excel only 15 precision to
+     * process the data
+     * numberValue: After correction of the data and the accuracy of his is 15
+     * for example, originalNumberValue = `2087.0249999999996` , numberValue = `2087.03`
+     * </li>
+     * <li>
+     * DATE：
+     * originalNumberValue: Storage is a data type double, accurate to milliseconds
+     * dateValue: Based on double converted to a date format, he will revised date difference, accurate to seconds
+     * for example, originalNumberValue = `44729.99998836806` ,time is:`2022-06-17 23:59:58.995`,
+     * But in excel is displayed:` 2022-06-17 23:59:59`, dateValue = `2022-06-17 23:59:59`
+     * </li>
+     * </ol>
+     * {@link CellDataTypeEnum#NUMBER} {@link CellDataTypeEnum#DATE}
+     */
+    private BigDecimal originalNumberValue;
+
     /**
      * data format.
      */
@@ -107,11 +133,21 @@ public class ReadCellData<T> extends CellData<T> {
         return cellData;
     }
 
+    public static ReadCellData<?> newInstanceOriginal(BigDecimal numberValue, Integer rowIndex, Integer columnIndex) {
+        ReadCellData<?> cellData = new ReadCellData<>(numberValue);
+        cellData.setRowIndex(rowIndex);
+        cellData.setColumnIndex(columnIndex);
+        cellData.setOriginalNumberValue(numberValue);
+        cellData.setNumberValue(numberValue.round(EasyExcelConstants.EXCEL_MATH_CONTEXT));
+        return cellData;
+    }
+
     @Override
     public ReadCellData<Object> clone() {
         ReadCellData<Object> readCellData = new ReadCellData<>();
         readCellData.setType(getType());
         readCellData.setNumberValue(getNumberValue());
+        readCellData.setOriginalNumberValue(getOriginalNumberValue());
         readCellData.setStringValue(getStringValue());
         readCellData.setBooleanValue(getBooleanValue());
         readCellData.setData(getData());
@@ -123,5 +159,4 @@ public class ReadCellData<T> extends CellData<T> {
         }
         return readCellData;
     }
-
 }

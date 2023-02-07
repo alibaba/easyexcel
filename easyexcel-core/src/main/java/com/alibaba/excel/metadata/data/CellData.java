@@ -1,6 +1,7 @@
 package com.alibaba.excel.metadata.data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.AbstractCell;
@@ -57,6 +58,7 @@ public class CellData<T> extends AbstractCell {
         }
         switch (type) {
             case STRING:
+            case DIRECT_STRING:
             case ERROR:
                 if (StringUtils.isEmpty(stringValue)) {
                     type = CellDataTypeEnum.EMPTY;
@@ -75,6 +77,5 @@ public class CellData<T> extends AbstractCell {
             default:
         }
     }
-
 
 }

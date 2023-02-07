@@ -37,9 +37,8 @@ public class StringNumberConverter implements Converter<String> {
         GlobalConfiguration globalConfiguration) {
         // If there are "DateTimeFormat", read as date
         if (contentProperty != null && contentProperty.getDateTimeFormatProperty() != null) {
-            return DateUtils.format(
-                DateUtil.getJavaDate(cellData.getNumberValue().doubleValue(),
-                    contentProperty.getDateTimeFormatProperty().getUse1904windowing(), null),
+            return DateUtils.format(cellData.getNumberValue(),
+                contentProperty.getDateTimeFormatProperty().getUse1904windowing(),
                 contentProperty.getDateTimeFormatProperty().getFormat());
         }
         // If there are "NumberFormat", read as number

@@ -14,24 +14,9 @@ import com.alibaba.excel.write.builder.ExcelWriterTableBuilder;
 /**
  * Reader and writer factory class
  *
- * <h1>Quick start</h1>
- * <h2>Read</h2>
- * <h3>Sample1</h3>
- *
- * <h3>Sample2</h3>
- *
- * <h2>Write</h2>
- *
- * <h3>Sample1</h3>
- *
- * <h3>Sample2</h3>
- *
- *
- *
  * @author jipengfei
  */
 public class EasyExcelFactory {
-
 
     /**
      * Build excel the write
@@ -45,8 +30,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the write
      *
-     * @param file
-     *            File to write
+     * @param file File to write
      * @return Excel writer builder
      */
     public static ExcelWriterBuilder write(File file) {
@@ -56,10 +40,8 @@ public class EasyExcelFactory {
     /**
      * Build excel the write
      *
-     * @param file
-     *            File to write
-     * @param head
-     *            Annotate the class for configuration information
+     * @param file File to write
+     * @param head Annotate the class for configuration information
      * @return Excel writer builder
      */
     public static ExcelWriterBuilder write(File file, Class head) {
@@ -74,8 +56,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the write
      *
-     * @param pathName
-     *            File path to write
+     * @param pathName File path to write
      * @return Excel writer builder
      */
     public static ExcelWriterBuilder write(String pathName) {
@@ -85,10 +66,8 @@ public class EasyExcelFactory {
     /**
      * Build excel the write
      *
-     * @param pathName
-     *            File path to write
-     * @param head
-     *            Annotate the class for configuration information
+     * @param pathName File path to write
+     * @param head     Annotate the class for configuration information
      * @return Excel writer builder
      */
     public static ExcelWriterBuilder write(String pathName, Class head) {
@@ -103,8 +82,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the write
      *
-     * @param outputStream
-     *            Output stream to write
+     * @param outputStream Output stream to write
      * @return Excel writer builder
      */
     public static ExcelWriterBuilder write(OutputStream outputStream) {
@@ -114,10 +92,8 @@ public class EasyExcelFactory {
     /**
      * Build excel the write
      *
-     * @param outputStream
-     *            Output stream to write
-     * @param head
-     *            Annotate the class for configuration information.
+     * @param outputStream Output stream to write
+     * @param head         Annotate the class for configuration information.
      * @return Excel writer builder
      */
     public static ExcelWriterBuilder write(OutputStream outputStream, Class head) {
@@ -141,8 +117,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the <code>writerSheet</code>
      *
-     * @param sheetNo
-     *            Index of sheet,0 base.
+     * @param sheetNo Index of sheet,0 base.
      * @return Excel sheet writer builder.
      */
     public static ExcelWriterSheetBuilder writerSheet(Integer sheetNo) {
@@ -152,8 +127,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the 'writerSheet'
      *
-     * @param sheetName
-     *            The name of sheet.
+     * @param sheetName The name of sheet.
      * @return Excel sheet writer builder.
      */
     public static ExcelWriterSheetBuilder writerSheet(String sheetName) {
@@ -163,10 +137,8 @@ public class EasyExcelFactory {
     /**
      * Build excel the 'writerSheet'
      *
-     * @param sheetNo
-     *            Index of sheet,0 base.
-     * @param sheetName
-     *            The name of sheet.
+     * @param sheetNo   Index of sheet,0 base.
+     * @param sheetName The name of sheet.
      * @return Excel sheet writer builder.
      */
     public static ExcelWriterSheetBuilder writerSheet(Integer sheetNo, String sheetName) {
@@ -192,8 +164,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the 'writerTable'
      *
-     * @param tableNo
-     *            Index of table,0 base.
+     * @param tableNo Index of table,0 base.
      * @return Excel table writer builder.
      */
     public static ExcelWriterTableBuilder writerTable(Integer tableNo) {
@@ -216,8 +187,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param file
-     *            File to read.
+     * @param file File to read.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(File file) {
@@ -227,10 +197,8 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param file
-     *            File to read.
-     * @param readListener
-     *            Read listener.
+     * @param file         File to read.
+     * @param readListener Read listener.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(File file, ReadListener readListener) {
@@ -240,12 +208,9 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param file
-     *            File to read.
-     * @param head
-     *            Annotate the class for configuration information.
-     * @param readListener
-     *            Read listener.
+     * @param file         File to read.
+     * @param head         Annotate the class for configuration information.
+     * @param readListener Read listener.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(File file, Class head, ReadListener readListener) {
@@ -263,8 +228,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param pathName
-     *            File path to read.
+     * @param pathName File path to read.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(String pathName) {
@@ -274,10 +238,8 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param pathName
-     *            File path to read.
-     * @param readListener
-     *            Read listener.
+     * @param pathName     File path to read.
+     * @param readListener Read listener.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(String pathName, ReadListener readListener) {
@@ -287,12 +249,9 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param pathName
-     *            File path to read.
-     * @param head
-     *            Annotate the class for configuration information.
-     * @param readListener
-     *            Read listener.
+     * @param pathName     File path to read.
+     * @param head         Annotate the class for configuration information.
+     * @param readListener Read listener.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(String pathName, Class head, ReadListener readListener) {
@@ -310,8 +269,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param inputStream
-     *            Input stream to read.
+     * @param inputStream Input stream to read.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(InputStream inputStream) {
@@ -321,10 +279,8 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param inputStream
-     *            Input stream to read.
-     * @param readListener
-     *            Read listener.
+     * @param inputStream  Input stream to read.
+     * @param readListener Read listener.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(InputStream inputStream, ReadListener readListener) {
@@ -334,12 +290,9 @@ public class EasyExcelFactory {
     /**
      * Build excel the read
      *
-     * @param inputStream
-     *            Input stream to read.
-     * @param head
-     *            Annotate the class for configuration information.
-     * @param readListener
-     *            Read listener.
+     * @param inputStream  Input stream to read.
+     * @param head         Annotate the class for configuration information.
+     * @param readListener Read listener.
      * @return Excel reader builder.
      */
     public static ExcelReaderBuilder read(InputStream inputStream, Class head, ReadListener readListener) {
@@ -366,8 +319,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the 'readSheet'
      *
-     * @param sheetNo
-     *            Index of sheet,0 base.
+     * @param sheetNo Index of sheet,0 base.
      * @return Excel sheet reader builder.
      */
     public static ExcelReaderSheetBuilder readSheet(Integer sheetNo) {
@@ -377,8 +329,7 @@ public class EasyExcelFactory {
     /**
      * Build excel the 'readSheet'
      *
-     * @param sheetName
-     *            The name of sheet.
+     * @param sheetName The name of sheet.
      * @return Excel sheet reader builder.
      */
     public static ExcelReaderSheetBuilder readSheet(String sheetName) {
@@ -388,10 +339,8 @@ public class EasyExcelFactory {
     /**
      * Build excel the 'readSheet'
      *
-     * @param sheetNo
-     *            Index of sheet,0 base.
-     * @param sheetName
-     *            The name of sheet.
+     * @param sheetNo   Index of sheet,0 base.
+     * @param sheetName The name of sheet.
      * @return Excel sheet reader builder.
      */
     public static ExcelReaderSheetBuilder readSheet(Integer sheetNo, String sheetName) {

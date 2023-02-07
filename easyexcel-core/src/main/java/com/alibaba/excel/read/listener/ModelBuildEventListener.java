@@ -1,21 +1,30 @@
 package com.alibaba.excel.read.listener;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Map;
 
+import javax.print.DocFlavor.STRING;
+
+import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
+import com.alibaba.excel.enums.ReadDefaultReturnEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.BeanMapUtils;
+import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.ConverterUtils;
+import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.util.StringUtils;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cglib.beans.BeanMap;
 
 /**
@@ -26,14 +35,6 @@ import org.springframework.cglib.beans.BeanMap;
 public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<Integer, ReadCellData<?>>> {
 
     @Override
-    public void invokeHead(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {
-        if (context.readSheetHolder().getMaxDataHeadSize() == null
-            || context.readSheetHolder().getMaxDataHeadSize() < CollectionUtils.size(cellDataMap)) {
-            context.readSheetHolder().setMaxDataHeadSize(CollectionUtils.size(cellDataMap));
-        }
-    }
-
-    @Override
     public void invoke(Map<Integer, ReadCellData<?>> cellDataMap, AnalysisContext context) {
         ReadSheetHolder readSheetHolder = context.readSheetHolder();
         if (HeadKindEnum.CLASS.equals(readSheetHolder.excelReadHeadProperty().getHeadKind())) {
@@ -41,13 +42,13 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
                 .setCurrentRowAnalysisResult(buildUserModel(cellDataMap, readSheetHolder, context));
             return;
         }
-        context.readRowHolder().setCurrentRowAnalysisResult(buildStringList(cellDataMap, readSheetHolder, context));
+        context.readRowHolder().setCurrentRowAnalysisResult(buildNoModel(cellDataMap, readSheetHolder, context));
     }
 
-    private Object buildStringList(Map<Integer, ReadCellData<?>> cellDataMap, ReadSheetHolder readSheetHolder,
+    private Object buildNoModel(Map<Integer, ReadCellData<?>> cellDataMap, ReadSheetHolder readSheetHolder,
         AnalysisContext context) {
         int index = 0;
-        Map<Integer, String> map = MapUtils.newLinkedHashMapWithExpectedSize(cellDataMap.size());
+        Map<Integer, Object> map = MapUtils.newLinkedHashMapWithExpectedSize(cellDataMap.size());
         for (Map.Entry<Integer, ReadCellData<?>> entry : cellDataMap.entrySet()) {
             Integer key = entry.getKey();
             ReadCellData<?> cellData = entry.getValue();
@@ -56,9 +57,23 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
                 index++;
             }
             index++;
-            map.put(key,
-                (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
-                    context, context.readRowHolder().getRowIndex(), key));
+
+            ReadDefaultReturnEnum readDefaultReturn = context.readWorkbookHolder().getReadDefaultReturn();
+            if (readDefaultReturn == ReadDefaultReturnEnum.STRING) {
+                // string
+                map.put(key,
+                    (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
+                        context, context.readRowHolder().getRowIndex(), key));
+            } else {
+                // retrun ReadCellData
+                ReadCellData<?> convertedReadCellData = convertReadCellData(cellData,
+                    context.readWorkbookHolder().getReadDefaultReturn(), readSheetHolder, context, key);
+                if (readDefaultReturn == ReadDefaultReturnEnum.READ_CELL_DATA) {
+                    map.put(key, convertedReadCellData);
+                } else {
+                    map.put(key, convertedReadCellData.getData());
+                }
+            }
         }
         // fix https://github.com/alibaba/easyexcel/issues/2014
         int headSize = calculateHeadSize(readSheetHolder);
@@ -69,12 +84,44 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
         return map;
     }
 
+    private ReadCellData convertReadCellData(ReadCellData<?> cellData, ReadDefaultReturnEnum readDefaultReturn,
+        ReadSheetHolder readSheetHolder, AnalysisContext context, Integer columnIndex) {
+        Class<?> classGeneric;
+        switch (cellData.getType()) {
+            case STRING:
+            case DIRECT_STRING:
+            case ERROR:
+            case EMPTY:
+                classGeneric = String.class;
+                break;
+            case BOOLEAN:
+                classGeneric = Boolean.class;
+                break;
+            case NUMBER:
+                DataFormatData dataFormatData = cellData.getDataFormatData();
+                if (dataFormatData != null && DateUtils.isADateFormat(dataFormatData.getIndex(),
+                    dataFormatData.getFormat())) {
+                    classGeneric = LocalDateTime.class;
+                } else {
+                    classGeneric = BigDecimal.class;
+                }
+                break;
+            default:
+                classGeneric = ConverterUtils.defaultClassGeneric;
+                break;
+        }
+
+        return (ReadCellData)ConverterUtils.convertToJavaObject(cellData, null, ReadCellData.class,
+            classGeneric, null, readSheetHolder.converterMap(), context, context.readRowHolder().getRowIndex(),
+            columnIndex);
+    }
+
     private int calculateHeadSize(ReadSheetHolder readSheetHolder) {
         if (readSheetHolder.excelReadHeadProperty().getHeadMap().size() > 0) {
             return readSheetHolder.excelReadHeadProperty().getHeadMap().size();
         }
-        if (readSheetHolder.getMaxDataHeadSize() != null) {
-            return readSheetHolder.getMaxDataHeadSize();
+        if (readSheetHolder.getMaxNotEmptyDataHeadSize() != null) {
+            return readSheetHolder.getMaxNotEmptyDataHeadSize();
         }
         return 0;
     }

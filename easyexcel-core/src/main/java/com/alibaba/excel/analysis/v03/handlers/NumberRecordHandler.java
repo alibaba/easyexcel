@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.data.DataFormatData;
@@ -22,7 +23,7 @@ public class NumberRecordHandler extends AbstractXlsRecordHandler implements Ign
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
         NumberRecord nr = (NumberRecord)record;
-        ReadCellData<?> cellData = ReadCellData.newInstance(BigDecimal.valueOf(nr.getValue()), nr.getRow(),
+        ReadCellData<?> cellData = ReadCellData.newInstanceOriginal(BigDecimal.valueOf(nr.getValue()), nr.getRow(),
             (int)nr.getColumn());
         short dataFormat = (short)xlsReadContext.xlsReadWorkbookHolder().getFormatTrackingHSSFListener().getFormatIndex(
             nr);

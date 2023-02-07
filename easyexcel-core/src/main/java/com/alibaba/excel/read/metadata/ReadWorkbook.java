@@ -11,6 +11,7 @@ import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.cache.selector.ReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellExtraTypeEnum;
+import com.alibaba.excel.enums.ReadDefaultReturnEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.read.listener.ModelBuildEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
@@ -62,7 +63,6 @@ public class ReadWorkbook extends ReadBasicParameter {
     /**
      * This object can be read in the Listener {@link AnalysisEventListener#invoke(Object, AnalysisContext)}
      * {@link AnalysisContext#getCustom()}
-     *
      */
     private Object customObject;
     /**
@@ -96,8 +96,18 @@ public class ReadWorkbook extends ReadBasicParameter {
      * Whether to use the default listener, which is used by default.
      * <p>
      * The {@link ModelBuildEventListener} is loaded by default to convert the object.
+     * defualt is true.
      */
     private Boolean useDefaultListener;
+
+    /**
+     * Read not to {@code com.alibaba.excel.metadata.BasicParameter#clazz} value, the default will return type.
+     * Is only effective when set `useDefaultListener=true` or `useDefaultListener=null`.
+     *
+     * @see ReadDefaultReturnEnum
+     */
+    private ReadDefaultReturnEnum readDefaultReturn;
+
     /**
      * Read some additional fields. None are read by default.
      *
