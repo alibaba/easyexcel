@@ -98,6 +98,10 @@ public class LoopMergeStrategy implements RowWriteHandler, WorkbookWriteHandler 
         }
     }
 
+    /**
+     * release last data and merge cell
+     *
+     **/
     @Override
     public void afterWorkbookDispose(WorkbookWriteHandlerContext context) {
         if (this.currentMergedValue != null) {
