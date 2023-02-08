@@ -174,7 +174,7 @@ public class FileUtils {
      *
      * @param directory
      */
-    private static File createDirectory(File directory) {
+    public static File createDirectory(File directory) {
         if (!directory.exists() && !directory.mkdirs()) {
             throw new ExcelCommonException("Cannot create directory:" + directory.getAbsolutePath());
         }

@@ -2,14 +2,19 @@ package com.alibaba.easyexcel.test.core.large;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.cache.Ehcache;
+import com.alibaba.excel.cache.ReadCache;
+import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
+import org.apache.poi.util.TempFile;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -54,6 +59,7 @@ public class LargeDataTest {
             new LargeDataListener()).headRowNumber(2).sheet().doRead();
         LOGGER.info("Large data total time spent:{}", System.currentTimeMillis() - start);
     }
+
 
     @Test
     public void t02Fill() {
@@ -127,7 +133,18 @@ public class LargeDataTest {
         LOGGER.info("{} vs {}", cost, costPoi);
         Assert.assertTrue(costPoi * 2 > cost);
     }
-
+    @Test
+    public void t05Read() throws Exception {
+        long start = System.currentTimeMillis();
+        EasyExcel.read(TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx", LargeData.class,
+            new LargeDataListener()).headRowNumber(2).sheet().doRead();
+        LOGGER.info("Large data total time spent:{}", System.currentTimeMillis() - start);
+        FileUtils.delete(new File(System.getProperty(TempFile.JAVA_IO_TMPDIR)));
+        start = System.currentTimeMillis();
+        EasyExcel.read(TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx", LargeData.class,
+            new LargeDataListener()).headRowNumber(2).sheet().doRead();
+        LOGGER.info("Large data total time spent:{}", System.currentTimeMillis() - start);
+    }
     private List<LargeData> data() {
         List<LargeData> list = new ArrayList<>();
         int size = i + 100;
