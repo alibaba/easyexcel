@@ -132,4 +132,51 @@ public class TempWriteTest {
         fileOutputStream.flush();
         workbook.close();
     }
+
+    @Test
+    public void tep() throws Exception {
+        String file = "/Users/zhuangjiaju/test/imagetest" + System.currentTimeMillis() + ".xlsx";
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        SXSSFSheet sheet = workbook.createSheet("测试");
+        CreationHelper helper = workbook.getCreationHelper();
+        SXSSFDrawing sxssfDrawin = sheet.createDrawingPatriarch();
+
+        byte[] imagebyte = FileUtils.readFileToByteArray(new File("/Users/zhuangjiaju/Documents/demo.jpg"));
+
+        for (int i = 0; i < 1 * 10000; i++) {
+            SXSSFRow row = sheet.createRow(i);
+            SXSSFCell cell = row.createCell(0);
+            cell.setCellValue(i);
+            int pictureIdx = workbook.addPicture(imagebyte, Workbook.PICTURE_TYPE_JPEG);
+            ClientAnchor anchor = helper.createClientAnchor();
+            anchor.setCol1(0);
+            anchor.setRow1(i);
+            // 插入图片
+            Picture pict = sxssfDrawin.createPicture(anchor, pictureIdx);
+            pict.resize();
+            log.info("新增行:{}", i);
+        }
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        workbook.write(fileOutputStream);
+        fileOutputStream.flush();
+        workbook.close();
+    }
+
+    @Test
+    public void large() throws Exception {
+        String file = "/Users/zhuangjiaju/test/imagetest" + System.currentTimeMillis() + ".xlsx";
+        SXSSFWorkbook workbook = new SXSSFWorkbook(new XSSFWorkbook(
+            new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/easyexcel-test/src/test/resources/large/large07.xlsx")));
+        SXSSFSheet sheet = workbook.createSheet("测试");
+
+        SXSSFRow row = sheet.createRow(500000);
+        SXSSFCell cell = row.createCell(0);
+        cell.setCellValue("test");
+
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        workbook.write(fileOutputStream);
+        fileOutputStream.flush();
+        workbook.close();
+
+    }
 }
