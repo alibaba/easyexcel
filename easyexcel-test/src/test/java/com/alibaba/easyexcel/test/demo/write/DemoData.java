@@ -1,5 +1,6 @@
 package com.alibaba.easyexcel.test.demo.write;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
@@ -17,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class DemoData {
+public class DemoData implements Serializable {
     @ExcelProperty("字符串标题")
     private String string;
     @ExcelProperty("日期标题")
