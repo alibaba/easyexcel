@@ -242,6 +242,10 @@ public class WriteTest {
     public void imageWrite() throws Exception {
         String fileName = TestFileUtil.getPath() + "imageWrite" + System.currentTimeMillis() + ".xlsx";
 
+        // 这里注意下 所有的图片都会放到内存 暂时没有很好的解法，大量图片的情况下建议 2选1:
+        // 1. 将图片上传到oss 或者其他存储网站: https://www.aliyun.com/product/oss
+        // 2. 使用: https://github.com/coobird/thumbnailator 或者其他工具压缩图片
+
         String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
         try (InputStream inputStream = FileUtils.openInputStream(new File(imagePath))) {
             List<ImageDemoData> list = ListUtils.newArrayList();
