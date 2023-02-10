@@ -742,8 +742,8 @@ public class WriteTest {
         for (int i = 0; i < 10; i++) {
             List<Object> data = ListUtils.newArrayList();
             data.add("字符串" + i);
-            data.add(0.56);
             data.add(new Date());
+            data.add(0.56);
             list.add(data);
         }
         return list;
