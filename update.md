@@ -1,3 +1,10 @@
+# 4.0.0-beta1
+
+* `poi`由`4.1.2`升级到`5.2.3`
+* `commons-csv`由`1.9.0`升级到`1.10.0`
+* `commons-csv`由`1.7.32`升级到`1.7.36`
+* `ehcache`由`3.9.9`升级到`3.10.8`
+
 # 3.2.1
 
 * 兼容`LocalDate` [Issue #2908](https://github.com/alibaba/easyexcel/issues/2908)
