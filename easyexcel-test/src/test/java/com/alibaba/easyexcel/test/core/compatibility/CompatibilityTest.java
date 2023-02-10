@@ -15,7 +15,7 @@ import com.alibaba.excel.cache.Ehcache;
 import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.enums.ReadDefaultReturnEnum;
 import com.alibaba.excel.util.FileUtils;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.TempFile;
