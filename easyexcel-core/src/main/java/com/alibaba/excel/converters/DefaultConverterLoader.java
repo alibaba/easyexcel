@@ -31,8 +31,11 @@ import com.alibaba.excel.converters.inputstream.InputStreamImageConverter;
 import com.alibaba.excel.converters.integer.IntegerBooleanConverter;
 import com.alibaba.excel.converters.integer.IntegerNumberConverter;
 import com.alibaba.excel.converters.integer.IntegerStringConverter;
-import com.alibaba.excel.converters.localdatetime.LocalDateNumberConverter;
+import com.alibaba.excel.converters.localdate.LocalDateConverter;
+import com.alibaba.excel.converters.localdate.LocalDateNumberConverter;
+import com.alibaba.excel.converters.localdate.LocalDateStringConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeDateConverter;
+import com.alibaba.excel.converters.localdatetime.LocalDateTimeNumberConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeStringConverter;
 import com.alibaba.excel.converters.longconverter.LongBooleanConverter;
 import com.alibaba.excel.converters.longconverter.LongNumberConverter;
@@ -82,8 +85,11 @@ public class DefaultConverterLoader {
         putAllConverter(new DateNumberConverter());
         putAllConverter(new DateStringConverter());
 
-        putAllConverter(new LocalDateNumberConverter());
+        putAllConverter(new LocalDateTimeNumberConverter());
         putAllConverter(new LocalDateTimeStringConverter());
+        
+        putAllConverter(new LocalDateNumberConverter());
+        putAllConverter(new LocalDateStringConverter());
 
         putAllConverter(new DoubleBooleanConverter());
         putAllConverter(new DoubleNumberConverter());
@@ -120,6 +126,7 @@ public class DefaultConverterLoader {
         putWriteConverter(new BooleanBooleanConverter());
         putWriteConverter(new ByteNumberConverter());
         putWriteConverter(new DateDateConverter());
+        putWriteConverter(new LocalDateConverter());
         putWriteConverter(new LocalDateTimeDateConverter());
         putWriteConverter(new DoubleNumberConverter());
         putWriteConverter(new FloatNumberConverter());
@@ -139,6 +146,7 @@ public class DefaultConverterLoader {
         putWriteStringConverter(new BooleanStringConverter());
         putWriteStringConverter(new ByteStringConverter());
         putWriteStringConverter(new DateStringConverter());
+        putWriteStringConverter(new LocalDateStringConverter());
         putWriteStringConverter(new LocalDateTimeStringConverter());
         putWriteStringConverter(new DoubleStringConverter());
         putWriteStringConverter(new FloatStringConverter());
