@@ -31,19 +31,19 @@ public class Ehcache implements ReadCache {
     private int activeIndex = 0;
     public static final int DEBUG_CACHE_MISS_SIZE = 1000;
     public static final int DEBUG_WRITE_SIZE = 100 * 10000;
-    private ArrayList<String> dataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    private StringArray dataList = new StringArray(BATCH_COUNT);
     private static final CacheManager FILE_CACHE_MANAGER;
-    private static final CacheConfiguration<Integer, ArrayList> FILE_CACHE_CONFIGURATION;
+    private static final CacheConfiguration<Integer, StringArray> FILE_CACHE_CONFIGURATION;
     private static final CacheManager ACTIVE_CACHE_MANAGER;
-    private final CacheConfiguration<Integer, ArrayList> activeCacheConfiguration;
+    private final CacheConfiguration<Integer, StringArray> activeCacheConfiguration;
     /**
      * Bulk storage data
      */
-    private org.ehcache.Cache<Integer, ArrayList> fileCache;
+    private org.ehcache.Cache<Integer, StringArray> fileCache;
     /**
      * Currently active cache
      */
-    private org.ehcache.Cache<Integer, ArrayList> activeCache;
+    private org.ehcache.Cache<Integer, StringArray> activeCache;
     private String cacheAlias;
     /**
      * Count the number of cache misses
@@ -52,7 +52,7 @@ public class Ehcache implements ReadCache {
 
     public Ehcache(int maxCacheActivateSize) {
         activeCacheConfiguration = CacheConfigurationBuilder
-            .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
+            .newCacheConfigurationBuilder(Integer.class, StringArray.class,
                 ResourcePoolsBuilder.newResourcePoolsBuilder().heap(maxCacheActivateSize, MemoryUnit.MB))
             .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(maxCacheActivateSize, MemoryUnit.MB)
             .build();
@@ -64,7 +64,7 @@ public class Ehcache implements ReadCache {
             CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile)).build(true);
         ACTIVE_CACHE_MANAGER = CacheManagerBuilder.newCacheManagerBuilder().build(true);
         FILE_CACHE_CONFIGURATION = CacheConfigurationBuilder
-            .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
+            .newCacheConfigurationBuilder(Integer.class, StringArray.class,
                 ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.GB))
             .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(10, MemoryUnit.GB).build();
     }
@@ -82,7 +82,7 @@ public class Ehcache implements ReadCache {
         if (dataList.size() >= BATCH_COUNT) {
             fileCache.put(activeIndex, dataList);
             activeIndex++;
-            dataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+            dataList = new StringArray(BATCH_COUNT);
         }
         if (log.isDebugEnabled()) {
             int alreadyPut = activeIndex * BATCH_COUNT + dataList.size();
@@ -98,7 +98,7 @@ public class Ehcache implements ReadCache {
             return null;
         }
         int route = key / BATCH_COUNT;
-        ArrayList<String> dataList = activeCache.get(route);
+        StringArray dataList = activeCache.get(route);
         if (dataList == null) {
             dataList = fileCache.get(route);
             activeCache.put(route, dataList);
@@ -113,7 +113,7 @@ public class Ehcache implements ReadCache {
 
     @Override
     public void putFinished() {
-        if (CollectionUtils.isEmpty(dataList)) {
+        if (dataList.size() == 0) {
             return;
         }
         fileCache.put(activeIndex, dataList);
