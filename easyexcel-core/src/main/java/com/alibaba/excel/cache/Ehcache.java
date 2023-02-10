@@ -15,6 +15,7 @@ import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 
 /**
@@ -50,12 +51,27 @@ public class Ehcache implements ReadCache {
      */
     private int cacheMiss = 0;
 
-    public Ehcache(int maxCacheActivateSize) {
-        activeCacheConfiguration = CacheConfigurationBuilder
-            .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
-                ResourcePoolsBuilder.newResourcePoolsBuilder().heap(maxCacheActivateSize, MemoryUnit.MB))
-            .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(maxCacheActivateSize, MemoryUnit.MB)
-            .build();
+    @Deprecated
+    public Ehcache(Integer maxCacheActivateSize) {
+        this(maxCacheActivateSize, null);
+    }
+
+    public Ehcache(Integer maxCacheActivateSize, Integer maxCacheActivateBatchCount) {
+        // In order to be compatible with the code
+        // If the user set up `maxCacheActivateSize`, then continue using it
+        if (maxCacheActivateSize != null) {
+            this.activeCacheConfiguration = CacheConfigurationBuilder
+                .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
+                    ResourcePoolsBuilder.newResourcePoolsBuilder()
+                        .heap(maxCacheActivateSize, MemoryUnit.MB))
+                .build();
+        } else {
+            this.activeCacheConfiguration = CacheConfigurationBuilder
+                .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
+                    ResourcePoolsBuilder.newResourcePoolsBuilder()
+                        .heap(maxCacheActivateBatchCount, EntryUnit.ENTRIES))
+                .build();
+        }
     }
 
     static {
@@ -64,9 +80,8 @@ public class Ehcache implements ReadCache {
             CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile)).build(true);
         ACTIVE_CACHE_MANAGER = CacheManagerBuilder.newCacheManagerBuilder().build(true);
         FILE_CACHE_CONFIGURATION = CacheConfigurationBuilder
-            .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
-                ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.GB))
-            .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(10, MemoryUnit.GB).build();
+            .newCacheConfigurationBuilder(Integer.class, ArrayList.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
+                .disk(20, MemoryUnit.GB)).build();
     }
 
     @Override

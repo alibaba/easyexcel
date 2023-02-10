@@ -1,6 +1,7 @@
 # 3.2.1
 
 * 兼容`LocalDate` [Issue #2908](https://github.com/alibaba/easyexcel/issues/2908)
+* 优化大文件内存存储，减少内存占用 [Issue #2657](https://github.com/alibaba/easyexcel/issues/2657)
 
 # 3.2.0
 
@@ -14,7 +15,8 @@
 
 # 3.1.4
 
-* 提高xlsx读取兼容性：在存在第一行很多空列的情况下，忽略空列
+* 提高xlsx读取兼容性：在存在第一行很多空
+* 列的情况下，忽略空列
 
 # 3.1.3
 
