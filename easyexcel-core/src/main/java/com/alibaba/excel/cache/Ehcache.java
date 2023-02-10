@@ -36,6 +36,8 @@ public class Ehcache implements ReadCache {
     private static final CacheManager FILE_CACHE_MANAGER;
     private static final CacheConfiguration<Integer, ArrayList> FILE_CACHE_CONFIGURATION;
     private static final CacheManager ACTIVE_CACHE_MANAGER;
+    private static final File CACHE_PATH_FILE;
+
     private final CacheConfiguration<Integer, ArrayList> activeCacheConfiguration;
     /**
      * Bulk storage data
@@ -75,9 +77,9 @@ public class Ehcache implements ReadCache {
     }
 
     static {
-        File cacheFile = FileUtils.createCacheTmpFile();
+        CACHE_PATH_FILE = FileUtils.createCacheTmpFile();
         FILE_CACHE_MANAGER =
-            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile)).build(true);
+            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(CACHE_PATH_FILE)).build(true);
         ACTIVE_CACHE_MANAGER = CacheManagerBuilder.newCacheManagerBuilder().build(true);
         FILE_CACHE_CONFIGURATION = CacheConfigurationBuilder
             .newCacheConfigurationBuilder(Integer.class, ArrayList.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
@@ -87,7 +89,21 @@ public class Ehcache implements ReadCache {
     @Override
     public void init(AnalysisContext analysisContext) {
         cacheAlias = UUID.randomUUID().toString();
-        fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
+        try {
+            fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
+        } catch (IllegalStateException e) {
+            //fix Issue #2693,重建缓存文件夹
+            if (CACHE_PATH_FILE.exists()) {
+                throw e;
+            }
+            synchronized (Ehcache.class) {
+                if (!CACHE_PATH_FILE.exists()){
+                    log.debug("cache file dir is not exist retry create");
+                    FileUtils.createDirectory(CACHE_PATH_FILE);
+                }
+            }
+            fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
+        }
         activeCache = ACTIVE_CACHE_MANAGER.createCache(cacheAlias, activeCacheConfiguration);
     }
 
