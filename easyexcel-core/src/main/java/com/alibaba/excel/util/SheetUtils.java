@@ -20,8 +20,7 @@ public class SheetUtils {
     /**
      * Match the parameters to the actual sheet
      *
-     * @param readSheet
-     *            actual sheet
+     * @param readSheet       actual sheet
      * @param analysisContext
      * @return
      */
@@ -47,11 +46,13 @@ public class SheetUtils {
                 if (!StringUtils.isEmpty(parameterSheetName)) {
                     boolean autoTrim = (parameterReadSheet.getAutoTrim() != null && parameterReadSheet.getAutoTrim())
                         || (parameterReadSheet.getAutoTrim() == null
-                            && analysisContext.readWorkbookHolder().getGlobalConfiguration().getAutoTrim());
+                        && analysisContext.readWorkbookHolder().getGlobalConfiguration().getAutoTrim());
+                    String sheetName = readSheet.getSheetName();
                     if (autoTrim) {
                         parameterSheetName = parameterSheetName.trim();
+                        sheetName = sheetName.trim();
                     }
-                    match = parameterSheetName.equals(readSheet.getSheetName());
+                    match = parameterSheetName.equals(sheetName);
                 }
             }
             if (match) {

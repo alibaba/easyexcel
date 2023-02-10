@@ -47,12 +47,13 @@ public class ReadTest {
         // since: 3.0.0-beta1
         String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
-        // 这里每次会读取100条数据 然后返回过来 直接调用使用数据就行
+        // 这里默认每次会读取100条数据 然后返回过来 直接调用使用数据就行
+        // 具体需要返回多少行可以在`PageReadListener`的构造函数设置
         EasyExcel.read(fileName, DemoData.class, new PageReadListener<DemoData>(dataList -> {
             for (DemoData demoData : dataList) {
                 log.info("读取到一条数据{}", JSON.toJSONString(demoData));
             }
-        },3)).sheet().doRead();
+        })).sheet().doRead();
 
         // 写法2：
         // 匿名内部类 不用额外写一个DemoDataListener
