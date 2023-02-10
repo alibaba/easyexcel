@@ -2,6 +2,7 @@ package com.alibaba.excel.cache;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.alibaba.excel.context.AnalysisContext;
@@ -15,6 +16,7 @@ import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 
 /**
@@ -35,6 +37,8 @@ public class Ehcache implements ReadCache {
     private static final CacheManager FILE_CACHE_MANAGER;
     private static final CacheConfiguration<Integer, ArrayList> FILE_CACHE_CONFIGURATION;
     private static final CacheManager ACTIVE_CACHE_MANAGER;
+    private static final File CACHE_PATH_FILE;
+
     private final CacheConfiguration<Integer, ArrayList> activeCacheConfiguration;
     /**
      * Bulk storage data
@@ -50,29 +54,61 @@ public class Ehcache implements ReadCache {
      */
     private int cacheMiss = 0;
 
-    public Ehcache(int maxCacheActivateSize) {
-        activeCacheConfiguration = CacheConfigurationBuilder
-            .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
-                ResourcePoolsBuilder.newResourcePoolsBuilder().heap(maxCacheActivateSize, MemoryUnit.MB))
-            .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(maxCacheActivateSize, MemoryUnit.MB)
-            .build();
+    @Deprecated
+    public Ehcache(Integer maxCacheActivateSize) {
+        this(maxCacheActivateSize, null);
+    }
+
+    public Ehcache(Integer maxCacheActivateSize, Integer maxCacheActivateBatchCount) {
+        // In order to be compatible with the code
+        // If the user set up `maxCacheActivateSize`, then continue using it
+        if (maxCacheActivateSize != null) {
+            this.activeCacheConfiguration = CacheConfigurationBuilder
+                .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
+                    ResourcePoolsBuilder.newResourcePoolsBuilder()
+                        .heap(maxCacheActivateSize, MemoryUnit.MB))
+                .build();
+        } else {
+            this.activeCacheConfiguration = CacheConfigurationBuilder
+                .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
+                    ResourcePoolsBuilder.newResourcePoolsBuilder()
+                        .heap(maxCacheActivateBatchCount, EntryUnit.ENTRIES))
+                .build();
+        }
     }
 
     static {
-        File cacheFile = FileUtils.createCacheTmpFile();
+        CACHE_PATH_FILE = FileUtils.createCacheTmpFile();
         FILE_CACHE_MANAGER =
-            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(cacheFile)).build(true);
+            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(CACHE_PATH_FILE)).build(
+                true);
         ACTIVE_CACHE_MANAGER = CacheManagerBuilder.newCacheManagerBuilder().build(true);
         FILE_CACHE_CONFIGURATION = CacheConfigurationBuilder
-            .newCacheConfigurationBuilder(Integer.class, ArrayList.class,
-                ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.GB))
-            .withSizeOfMaxObjectGraph(1000 * 1000L).withSizeOfMaxObjectSize(10, MemoryUnit.GB).build();
+            .newCacheConfigurationBuilder(Integer.class, ArrayList.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
+                .disk(20, MemoryUnit.GB)).build();
     }
 
     @Override
     public void init(AnalysisContext analysisContext) {
         cacheAlias = UUID.randomUUID().toString();
-        fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
+        try {
+            fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
+        } catch (IllegalStateException e) {
+            //fix Issue #2693,Temporary files may be deleted if there is no operation for a long time, so they need
+            // to be recreated.
+            if (CACHE_PATH_FILE.exists()) {
+                throw e;
+            }
+            synchronized (Ehcache.class) {
+                if (!CACHE_PATH_FILE.exists()) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("cache file dir is not exist retry create");
+                    }
+                    FileUtils.createDirectory(CACHE_PATH_FILE);
+                }
+            }
+            fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
+        }
         activeCache = ACTIVE_CACHE_MANAGER.createCache(cacheAlias, activeCacheConfiguration);
     }
 

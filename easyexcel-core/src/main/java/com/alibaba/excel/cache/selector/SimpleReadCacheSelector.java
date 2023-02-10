@@ -2,6 +2,10 @@ package com.alibaba.excel.cache.selector;
 
 import java.io.IOException;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +19,9 @@ import com.alibaba.excel.cache.ReadCache;
  *
  * @author Jiaju Zhuang
  **/
+@Getter
+@Setter
+@EqualsAndHashCode
 public class SimpleReadCacheSelector implements ReadCacheSelector {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleReadCacheSelector.class);
     /**
@@ -24,37 +31,46 @@ public class SimpleReadCacheSelector implements ReadCacheSelector {
     /**
      * If it's less than 5M, use map cache, or use ehcache.unit MB.
      */
-    private static final int DEFAULT_MAX_USE_MAP_CACHE_SIZE = 5;
+    private static final long DEFAULT_MAX_USE_MAP_CACHE_SIZE = 5;
+
     /**
-     * Maximum size of cache activation.unit MB.
+     * Maximum batch of `SharedStrings` stored in memory.
+     * The batch size is 100.{@link Ehcache#BATCH_COUNT}
      */
-    private static final int DEFAULT_MAX_EHCACHE_ACTIVATE_SIZE = 20;
+    private static final int DEFAULT_MAX_EHCACHE_ACTIVATE_BATCH_COUNT = 20;
 
     /**
      * Shared strings exceeding this value will use {@link Ehcache},or use {@link MapCache}.unit MB.
      */
-    private final long maxUseMapCacheSize;
+    private Long maxUseMapCacheSize;
 
     /**
      * Maximum size of cache activation.unit MB.
+     *
+     * @deprecated Please use maxCacheActivateBatchCount to control the size of the occupied memory
      */
-    private final int maxCacheActivateSize;
+    @Deprecated
+    private Integer maxCacheActivateSize;
+
+    /**
+     * Maximum batch of `SharedStrings` stored in memory.
+     * The batch size is 100.{@link Ehcache#BATCH_COUNT}
+     */
+    private Integer maxCacheActivateBatchCount;
 
     public SimpleReadCacheSelector() {
-        this(DEFAULT_MAX_USE_MAP_CACHE_SIZE, DEFAULT_MAX_EHCACHE_ACTIVATE_SIZE);
     }
 
-    public SimpleReadCacheSelector(long maxUseMapCacheSize, int maxCacheActivateSize) {
-        if (maxUseMapCacheSize <= 0) {
-            this.maxUseMapCacheSize = DEFAULT_MAX_USE_MAP_CACHE_SIZE;
-        } else {
-            this.maxUseMapCacheSize = maxUseMapCacheSize;
-        }
-        if (maxCacheActivateSize <= 0) {
-            this.maxCacheActivateSize = DEFAULT_MAX_EHCACHE_ACTIVATE_SIZE;
-        } else {
-            this.maxCacheActivateSize = maxCacheActivateSize;
-        }
+    /**
+     * Parameter maxCacheActivateSize has already been abandoned
+     *
+     * @param maxUseMapCacheSize
+     * @param maxCacheActivateSize
+     */
+    @Deprecated
+    public SimpleReadCacheSelector(Long maxUseMapCacheSize, Integer maxCacheActivateSize) {
+        this.maxUseMapCacheSize = maxUseMapCacheSize;
+        this.maxCacheActivateSize = maxCacheActivateSize;
     }
 
     @Override
@@ -68,6 +84,9 @@ public class SimpleReadCacheSelector implements ReadCacheSelector {
                 return new MapCache();
             }
         }
+        if (maxUseMapCacheSize == null) {
+            maxUseMapCacheSize = DEFAULT_MAX_USE_MAP_CACHE_SIZE;
+        }
         if (size < maxUseMapCacheSize * B2M) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Use map cache.size:{}", size);
@@ -77,6 +96,17 @@ public class SimpleReadCacheSelector implements ReadCacheSelector {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Use ehcache.size:{}", size);
         }
-        return new Ehcache(maxCacheActivateSize);
+
+        // In order to be compatible with the code
+        // If the user set up `maxCacheActivateSize`, then continue using it
+        if (maxCacheActivateSize != null) {
+            return new Ehcache(maxCacheActivateSize, maxCacheActivateBatchCount);
+        } else {
+            if (maxCacheActivateBatchCount == null) {
+                maxCacheActivateBatchCount = DEFAULT_MAX_EHCACHE_ACTIVATE_BATCH_COUNT;
+            }
+            return new Ehcache(maxCacheActivateSize, maxCacheActivateBatchCount);
+        }
+
     }
 }

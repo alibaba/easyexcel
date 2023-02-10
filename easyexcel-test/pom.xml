@@ -11,6 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <url>https://github.com/alibaba/easyexcel</url>
     <packaging>jar</packaging>
     <artifactId>easyexcel-test</artifactId>
     <name>easyexcel-test</name>
@@ -31,8 +32,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

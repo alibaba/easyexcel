@@ -3,14 +3,16 @@ package com.alibaba.easyexcel.test.core.converter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.easyexcel.test.util.TestUtil;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.util.DateUtils;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -32,12 +34,9 @@ public class ConverterDataListener extends AnalysisEventListener<ConverterReadDa
     public void doAfterAllAnalysed(AnalysisContext context) {
         Assert.assertEquals(list.size(), 1);
         ConverterReadData data = list.get(0);
-        try {
-            Assert.assertEquals(DateUtils.parseDate("2020-01-01 01:01:01"), data.getDate());
-        } catch (ParseException e) {
-            throw new ExcelCommonException("Test Exception", e);
-        }
-        Assert.assertEquals(DateUtils.parseLocalDateTime("2020-01-01 01:01:01", null, null), data.getLocalDateTime());
+        Assert.assertEquals(TestUtil.TEST_DATE, data.getDate());
+        Assert.assertEquals(TestUtil.TEST_LOCAL_DATE, data.getLocalDate());
+        Assert.assertEquals(TestUtil.TEST_LOCAL_DATE_TIME, data.getLocalDateTime());
         Assert.assertEquals(data.getBooleanData(), Boolean.TRUE);
         Assert.assertEquals(data.getBigDecimal().doubleValue(), BigDecimal.ONE.doubleValue(), 0.0);
         Assert.assertEquals(data.getBigInteger().intValue(), BigInteger.ONE.intValue(), 0.0);
