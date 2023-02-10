@@ -2,6 +2,7 @@ package com.alibaba.excel.cache;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.alibaba.excel.context.AnalysisContext;
@@ -79,7 +80,8 @@ public class Ehcache implements ReadCache {
     static {
         CACHE_PATH_FILE = FileUtils.createCacheTmpFile();
         FILE_CACHE_MANAGER =
-            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(CACHE_PATH_FILE)).build(true);
+            CacheManagerBuilder.newCacheManagerBuilder().with(CacheManagerBuilder.persistence(CACHE_PATH_FILE)).build(
+                true);
         ACTIVE_CACHE_MANAGER = CacheManagerBuilder.newCacheManagerBuilder().build(true);
         FILE_CACHE_CONFIGURATION = CacheConfigurationBuilder
             .newCacheConfigurationBuilder(Integer.class, ArrayList.class, ResourcePoolsBuilder.newResourcePoolsBuilder()
@@ -92,13 +94,16 @@ public class Ehcache implements ReadCache {
         try {
             fileCache = FILE_CACHE_MANAGER.createCache(cacheAlias, FILE_CACHE_CONFIGURATION);
         } catch (IllegalStateException e) {
-            //fix Issue #2693,重建缓存文件夹
+            //fix Issue #2693,Temporary files may be deleted if there is no operation for a long time, so they need
+            // to be recreated.
             if (CACHE_PATH_FILE.exists()) {
                 throw e;
             }
             synchronized (Ehcache.class) {
-                if (!CACHE_PATH_FILE.exists()){
-                    log.debug("cache file dir is not exist retry create");
+                if (!CACHE_PATH_FILE.exists()) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("cache file dir is not exist retry create");
+                    }
                     FileUtils.createDirectory(CACHE_PATH_FILE);
                 }
             }

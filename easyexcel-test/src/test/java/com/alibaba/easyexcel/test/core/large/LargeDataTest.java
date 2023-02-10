@@ -133,18 +133,7 @@ public class LargeDataTest {
         LOGGER.info("{} vs {}", cost, costPoi);
         Assert.assertTrue(costPoi * 2 > cost);
     }
-    @Test
-    public void t05Read() throws Exception {
-        long start = System.currentTimeMillis();
-        EasyExcel.read(TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx", LargeData.class,
-            new LargeDataListener()).headRowNumber(2).sheet().doRead();
-        LOGGER.info("Large data total time spent:{}", System.currentTimeMillis() - start);
-        FileUtils.delete(new File(System.getProperty(TempFile.JAVA_IO_TMPDIR)));
-        start = System.currentTimeMillis();
-        EasyExcel.read(TestFileUtil.getPath() + "large" + File.separator + "large07.xlsx", LargeData.class,
-            new LargeDataListener()).headRowNumber(2).sheet().doRead();
-        LOGGER.info("Large data total time spent:{}", System.currentTimeMillis() - start);
-    }
+
     private List<LargeData> data() {
         List<LargeData> list = new ArrayList<>();
         int size = i + 100;

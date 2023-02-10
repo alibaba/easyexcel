@@ -2,6 +2,7 @@
 
 * 兼容`LocalDate` [Issue #2908](https://github.com/alibaba/easyexcel/issues/2908)
 * 优化大文件内存存储，减少内存占用 [Issue #2657](https://github.com/alibaba/easyexcel/issues/2657)
+* 在临时文件被删除的情况下能正常的读取 [Issue #2693](https://github.com/alibaba/easyexcel/issues/2693)
 
 # 3.2.0
 
