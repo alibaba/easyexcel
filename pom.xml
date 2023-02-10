@@ -20,7 +20,7 @@
 
 
     <properties>
-        <revision>3.1.0</revision>
+        <revision>3.2.0</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <gpg.skip>true</gpg.skip>
@@ -229,6 +229,11 @@
                     <artifactId>flatten-maven-plugin</artifactId>
                     <version>1.2.7</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.13</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -307,6 +312,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <!-- Configuration GPG plug-ins don't tip password -->
+                <configuration>
+                    <gpgArguments>
+                        <argument>--pinentry-mode</argument>
+                        <argument>loopback</argument>
+                    </gpgArguments>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -388,6 +400,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Publish package to the Maven Central Repository -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
             </plugin>
         </plugins>
     </build>

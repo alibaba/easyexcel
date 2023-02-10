@@ -14,28 +14,28 @@
 #    limitations under the License.
 #
 
-name: Java CI
+name: Publish package to the Maven Central Repository
 
-on: [push, pull_request]
+
+
+on:
+  release:
+    types: [created]
 
 jobs:
-  test:
+  publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [ 8, 11, 17]
-        distribution: [ 'adopt' ]
-      fail-fast: false
-      max-parallel: 4
-    name: Test JDK ${{ matrix.java }}
-
     steps:
-      - uses: actions/checkout@main
-      - name: Set up JDK
+      - name: Check out Git repository
+        uses: actions/checkout@main
+      - name: Install Java and Maven
         uses: actions/setup-java@main
         with:
-          java-version: ${{ matrix.java }}
-          distribution: ${{ matrix.distribution }}
+          java-version: 8
+          distribution: 'adopt'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:
@@ -43,11 +43,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-m2
-      - name: Chmod
-        run:  chmod +x mvnw
-      - name: Test with Maven
-        run: ./mvnw test -B -Dmaven.test.skip=false
-      - name: Maven Build
-        run: ./mvnw install -B -V
-      - name: Java Doc
-        run: ./mvnw javadoc:javadoc
+      - id: install-secret-key
+        name: Install GPG secret key
+        run: |
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
+      - name: Publish package
+        run: |
+          mvn --batch-mode -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}  clean deploy -Dmaven.test.skip=true -Dmaven.javadoc.skip=false -Dgpg.skip=false
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}

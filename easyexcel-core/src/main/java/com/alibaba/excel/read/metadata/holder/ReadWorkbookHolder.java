@@ -14,6 +14,7 @@ import com.alibaba.excel.cache.selector.SimpleReadCacheSelector;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.enums.HolderEnum;
+import com.alibaba.excel.enums.ReadDefaultReturnEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -64,10 +65,20 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
      * if false, Will transfer 'inputStream' to temporary files to improve efficiency
      */
     private Boolean mandatoryUseInputStream;
+
     /**
      * Default true
      */
     private Boolean autoCloseStream;
+
+    /**
+     * Read not to {@code com.alibaba.excel.metadata.BasicParameter#clazz} value, the default will return type.
+     * Is only effective when set `useDefaultListener=true` or `useDefaultListener=null`.
+     *
+     * @see ReadDefaultReturnEnum
+     */
+    private ReadDefaultReturnEnum readDefaultReturn;
+
     /**
      * Excel type
      */
@@ -144,6 +155,12 @@ public class ReadWorkbookHolder extends AbstractReadHolder {
             this.autoCloseStream = Boolean.TRUE;
         } else {
             this.autoCloseStream = readWorkbook.getAutoCloseStream();
+        }
+
+        if (readWorkbook.getReadDefaultReturn() == null) {
+            this.readDefaultReturn = ReadDefaultReturnEnum.STRING;
+        } else {
+            this.readDefaultReturn = readWorkbook.getReadDefaultReturn();
         }
 
         this.customObject = readWorkbook.getCustomObject();

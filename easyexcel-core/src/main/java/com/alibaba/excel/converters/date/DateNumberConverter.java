@@ -9,6 +9,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.DateUtils;
 
 import org.apache.poi.ss.usermodel.DateUtil;
 
@@ -33,11 +34,11 @@ public class DateNumberConverter implements Converter<Date> {
     public Date convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (contentProperty == null || contentProperty.getDateTimeFormatProperty() == null) {
-            return DateUtil.getJavaDate(cellData.getNumberValue().doubleValue(),
-                globalConfiguration.getUse1904windowing(), null);
+            return DateUtils.getJavaDate(cellData.getNumberValue().doubleValue(),
+                globalConfiguration.getUse1904windowing());
         } else {
-            return DateUtil.getJavaDate(cellData.getNumberValue().doubleValue(),
-                contentProperty.getDateTimeFormatProperty().getUse1904windowing(), null);
+            return DateUtils.getJavaDate(cellData.getNumberValue().doubleValue(),
+                contentProperty.getDateTimeFormatProperty().getUse1904windowing());
         }
     }
 

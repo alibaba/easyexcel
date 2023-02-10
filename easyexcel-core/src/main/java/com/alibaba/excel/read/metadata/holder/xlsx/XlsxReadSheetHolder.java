@@ -10,6 +10,7 @@ import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.poi.openxml4j.opc.PackageRelationshipCollection;
 
 /**
  * sheet holder
@@ -36,9 +37,16 @@ public class XlsxReadSheetHolder extends ReadSheetHolder {
      * Formula for current label.
      */
     private StringBuilder tempFormula;
+    /**
+     * excel Relationship
+     */
+    private PackageRelationshipCollection packageRelationshipCollection;
 
     public XlsxReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
         super(readSheet, readWorkbookHolder);
         this.tagDeque = new LinkedList<String>();
+        packageRelationshipCollection
+            = ((XlsxReadWorkbookHolder)readWorkbookHolder).getPackageRelationshipCollectionMap().get(
+            readSheet.getSheetNo());
     }
 }

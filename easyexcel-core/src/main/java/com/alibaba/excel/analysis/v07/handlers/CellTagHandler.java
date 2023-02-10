@@ -2,6 +2,7 @@ package com.alibaba.excel.analysis.v07.handlers;
 
 import java.math.BigDecimal;
 
+import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -88,7 +89,9 @@ public class CellTagHandler extends AbstractXlsxTagHandler {
                     break;
                 }
                 tempCellData.setType(CellDataTypeEnum.NUMBER);
-                tempCellData.setNumberValue(BigDecimal.valueOf(Double.parseDouble(tempDataString)));
+                tempCellData.setOriginalNumberValue(new BigDecimal(tempDataString));
+                tempCellData.setNumberValue(
+                    tempCellData.getOriginalNumberValue().round(EasyExcelConstants.EXCEL_MATH_CONTEXT));
                 break;
             default:
                 throw new IllegalStateException("Cannot set values now");

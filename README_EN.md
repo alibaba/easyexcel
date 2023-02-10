@@ -3,6 +3,7 @@ EasyExcel
 [![Build Status](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml?query=branch%3Amaster)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/easyexcel/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/easyexcel)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![](https://img.shields.io/badge/EasyExcel-Check%20Your%20Contribution-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=easyexcel)
 
 [Communication Group 1 in QQ(Full): 662022184](https://jq.qq.com/?_wv=1027&k=1T21jJxh)  
 [Communication Group 2 in QQ(Full): 1097936804](https://jq.qq.com/?_wv=1027&k=j5zEy6Xl)  
