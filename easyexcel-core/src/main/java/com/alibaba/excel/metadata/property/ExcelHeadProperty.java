@@ -1,16 +1,14 @@
 package com.alibaba.excel.metadata.property;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.metadata.entity.ExcelExportEntity;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.FieldUtils;
 import com.alibaba.excel.util.MapUtils;
@@ -62,21 +60,41 @@ public class ExcelHeadProperty {
         ignoreMap = MapUtils.newHashMap();
         headKind = HeadKindEnum.NONE;
         headRowNumber = 0;
-        if (head != null && !head.isEmpty()) {
-            int headIndex = 0;
-            for (int i = 0; i < head.size(); i++) {
-                if (holder instanceof AbstractWriteHolder) {
-                    if (((AbstractWriteHolder)holder).ignore(null, i)) {
-                        continue;
-                    }
-                }
-                headMap.put(headIndex, new Head(headIndex, null, null, head.get(i), Boolean.FALSE, Boolean.TRUE));
-                headIndex++;
+
+        if (headClazz == null) {
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("The current sheet/table is not specified with headClazz");
             }
-            headKind = HeadKindEnum.STRING;
+            return;
         }
-        // convert headClazz to head
-        initColumnProperties(holder);
+
+        // dynamic column
+        if (holder instanceof AbstractWriteHolder &&
+            (!CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getDynamicColumnFieldNames())
+                || !CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getDynamicColumnEntities()))) {
+            if (!CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getDynamicColumnFieldNames())) {
+                initColumnNameProperties(((AbstractWriteHolder) holder).getDynamicColumnFieldNames());
+            }
+            if (!CollectionUtils.isEmpty(((AbstractWriteHolder) holder).getDynamicColumnEntities())) {
+                initColumnEntityProperties(((AbstractWriteHolder) holder).getDynamicColumnEntities());
+            }
+        } else {
+            if (head != null && !head.isEmpty()) {
+                int headIndex = 0;
+                for (int i = 0; i < head.size(); i++) {
+                    if (holder instanceof AbstractWriteHolder) {
+                        if (((AbstractWriteHolder)holder).ignore(null, i)) {
+                            continue;
+                        }
+                    }
+                    headMap.put(headIndex, new Head(headIndex, null, null, head.get(i), Boolean.FALSE, Boolean.TRUE));
+                    headIndex++;
+                }
+                headKind = HeadKindEnum.STRING;
+            }
+            // convert headClazz to head
+            initColumnProperties(holder);
+        }
 
         initHeadRowNumber();
         if (LOGGER.isDebugEnabled()) {
@@ -100,6 +118,57 @@ public class ExcelHeadProperty {
                 for (int i = 0; i < lack; i++) {
                     list.add(list.get(last));
                 }
+            }
+        }
+    }
+
+    private void initColumnNameProperties(Collection<String> dynamicColumnFieldNames) {
+        headKind = HeadKindEnum.CLASS;
+        int i = 0;
+        List<Field> fields = FieldUtils.getAllFields(headClazz);
+
+        for (String filedName : dynamicColumnFieldNames) {
+            for (Field field : fields) {
+                if (filedName.equals(field.getName())) {
+                    initOneColumnProperty(i++, field, true);
+                    break;
+                }
+            }
+        }
+
+        if (headMap.size() == fields.size()) {
+            return;
+        }
+
+        for (Field field : fields) {
+            if (!dynamicColumnFieldNames.contains(field.getName())) {
+                ignoreMap.put(field.getName(), field);
+            }
+        }
+    }
+
+    private void initColumnEntityProperties(Collection<ExcelExportEntity> dynamicColumnEntities) {
+        headKind = HeadKindEnum.CLASS;
+        int i = 0;
+        List<Field> fields = FieldUtils.getAllFields(headClazz);
+
+        for (ExcelExportEntity entity : dynamicColumnEntities) {
+            for (Field field : fields) {
+                if (field.getName().equals(entity.getKey())) {
+                    initOneColumnProperty(i++, field, entity);
+                    break;
+                }
+            }
+        }
+
+        if (headMap.size() == fields.size()) {
+            return;
+        }
+
+        Set<String> keyList = dynamicColumnEntities.stream().map(ExcelExportEntity::getKey).collect(Collectors.toSet());
+        for (Field field : fields) {
+            if (!keyList.contains(field.getName())) {
+                ignoreMap.put(field.getName(), field);
             }
         }
     }
@@ -150,6 +219,18 @@ public class ExcelHeadProperty {
             }
         }
         Head head = new Head(index, field, fieldName, tmpHeadList, forceIndex, !notForceName);
+        headMap.put(index, head);
+    }
+
+    /**
+     * Initialization column property
+     *
+     * @param index map index
+     * @param field the current field
+     * @param entity ExcelExportEntity
+     */
+    private void initOneColumnProperty(int index, Field field, ExcelExportEntity entity) {
+        Head head = new Head(index, field, entity.getKey(), entity.getName());
         headMap.put(index, head);
     }
 

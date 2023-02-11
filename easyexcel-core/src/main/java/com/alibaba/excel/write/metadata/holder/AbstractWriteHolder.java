@@ -17,6 +17,7 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.Head;
+import com.alibaba.excel.metadata.entity.ExcelExportEntity;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
@@ -94,6 +95,14 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      * Only output the custom columns.
      */
     private Collection<String> includeColumnFieldNames;
+    /**
+     * Dynamic column field name
+     */
+    private Collection<String> dynamicColumnFieldNames;
+    /**
+     * Dynamic column entity
+     */
+    private Collection<ExcelExportEntity> dynamicColumnEntities;
 
     /**
      * Write handler
@@ -198,6 +207,16 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             this.includeColumnIndexes = parentAbstractWriteHolder.getIncludeColumnIndexes();
         } else {
             this.includeColumnIndexes = writeBasicParameter.getIncludeColumnIndexes();
+        }
+        if (writeBasicParameter.getDynamicColumnFieldNames() == null && parentAbstractWriteHolder != null) {
+            this.dynamicColumnFieldNames = parentAbstractWriteHolder.getDynamicColumnFieldNames();
+        } else {
+            this.dynamicColumnFieldNames = writeBasicParameter.getDynamicColumnFieldNames();
+        }
+        if (writeBasicParameter.getDynamicColumnEntities() == null && parentAbstractWriteHolder != null) {
+            this.dynamicColumnEntities = parentAbstractWriteHolder.getDynamicColumnEntities();
+        } else {
+            this.dynamicColumnEntities = writeBasicParameter.getDynamicColumnEntities();
         }
 
         // Initialization property

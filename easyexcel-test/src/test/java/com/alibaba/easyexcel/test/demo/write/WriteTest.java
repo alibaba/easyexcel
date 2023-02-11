@@ -27,6 +27,7 @@ import com.alibaba.excel.metadata.data.ImageData;
 import com.alibaba.excel.metadata.data.ImageData.ImageType;
 import com.alibaba.excel.metadata.data.RichTextStringData;
 import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.metadata.entity.ExcelExportEntity;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
@@ -459,7 +460,7 @@ public class WriteTest {
         // 背景设置为红色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)20);
+        headWriteFont.setFontHeightInPoints((short) 20);
         headWriteCellStyle.setWriteFont(headWriteFont);
         // 内容的策略
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
@@ -469,7 +470,7 @@ public class WriteTest {
         contentWriteCellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
         WriteFont contentWriteFont = new WriteFont();
         // 字体大小
-        contentWriteFont.setFontHeightInPoints((short)20);
+        contentWriteFont.setFontHeightInPoints((short) 20);
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
@@ -702,6 +703,48 @@ public class WriteTest {
         String fileName = TestFileUtil.getPath() + "noModelWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
+    }
+
+    /**
+     * 实时生成列写入, 简化 {@link this#dynamicHeadWrite()} 的数据结构
+     * <p>相较于 dynamicHeadWrite() 方法, 此方法无需双层集合, 适用于简单表格的导出.
+     * <p>表格样式仍然基于数据类的注解属性, 在此基础上可以指定只导出指定列, 并且导出列的顺序由集合的有序性决定.
+     */
+    @Test
+    public void dynamicColumnFieldWrite() {
+        String fileName = TestFileUtil.getPath() + "dynamicColumnFieldWrite" + System.currentTimeMillis() + ".xlsx";
+
+        List<String> fieldNames = new ArrayList<>();
+        fieldNames.add("date");
+        fieldNames.add("string");
+
+        EasyExcel.write(fileName, DemoData.class)
+            .setDynamicColumnFieldNames(fieldNames)
+            .sheet("测试实时生成列")
+            .doWrite(data());
+
+        System.out.println(fileName);
+    }
+
+    /**
+     * 动态列的写入, 基于{@link ExcelExportEntity}实体集合实现
+     * <p>表格样式仍然基于数据类的注解属性, 在此基础上可以指定导出列以及列名称, 并且导出列的顺序由集合的有序性决定.
+     * <p>一般用于导出列名可以由用户编辑的业务场景.
+     */
+    @Test
+    public void dynamicColumnEntityWrite() {
+        String fileName = TestFileUtil.getPath() + "dynamicColumnEntityWrite" + System.currentTimeMillis() + ".xlsx";
+
+        List<ExcelExportEntity> fieldEntities = new ArrayList<>();
+        fieldEntities.add(new ExcelExportEntity("string", "字符串"));
+        fieldEntities.add(new ExcelExportEntity("date", "日期"));
+
+        EasyExcel.write(fileName, DemoData.class)
+            .setDynamicColumnEntities(fieldEntities)
+            .sheet("测试动态实体列")
+            .doWrite(data());
+
+        System.out.println(fileName);
     }
 
     private List<LongestMatchColumnWidthData> dataLong() {

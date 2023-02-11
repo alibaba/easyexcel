@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.alibaba.excel.metadata.BasicParameter;
+import com.alibaba.excel.metadata.entity.ExcelExportEntity;
 import com.alibaba.excel.write.handler.WriteHandler;
 
 import lombok.EqualsAndHashCode;
@@ -56,4 +57,13 @@ public class WriteBasicParameter extends BasicParameter {
      * Only output the custom columns.
      */
     private Collection<String> includeColumnFieldNames;
+    /**
+     * Dynamic column field name
+     */
+    private Collection<String> dynamicColumnFieldNames;
+
+    /**
+     * Dynamic column entity
+     */
+    private Collection<ExcelExportEntity> dynamicColumnEntities;
 }
