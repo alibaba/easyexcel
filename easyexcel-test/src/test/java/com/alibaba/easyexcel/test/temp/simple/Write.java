@@ -10,6 +10,8 @@ import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
@@ -145,4 +147,31 @@ public class Write {
         return list;
     }
 
+
+
+    @Test
+    public void read(){
+        List<Map<Integer, Object>> list = new ArrayList<>();
+        String name = "/Users/gongxuanzhang/Downloads/test.xls";
+        EasyExcel.read(name, new I(list)).sheet().headRowNumber(3).doRead();
+    }
+
+    public static class I implements ReadListener<Map<Integer,Object>> {
+
+        private final List<Map<Integer, Object>> list;
+
+        I(List<Map<Integer, Object>> list){
+            this.list = list;
+        }
+        @Override
+        public void invoke(Map<Integer, Object> data, AnalysisContext context) {
+            System.out.println(data);
+            list.add(data);
+        }
+
+        @Override
+        public void doAfterAllAnalysed(AnalysisContext context) {
+
+        }
+    }
 }

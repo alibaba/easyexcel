@@ -24,7 +24,7 @@ public enum BooleanEnum {
     FALSE(Boolean.FALSE),
     ;
 
-    Boolean booleanValue;
+    private final Boolean booleanValue;
 
     BooleanEnum(Boolean booleanValue) {
         this.booleanValue = booleanValue;

@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSON;
  */
 public class ComplexDataListener extends AnalysisEventListener<ComplexHeadData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ComplexHeadData.class);
-    List<ComplexHeadData> list = new ArrayList<ComplexHeadData>();
+    private final List<ComplexHeadData> list = new ArrayList<>();
 
     @Override
     public void invoke(ComplexHeadData data, AnalysisContext context) {

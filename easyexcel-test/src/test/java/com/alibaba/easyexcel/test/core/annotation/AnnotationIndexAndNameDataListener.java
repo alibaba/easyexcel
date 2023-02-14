@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSON;
  */
 public class AnnotationIndexAndNameDataListener extends AnalysisEventListener<AnnotationIndexAndNameData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationIndexAndNameDataListener.class);
-    List<AnnotationIndexAndNameData> list = new ArrayList<AnnotationIndexAndNameData>();
+    private final List<AnnotationIndexAndNameData> list = new ArrayList<>();
 
     @Override
     public void invoke(AnnotationIndexAndNameData data, AnalysisContext context) {

@@ -1,12 +1,13 @@
 package com.alibaba.excel.read.listener;
 
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
+import com.alibaba.excel.metadata.CellExtra;
+import com.alibaba.excel.util.ListUtils;
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.List;
 import java.util.function.Consumer;
-
-import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.util.ListUtils;
-
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * page read listener
@@ -47,4 +48,10 @@ public class PageReadListener<T> implements ReadListener<T> {
         }
     }
 
+    @Override
+    public void extra(CellExtra extra, AnalysisContext context) {
+        if (extra.getType() == CellExtraTypeEnum.MERGE) {
+            System.out.println(11);
+        }
+    }
 }

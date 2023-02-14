@@ -1,6 +1,10 @@
 package com.alibaba.easyexcel.test.demo.fill;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +20,17 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -46,13 +61,14 @@ public class FillTest {
         fillData.setNumber(5.2);
         EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(fillData);
 
-        // 方案2 根据Map填充
-        fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";
-        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
-        Map<String, Object> map = MapUtils.newHashMap();
-        map.put("name", "张三");
-        map.put("number", 5.2);
-        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(map);
+//        // 方案2 根据Map填充
+//        fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";
+//        // 这里 会填充到第一个sheet， 然后文件流会自动关闭
+//        Map<String, Object> map = MapUtils.newHashMap();
+//        map.put("name", "张三");
+//        map.put("number", 5.2);
+//        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(map);
+        System.out.println(fileName);
     }
 
     /**
@@ -70,26 +86,38 @@ public class FillTest {
         // 方案1 一下子全部放到内存里面 并填充
         String fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
         // 这里 会填充到第一个sheet， 然后文件流会自动关闭
-        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(data());
+        Map<String,String> map = new HashMap<>();
+        map.put("name","张三1");
+        map.put("number","年龄1");
 
-        // 方案2 分多次 填充 会使用文件缓存（省内存） jdk8
-        // since: 3.0.0-beta1
-        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName)
-            .withTemplate(templateFileName)
-            .sheet()
-            .doFill(() -> {
-                // 分页查询数据
-                return data();
-            });
+        Map<String,String> map2 = new HashMap<>();
+        map2.put("name","张三2");
+        map2.put("number","年龄2");
+        map2.put("date","20121212");
+        List<Map<String,String>> list = new ArrayList<>();
+        list.add(map);
+        list.add(map2);
 
-        // 方案3 分多次 填充 会使用文件缓存（省内存）
-        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
-        try (ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build()) {
-            WriteSheet writeSheet = EasyExcel.writerSheet().build();
-            excelWriter.fill(data(), writeSheet);
-            excelWriter.fill(data(), writeSheet);
-        }
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(list);
+        System.out.println(fileName);
+//        // 方案2 分多次 填充 会使用文件缓存（省内存） jdk8
+//        // since: 3.0.0-beta1
+//        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+//        EasyExcel.write(fileName)
+//            .withTemplate(templateFileName)
+//            .sheet()
+//            .doFill(() -> {
+//                // 分页查询数据
+//                return data();
+//            });
+//
+//        // 方案3 分多次 填充 会使用文件缓存（省内存）
+//        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
+//        try (ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build()) {
+//            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+//            excelWriter.fill(data(), writeSheet);
+//            excelWriter.fill(data(), writeSheet);
+//        }
     }
 
     /**
@@ -230,6 +258,9 @@ public class FillTest {
 
     private List<FillData> data() {
         List<FillData> list = ListUtils.newArrayList();
+        FillData firstData = new FillData();
+        firstData.setName("李四");
+        list.add(firstData);
         for (int i = 0; i < 10; i++) {
             FillData fillData = new FillData();
             list.add(fillData);
@@ -238,5 +269,20 @@ public class FillTest {
             fillData.setDate(new Date());
         }
         return list;
+    }
+
+    @Test
+    public void a() throws IOException, InvalidFormatException {
+        File file = new File("/Users/gongxuanzhang/Desktop/listFill1675236421725.xlsx");
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook xssfWorkbook = WorkbookFactory.create(fileInputStream);
+        fileInputStream.close();
+        Sheet sheetAt = xssfWorkbook.getSheetAt(0);
+        Row row = sheetAt.getRow(0);
+        Cell cell = row.getCell(0);
+        cell.setCellValue("bbbb");
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        xssfWorkbook.write(fileOutputStream);
+        fileOutputStream.flush();
     }
 }

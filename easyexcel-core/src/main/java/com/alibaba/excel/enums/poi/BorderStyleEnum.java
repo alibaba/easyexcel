@@ -87,7 +87,7 @@ public enum BorderStyleEnum {
      */
     SLANTED_DASH_DOT(BorderStyle.SLANTED_DASH_DOT);
 
-    BorderStyle poiBorderStyle;
+    private final BorderStyle poiBorderStyle;
 
     BorderStyleEnum(BorderStyle poiBorderStyle) {
         this.poiBorderStyle = poiBorderStyle;
