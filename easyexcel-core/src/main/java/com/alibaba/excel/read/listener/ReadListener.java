@@ -36,7 +36,7 @@ public interface ReadListener<T> extends Listener {
     /**
      * When analysis one row trigger invoke function.
      *
-     * @param data    one row value. Is is same as {@link AnalysisContext#readRowHolder()}
+     * @param data    one row value. It is same as {@link AnalysisContext#readRowHolder()}
      * @param context analysis context
      */
     void invoke(T data, AnalysisContext context);
