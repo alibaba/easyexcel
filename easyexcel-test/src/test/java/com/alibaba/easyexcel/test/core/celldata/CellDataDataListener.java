@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CellDataDataListener extends AnalysisEventListener<CellDataReadData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CellDataDataListener.class);
-    List<CellDataReadData> list = new ArrayList<>();
+    private final List<CellDataReadData> list = new ArrayList<>();
 
     @Override
     public void invoke(CellDataReadData data, AnalysisContext context) {

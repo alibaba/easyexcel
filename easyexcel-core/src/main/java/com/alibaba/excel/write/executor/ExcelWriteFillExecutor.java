@@ -208,6 +208,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 writeContext, null, analysisCell.getRowIndex(), null, analysisCell.getColumnIndex(),
                 relativeRowIndex, Boolean.FALSE, ExcelContentProperty.EMPTY);
 
+            System.out.println("查看"+cellWriteHandlerContext.getRowIndex()+"  "+cellWriteHandlerContext.getColumnIndex());
+
             if (analysisCell.getOnlyOneVariable()) {
                 String variable = analysisCell.getVariableList().get(0);
                 if (!dataKeySet.contains(variable)) {
@@ -223,6 +225,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 cellWriteHandlerContext.setOriginalFieldClass(FieldUtils.getFieldClass(dataMap, variable, value));
 
                 converterAndSet(cellWriteHandlerContext);
+//                System.out.println("cellWriteHandlerContext.getOriginalValue() = " + cellWriteHandlerContext.getOriginalValue());
+//                System.out.println("查看"+cellWriteHandlerContext.getRowIndex()+"  "+cellWriteHandlerContext.getColumnIndex());
                 WriteCellData<?> cellData = cellWriteHandlerContext.getFirstCellData();
 
                 // Restyle
