@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSON;
  */
 public class EncryptDataListener extends AnalysisEventListener<EncryptData> {
     private static final Logger LOGGER = LoggerFactory.getLogger(EncryptDataListener.class);
-    List<EncryptData> list = new ArrayList<EncryptData>();
+    private final List<EncryptData> list = new ArrayList<>();
 
     @Override
     public void invoke(EncryptData data, AnalysisContext context) {
