@@ -1,16 +1,24 @@
 package com.alibaba.easyexcel.test.core.compatibility;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.easyexcel.test.core.large.LargeData;
+import com.alibaba.easyexcel.test.core.large.LargeDataListener;
+import com.alibaba.easyexcel.test.core.simple.SimpleData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.cache.Ehcache;
 import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.enums.ReadDefaultReturnEnum;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.excel.util.FileUtils;
+import com.alibaba.fastjson2.JSON;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.util.TempFile;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -116,4 +124,37 @@ public class CompatibilityTest {
         Assert.assertEquals("24.20", list.get(0).get(11));
     }
 
+    @Test
+    public void t08() {
+        // https://github.com/alibaba/easyexcel/issues/2693
+        // Temporary files may be deleted if there is no operation for a long time, so they need to be recreated.
+        File file = TestFileUtil.createNewFile("compatibility/t08.xlsx");
+        EasyExcel.write(file, SimpleData.class)
+            .sheet()
+            .doWrite(data());
+
+        List<Map<Integer, Object>> list = EasyExcel.read(file)
+            .readCache(new Ehcache(null, 20))
+            .sheet()
+            .doReadSync();
+        Assert.assertEquals(10L, list.size());
+
+        FileUtils.delete(new File(System.getProperty(TempFile.JAVA_IO_TMPDIR)));
+
+        list = EasyExcel.read(file)
+            .readCache(new Ehcache(null, 20))
+            .sheet()
+            .doReadSync();
+        Assert.assertEquals(10L, list.size());
+    }
+
+    private List<SimpleData> data() {
+        List<SimpleData> list = new ArrayList<SimpleData>();
+        for (int i = 0; i < 10; i++) {
+            SimpleData simpleData = new SimpleData();
+            simpleData.setName("姓名" + i);
+            list.add(simpleData);
+        }
+        return list;
+    }
 }

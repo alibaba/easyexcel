@@ -5,11 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.alibaba.easyexcel.test.demo.read.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -20,6 +24,7 @@ import org.junit.runners.MethodSorters;
  * @author Jiaju Zhuang
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Slf4j
 public class SimpleDataTest {
 
     private static File file07;
@@ -90,8 +95,20 @@ public class SimpleDataTest {
 
     @Test
     public void t21SheetNameRead07() {
-        EasyExcel.read(TestFileUtil.readFile("simple" + File.separator + "simple07.xlsx"), SimpleData.class,
-            new SimpleDataSheetNameListener()).sheet("simple").doRead();
+        List<Map<Integer, Object>> list = EasyExcel.read(
+                TestFileUtil.readFile("simple" + File.separator + "simple07.xlsx"))
+            .sheet("simple")
+            .doReadSync();
+        Assert.assertEquals(1, list.size());
+    }
+
+    @Test
+    public void t22PageReadListener07() {
+        EasyExcel.read(file07, SimpleData.class,
+                new PageReadListener<SimpleData>(dataList -> {
+                    Assert.assertEquals(5, dataList.size());
+                }, 5))
+            .sheet().doRead();
     }
 
     private void synchronousRead(File file) {

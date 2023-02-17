@@ -64,6 +64,7 @@ public class FillTest {
     public void listFill() {
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
         // 填充list 的时候还要注意 模板中{.} 多了个点 表示list
+        // 如果填充list的对象是map,必须包涵所有list的key,哪怕数据为null，必须使用map.put(key,null)
         String templateFileName =
             TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "list.xlsx";
 
