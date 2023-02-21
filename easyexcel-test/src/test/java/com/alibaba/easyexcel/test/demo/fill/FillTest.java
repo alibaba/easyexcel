@@ -73,18 +73,7 @@ public class FillTest {
         // 这里 会填充到第一个sheet， 然后文件流会自动关闭
         EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(data());
 
-        // 方案2 分多次 填充 会使用文件缓存（省内存） jdk8
-        // since: 3.0.0-beta1
-        fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
-        EasyExcel.write(fileName)
-            .withTemplate(templateFileName)
-            .sheet()
-            .doFill(() -> {
-                // 分页查询数据
-                return data();
-            });
-
-        // 方案3 分多次 填充 会使用文件缓存（省内存）
+        // 方案2 分多次 填充 会使用文件缓存（省内存）
         fileName = TestFileUtil.getPath() + "listFill" + System.currentTimeMillis() + ".xlsx";
         try (ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet().build();
