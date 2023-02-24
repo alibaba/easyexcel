@@ -11,11 +11,14 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Excel readers are all read in event mode.
  *
  * @author jipengfei
  */
+@Slf4j
 public class ExcelReader implements Closeable {
 
     /**
@@ -103,5 +106,18 @@ public class ExcelReader implements Closeable {
     @Override
     public void close() {
         finish();
+    }
+
+    /**
+     * Prevents calls to {@link #finish} from freeing the cache
+     *
+     */
+    @Override
+    protected void finalize() {
+        try {
+            finish();
+        } catch (Throwable e) {
+            log.warn("Destroy object failed", e);
+        }
     }
 }

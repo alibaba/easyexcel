@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  */
 public class PageReadListener<T> implements ReadListener<T> {
     /**
-     * Single handle the amount of data
+     * Defuault single handle the amount of data
      */
     public static int BATCH_COUNT = 100;
     /**
@@ -28,16 +28,26 @@ public class PageReadListener<T> implements ReadListener<T> {
      */
     private final Consumer<List<T>> consumer;
 
+    /**
+     * Single handle the amount of data
+     */
+    private final int batchCount;
+
     public PageReadListener(Consumer<List<T>> consumer) {
+        this(consumer, BATCH_COUNT);
+    }
+
+    public PageReadListener(Consumer<List<T>> consumer, int batchCount) {
         this.consumer = consumer;
+        this.batchCount = batchCount;
     }
 
     @Override
     public void invoke(T data, AnalysisContext context) {
         cachedDataList.add(data);
-        if (cachedDataList.size() >= BATCH_COUNT) {
+        if (cachedDataList.size() >= batchCount) {
             consumer.accept(cachedDataList);
-            cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+            cachedDataList = ListUtils.newArrayListWithExpectedSize(batchCount);
         }
     }
 

@@ -11,6 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <url>https://github.com/alibaba/easyexcel</url>
     <packaging>jar</packaging>
     <artifactId>easyexcel</artifactId>
     <name>easyexcel</name>

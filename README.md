@@ -3,6 +3,7 @@ EasyExcel
 [![Build Status](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml?query=branch%3Amaster)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/easyexcel/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/easyexcel)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![](https://img.shields.io/badge/EasyExcel-%E6%9F%A5%E7%9C%8B%E8%B4%A1%E7%8C%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=easyexcel)
 
 # JAVA解析Excel工具
 
@@ -14,7 +15,7 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 * github地址：[https://github.com/alibaba/easyexcel](https://github.com/alibaba/easyexcel)
 * gitee地址：[https://gitee.com/easyexcel/easyexcel](https://gitee.com/easyexcel/easyexcel)
 
-# 64M内存20秒读取75M(46W行25列)的Excel（3.0.2+版本）
+# 16M内存23秒读取75M(46W行25列)的Excel（3.2.1+版本）
 
 当然还有[极速模式](https://easyexcel.opensource.alibaba.com/qa/read#%E5%BC%80%E5%90%AF%E6%80%A5%E9%80%9F%E6%A8%A1%E5%BC%8F)
 能更快，但是内存占用会在100M多一点
@@ -27,7 +28,7 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.1</version>
 </dependency>
 ```
 

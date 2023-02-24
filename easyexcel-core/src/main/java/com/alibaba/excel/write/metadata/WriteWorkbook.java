@@ -49,7 +49,8 @@ public class WriteWorkbook extends WriteBasicParameter {
     private InputStream templateInputStream;
 
     /**
-     * Template file
+     * Template file.
+     * This file is read into memory, excessive cases can lead to OOM.
      * <p>
      * If 'inputStream' and 'file' all not empty, file first
      */
@@ -66,7 +67,6 @@ public class WriteWorkbook extends WriteBasicParameter {
      * Whether the encryption
      * <p>
      * WARRING:Encryption is when the entire file is read into memory, so it is very memory intensive.
-     *
      */
     private String password;
     /**

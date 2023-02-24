@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -59,6 +61,8 @@ public class DateUtils {
 
     public static String defaultDateFormat = DATE_FORMAT_19;
 
+    public static String defaultLocalDateFormat = DATE_FORMAT_10;
+
     private DateUtils() {}
 
     /**
@@ -92,6 +96,25 @@ public class DateUtils {
             return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat));
         } else {
             return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, local));
+        }
+    }
+
+    /**
+     * convert string to date
+     *
+     * @param dateString
+     * @param dateFormat
+     * @param local
+     * @return
+     */
+    public static LocalDate parseLocalDate(String dateString, String dateFormat, Locale local) {
+        if (StringUtils.isEmpty(dateFormat)) {
+            dateFormat = switchDateFormat(dateString);
+        }
+        if (local == null) {
+            return LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat));
+        } else {
+            return LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, local));
         }
     }
 
@@ -195,6 +218,38 @@ public class DateUtils {
      * @param dateFormat
      * @return
      */
+    public static String format(LocalDate date, String dateFormat) {
+        return format(date, dateFormat, null);
+    }
+
+    /**
+     * Format date
+     *
+     * @param date
+     * @param dateFormat
+     * @return
+     */
+    public static String format(LocalDate date, String dateFormat, Locale local) {
+        if (date == null) {
+            return null;
+        }
+        if (StringUtils.isEmpty(dateFormat)) {
+            dateFormat = defaultLocalDateFormat;
+        }
+        if (local == null) {
+            return date.format(DateTimeFormatter.ofPattern(dateFormat));
+        } else {
+            return date.format(DateTimeFormatter.ofPattern(dateFormat, local));
+        }
+    }
+
+    /**
+     * Format date
+     *
+     * @param date
+     * @param dateFormat
+     * @return
+     */
     public static String format(LocalDateTime date, String dateFormat) {
         return format(date, dateFormat, null);
     }
@@ -269,6 +324,25 @@ public class DateUtils {
      */
     public static LocalDateTime getLocalDateTime(double date, boolean use1904windowing) {
         return DateUtil.getLocalDateTime(date, use1904windowing, true);
+    }
+
+    /**
+     * Given an Excel date with either 1900 or 1904 date windowing,
+     * converts it to a java.time.LocalDate.
+     *
+     * Excel Dates and Times are stored without any timezone
+     * information. If you know (through other means) that your file
+     * uses a different TimeZone to the system default, you can use
+     * this version of the getJavaDate() method to handle it.
+     *
+     * @param date             The Excel date.
+     * @param use1904windowing true if date uses 1904 windowing,
+     *                         or false if using 1900 date windowing.
+     * @return Java representation of the date, or null if date is not a valid Excel date
+     */
+    public static LocalDate getLocalDate(double date, boolean use1904windowing) {
+        LocalDateTime localDateTime = getLocalDateTime(date, use1904windowing);
+        return localDateTime == null ? null : localDateTime.toLocalDate();
     }
 
     /**
