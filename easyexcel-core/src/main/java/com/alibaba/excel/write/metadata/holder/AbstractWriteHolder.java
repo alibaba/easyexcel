@@ -94,7 +94,10 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      * Only output the custom columns.
      */
     private Collection<String> includeColumnFieldNames;
-
+    /**
+     * head sorted use {@link #includeColumnFieldNames} sort
+     */
+    private Boolean forceIndex;
     /**
      * Write handler
      */
@@ -193,6 +196,11 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             this.includeColumnFieldNames = parentAbstractWriteHolder.getIncludeColumnFieldNames();
         } else {
             this.includeColumnFieldNames = writeBasicParameter.getIncludeColumnFieldNames();
+        }
+        if(writeBasicParameter.getForceIndex() == null && parentAbstractWriteHolder != null ){
+            this.forceIndex = parentAbstractWriteHolder.getForceIndex();
+        }else{
+            this.forceIndex = writeBasicParameter.getForceIndex();
         }
         if (writeBasicParameter.getIncludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
             this.includeColumnIndexes = parentAbstractWriteHolder.getIncludeColumnIndexes();

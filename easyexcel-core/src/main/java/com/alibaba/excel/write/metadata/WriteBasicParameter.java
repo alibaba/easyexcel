@@ -31,7 +31,7 @@ public class WriteBasicParameter extends BasicParameter {
     /**
      * Custom type handler override the default
      */
-    private List<WriteHandler> customWriteHandlerList = new ArrayList<WriteHandler>();
+    private List<WriteHandler> customWriteHandlerList = new ArrayList<>();
     /**
      * Use the default style.Default is true.
      */
@@ -56,4 +56,8 @@ public class WriteBasicParameter extends BasicParameter {
      * Only output the custom columns.
      */
     private Collection<String> includeColumnFieldNames;
+    /**
+     * head sorted use includeColumnFieldNames sort
+     */
+    private Boolean forceIndex;
 }

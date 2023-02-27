@@ -2,15 +2,7 @@ package com.alibaba.excel.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
@@ -29,6 +21,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
+import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 import lombok.AllArgsConstructor;
@@ -36,6 +29,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.cglib.beans.BeanMap;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -250,6 +244,36 @@ public class ClassUtils {
                 }
             }
         }
+        forceIndexIfNecessary(holder,sortedAllFieldMap);
+    }
+
+    /**
+     * it only works when {@link AbstractWriteHolder#getIncludeColumnFieldNames()} has value
+     * and {@link AbstractWriteHolder#getForceIndex()} is true
+     **/
+    private static void forceIndexIfNecessary(Holder holder, Map<Integer, Field> sortedAllFieldMap) {
+        if (!(holder instanceof AbstractWriteHolder)) {
+            return;
+        }
+        AbstractWriteHolder writeHolder = (AbstractWriteHolder) holder;
+        Collection<String> allCol = writeHolder.getIncludeColumnFieldNames();
+        if (!CollectionUtils.isEmpty(allCol) && writeHolder.getForceIndex() != null && writeHolder.getForceIndex()) {
+            Map<String, Integer> colIndexMap = MapUtils.newHashMap();
+            Iterator<String> iterator = allCol.iterator();
+            int colIndex = 0;
+            while (iterator.hasNext()) {
+                String col = iterator.next();
+                colIndexMap.put(col, colIndex);
+                colIndex++;
+            }
+            Map<Integer, Field> temp = MapUtils.newHashMap();
+            sortedAllFieldMap.forEach((index, field) -> {
+                Integer fieldIndex = colIndexMap.get(field.getName());
+                temp.put(fieldIndex, field);
+            });
+            sortedAllFieldMap.clear();
+            sortedAllFieldMap.putAll(temp);
+        }
     }
 
     public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFieldMap, Boolean needIgnore,
@@ -272,9 +296,9 @@ public class ClassUtils {
                 tempClass = tempClass.getSuperclass();
             }
             // Screening of field
-            Map<Integer, List<Field>> orderFieldMap = new TreeMap<Integer, List<Field>>();
-            Map<Integer, Field> indexFieldMap = new TreeMap<Integer, Field>();
-            Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
+            Map<Integer, List<Field>> orderFieldMap = new TreeMap<>();
+            Map<Integer, Field> indexFieldMap = new TreeMap<>();
+            Map<String, Field> ignoreMap = new HashMap<>(16);
 
             ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
             for (Field field : tempFieldList) {
@@ -287,10 +311,10 @@ public class ClassUtils {
     private static Map<Integer, Field> buildSortedAllFieldMap(Map<Integer, List<Field>> orderFieldMap,
         Map<Integer, Field> indexFieldMap) {
 
-        Map<Integer, Field> sortedAllFieldMap = new HashMap<Integer, Field>(
+        Map<Integer, Field> sortedAllFieldMap = new HashMap<>(
             (orderFieldMap.size() + indexFieldMap.size()) * 4 / 3 + 1);
 
-        Map<Integer, Field> tempIndexFieldMap = new HashMap<Integer, Field>(indexFieldMap);
+        Map<Integer, Field> tempIndexFieldMap = new HashMap<>(indexFieldMap);
         int index = 0;
         for (List<Field> fieldList : orderFieldMap.values()) {
             for (Field field : fieldList) {
