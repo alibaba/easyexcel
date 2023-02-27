@@ -103,7 +103,7 @@ public class ClientAnchorData extends CoordinateData {
          */
         DONT_MOVE_AND_RESIZE(ClientAnchor.AnchorType.DONT_MOVE_AND_RESIZE);
 
-        ClientAnchor.AnchorType value;
+        private final ClientAnchor.AnchorType value;
 
         AnchorType(ClientAnchor.AnchorType value) {
             this.value = value;

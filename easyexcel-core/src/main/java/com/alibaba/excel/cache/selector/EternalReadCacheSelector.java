@@ -10,7 +10,7 @@ import com.alibaba.excel.cache.ReadCache;
  * @author Jiaju Zhuang
  **/
 public class EternalReadCacheSelector implements ReadCacheSelector {
-    private ReadCache readCache;
+    private final ReadCache readCache;
 
     public EternalReadCacheSelector(ReadCache readCache) {
         this.readCache = readCache;

@@ -1,11 +1,11 @@
 package com.alibaba.excel.write.builder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.alibaba.excel.metadata.AbstractParameterBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteBasicParameter;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Build ExcelBuilder
@@ -118,6 +118,15 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
      */
     public T includeColumnFieldNames(Collection<String> includeColumnFieldNames) {
         parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
+        return self();
+    }
+
+    /**
+     * head index use  {@link this#includeColumnFiledNames} sort
+     * useless  if not set {@link this#includeColumnFiledNames}
+     **/
+    public T forceIndex(Boolean force) {
+        parameter().setForceIndex(force);
         return self();
     }
 }
