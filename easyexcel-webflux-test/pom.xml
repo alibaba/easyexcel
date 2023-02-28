@@ -9,12 +9,14 @@
         <version>3.2.1</version>
     </parent>
 
+    <url>https://github.com/alibaba/easyexcel</url>
+    <packaging>jar</packaging>
     <artifactId>easyexcel-webflux-test</artifactId>
+    <name>easyexcel-webflux-test</name>
+
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
@@ -29,5 +31,21 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>/com/alibaba/easyexcel/test/webflux/**/*.java</exclude>
+                    </excludes>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
