@@ -704,6 +704,25 @@ public class WriteTest {
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
+    /**
+     * 数据验证自定义拦截器
+     * <p>
+     * 对日期标题列进行数据验证，如果格式不为yyyy-MM-dd则提示输入错误
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link DemoData}
+     * <p>
+     * 2. 注册拦截器 {@link DataValidationSheetWriteHandler}
+     * <p>
+     * 3. 直接写即可
+     */
+    @Test
+    public void DataValidationHandlerWrite() {
+        String fileName = TestFileUtil.getPath() + "customHandlerWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new DataValidationSheetWriteHandler())
+            .sheet("模板").doWrite(new ArrayList<>());
+    }
+
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
