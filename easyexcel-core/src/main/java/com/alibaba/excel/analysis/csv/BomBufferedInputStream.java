@@ -66,7 +66,6 @@ public class BomBufferedInputStream extends BufferedInputStream {
 
         reset();
         if (byteOrderMark != null) {
-            // read(new byte[byteOrderMark.length()]);
             skip(byteOrderMark.length());
         }
         initialized = true;
