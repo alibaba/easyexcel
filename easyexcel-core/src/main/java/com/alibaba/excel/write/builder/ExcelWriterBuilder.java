@@ -66,7 +66,6 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
         return this;
     }
 
-
     public ExcelWriterBuilder excelType(ExcelTypeEnum excelType) {
         writeWorkbook.setExcelType(excelType);
         return this;
@@ -95,20 +94,31 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
         return this;
     }
 
+    /**
+     * Template file.
+     * This file is read into memory, excessive cases can lead to OOM.
+     */
     public ExcelWriterBuilder withTemplate(InputStream templateInputStream) {
         writeWorkbook.setTemplateInputStream(templateInputStream);
         return this;
     }
 
+    /**
+     * Template file.
+     * This file is read into memory, excessive cases can lead to OOM.
+     */
     public ExcelWriterBuilder withTemplate(File templateFile) {
         writeWorkbook.setTemplateFile(templateFile);
         return this;
     }
 
+    /**
+     * Template file.
+     * This file is read into memory, excessive cases can lead to OOM.
+     */
     public ExcelWriterBuilder withTemplate(String pathName) {
         return withTemplate(new File(pathName));
     }
-
 
     public ExcelWriter build() {
         return new ExcelWriter(writeWorkbook);

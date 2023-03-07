@@ -242,6 +242,10 @@ public class WriteTest {
     public void imageWrite() throws Exception {
         String fileName = TestFileUtil.getPath() + "imageWrite" + System.currentTimeMillis() + ".xlsx";
 
+        // 这里注意下 所有的图片都会放到内存 暂时没有很好的解法，大量图片的情况下建议 2选1:
+        // 1. 将图片上传到oss 或者其他存储网站: https://www.aliyun.com/product/oss ，然后直接放链接
+        // 2. 使用: https://github.com/coobird/thumbnailator 或者其他工具压缩图片
+
         String imagePath = TestFileUtil.getPath() + "converter" + File.separator + "img.jpg";
         try (InputStream inputStream = FileUtils.openInputStream(new File(imagePath))) {
             List<ImageDemoData> list = ListUtils.newArrayList();
@@ -361,6 +365,7 @@ public class WriteTest {
         writeCellStyleData.setFillForegroundColor(IndexedColors.GREEN.getIndex());
 
         // 设置单个单元格多种样式
+        // 这里需要设置 inMomery=true 不然会导致无法展示单个单元格多种样式，所以慎用
         WriteCellData<String> richTest = new WriteCellData<>();
         richTest.setType(CellDataTypeEnum.RICH_TEXT_STRING);
         writeCellDemoData.setRichText(richTest);
@@ -397,6 +402,8 @@ public class WriteTest {
         String templateFileName = TestFileUtil.getPath() + "demo" + File.separator + "demo.xlsx";
         String fileName = TestFileUtil.getPath() + "templateWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 这里要注意 withTemplate 的模板文件会全量存储在内存里面，所以尽量不要用于追加文件，如果文件模板文件过大会OOM
+        // 如果要再文件中追加（无法在一个线程里面处理，可以在一个线程的建议参照多次写入的demo） 建议临时存储到数据库 或者 磁盘缓存(ehcache) 然后再一次性写入
         EasyExcel.write(fileName, DemoData.class).withTemplate(templateFileName).sheet().doWrite(data());
     }
 
@@ -742,8 +749,8 @@ public class WriteTest {
         for (int i = 0; i < 10; i++) {
             List<Object> data = ListUtils.newArrayList();
             data.add("字符串" + i);
-            data.add(new Date());
             data.add(0.56);
+            data.add(new Date());
             list.add(data);
         }
         return list;

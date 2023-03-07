@@ -31,7 +31,10 @@ import com.alibaba.excel.converters.inputstream.InputStreamImageConverter;
 import com.alibaba.excel.converters.integer.IntegerBooleanConverter;
 import com.alibaba.excel.converters.integer.IntegerNumberConverter;
 import com.alibaba.excel.converters.integer.IntegerStringConverter;
-import com.alibaba.excel.converters.localdatetime.LocalDateNumberConverter;
+import com.alibaba.excel.converters.localdate.LocalDateDateConverter;
+import com.alibaba.excel.converters.localdate.LocalDateNumberConverter;
+import com.alibaba.excel.converters.localdate.LocalDateStringConverter;
+import com.alibaba.excel.converters.localdatetime.LocalDateTimeNumberConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeDateConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeStringConverter;
 import com.alibaba.excel.converters.longconverter.LongBooleanConverter;
@@ -83,6 +86,9 @@ public class DefaultConverterLoader {
         putAllConverter(new DateStringConverter());
 
         putAllConverter(new LocalDateNumberConverter());
+        putAllConverter(new LocalDateStringConverter());
+
+        putAllConverter(new LocalDateTimeNumberConverter());
         putAllConverter(new LocalDateTimeStringConverter());
 
         putAllConverter(new DoubleBooleanConverter());
@@ -121,6 +127,7 @@ public class DefaultConverterLoader {
         putWriteConverter(new ByteNumberConverter());
         putWriteConverter(new DateDateConverter());
         putWriteConverter(new LocalDateTimeDateConverter());
+        putWriteConverter(new LocalDateDateConverter());
         putWriteConverter(new DoubleNumberConverter());
         putWriteConverter(new FloatNumberConverter());
         putWriteConverter(new IntegerNumberConverter());
@@ -139,6 +146,7 @@ public class DefaultConverterLoader {
         putWriteStringConverter(new BooleanStringConverter());
         putWriteStringConverter(new ByteStringConverter());
         putWriteStringConverter(new DateStringConverter());
+        putWriteStringConverter(new LocalDateStringConverter());
         putWriteStringConverter(new LocalDateTimeStringConverter());
         putWriteStringConverter(new DoubleStringConverter());
         putWriteStringConverter(new FloatStringConverter());

@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
+import com.alibaba.easyexcel.test.util.TestUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.DateUtils;
@@ -112,8 +115,9 @@ public class ConverterDataTest {
     private List<ConverterWriteData> data() throws Exception {
         List<ConverterWriteData> list = new ArrayList<ConverterWriteData>();
         ConverterWriteData converterWriteData = new ConverterWriteData();
-        converterWriteData.setDate(DateUtils.parseDate("2020-01-01 01:01:01"));
-        converterWriteData.setLocalDateTime(DateUtils.parseLocalDateTime("2020-01-01 01:01:01", null, null));
+        converterWriteData.setDate(TestUtil.TEST_DATE);
+        converterWriteData.setLocalDate(TestUtil.TEST_LOCAL_DATE);
+        converterWriteData.setLocalDateTime(TestUtil.TEST_LOCAL_DATE_TIME);
         converterWriteData.setBooleanData(Boolean.TRUE);
         converterWriteData.setBigDecimal(BigDecimal.ONE);
         converterWriteData.setBigInteger(BigInteger.ONE);

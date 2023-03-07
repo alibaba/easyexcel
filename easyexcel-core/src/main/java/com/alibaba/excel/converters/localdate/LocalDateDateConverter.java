@@ -1,5 +1,6 @@
-package com.alibaba.excel.converters.localdatetime;
+package com.alibaba.excel.converters.localdate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.alibaba.excel.converters.Converter;
@@ -10,25 +11,26 @@ import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.WorkBookUtil;
 
 /**
- * LocalDateTime and date converter
+ * LocalDate and date converter
  *
  * @author Jiaju Zhuang
  */
-public class LocalDateTimeDateConverter implements Converter<LocalDateTime> {
+public class LocalDateDateConverter implements Converter<LocalDate> {
     @Override
     public Class<?> supportJavaTypeKey() {
-        return LocalDateTime.class;
+        return LocalDate.class;
     }
 
     @Override
-    public WriteCellData<?> convertToExcelData(LocalDateTime value, ExcelContentProperty contentProperty,
+    public WriteCellData<?> convertToExcelData(LocalDate value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) throws Exception {
-        WriteCellData<?> cellData = new WriteCellData<>(value);
+        LocalDateTime localDateTime = value == null ? null : value.atTime(0, 0);
+        WriteCellData<?> cellData = new WriteCellData<>(localDateTime);
         String format = null;
         if (contentProperty != null && contentProperty.getDateTimeFormatProperty() != null) {
             format = contentProperty.getDateTimeFormatProperty().getFormat();
         }
-        WorkBookUtil.fillDataFormat(cellData, format, DateUtils.defaultDateFormat);
+        WorkBookUtil.fillDataFormat(cellData, format, DateUtils.defaultLocalDateFormat);
         return cellData;
     }
 }

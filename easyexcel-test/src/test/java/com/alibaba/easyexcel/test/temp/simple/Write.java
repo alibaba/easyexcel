@@ -13,7 +13,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
@@ -28,8 +28,8 @@ import org.slf4j.LoggerFactory;
  **/
 @Ignore
 @Slf4j
-public class Wirte {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Wirte.class);
+public class Write {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Write.class);
 
     @Test
     public void simpleWrite1() {

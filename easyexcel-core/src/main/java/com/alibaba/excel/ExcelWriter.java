@@ -12,6 +12,8 @@ import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Excel Writer This tool is used to write value out to Excel via POI. This object can perform the following two
  * functions.
@@ -23,6 +25,7 @@ import com.alibaba.excel.write.metadata.fill.FillConfig;
  *
  * @author jipengfei
  */
+@Slf4j
 public class ExcelWriter implements Closeable {
 
     private final ExcelBuilder excelBuilder;
@@ -153,5 +156,17 @@ public class ExcelWriter implements Closeable {
     @Override
     public void close() {
         finish();
+    }
+
+    /**
+     * Prevents calls to {@link #finish} from freeing the cache
+     */
+    @Override
+    protected void finalize() {
+        try {
+            finish();
+        } catch (Throwable e) {
+            log.warn("Destroy object failed", e);
+        }
     }
 }
