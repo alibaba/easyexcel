@@ -1,11 +1,5 @@
 package com.alibaba.excel.read.processor;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
@@ -19,11 +13,13 @@ import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.StringUtils;
-
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Analysis event
@@ -151,6 +147,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
                 if (analysisContext.currentReadHolder().globalConfiguration().getAutoTrim()) {
                     headString = headString.trim();
                 }
+                headString = StringUtils.eliminateHiddenSymbol(headString);
                 if (headName.equals(headString)) {
                     headData.setColumnIndex(stringKey);
                     tmpHeadMap.put(stringKey, headData);

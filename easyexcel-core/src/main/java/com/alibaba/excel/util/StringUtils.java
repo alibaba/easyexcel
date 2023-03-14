@@ -239,4 +239,11 @@ public class StringUtils {
         }
         return true;
     }
+
+    /**
+     * replaceAll Unicode ctrl symbol like \u001B and so on
+     **/
+    public static String eliminateHiddenSymbol(String string) {
+        return string.replaceAll("\\p{C}", "");
+    }
 }
