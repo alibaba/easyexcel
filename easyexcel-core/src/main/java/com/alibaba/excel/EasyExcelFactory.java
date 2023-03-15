@@ -251,7 +251,7 @@ public class EasyExcelFactory {
 
     public static <T> Stream<T> read(String pathName, Class<T> head) {
         Consumer<Consumer<T>> sequence = c -> {
-            ReadListener<T> listener = new ReadListener<>() {
+            ReadListener<T> listener = new ReadListener<T>() {
                 @Override
                 public void invoke(T data, AnalysisContext context) {
                     c.accept(data);

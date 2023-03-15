@@ -13,7 +13,7 @@ import java.util.stream.StreamSupport;
  */
 public class StreamBuilder {
     public static <T> Stream<T> stream(Consumer<Consumer<T>> sequence) {
-        Iterator<T> iterator = new Iterator<>() {
+        Iterator<T> iterator = new Iterator<T>() {
             @Override
             public boolean hasNext() {
                 throw new NoSuchElementException();
