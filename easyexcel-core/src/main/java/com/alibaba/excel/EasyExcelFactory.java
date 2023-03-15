@@ -3,7 +3,10 @@ package com.alibaba.excel;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
+import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.alibaba.excel.read.listener.ReadListener;
@@ -244,6 +247,22 @@ public class EasyExcelFactory {
      */
     public static ExcelReaderBuilder read(String pathName, ReadListener readListener) {
         return read(pathName, null, readListener);
+    }
+
+    public static <T> Stream<T> read(String pathName, Class<T> head) {
+        Consumer<Consumer<T>> sequence = c -> {
+            ReadListener<T> listener = new ReadListener<>() {
+                @Override
+                public void invoke(T data, AnalysisContext context) {
+                    c.accept(data);
+                }
+
+                @Override
+                public void doAfterAllAnalysed(AnalysisContext context) {}
+            };
+            read(pathName, head, listener).sheet().doRead();
+        };
+        return StreamBuilder.stream(sequence);
     }
 
     /**
