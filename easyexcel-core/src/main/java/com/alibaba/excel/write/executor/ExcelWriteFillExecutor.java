@@ -555,6 +555,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (analysisCell != null && CollectionUtils.isNotEmpty(analysisCell.getVariableList())) {
             cell.setBlank();
         }
+        else{
+            cell.setCellValue(value.replace("\\{", "{").replace("\\}", "}"));
+        }
         return dealAnalysisCell(analysisCell, value, rowIndex, lastPrepareDataIndex, length, firstRowCache,
             preparedData);
     }
