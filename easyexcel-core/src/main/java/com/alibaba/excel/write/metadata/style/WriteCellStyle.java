@@ -161,10 +161,13 @@ public class WriteCellStyle {
             }
         }
         if (source.getWriteFont() != null) {
-            if (target.getWriteFont() == null) {
-                target.setWriteFont(source.getWriteFont());
+            WriteFont targetWriteFont = target.getWriteFont();
+            if (targetWriteFont == null) {
+                targetWriteFont = new WriteFont();
+                WriteFont.merge(source.getWriteFont(), targetWriteFont);
+                target.setWriteFont(targetWriteFont);
             } else {
-                WriteFont.merge(source.getWriteFont(), target.getWriteFont());
+                WriteFont.merge(source.getWriteFont(), targetWriteFont);
             }
         }
         if (source.getHidden() != null) {
