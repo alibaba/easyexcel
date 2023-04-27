@@ -5,6 +5,9 @@ EasyExcel
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![](https://img.shields.io/badge/EasyExcel-%E6%9F%A5%E7%9C%8B%E8%B4%A1%E7%8C%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=easyexcel)
 
+# 🔥作者最新开作品[Chat2DB](https://github.com/alibaba/Chat2DB)
+一个集成了ChatGPT 可以AI自动生成SQL的智能数据库客户端， GitHub地址 [https://github.com/alibaba/Chat2DB](https://github.com/alibaba/Chat2DB)
+
 # JAVA解析Excel工具
 
 Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都存在一个严重的问题就是非常的耗内存，poi有一套SAX模式的API可以一定程度的解决一些内存溢出的问题，但POI还是有一些缺陷，比如07版Excel解压缩以及解压后存储都是在内存中完成的，内存消耗依然很大。  
