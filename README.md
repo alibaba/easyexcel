@@ -1,4 +1,4 @@
-# 🔥作者最新开作品[Chat2DB](https://github.com/alibaba/Chat2DB)
+# 🔥作者最新开源作品[Chat2DB](https://github.com/alibaba/Chat2DB)
 一个集成了ChatGPT 可以AI自动生成SQL的智能数据库客户端， GitHub地址 [https://github.com/alibaba/Chat2DB](https://github.com/alibaba/Chat2DB)
 
 EasyExcel
