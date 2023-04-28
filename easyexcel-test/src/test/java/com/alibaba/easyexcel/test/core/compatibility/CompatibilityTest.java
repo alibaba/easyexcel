@@ -148,6 +148,20 @@ public class CompatibilityTest {
         Assert.assertEquals(10L, list.size());
     }
 
+    @Test
+    public void t09() {
+        // `SH_x005f_x000D_Z002` exists in `ShardingString.xml` and needs to be replaced by: `SH_x000D_Z002`
+        File file = TestFileUtil.readFile("compatibility/t09.xlsx");
+        List<Map<Integer, Object>> list = EasyExcel.read(file)
+            .headRowNumber(0)
+            .sheet()
+            .doReadSync();
+        log.info("data:{}", JSON.toJSONString(list));
+        Assert.assertEquals(1, list.size());
+
+        Assert.assertEquals("SH_x000D_Z002", list.get(0).get(0));
+    }
+
     private List<SimpleData> data() {
         List<SimpleData> list = new ArrayList<SimpleData>();
         for (int i = 0; i < 10; i++) {
