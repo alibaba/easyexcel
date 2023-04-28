@@ -27,6 +27,8 @@ public class PoiUtils {
 
     /**
      * Whether to customize the height
+     * if row is a HSSFRow
+     * init row_record_filed if necessary
      *
      * @param row row
      * @return
