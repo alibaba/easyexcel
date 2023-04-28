@@ -3,6 +3,7 @@
 * 读csv会忽略BOM数据 [Issue #3137](https://github.com/alibaba/easyexcel/issues/3137)
 * 解决csv用office打开乱码的问题，写csv默认带上BOM数据
 * xlsx存在隐藏字符时需要忽略，确保和展示看到的一样
+* 新增`commons-io` 2.11.0 包
 
 # 3.2.1
 
