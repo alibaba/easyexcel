@@ -1,3 +1,8 @@
+# 3.3.0
+
+* 读csv会忽略BOM数据 [Issue #3137](https://github.com/alibaba/easyexcel/issues/3137)
+* 解决csv用office打开乱码的问题，写csv默认带上BOM数据
+
 # 3.2.1
 
 * 兼容`LocalDate` [Issue #2908](https://github.com/alibaba/easyexcel/issues/2908)

@@ -84,6 +84,13 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
      * Only work on the CSV file
      */
     private Charset charset;
+
+    /**
+     * Set the encoding prefix in the csv file, otherwise the office may open garbled characters.
+     * Default true.
+     */
+    private Boolean withBom;
+
     /**
      * Template input stream
      * <p>
@@ -174,6 +181,12 @@ public class WriteWorkbookHolder extends AbstractWriteHolder {
             this.charset = Charset.defaultCharset();
         } else {
             this.charset = writeWorkbook.getCharset();
+        }
+
+        if (writeWorkbook.getWithBom() == null) {
+            this.withBom = Boolean.TRUE;
+        } else {
+            this.withBom = writeWorkbook.getWithBom();
         }
 
         if (writeWorkbook.getAutoCloseStream() == null) {

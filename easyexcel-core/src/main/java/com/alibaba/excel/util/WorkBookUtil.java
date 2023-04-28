@@ -70,7 +70,9 @@ public class WorkBookUtil {
                     new OutputStreamWriter(writeWorkbookHolder.getOutputStream(), writeWorkbookHolder.getCharset())),
                     writeWorkbookHolder.getGlobalConfiguration().getLocale(),
                     writeWorkbookHolder.getGlobalConfiguration().getUse1904windowing(),
-                    writeWorkbookHolder.getGlobalConfiguration().getUseScientificFormat());
+                    writeWorkbookHolder.getGlobalConfiguration().getUseScientificFormat(),
+                    writeWorkbookHolder.getCharset(),
+                    writeWorkbookHolder.getWithBom());
                 writeWorkbookHolder.setCachedWorkbook(csvWorkbook);
                 writeWorkbookHolder.setWorkbook(csvWorkbook);
                 return;
