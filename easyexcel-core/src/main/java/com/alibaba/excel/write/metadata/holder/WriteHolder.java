@@ -1,10 +1,11 @@
 package com.alibaba.excel.write.metadata.holder;
 
+import java.util.Collection;
+
 import com.alibaba.excel.metadata.ConfigurationHolder;
 import com.alibaba.excel.write.property.ExcelWriteHeadProperty;
 
 /**
- *
  * Get the corresponding Holder
  *
  * @author Jiaju Zhuang
@@ -46,4 +47,30 @@ public interface WriteHolder extends ConfigurationHolder {
      * @return
      */
     int relativeHeadRowIndex();
+
+    /**
+     * Data will be sorted according to  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     *
+     * default is false.
+     */
+    boolean sortByIncludeColumn();
+
+    /**
+     * Only output the custom columns.
+     */
+    Collection<Integer> includeColumnIndexes();
+
+    /**
+     * Only output the custom columns.
+     */
+    Collection<String> includeColumnFieldNames();
+
+    /**
+     * Ignore the custom columns.
+     */
+     Collection<Integer> excludeColumnIndexes();
+    /**
+     * Ignore the custom columns.
+     */
+     Collection<String> excludeColumnFieldNames();
 }

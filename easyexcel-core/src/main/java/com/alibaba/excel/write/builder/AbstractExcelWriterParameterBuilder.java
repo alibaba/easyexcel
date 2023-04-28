@@ -122,11 +122,12 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
     }
 
     /**
-     * head index use  {@link this#includeColumnFiledNames} sort
-     * useless  if not set {@link this#includeColumnFiledNames}
+     * Data will be sorted according to  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     *
+     * default is false.
      **/
-    public T forceIndex(Boolean force) {
-        parameter().setForceIndex(force);
+    public T sortByIncludeColumn(Boolean sortByIncludeColumn) {
+        parameter().setSortByIncludeColumn(sortByIncludeColumn);
         return self();
     }
 }

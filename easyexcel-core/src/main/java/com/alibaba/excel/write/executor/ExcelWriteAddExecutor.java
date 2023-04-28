@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
+import com.alibaba.excel.metadata.FieldCache;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.BeanMapUtils;
@@ -50,18 +51,15 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         if (writeSheetHolder.isNew() && !writeSheetHolder.getExcelWriteHeadProperty().hasHead()) {
             newRowIndex += writeContext.currentWriteHolder().relativeHeadRowIndex();
         }
-        // BeanMap is out of order, so use sortedAllFieldMap
-        Map<Integer, Field> sortedAllFieldMap = new TreeMap<>();
         int relativeRowIndex = 0;
         for (Object oneRowData : data) {
             int lastRowIndex = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(oneRowData, lastRowIndex, relativeRowIndex, sortedAllFieldMap);
+            addOneRowOfDataToExcel(oneRowData, lastRowIndex, relativeRowIndex);
             relativeRowIndex++;
         }
     }
 
-    private void addOneRowOfDataToExcel(Object oneRowData, int rowIndex, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFieldMap) {
+    private void addOneRowOfDataToExcel(Object oneRowData, int rowIndex, int relativeRowIndex) {
         if (oneRowData == null) {
             return;
         }
@@ -79,7 +77,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         } else if (oneRowData instanceof Map) {
             addBasicTypeToExcel(new MapRowData((Map<Integer, ?>)oneRowData), row, rowIndex, relativeRowIndex);
         } else {
-            addJavaObjectToExcel(oneRowData, row, rowIndex, relativeRowIndex, sortedAllFieldMap);
+            addJavaObjectToExcel(oneRowData, row, rowIndex, relativeRowIndex);
         }
 
         WriteHandlerUtils.afterRowDispose(rowWriteHandlerContext);
@@ -119,7 +117,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         int dataIndex, int columnIndex) {
         ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(null,
             writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(),
-            head == null ? null : head.getFieldName());
+            head == null ? null : head.getFieldName(), writeContext.currentWriteHolder());
 
         CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(writeContext,
             row, rowIndex, head, columnIndex, relativeRowIndex, Boolean.FALSE, excelContentProperty);
@@ -138,8 +136,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         WriteHandlerUtils.afterCellDispose(cellWriteHandlerContext);
     }
 
-    private void addJavaObjectToExcel(Object oneRowData, Row row, int rowIndex, int relativeRowIndex,
-        Map<Integer, Field> sortedAllFieldMap) {
+    private void addJavaObjectToExcel(Object oneRowData, Row row, int rowIndex, int relativeRowIndex) {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
         BeanMap beanMap = BeanMapUtils.create(oneRowData);
         // Bean the contains of the Map Key method with poor performance,So to create a keySet here
@@ -158,7 +155,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 }
 
                 ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(beanMap,
-                    currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), name);
+                    currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), name, currentWriteHolder);
                 CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(
                     writeContext, row, rowIndex, head, columnIndex, relativeRowIndex, Boolean.FALSE,
                     excelContentProperty);
@@ -185,19 +182,17 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         }
         maxCellIndex++;
 
-        Map<String, Field> ignoreMap = writeContext.currentWriteHolder().excelWriteHeadProperty().getIgnoreMap();
-        initSortedAllFieldMapFieldList(oneRowData.getClass(), sortedAllFieldMap);
-        for (Map.Entry<Integer, Field> entry : sortedAllFieldMap.entrySet()) {
+        FieldCache fieldCache = ClassUtils.declaredFields(oneRowData.getClass(), writeContext.currentWriteHolder());
+        for (Map.Entry<Integer, Field> entry : fieldCache.getSortedFieldMap().entrySet()) {
             Field field = entry.getValue();
             String fieldName = FieldUtils.resolveCglibFieldName(field);
-            boolean uselessData = !beanKeySet.contains(fieldName) || beanMapHandledSet.contains(fieldName)
-                || ignoreMap.containsKey(fieldName);
+            boolean uselessData = !beanKeySet.contains(fieldName) || beanMapHandledSet.contains(fieldName);
             if (uselessData) {
                 continue;
             }
             Object value = beanMap.get(fieldName);
             ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(beanMap,
-                currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), fieldName);
+                currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), fieldName, currentWriteHolder);
             CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(
                 writeContext, row, rowIndex, null, maxCellIndex, relativeRowIndex, Boolean.FALSE, excelContentProperty);
             WriteHandlerUtils.beforeCellCreate(cellWriteHandlerContext);
@@ -229,7 +224,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
                 .isEmpty(writeSheetHolder.getExcludeColumnIndexes()) || !CollectionUtils
                 .isEmpty(writeSheetHolder.getIncludeColumnFieldNames()) || !CollectionUtils
                 .isEmpty(writeSheetHolder.getIncludeColumnIndexes());
-        ClassUtils.declaredFields(clazz, sortedAllFieldMap, needIgnore, writeSheetHolder);
+        ClassUtils.declaredFields(clazz, writeSheetHolder);
     }
 
 }

@@ -34,9 +34,9 @@ public class ExcludeOrIncludeDataTest {
     private static File includeFieldName07;
     private static File includeFieldName03;
     private static File includeFieldNameCsv;
-    private static File includeFieldNameForceIndex07;
-    private static File includeFieldNameForceIndex03;
-    private static File includeFieldNameForceIndexCsv;
+    private static File includeFieldNameSort07;
+    private static File includeFieldNameSort03;
+    private static File includeFieldNameSortCsv;
 
     @BeforeClass
     public static void init() {
@@ -52,9 +52,9 @@ public class ExcludeOrIncludeDataTest {
         includeFieldName07 = TestFileUtil.createNewFile("includeFieldName.xlsx");
         includeFieldName03 = TestFileUtil.createNewFile("includeFieldName.xls");
         includeFieldNameCsv = TestFileUtil.createNewFile("includeFieldName.csv");
-        includeFieldNameForceIndex07 = TestFileUtil.createNewFile("includeFieldNameForceIndex.xlsx");
-        includeFieldNameForceIndex03 = TestFileUtil.createNewFile("includeFieldNameForceIndex.xls");
-        includeFieldNameForceIndexCsv = TestFileUtil.createNewFile("includeFieldNameForceIndex.csv");
+        includeFieldNameSort07 = TestFileUtil.createNewFile("includeFieldNameSort.xlsx");
+        includeFieldNameSort03 = TestFileUtil.createNewFile("includeFieldNameSort.xls");
+        includeFieldNameSortCsv = TestFileUtil.createNewFile("includeFieldNameSort.csv");
     }
 
     @Test
@@ -197,7 +197,7 @@ public class ExcludeOrIncludeDataTest {
         includeColumnFieldNames.add("column3");
         includeColumnFieldNames.add("column2");
         EasyExcel.write(file, ExcludeOrIncludeData.class).includeColumnFieldNames(includeColumnFieldNames)
-            .forceIndex(true).sheet().doWrite(data());
+            .sortByIncludeColumn(true).sheet().doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
         Assert.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);

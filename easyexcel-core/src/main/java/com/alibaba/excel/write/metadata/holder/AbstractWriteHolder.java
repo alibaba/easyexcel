@@ -14,6 +14,7 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.enums.HeadKindEnum;
+import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.Head;
@@ -94,10 +95,14 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
      * Only output the custom columns.
      */
     private Collection<String> includeColumnFieldNames;
+
     /**
-     * head sorted use {@link #includeColumnFieldNames} sort
+     * Data will be sorted according to  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     *
+     * default is false.
      */
-    private Boolean forceIndex;
+    private Boolean sortByIncludeColumn;
+
     /**
      * Write handler
      */
@@ -197,11 +202,17 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         } else {
             this.includeColumnFieldNames = writeBasicParameter.getIncludeColumnFieldNames();
         }
-        if (writeBasicParameter.getForceIndex() == null && parentAbstractWriteHolder != null) {
-            this.forceIndex = parentAbstractWriteHolder.getForceIndex();
+
+        if (writeBasicParameter.getSortByIncludeColumn() == null) {
+            if (parentAbstractWriteHolder == null) {
+                this.sortByIncludeColumn = Boolean.FALSE;
+            } else {
+                this.sortByIncludeColumn = parentAbstractWriteHolder.getSortByIncludeColumn();
+            }
         } else {
-            this.forceIndex = writeBasicParameter.getForceIndex();
+            this.sortByIncludeColumn = writeBasicParameter.getSortByIncludeColumn();
         }
+
         if (writeBasicParameter.getIncludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
             this.includeColumnIndexes = parentAbstractWriteHolder.getIncludeColumnIndexes();
         } else {
@@ -488,4 +499,28 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         return getAutomaticMergeHead();
     }
 
+    @Override
+    public boolean sortByIncludeColumn() {
+        return getSortByIncludeColumn();
+    }
+
+    @Override
+    public Collection<Integer> includeColumnIndexes() {
+        return getIncludeColumnIndexes();
+    }
+
+    @Override
+    public Collection<String> includeColumnFieldNames() {
+        return getIncludeColumnFieldNames();
+    }
+
+    @Override
+    public Collection<Integer> excludeColumnIndexes() {
+        return getExcludeColumnIndexes();
+    }
+
+    @Override
+    public Collection<String> excludeColumnFieldNames() {
+        return getExcludeColumnFieldNames();
+    }
 }

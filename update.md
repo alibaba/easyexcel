@@ -5,7 +5,10 @@
 * xlsx存在隐藏字符时需要忽略，确保和展示看到的一样
 * 新增`commons-io` 2.11.0 包
 * 在`easyexcel-parent` 包中移除测试包的`dependencyManagement`
-* 删除`org.apache.poi.hssf.usermodel.PoiUtils.java`， 使用反射获取 [Issue #2804](https://github.com/alibaba/easyexcel/issues/2804)
+* 删除`org.apache.poi.hssf.usermodel.PoiUtils.java`,
+  使用反射获取 [Issue #2804](https://github.com/alibaba/easyexcel/issues/2804)
+* 默认对象反射缓存改成`ThreadLocal`,并支持设置 [Issue #2792](https://github.com/alibaba/easyexcel/issues/2792)
+* 支持根据`includeColumnIndexes`和`includeColumnFieldNames`排序 [Issue #2697](https://github.com/alibaba/easyexcel/issues/2697)
 
 # 3.2.1
 

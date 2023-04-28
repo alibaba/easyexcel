@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
@@ -24,7 +25,10 @@ import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.ContentStyle;
 import com.alibaba.excel.converters.AutoConverter;
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.CacheLocationEnum;
 import com.alibaba.excel.exception.ExcelCommonException;
+import com.alibaba.excel.metadata.ConfigurationHolder;
+import com.alibaba.excel.metadata.FieldCache;
 import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.metadata.property.DateTimeFormatProperty;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
@@ -59,18 +63,38 @@ import org.springframework.util.CollectionUtils;
  */
 public class ClassUtils {
 
-    public static final Map<Class<?>, FieldCache> FIELD_CACHE = new ConcurrentHashMap<>();
+    /**
+     * memory cache
+     */
+    public static final ConcurrentHashMap<Class<?>, FieldCache> FIELD_CACHE = new ConcurrentHashMap<>();
+    /**
+     * thread local cahe
+     */
+    private static final ThreadLocal<Map<Class<?>, FieldCache>> FIELD_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
      * The cache configuration information for each of the class
      */
-    public static final Map<Class<?>, Map<String, ExcelContentProperty>> CLASS_CONTENT_CACHE
+    public static final ConcurrentHashMap<Class<?>, Map<String, ExcelContentProperty>> CLASS_CONTENT_CACHE
         = new ConcurrentHashMap<>();
 
     /**
      * The cache configuration information for each of the class
      */
-    public static final Map<ContentPropertyKey, ExcelContentProperty> CONTENT_CACHE = new ConcurrentHashMap<>();
+    private static final ThreadLocal<Map<Class<?>, Map<String, ExcelContentProperty>>> CLASS_CONTENT_THREAD_LOCAL
+        = new ThreadLocal<>();
+
+    /**
+     * The cache configuration information for each of the class
+     */
+    public static final ConcurrentHashMap<ContentPropertyKey, ExcelContentProperty> CONTENT_CACHE
+        = new ConcurrentHashMap<>();
+
+    /**
+     * The cache configuration information for each of the class
+     */
+    private static final ThreadLocal<Map<ContentPropertyKey, ExcelContentProperty>> CONTENT_THREAD_LOCAL
+        = new ThreadLocal<>();
 
     /**
      * Calculate the configuration information for the class
@@ -81,7 +105,7 @@ public class ClassUtils {
      * @return
      */
     public static ExcelContentProperty declaredExcelContentProperty(Map<?, ?> dataMap, Class<?> headClazz,
-        String fieldName) {
+        String fieldName, ConfigurationHolder configurationHolder) {
         Class<?> clazz = null;
         if (dataMap instanceof BeanMap) {
             Object bean = ((BeanMap)dataMap).getBean();
@@ -89,26 +113,49 @@ public class ClassUtils {
                 clazz = bean.getClass();
             }
         }
-        return getExcelContentProperty(clazz, headClazz, fieldName);
+        return getExcelContentProperty(clazz, headClazz, fieldName, configurationHolder);
     }
 
-    private static ExcelContentProperty getExcelContentProperty(Class<?> clazz, Class<?> headClass, String fieldName) {
-        return CONTENT_CACHE.computeIfAbsent(buildKey(clazz, headClass, fieldName), key -> {
-            ExcelContentProperty excelContentProperty = Optional.ofNullable(declaredFieldContentMap(clazz))
-                .map(map -> map.get(fieldName))
-                .orElse(null);
-            ExcelContentProperty headExcelContentProperty = Optional.ofNullable(declaredFieldContentMap(headClass))
-                .map(map -> map.get(fieldName))
-                .orElse(null);
-            ExcelContentProperty combineExcelContentProperty = new ExcelContentProperty();
+    private static ExcelContentProperty getExcelContentProperty(Class<?> clazz, Class<?> headClass, String fieldName,
+        ConfigurationHolder configurationHolder) {
+        switch (configurationHolder.globalConfiguration().getFiledCacheLocation()) {
+            case THREAD_LOCAL:
+                Map<ContentPropertyKey, ExcelContentProperty> contentCacheMap = CONTENT_THREAD_LOCAL.get();
+                if (contentCacheMap == null) {
+                    contentCacheMap = MapUtils.newHashMap();
+                    CONTENT_THREAD_LOCAL.set(contentCacheMap);
+                }
+                return contentCacheMap.computeIfAbsent(buildKey(clazz, headClass, fieldName), key -> {
+                    return doGetExcelContentProperty(clazz, headClass, fieldName, configurationHolder);
+                });
+            case MEMORY:
+                return CONTENT_CACHE.computeIfAbsent(buildKey(clazz, headClass, fieldName), key -> {
+                    return doGetExcelContentProperty(clazz, headClass, fieldName, configurationHolder);
+                });
+            case NONE:
+                return doGetExcelContentProperty(clazz, headClass, fieldName, configurationHolder);
+            default:
+                throw new UnsupportedOperationException("unsupported enum");
+        }
+    }
 
-            combineExcelContentProperty(combineExcelContentProperty, headExcelContentProperty);
-            if (clazz != headClass) {
-                combineExcelContentProperty(combineExcelContentProperty, excelContentProperty);
-            }
-            return combineExcelContentProperty;
-        });
+    private static ExcelContentProperty doGetExcelContentProperty(Class<?> clazz, Class<?> headClass,
+        String fieldName, ConfigurationHolder configurationHolder) {
+        ExcelContentProperty excelContentProperty = Optional.ofNullable(
+                declaredFieldContentMap(clazz, configurationHolder))
+            .map(map -> map.get(fieldName))
+            .orElse(null);
+        ExcelContentProperty headExcelContentProperty = Optional.ofNullable(
+                declaredFieldContentMap(headClass, configurationHolder))
+            .map(map -> map.get(fieldName))
+            .orElse(null);
+        ExcelContentProperty combineExcelContentProperty = new ExcelContentProperty();
 
+        combineExcelContentProperty(combineExcelContentProperty, headExcelContentProperty);
+        if (clazz != headClass) {
+            combineExcelContentProperty(combineExcelContentProperty, excelContentProperty);
+        }
+        return combineExcelContentProperty;
     }
 
     public static void combineExcelContentProperty(ExcelContentProperty combineExcelContentProperty,
@@ -140,182 +187,248 @@ public class ClassUtils {
         return new ContentPropertyKey(clazz, headClass, fieldName);
     }
 
-    private static Map<String, ExcelContentProperty> declaredFieldContentMap(Class<?> clazz) {
+    private static Map<String, ExcelContentProperty> declaredFieldContentMap(Class<?> clazz,
+        ConfigurationHolder configurationHolder) {
         if (clazz == null) {
             return null;
         }
-        return CLASS_CONTENT_CACHE.computeIfAbsent(clazz, key -> {
-            List<Field> tempFieldList = new ArrayList<>();
-            Class<?> tempClass = clazz;
-            while (tempClass != null) {
-                Collections.addAll(tempFieldList, tempClass.getDeclaredFields());
-                // Get the parent class and give it to yourself
-                tempClass = tempClass.getSuperclass();
-            }
+        switch (configurationHolder.globalConfiguration().getFiledCacheLocation()) {
+            case THREAD_LOCAL:
+                Map<Class<?>, Map<String, ExcelContentProperty>> classContentCacheMap
+                    = CLASS_CONTENT_THREAD_LOCAL.get();
+                if (classContentCacheMap == null) {
+                    classContentCacheMap = MapUtils.newHashMap();
+                    CLASS_CONTENT_THREAD_LOCAL.set(classContentCacheMap);
+                }
+                return classContentCacheMap.computeIfAbsent(clazz, key -> {
+                    return doDeclaredFieldContentMap(clazz);
+                });
+            case MEMORY:
+                return CLASS_CONTENT_CACHE.computeIfAbsent(clazz, key -> {
+                    return doDeclaredFieldContentMap(clazz);
+                });
+            case NONE:
+                return doDeclaredFieldContentMap(clazz);
+            default:
+                throw new UnsupportedOperationException("unsupported enum");
+        }
 
-            ContentStyle parentContentStyle = clazz.getAnnotation(ContentStyle.class);
-            ContentFontStyle parentContentFontStyle = clazz.getAnnotation(ContentFontStyle.class);
-            Map<String, ExcelContentProperty> fieldContentMap = MapUtils.newHashMapWithExpectedSize(
-                tempFieldList.size());
-            for (Field field : tempFieldList) {
-                ExcelContentProperty excelContentProperty = new ExcelContentProperty();
-                excelContentProperty.setField(field);
+    }
 
-                ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-                if (excelProperty != null) {
-                    Class<? extends Converter<?>> convertClazz = excelProperty.converter();
-                    if (convertClazz != AutoConverter.class) {
-                        try {
-                            Converter<?> converter = convertClazz.getDeclaredConstructor().newInstance();
-                            excelContentProperty.setConverter(converter);
-                        } catch (Exception e) {
-                            throw new ExcelCommonException(
-                                "Can not instance custom converter:" + convertClazz.getName());
-                        }
+    private static Map<String, ExcelContentProperty> doDeclaredFieldContentMap(Class<?> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+        List<Field> tempFieldList = new ArrayList<>();
+        Class<?> tempClass = clazz;
+        while (tempClass != null) {
+            Collections.addAll(tempFieldList, tempClass.getDeclaredFields());
+            // Get the parent class and give it to yourself
+            tempClass = tempClass.getSuperclass();
+        }
+
+        ContentStyle parentContentStyle = clazz.getAnnotation(ContentStyle.class);
+        ContentFontStyle parentContentFontStyle = clazz.getAnnotation(ContentFontStyle.class);
+        Map<String, ExcelContentProperty> fieldContentMap = MapUtils.newHashMapWithExpectedSize(
+            tempFieldList.size());
+        for (Field field : tempFieldList) {
+            ExcelContentProperty excelContentProperty = new ExcelContentProperty();
+            excelContentProperty.setField(field);
+
+            ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+            if (excelProperty != null) {
+                Class<? extends Converter<?>> convertClazz = excelProperty.converter();
+                if (convertClazz != AutoConverter.class) {
+                    try {
+                        Converter<?> converter = convertClazz.getDeclaredConstructor().newInstance();
+                        excelContentProperty.setConverter(converter);
+                    } catch (Exception e) {
+                        throw new ExcelCommonException(
+                            "Can not instance custom converter:" + convertClazz.getName());
                     }
                 }
-
-                ContentStyle contentStyle = field.getAnnotation(ContentStyle.class);
-                if (contentStyle == null) {
-                    contentStyle = parentContentStyle;
-                }
-                excelContentProperty.setContentStyleProperty(StyleProperty.build(contentStyle));
-
-                ContentFontStyle contentFontStyle = field.getAnnotation(ContentFontStyle.class);
-                if (contentFontStyle == null) {
-                    contentFontStyle = parentContentFontStyle;
-                }
-                excelContentProperty.setContentFontProperty(FontProperty.build(contentFontStyle));
-
-                excelContentProperty.setDateTimeFormatProperty(
-                    DateTimeFormatProperty.build(field.getAnnotation(DateTimeFormat.class)));
-                excelContentProperty.setNumberFormatProperty(
-                    NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
-
-                fieldContentMap.put(field.getName(), excelContentProperty);
             }
-            return fieldContentMap;
-        });
+
+            ContentStyle contentStyle = field.getAnnotation(ContentStyle.class);
+            if (contentStyle == null) {
+                contentStyle = parentContentStyle;
+            }
+            excelContentProperty.setContentStyleProperty(StyleProperty.build(contentStyle));
+
+            ContentFontStyle contentFontStyle = field.getAnnotation(ContentFontStyle.class);
+            if (contentFontStyle == null) {
+                contentFontStyle = parentContentFontStyle;
+            }
+            excelContentProperty.setContentFontProperty(FontProperty.build(contentFontStyle));
+
+            excelContentProperty.setDateTimeFormatProperty(
+                DateTimeFormatProperty.build(field.getAnnotation(DateTimeFormat.class)));
+            excelContentProperty.setNumberFormatProperty(
+                NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
+
+            fieldContentMap.put(field.getName(), excelContentProperty);
+        }
+        return fieldContentMap;
     }
 
     /**
      * Parsing field in the class
      *
-     * @param clazz             Need to parse the class
-     * @param sortedAllFieldMap Complete the map of sorts
-     * @param indexFieldMap     Use the index to sort fields
-     * @param ignoreMap         You want to ignore field map
-     * @param needIgnore        If you want to ignore fields need to ignore
-     * @param holder            holder
+     * @param clazz         Need to parse the class
+     * @param needIgnore    If you want to ignore fields need to ignore
+     * @param holder        holder
+     * @param cacheLocation cache lcation
      */
-    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFieldMap,
-        Map<Integer, Field> indexFieldMap, Map<String, Field> ignoreMap, Boolean needIgnore, Holder holder) {
-        FieldCache fieldCache = declaredFields(clazz);
-        if (fieldCache == null) {
-            return;
+    public static FieldCache declaredFields(Class<?> clazz, ConfigurationHolder configurationHolder) {
+        switch (configurationHolder.globalConfiguration().getFiledCacheLocation()) {
+            case THREAD_LOCAL:
+                Map<Class<?>, FieldCache> fieldCacheMap = FIELD_THREAD_LOCAL.get();
+                if (fieldCacheMap == null) {
+                    fieldCacheMap = MapUtils.newHashMap();
+                    FIELD_THREAD_LOCAL.set(fieldCacheMap);
+                }
+                return fieldCacheMap.computeIfAbsent(clazz, key -> {
+                    return doDeclaredFields(clazz, configurationHolder);
+                });
+            case MEMORY:
+                return FIELD_CACHE.computeIfAbsent(clazz, key -> {
+                    return doDeclaredFields(clazz, configurationHolder);
+                });
+            case NONE:
+                return doDeclaredFields(clazz, configurationHolder);
+            default:
+                throw new UnsupportedOperationException("unsupported enum");
         }
-        if (ignoreMap != null) {
-            ignoreMap.putAll(fieldCache.getIgnoreMap());
-        }
-        Map<Integer, Field> tempIndexFieldMap = indexFieldMap;
-        if (tempIndexFieldMap == null) {
-            tempIndexFieldMap = MapUtils.newTreeMap();
-        }
-        tempIndexFieldMap.putAll(fieldCache.getIndexFieldMap());
+    }
 
-        Map<Integer, Field> originSortedAllFieldMap = fieldCache.getSortedAllFieldMap();
+    private static FieldCache doDeclaredFields(Class<?> clazz, ConfigurationHolder configurationHolder) {
+        List<Field> tempFieldList = new ArrayList<>();
+        Class<?> tempClass = clazz;
+        // When the parent class is null, it indicates that the parent class (Object class) has reached the top
+        // level.
+        while (tempClass != null) {
+            Collections.addAll(tempFieldList, tempClass.getDeclaredFields());
+            // Get the parent class and give it to yourself
+            tempClass = tempClass.getSuperclass();
+        }
+        // Screening of field
+        Map<Integer, List<Field>> orderFieldMap = new TreeMap<Integer, List<Field>>();
+        Map<Integer, Field> indexFieldMap = new TreeMap<Integer, Field>();
+        Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
+
+        ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
+        for (Field field : tempFieldList) {
+            declaredOneField(field, orderFieldMap, indexFieldMap, ignoreMap, excelIgnoreUnannotated);
+        }
+        Map<Integer, Field> sortedFieldMap = buildSortedAllFieldMap(orderFieldMap, indexFieldMap);
+        FieldCache fieldCache = new FieldCache(sortedFieldMap, indexFieldMap, ignoreMap);
+
+        if (!(configurationHolder instanceof WriteHolder)) {
+            return fieldCache;
+        }
+
+        WriteHolder writeHolder = (WriteHolder)configurationHolder;
+
+        boolean needIgnore = !CollectionUtils.isEmpty(writeHolder.excludeColumnFieldNames())
+            || !CollectionUtils.isEmpty(writeHolder.excludeColumnIndexes())
+            || !CollectionUtils.isEmpty(writeHolder.includeColumnFieldNames())
+            || !CollectionUtils.isEmpty(writeHolder.includeColumnIndexes());
+
         if (!needIgnore) {
-            sortedAllFieldMap.putAll(originSortedAllFieldMap);
-            return;
+            return fieldCache;
         }
-
+        // ignore filed
+        Map<Integer, Field> tempSortedFieldMapp = MapUtils.newHashMap();
         int index = 0;
-        for (Map.Entry<Integer, Field> entry : originSortedAllFieldMap.entrySet()) {
+        for (Map.Entry<Integer, Field> entry : sortedFieldMap.entrySet()) {
             Integer key = entry.getKey();
             Field field = entry.getValue();
 
             // The current field needs to be ignored
-            if (((WriteHolder)holder).ignore(entry.getValue().getName(), entry.getKey())) {
+            if (writeHolder.ignore(entry.getValue().getName(), entry.getKey())) {
                 if (ignoreMap != null) {
                     ignoreMap.put(field.getName(), field);
                 }
-                tempIndexFieldMap.remove(index);
+                indexFieldMap.remove(index);
             } else {
                 // Mandatory sorted fields
-                if (tempIndexFieldMap.containsKey(key)) {
-                    sortedAllFieldMap.put(key, field);
+                if (indexFieldMap.containsKey(key)) {
+                    tempSortedFieldMapp.put(key, field);
                 } else {
                     // Need to reorder automatically
                     // Check whether the current key is already in use
-                    while (sortedAllFieldMap.containsKey(index)) {
+                    while (tempSortedFieldMapp.containsKey(index)) {
                         index++;
                     }
-                    sortedAllFieldMap.put(index++, field);
+                    tempSortedFieldMapp.put(index++, field);
                 }
             }
         }
-        forceIndexIfNecessary(holder, sortedAllFieldMap);
+        fieldCache.setSortedFieldMap(tempSortedFieldMapp);
+
+        // resort field
+        resortField(writeHolder, fieldCache);
+        return fieldCache;
     }
 
     /**
-     * it only works when {@link AbstractWriteHolder#getIncludeColumnFieldNames()} has value
-     * and {@link AbstractWriteHolder#getForceIndex()} is true
+     * it only works when {@link WriteHolder#getIncludeColumnFieldNames()} or
+     * {@link WriteHolder#getIncludeColumnIndexes()} ()} has value
+     * and {@link WriteHolder#getSortByIncludeColumn()} ()} is true
      **/
-    private static void forceIndexIfNecessary(Holder holder, Map<Integer, Field> sortedAllFieldMap) {
-        if (!(holder instanceof AbstractWriteHolder)) {
+    private static void resortField(WriteHolder writeHolder, FieldCache fieldCache) {
+        if (!writeHolder.sortByIncludeColumn()) {
             return;
         }
-        AbstractWriteHolder writeHolder = (AbstractWriteHolder)holder;
-        Collection<String> allCol = writeHolder.getIncludeColumnFieldNames();
-        if (!CollectionUtils.isEmpty(allCol) && writeHolder.getForceIndex() != null && writeHolder.getForceIndex()) {
-            Map<String, Integer> colIndexMap = MapUtils.newHashMap();
-            Iterator<String> iterator = allCol.iterator();
-            int colIndex = 0;
-            while (iterator.hasNext()) {
-                String col = iterator.next();
-                colIndexMap.put(col, colIndex);
-                colIndex++;
+        Map<Integer, Field> indexFieldMap = fieldCache.getIndexFieldMap();
+
+        Collection<String> includeColumnFieldNames = writeHolder.includeColumnFieldNames();
+        if (!CollectionUtils.isEmpty(includeColumnFieldNames)) {
+            // Field sorted map
+            Map<String, Integer> filedIndexMap = MapUtils.newHashMap();
+            int fieldIndex = 0;
+            for (String includeColumnFieldName : includeColumnFieldNames) {
+                filedIndexMap.put(includeColumnFieldName, fieldIndex++);
             }
-            Map<Integer, Field> temp = MapUtils.newHashMap();
-            sortedAllFieldMap.forEach((index, field) -> {
-                Integer fieldIndex = colIndexMap.get(field.getName());
-                temp.put(fieldIndex, field);
+
+            // rebuild sortedFieldMap
+            Map<Integer, Field> tempSortedFieldMap = MapUtils.newHashMap();
+            fieldCache.getSortedFieldMap().forEach((index, field) -> {
+                Integer tempFieldIndex = filedIndexMap.get(field.getName());
+                if (tempFieldIndex != null) {
+                    tempSortedFieldMap.put(tempFieldIndex, field);
+
+                    //  The user has redefined the ordering and the ordering of annotations needs to be invalidated
+                    if (!tempFieldIndex.equals(index)) {
+                        indexFieldMap.remove(index);
+                    }
+                }
             });
-            sortedAllFieldMap.clear();
-            sortedAllFieldMap.putAll(temp);
+            fieldCache.setSortedFieldMap(tempSortedFieldMap);
+            return;
         }
-    }
 
-    public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFieldMap, Boolean needIgnore,
-        WriteHolder writeHolder) {
-        declaredFields(clazz, sortedAllFieldMap, null, null, needIgnore, writeHolder);
-    }
+        Collection<Integer> includeColumnIndexes = writeHolder.includeColumnIndexes();
+        if (!CollectionUtils.isEmpty(includeColumnFieldNames)) {
+            // Index sorted map
+            Map<Integer, Integer> filedIndexMap = MapUtils.newHashMap();
+            int fieldIndex = 0;
+            for (Integer includeColumnIndexe : includeColumnIndexes) {
+                filedIndexMap.put(includeColumnIndexe, fieldIndex++);
+            }
 
-    private static FieldCache declaredFields(Class<?> clazz) {
-        if (clazz == null) {
-            return null;
+            // rebuild sortedFieldMap
+            Map<Integer, Field> tempSortedFieldMap = MapUtils.newHashMap();
+            fieldCache.getSortedFieldMap().forEach((index, field) -> {
+                Integer tempFieldIndex = filedIndexMap.get(index);
+
+                //  The user has redefined the ordering and the ordering of annotations needs to be invalidated
+                if (tempFieldIndex != null) {
+                    tempSortedFieldMap.put(tempFieldIndex, field);
+                }
+            });
+            fieldCache.setSortedFieldMap(tempSortedFieldMap);
         }
-        return FIELD_CACHE.computeIfAbsent(clazz, key -> {
-            List<Field> tempFieldList = new ArrayList<>();
-            Class<?> tempClass = clazz;
-            // When the parent class is null, it indicates that the parent class (Object class) has reached the top
-            // level.
-            while (tempClass != null) {
-                Collections.addAll(tempFieldList, tempClass.getDeclaredFields());
-                // Get the parent class and give it to yourself
-                tempClass = tempClass.getSuperclass();
-            }
-            // Screening of field
-            Map<Integer, List<Field>> orderFieldMap = new TreeMap<Integer, List<Field>>();
-            Map<Integer, Field> indexFieldMap = new TreeMap<Integer, Field>();
-            Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
-
-            ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
-            for (Field field : tempFieldList) {
-                declaredOneField(field, orderFieldMap, indexFieldMap, ignoreMap, excelIgnoreUnannotated);
-            }
-            return new FieldCache(buildSortedAllFieldMap(orderFieldMap, indexFieldMap), indexFieldMap, ignoreMap);
-        });
     }
 
     private static Map<Integer, Field> buildSortedAllFieldMap(Map<Integer, List<Field>> orderFieldMap,
@@ -380,32 +493,6 @@ public class ClassUtils {
         orderFieldList.add(field);
     }
 
-    private static class FieldCache {
-
-        private final Map<Integer, Field> sortedAllFieldMap;
-        private final Map<Integer, Field> indexFieldMap;
-        private final Map<String, Field> ignoreMap;
-
-        public FieldCache(Map<Integer, Field> sortedAllFieldMap, Map<Integer, Field> indexFieldMap,
-            Map<String, Field> ignoreMap) {
-            this.sortedAllFieldMap = sortedAllFieldMap;
-            this.indexFieldMap = indexFieldMap;
-            this.ignoreMap = ignoreMap;
-        }
-
-        public Map<Integer, Field> getSortedAllFieldMap() {
-            return sortedAllFieldMap;
-        }
-
-        public Map<Integer, Field> getIndexFieldMap() {
-            return indexFieldMap;
-        }
-
-        public Map<String, Field> getIgnoreMap() {
-            return ignoreMap;
-        }
-    }
-
     /**
      * <p>Gets a {@code List} of all interfaces implemented by the given
      * class and its superclasses.</p>
@@ -458,5 +545,11 @@ public class ClassUtils {
         private Class<?> clazz;
         private Class<?> headClass;
         private String fieldName;
+    }
+
+    public static void removeThreadLocalCache() {
+        FIELD_THREAD_LOCAL.remove();
+        CLASS_CONTENT_THREAD_LOCAL.remove();
+        CONTENT_THREAD_LOCAL.remove();
     }
 }
