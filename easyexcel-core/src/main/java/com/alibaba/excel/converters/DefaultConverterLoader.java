@@ -154,7 +154,6 @@ public class DefaultConverterLoader {
         putWriteStringConverter(new LongStringConverter());
         putWriteStringConverter(new ShortStringConverter());
         putWriteStringConverter(new StringStringConverter());
-        putWriteStringConverter(new BigIntegerStringConverter());
     }
 
     /**
