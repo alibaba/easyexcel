@@ -87,7 +87,6 @@ public class ExcludeOrIncludeDataTest {
         excludeFieldName(excludeFieldNameCsv);
     }
 
-
     @Test
     public void t21IncludeIndex07() {
         includeIndex(includeIndex07);

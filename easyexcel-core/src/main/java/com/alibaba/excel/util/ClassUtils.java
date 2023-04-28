@@ -2,7 +2,17 @@ package com.alibaba.excel.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
@@ -244,7 +254,7 @@ public class ClassUtils {
                 }
             }
         }
-        forceIndexIfNecessary(holder,sortedAllFieldMap);
+        forceIndexIfNecessary(holder, sortedAllFieldMap);
     }
 
     /**
@@ -255,7 +265,7 @@ public class ClassUtils {
         if (!(holder instanceof AbstractWriteHolder)) {
             return;
         }
-        AbstractWriteHolder writeHolder = (AbstractWriteHolder) holder;
+        AbstractWriteHolder writeHolder = (AbstractWriteHolder)holder;
         Collection<String> allCol = writeHolder.getIncludeColumnFieldNames();
         if (!CollectionUtils.isEmpty(allCol) && writeHolder.getForceIndex() != null && writeHolder.getForceIndex()) {
             Map<String, Integer> colIndexMap = MapUtils.newHashMap();

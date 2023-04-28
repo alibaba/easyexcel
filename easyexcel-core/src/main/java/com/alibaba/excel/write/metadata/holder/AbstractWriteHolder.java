@@ -197,9 +197,9 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         } else {
             this.includeColumnFieldNames = writeBasicParameter.getIncludeColumnFieldNames();
         }
-        if(writeBasicParameter.getForceIndex() == null && parentAbstractWriteHolder != null ){
+        if (writeBasicParameter.getForceIndex() == null && parentAbstractWriteHolder != null) {
             this.forceIndex = parentAbstractWriteHolder.getForceIndex();
-        }else{
+        } else {
             this.forceIndex = writeBasicParameter.getForceIndex();
         }
         if (writeBasicParameter.getIncludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
