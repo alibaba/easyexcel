@@ -56,4 +56,8 @@ public class WriteBasicParameter extends BasicParameter {
      * Only output the custom columns.
      */
     private Collection<String> includeColumnFieldNames;
+    /**
+     * head sorted use includeColumnFieldNames sort
+     */
+    private Boolean forceIndex;
 }
