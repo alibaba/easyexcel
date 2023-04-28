@@ -120,4 +120,13 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
         parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
         return self();
     }
+
+    /**
+     * head index use  {@link this#includeColumnFiledNames} sort
+     * useless  if not set {@link this#includeColumnFiledNames}
+     **/
+    public T forceIndex(Boolean force) {
+        parameter().setForceIndex(force);
+        return self();
+    }
 }

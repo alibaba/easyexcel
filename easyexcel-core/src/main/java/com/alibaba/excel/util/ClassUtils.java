@@ -3,9 +3,11 @@ package com.alibaba.excel.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
+import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 import lombok.AllArgsConstructor;
@@ -36,6 +39,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.cglib.beans.BeanMap;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -249,6 +253,36 @@ public class ClassUtils {
                     sortedAllFieldMap.put(index++, field);
                 }
             }
+        }
+        forceIndexIfNecessary(holder, sortedAllFieldMap);
+    }
+
+    /**
+     * it only works when {@link AbstractWriteHolder#getIncludeColumnFieldNames()} has value
+     * and {@link AbstractWriteHolder#getForceIndex()} is true
+     **/
+    private static void forceIndexIfNecessary(Holder holder, Map<Integer, Field> sortedAllFieldMap) {
+        if (!(holder instanceof AbstractWriteHolder)) {
+            return;
+        }
+        AbstractWriteHolder writeHolder = (AbstractWriteHolder)holder;
+        Collection<String> allCol = writeHolder.getIncludeColumnFieldNames();
+        if (!CollectionUtils.isEmpty(allCol) && writeHolder.getForceIndex() != null && writeHolder.getForceIndex()) {
+            Map<String, Integer> colIndexMap = MapUtils.newHashMap();
+            Iterator<String> iterator = allCol.iterator();
+            int colIndex = 0;
+            while (iterator.hasNext()) {
+                String col = iterator.next();
+                colIndexMap.put(col, colIndex);
+                colIndex++;
+            }
+            Map<Integer, Field> temp = MapUtils.newHashMap();
+            sortedAllFieldMap.forEach((index, field) -> {
+                Integer fieldIndex = colIndexMap.get(field.getName());
+                temp.put(fieldIndex, field);
+            });
+            sortedAllFieldMap.clear();
+            sortedAllFieldMap.putAll(temp);
         }
     }
 

@@ -34,6 +34,9 @@ public class ExcludeOrIncludeDataTest {
     private static File includeFieldName07;
     private static File includeFieldName03;
     private static File includeFieldNameCsv;
+    private static File includeFieldNameForceIndex07;
+    private static File includeFieldNameForceIndex03;
+    private static File includeFieldNameForceIndexCsv;
 
     @BeforeClass
     public static void init() {
@@ -49,6 +52,9 @@ public class ExcludeOrIncludeDataTest {
         includeFieldName07 = TestFileUtil.createNewFile("includeFieldName.xlsx");
         includeFieldName03 = TestFileUtil.createNewFile("includeFieldName.xls");
         includeFieldNameCsv = TestFileUtil.createNewFile("includeFieldName.csv");
+        includeFieldNameForceIndex07 = TestFileUtil.createNewFile("includeFieldNameForceIndex.xlsx");
+        includeFieldNameForceIndex03 = TestFileUtil.createNewFile("includeFieldNameForceIndex.xls");
+        includeFieldNameForceIndexCsv = TestFileUtil.createNewFile("includeFieldNameForceIndex.csv");
     }
 
     @Test
@@ -112,6 +118,21 @@ public class ExcludeOrIncludeDataTest {
         includeFieldName(includeFieldNameCsv);
     }
 
+    @Test
+    public void t41IncludeFieldName07() {
+        includeFieldNameForce(includeFieldNameForceIndex07);
+    }
+
+    @Test
+    public void t42IncludeFieldName03() {
+        includeFieldNameForce(includeFieldNameForceIndex03);
+    }
+
+    @Test
+    public void t43IncludeFieldNameCsv() {
+        includeFieldNameForce(includeFieldNameForceIndexCsv);
+    }
+
     private void excludeIndex(File file) {
         Set<Integer> excludeColumnIndexes = new HashSet<Integer>();
         excludeColumnIndexes.add(0);
@@ -169,6 +190,20 @@ public class ExcludeOrIncludeDataTest {
         Assert.assertEquals(2, record.size());
         Assert.assertEquals("column2", record.get(0));
         Assert.assertEquals("column3", record.get(1));
+    }
+
+    private void includeFieldNameForce(File file) {
+        List<String> includeColumnFieldNames = new ArrayList<>();
+        includeColumnFieldNames.add("column3");
+        includeColumnFieldNames.add("column2");
+        EasyExcel.write(file, ExcludeOrIncludeData.class).includeColumnFieldNames(includeColumnFieldNames)
+            .forceIndex(true).sheet().doWrite(data());
+        List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
+        Assert.assertEquals(1, dataMap.size());
+        Map<Integer, String> record = dataMap.get(0);
+        Assert.assertEquals(2, record.size());
+        Assert.assertEquals("column3", record.get(0));
+        Assert.assertEquals("column2", record.get(1));
     }
 
     private List<ExcludeOrIncludeData> data() {
