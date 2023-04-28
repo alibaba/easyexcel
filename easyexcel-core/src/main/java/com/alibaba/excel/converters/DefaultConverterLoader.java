@@ -115,8 +115,6 @@ public class DefaultConverterLoader {
         putAllConverter(new StringNumberConverter());
         putAllConverter(new StringStringConverter());
         putAllConverter(new StringErrorConverter());
-
-        putAllConverter(new BigIntegerStringConverter());
     }
 
     private static void initDefaultWriteConverter() {
