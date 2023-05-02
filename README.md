@@ -1,5 +1,5 @@
 # 🔥作者最新开源项目[Chat2DB](https://github.com/alibaba/Chat2DB)
-[Chat2DB](https://github.com/alibaba/Chat2DB) 智能数据库客户端，比Navicat、DataGrip更加智能，体验更好。 GitHub地址 [https://github.com/alibaba/Chat2DB](https://github.com/alibaba/Chat2DB)
+[Chat2DB](https://github.com/alibaba/Chat2DB) 智能数据库客户端，比Navicat、DataGrip更智能，体验更好。 GitHub地址 [https://github.com/alibaba/Chat2DB](https://github.com/alibaba/Chat2DB)
 
 EasyExcel
 ======================
