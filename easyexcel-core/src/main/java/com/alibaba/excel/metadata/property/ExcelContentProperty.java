@@ -1,12 +1,11 @@
 package com.alibaba.excel.metadata.property;
 
-import java.lang.reflect.Field;
-
 import com.alibaba.excel.converters.Converter;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.lang.reflect.Field;
 
 /**
  * @author jipengfei
@@ -15,6 +14,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 public class ExcelContentProperty {
+
     public static final ExcelContentProperty EMPTY = new ExcelContentProperty();
 
     /**
@@ -33,6 +33,10 @@ public class ExcelContentProperty {
      * number format
      */
     private NumberFormatProperty numberFormatProperty;
+    /**
+     * enum format
+     */
+    private KeyValueFormatProperty keyValueFormatProperty;
     /**
      * Content style
      */

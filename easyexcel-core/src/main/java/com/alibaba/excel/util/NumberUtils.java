@@ -1,12 +1,12 @@
 package com.alibaba.excel.util;
 
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-
-import com.alibaba.excel.metadata.data.WriteCellData;
-import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
  * Number utils
@@ -62,6 +62,12 @@ public class NumberUtils {
         if (contentProperty != null && contentProperty.getNumberFormatProperty() != null
             && StringUtils.isNotBlank(contentProperty.getNumberFormatProperty().getFormat())) {
             WorkBookUtil.fillDataFormat(cellData, contentProperty.getNumberFormatProperty().getFormat(), null);
+        }
+        if (contentProperty != null && contentProperty.getKeyValueFormatProperty() != null
+            && contentProperty.getKeyValueFormatProperty().getTargetClass() != null
+            && StringUtils.isNotBlank(contentProperty.getKeyValueFormatProperty().getExcelify())) {
+            String format = KeyValueFormatUtils.formatToCellData(num, contentProperty);
+            return StringUtils.isBlank(format) ? new WriteCellData<>("") : new WriteCellData<>(format);
         }
         return cellData;
     }

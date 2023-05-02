@@ -6,6 +6,8 @@ import com.alibaba.excel.metadata.GlobalConfiguration;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.util.KeyValueFormatUtils;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * String and string converter
@@ -26,12 +28,22 @@ public class StringStringConverter implements Converter<String> {
     @Override
     public String convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
+        if (contentProperty != null && contentProperty.getKeyValueFormatProperty() != null
+            && contentProperty.getKeyValueFormatProperty().getTargetClass() != null
+            && StringUtils.isNotBlank(contentProperty.getKeyValueFormatProperty().getJavaify())) {
+            return (String) KeyValueFormatUtils.formatToJavaData(cellData.getStringValue(), contentProperty);
+        }
         return cellData.getStringValue();
     }
 
     @Override
     public WriteCellData<?> convertToExcelData(String value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
+        if (contentProperty != null && contentProperty.getKeyValueFormatProperty() != null
+            && contentProperty.getKeyValueFormatProperty().getTargetClass() != null
+            && StringUtils.isNotBlank(contentProperty.getKeyValueFormatProperty().getExcelify())) {
+            value = KeyValueFormatUtils.formatToCellData(value, contentProperty);
+        }
         return new WriteCellData<>(value);
     }
 
