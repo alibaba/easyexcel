@@ -1,12 +1,7 @@
 package com.alibaba.excel.write.executor;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
@@ -29,6 +24,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.cglib.beans.BeanMap;
+
+import com.alibaba.excel.annotation.ExcelListProperty;
+import com.alibaba.excel.annotation.ExcelIgnore;
 
 /**
  * Add the data into excel
@@ -54,11 +52,81 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         Map<Integer, Field> sortedAllFieldMap = new TreeMap<>();
         int relativeRowIndex = 0;
         for (Object oneRowData : data) {
-            int lastRowIndex = relativeRowIndex + newRowIndex;
-            addOneRowOfDataToExcel(oneRowData, lastRowIndex, relativeRowIndex, sortedAllFieldMap);
-            relativeRowIndex++;
+            if (haveList(oneRowData)) {
+                List<List<Object>> dynamicDataList = analysisList(oneRowData);
+                for (List<?> list : dynamicDataList) {
+                    int n = relativeRowIndex + newRowIndex;
+                    addOneRowOfDataToExcel(list, n, relativeRowIndex, sortedAllFieldMap);
+                    relativeRowIndex++;
+                }
+            } else {
+                int n = relativeRowIndex + newRowIndex;
+                addOneRowOfDataToExcel(oneRowData, n, relativeRowIndex, sortedAllFieldMap);
+                relativeRowIndex++;
+            }
         }
     }
+    private boolean haveList(Object oneRowData) {
+        boolean flag = false;
+        Field[] fields = oneRowData.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getAnnotation(ExcelIgnore.class) != null) continue;
+            if (field.getAnnotation(ExcelListProperty.class) != null) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    private List<List<Object>> analysisList(Object oneRowData) {
+        List<Object> dataList = new ArrayList<>();
+        Field[] fields = oneRowData.getClass().getDeclaredFields();
+        Map<Integer, List<?>> listMap = new HashMap<>();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (field.getAnnotation(ExcelIgnore.class) != null) continue;
+            try {
+                if (field.getAnnotation(ExcelListProperty.class) != null) {
+                    List<?> tmpList = (List<?>) field.get(oneRowData);
+                    if (!CollectionUtils.isEmpty(tmpList)) {
+                        dataList.add(tmpList.get(0));
+                        listMap.put(dataList.size() - 1, tmpList);
+                    } else {
+                        dataList.add(null);
+                    }
+                } else {
+                    dataList.add(field.get(oneRowData));
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        List<List<Object>> allDataList = new ArrayList<>();
+        if (listMap.size() > 0) {
+            allDataList.add(dataList);
+            List<List<Object>> tmpList = new ArrayList<>();
+            for (Map.Entry<Integer, List<?>> entry : listMap.entrySet()) {
+                Integer key = entry.getKey();
+                List<?> fieldValueList = entry.getValue();
+                for (Object fieldValue : fieldValueList) {
+                    for (List<Object> rows : allDataList) {
+                        rows.set(key, fieldValue);
+                        List<Object> copyList = new ArrayList<>(rows.size());
+                        copyList.addAll(rows);
+                        tmpList.add(copyList);
+                    }
+                }
+                allDataList.clear();
+                allDataList.addAll(tmpList);
+                tmpList.clear();
+            }
+        } else {
+            allDataList.add(dataList);
+        }
+        return allDataList;
+    }
+
 
     private void addOneRowOfDataToExcel(Object oneRowData, int rowIndex, int relativeRowIndex,
         Map<Integer, Field> sortedAllFieldMap) {
