@@ -16,6 +16,7 @@
         <module>easyexcel-support</module>
         <module>easyexcel-test</module>
         <module>easyexcel</module>
+        <module>easyexcel-webflux-test</module>
     </modules>
 
 
@@ -150,6 +151,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
+                <version>2.6.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-webflux</artifactId>
                 <version>2.6.3</version>
             </dependency>
             <dependency>
