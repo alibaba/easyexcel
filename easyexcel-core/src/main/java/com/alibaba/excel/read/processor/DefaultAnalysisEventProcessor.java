@@ -1,5 +1,6 @@
 package com.alibaba.excel.read.processor;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,9 +85,10 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
         }
     }
 
+
     private void dealData(AnalysisContext analysisContext) {
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
-        Map<Integer, ReadCellData<?>> cellDataMap = (Map)readRowHolder.getCellMap();
+        Map<Integer, ReadCellData<?>> cellDataMap = (Map) readRowHolder.getCellMap();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
         int currentHeadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
@@ -102,6 +104,23 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
             try {
                 if (isData) {
                     readListener.invoke(readRowHolder.getCurrentRowAnalysisResult(), analysisContext);
+                    Class c = readRowHolder.getCurrentRowAnalysisResult().getClass();
+                    Method[] methods = c.getMethods();
+                    String date = "";
+                    for (int i = 0; i < methods.length; i++) {
+                        if (methods[i].equals(c.getMethod("getDate"))) {
+                            date = c.getMethod("getDate").invoke(readRowHolder.getCurrentRowAnalysisResult()).
+                                toString().replace("\uE001", "").replace("\uE002", "");
+                        }
+                    }
+                    for (int i = 0; i < methods.length; i++) {
+                        if (date.equals("")) {
+                            break;
+                        }
+                        if (methods[i].equals(c.getMethod("setDate", String.class))) {
+                            c.getMethod("setDate", String.class).invoke(readRowHolder.getCurrentRowAnalysisResult(), date);
+                        }
+                    }
                 } else {
                     readListener.invokeHead(cellDataMap, analysisContext);
                 }
@@ -160,4 +179,6 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
         }
         excelHeadPropertyData.setHeadMap(tmpHeadMap);
     }
+
+
 }
