@@ -1,18 +1,5 @@
 package com.alibaba.excel.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -30,12 +17,25 @@ import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.cglib.beans.BeanMap;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -44,7 +44,7 @@ import org.springframework.cglib.beans.BeanMap;
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -77,10 +77,10 @@ public class ClassUtils {
      * @return
      */
     public static ExcelContentProperty declaredExcelContentProperty(Map<?, ?> dataMap, Class<?> headClazz,
-        String fieldName) {
+                                                                    String fieldName) {
         Class<?> clazz = null;
         if (dataMap instanceof BeanMap) {
-            Object bean = ((BeanMap)dataMap).getBean();
+            Object bean = ((BeanMap) dataMap).getBean();
             if (bean != null) {
                 clazz = bean.getClass();
             }
@@ -108,7 +108,7 @@ public class ClassUtils {
     }
 
     public static void combineExcelContentProperty(ExcelContentProperty combineExcelContentProperty,
-        ExcelContentProperty excelContentProperty) {
+                                                   ExcelContentProperty excelContentProperty) {
         if (excelContentProperty == null) {
             return;
         }
@@ -149,15 +149,16 @@ public class ClassUtils {
                 tempClass = tempClass.getSuperclass();
             }
 
-            ContentStyle parentContentStyle = clazz.getAnnotation(ContentStyle.class);
-            ContentFontStyle parentContentFontStyle = clazz.getAnnotation(ContentFontStyle.class);
+            ContentStyle parentContentStyle = AnnotatedElementUtils.findMergedAnnotation(clazz, ContentStyle.class);
+            ContentFontStyle parentContentFontStyle = AnnotatedElementUtils.findMergedAnnotation(clazz,
+                ContentFontStyle.class);
             Map<String, ExcelContentProperty> fieldContentMap = MapUtils.newHashMapWithExpectedSize(
                 tempFieldList.size());
             for (Field field : tempFieldList) {
                 ExcelContentProperty excelContentProperty = new ExcelContentProperty();
                 excelContentProperty.setField(field);
 
-                ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+                ExcelProperty excelProperty = AnnotatedElementUtils.findMergedAnnotation(field, ExcelProperty.class);
                 if (excelProperty != null) {
                     Class<? extends Converter<?>> convertClazz = excelProperty.converter();
                     if (convertClazz != AutoConverter.class) {
@@ -171,22 +172,24 @@ public class ClassUtils {
                     }
                 }
 
-                ContentStyle contentStyle = field.getAnnotation(ContentStyle.class);
+                ContentStyle contentStyle = AnnotatedElementUtils.findMergedAnnotation(field, ContentStyle.class);
                 if (contentStyle == null) {
                     contentStyle = parentContentStyle;
                 }
                 excelContentProperty.setContentStyleProperty(StyleProperty.build(contentStyle));
 
-                ContentFontStyle contentFontStyle = field.getAnnotation(ContentFontStyle.class);
+                ContentFontStyle contentFontStyle = AnnotatedElementUtils.findMergedAnnotation(field,
+                    ContentFontStyle.class);
                 if (contentFontStyle == null) {
                     contentFontStyle = parentContentFontStyle;
                 }
                 excelContentProperty.setContentFontProperty(FontProperty.build(contentFontStyle));
 
-                excelContentProperty.setDateTimeFormatProperty(
-                    DateTimeFormatProperty.build(field.getAnnotation(DateTimeFormat.class)));
-                excelContentProperty.setNumberFormatProperty(
-                    NumberFormatProperty.build(field.getAnnotation(NumberFormat.class)));
+                DateTimeFormat dateTimeFormat = AnnotatedElementUtils.findMergedAnnotation(field, DateTimeFormat.class);
+                excelContentProperty.setDateTimeFormatProperty(DateTimeFormatProperty.build(dateTimeFormat));
+
+                NumberFormat numberFormat = AnnotatedElementUtils.findMergedAnnotation(field, NumberFormat.class);
+                excelContentProperty.setNumberFormatProperty(NumberFormatProperty.build(numberFormat));
 
                 fieldContentMap.put(field.getName(), excelContentProperty);
             }
@@ -205,7 +208,8 @@ public class ClassUtils {
      * @param holder            holder
      */
     public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFieldMap,
-        Map<Integer, Field> indexFieldMap, Map<String, Field> ignoreMap, Boolean needIgnore, Holder holder) {
+                                      Map<Integer, Field> indexFieldMap, Map<String, Field> ignoreMap,
+                                      Boolean needIgnore, Holder holder) {
         FieldCache fieldCache = declaredFields(clazz);
         if (fieldCache == null) {
             return;
@@ -231,7 +235,7 @@ public class ClassUtils {
             Field field = entry.getValue();
 
             // The current field needs to be ignored
-            if (((WriteHolder)holder).ignore(entry.getValue().getName(), entry.getKey())) {
+            if (((WriteHolder) holder).ignore(entry.getValue().getName(), entry.getKey())) {
                 if (ignoreMap != null) {
                     ignoreMap.put(field.getName(), field);
                 }
@@ -253,7 +257,7 @@ public class ClassUtils {
     }
 
     public static void declaredFields(Class<?> clazz, Map<Integer, Field> sortedAllFieldMap, Boolean needIgnore,
-        WriteHolder writeHolder) {
+                                      WriteHolder writeHolder) {
         declaredFields(clazz, sortedAllFieldMap, null, null, needIgnore, writeHolder);
     }
 
@@ -276,7 +280,9 @@ public class ClassUtils {
             Map<Integer, Field> indexFieldMap = new TreeMap<Integer, Field>();
             Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
 
-            ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
+
+            ExcelIgnoreUnannotated excelIgnoreUnannotated = AnnotatedElementUtils.findMergedAnnotation(clazz,
+                ExcelIgnoreUnannotated.class);
             for (Field field : tempFieldList) {
                 declaredOneField(field, orderFieldMap, indexFieldMap, ignoreMap, excelIgnoreUnannotated);
             }
@@ -285,7 +291,7 @@ public class ClassUtils {
     }
 
     private static Map<Integer, Field> buildSortedAllFieldMap(Map<Integer, List<Field>> orderFieldMap,
-        Map<Integer, Field> indexFieldMap) {
+                                                              Map<Integer, Field> indexFieldMap) {
 
         Map<Integer, Field> sortedAllFieldMap = new HashMap<Integer, Field>(
             (orderFieldMap.size() + indexFieldMap.size()) * 4 / 3 + 1);
@@ -308,15 +314,16 @@ public class ClassUtils {
     }
 
     private static void declaredOneField(Field field, Map<Integer, List<Field>> orderFieldMap,
-        Map<Integer, Field> indexFieldMap, Map<String, Field> ignoreMap,
-        ExcelIgnoreUnannotated excelIgnoreUnannotated) {
+                                         Map<Integer, Field> indexFieldMap, Map<String, Field> ignoreMap,
+                                         ExcelIgnoreUnannotated excelIgnoreUnannotated) {
 
-        ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
+
+        ExcelIgnore excelIgnore = AnnotatedElementUtils.findMergedAnnotation(field, ExcelIgnore.class);
         if (excelIgnore != null) {
             ignoreMap.put(field.getName(), field);
             return;
         }
-        ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+        ExcelProperty excelProperty = AnnotatedElementUtils.findMergedAnnotation(field, ExcelProperty.class);
         boolean noExcelProperty = excelProperty == null && excelIgnoreUnannotated != null;
         if (noExcelProperty) {
             ignoreMap.put(field.getName(), field);
@@ -353,7 +360,7 @@ public class ClassUtils {
         private final Map<String, Field> ignoreMap;
 
         public FieldCache(Map<Integer, Field> sortedAllFieldMap, Map<Integer, Field> indexFieldMap,
-            Map<String, Field> ignoreMap) {
+                          Map<String, Field> ignoreMap) {
             this.sortedAllFieldMap = sortedAllFieldMap;
             this.indexFieldMap = indexFieldMap;
             this.ignoreMap = ignoreMap;

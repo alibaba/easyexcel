@@ -1,12 +1,5 @@
 package com.alibaba.excel.write.property;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentLoopMerge;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
@@ -25,10 +18,17 @@ import com.alibaba.excel.metadata.property.LoopMergeProperty;
 import com.alibaba.excel.metadata.property.OnceAbsoluteMergeProperty;
 import com.alibaba.excel.metadata.property.RowHeightProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Define the header attribute of excel
@@ -50,15 +50,15 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             return;
         }
         this.headRowHeightProperty =
-            RowHeightProperty.build(headClazz.getAnnotation(HeadRowHeight.class));
+            RowHeightProperty.build(AnnotatedElementUtils.findMergedAnnotation(headClazz, HeadRowHeight.class));
         this.contentRowHeightProperty =
-            RowHeightProperty.build(headClazz.getAnnotation(ContentRowHeight.class));
-        this.onceAbsoluteMergeProperty =
-            OnceAbsoluteMergeProperty.build(headClazz.getAnnotation(OnceAbsoluteMerge.class));
+            RowHeightProperty.build(AnnotatedElementUtils.findMergedAnnotation(headClazz, ContentRowHeight.class));
+        this.onceAbsoluteMergeProperty = OnceAbsoluteMergeProperty.build(
+            AnnotatedElementUtils.findMergedAnnotation(headClazz, OnceAbsoluteMerge.class));
 
-        ColumnWidth parentColumnWidth = headClazz.getAnnotation(ColumnWidth.class);
-        HeadStyle parentHeadStyle = headClazz.getAnnotation(HeadStyle.class);
-        HeadFontStyle parentHeadFontStyle = headClazz.getAnnotation(HeadFontStyle.class);
+        ColumnWidth parentColumnWidth = AnnotatedElementUtils.findMergedAnnotation(headClazz, ColumnWidth.class);
+        HeadStyle parentHeadStyle = AnnotatedElementUtils.findMergedAnnotation(headClazz, HeadStyle.class);
+        HeadFontStyle parentHeadFontStyle = AnnotatedElementUtils.findMergedAnnotation(headClazz, HeadFontStyle.class);
 
 
         for (Map.Entry<Integer, Head> entry : getHeadMap().entrySet()) {
@@ -69,26 +69,29 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
             }
             Field field = headData.getField();
 
-            ColumnWidth columnWidth = field.getAnnotation(ColumnWidth.class);
+            ColumnWidth columnWidth = AnnotatedElementUtils.findMergedAnnotation(field, ColumnWidth.class);
             if (columnWidth == null) {
                 columnWidth = parentColumnWidth;
             }
             headData.setColumnWidthProperty(ColumnWidthProperty.build(columnWidth));
 
 
-            HeadStyle headStyle = field.getAnnotation(HeadStyle.class);
+            HeadStyle headStyle = AnnotatedElementUtils.findMergedAnnotation(field, HeadStyle.class);
             if (headStyle == null) {
                 headStyle = parentHeadStyle;
             }
             headData.setHeadStyleProperty(StyleProperty.build(headStyle));
 
-            HeadFontStyle headFontStyle = field.getAnnotation(HeadFontStyle.class);
+            HeadFontStyle headFontStyle = AnnotatedElementUtils.findMergedAnnotation(field, HeadFontStyle.class);
             if (headFontStyle == null) {
                 headFontStyle = parentHeadFontStyle;
             }
             headData.setHeadFontProperty(FontProperty.build(headFontStyle));
 
-            headData.setLoopMergeProperty(LoopMergeProperty.build(field.getAnnotation(ContentLoopMerge.class)));
+            ContentLoopMerge contentLoopMerge = AnnotatedElementUtils.findMergedAnnotation(field,
+                ContentLoopMerge.class);
+
+            headData.setLoopMergeProperty(LoopMergeProperty.build(contentLoopMerge));
         }
     }
 
