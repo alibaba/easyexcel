@@ -1,5 +1,6 @@
 package com.alibaba.excel.util;
 
+import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -7,14 +8,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
@@ -25,17 +26,16 @@ import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.ContentStyle;
 import com.alibaba.excel.converters.AutoConverter;
 import com.alibaba.excel.converters.Converter;
-import com.alibaba.excel.enums.CacheLocationEnum;
 import com.alibaba.excel.exception.ExcelCommonException;
 import com.alibaba.excel.metadata.ConfigurationHolder;
 import com.alibaba.excel.metadata.FieldCache;
-import com.alibaba.excel.metadata.Holder;
+import com.alibaba.excel.metadata.FieldWrapper;
 import com.alibaba.excel.metadata.property.DateTimeFormatProperty;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
-import com.alibaba.excel.write.metadata.holder.AbstractWriteHolder;
+import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 import lombok.AllArgsConstructor;
@@ -312,16 +312,16 @@ public class ClassUtils {
             tempClass = tempClass.getSuperclass();
         }
         // Screening of field
-        Map<Integer, List<Field>> orderFieldMap = new TreeMap<Integer, List<Field>>();
-        Map<Integer, Field> indexFieldMap = new TreeMap<Integer, Field>();
-        Map<String, Field> ignoreMap = new HashMap<String, Field>(16);
+        Map<Integer, List<FieldWrapper>> orderFieldMap = new TreeMap<>();
+        Map<Integer, FieldWrapper> indexFieldMap = new TreeMap<>();
+        Set<String> ignoreSet = new HashSet<>();
 
         ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
         for (Field field : tempFieldList) {
-            declaredOneField(field, orderFieldMap, indexFieldMap, ignoreMap, excelIgnoreUnannotated);
+            declaredOneField(field, orderFieldMap, indexFieldMap, ignoreSet, excelIgnoreUnannotated);
         }
-        Map<Integer, Field> sortedFieldMap = buildSortedAllFieldMap(orderFieldMap, indexFieldMap);
-        FieldCache fieldCache = new FieldCache(sortedFieldMap, indexFieldMap, ignoreMap);
+        Map<Integer, FieldWrapper> sortedFieldMap = buildSortedAllFieldMap(orderFieldMap, indexFieldMap);
+        FieldCache fieldCache = new FieldCache(sortedFieldMap, indexFieldMap);
 
         if (!(configurationHolder instanceof WriteHolder)) {
             return fieldCache;
@@ -338,21 +338,21 @@ public class ClassUtils {
             return fieldCache;
         }
         // ignore filed
-        Map<Integer, Field> tempSortedFieldMapp = MapUtils.newHashMap();
+        Map<Integer, FieldWrapper> tempSortedFieldMapp = MapUtils.newHashMap();
         int index = 0;
-        for (Map.Entry<Integer, Field> entry : sortedFieldMap.entrySet()) {
+        for (Map.Entry<Integer, FieldWrapper> entry : sortedFieldMap.entrySet()) {
             Integer key = entry.getKey();
-            Field field = entry.getValue();
+            FieldWrapper field = entry.getValue();
 
             // The current field needs to be ignored
-            if (writeHolder.ignore(entry.getValue().getName(), entry.getKey())) {
-                if (ignoreMap != null) {
-                    ignoreMap.put(field.getName(), field);
+            if (writeHolder.ignore(field.getFieldName(), entry.getKey())) {
+                if (ignoreSet != null) {
+                    ignoreSet.add(field.getFieldName());
                 }
                 indexFieldMap.remove(index);
             } else {
                 // Mandatory sorted fields
-                if (indexFieldMap.containsKey(key)) {
+                if (ignoreSet.contains(key)) {
                     tempSortedFieldMapp.put(key, field);
                 } else {
                     // Need to reorder automatically
@@ -374,13 +374,13 @@ public class ClassUtils {
     /**
      * it only works when {@link WriteHolder#getIncludeColumnFieldNames()} or
      * {@link WriteHolder#getIncludeColumnIndexes()} ()} has value
-     * and {@link WriteHolder#getSortByIncludeColumn()} ()} is true
+     * and {@link WriteHolder#getOrderByIncludeColumn()} ()} is true
      **/
     private static void resortField(WriteHolder writeHolder, FieldCache fieldCache) {
-        if (!writeHolder.sortByIncludeColumn()) {
+        if (!writeHolder.orderByIncludeColumn()) {
             return;
         }
-        Map<Integer, Field> indexFieldMap = fieldCache.getIndexFieldMap();
+        Map<Integer, FieldWrapper> indexFieldMap = fieldCache.getIndexFieldMap();
 
         Collection<String> includeColumnFieldNames = writeHolder.includeColumnFieldNames();
         if (!CollectionUtils.isEmpty(includeColumnFieldNames)) {
@@ -392,9 +392,9 @@ public class ClassUtils {
             }
 
             // rebuild sortedFieldMap
-            Map<Integer, Field> tempSortedFieldMap = MapUtils.newHashMap();
+            Map<Integer, FieldWrapper> tempSortedFieldMap = MapUtils.newHashMap();
             fieldCache.getSortedFieldMap().forEach((index, field) -> {
-                Integer tempFieldIndex = filedIndexMap.get(field.getName());
+                Integer tempFieldIndex = filedIndexMap.get(field.getFieldName());
                 if (tempFieldIndex != null) {
                     tempSortedFieldMap.put(tempFieldIndex, field);
 
@@ -409,7 +409,7 @@ public class ClassUtils {
         }
 
         Collection<Integer> includeColumnIndexes = writeHolder.includeColumnIndexes();
-        if (!CollectionUtils.isEmpty(includeColumnFieldNames)) {
+        if (!CollectionUtils.isEmpty(includeColumnIndexes)) {
             // Index sorted map
             Map<Integer, Integer> filedIndexMap = MapUtils.newHashMap();
             int fieldIndex = 0;
@@ -418,7 +418,7 @@ public class ClassUtils {
             }
 
             // rebuild sortedFieldMap
-            Map<Integer, Field> tempSortedFieldMap = MapUtils.newHashMap();
+            Map<Integer, FieldWrapper> tempSortedFieldMap = MapUtils.newHashMap();
             fieldCache.getSortedFieldMap().forEach((index, field) -> {
                 Integer tempFieldIndex = filedIndexMap.get(index);
 
@@ -431,16 +431,16 @@ public class ClassUtils {
         }
     }
 
-    private static Map<Integer, Field> buildSortedAllFieldMap(Map<Integer, List<Field>> orderFieldMap,
-        Map<Integer, Field> indexFieldMap) {
+    private static Map<Integer, FieldWrapper> buildSortedAllFieldMap(Map<Integer, List<FieldWrapper>> orderFieldMap,
+        Map<Integer, FieldWrapper> indexFieldMap) {
 
-        Map<Integer, Field> sortedAllFieldMap = new HashMap<Integer, Field>(
-            (orderFieldMap.size() + indexFieldMap.size()) * 4 / 3 + 1);
+        Map<Integer, FieldWrapper> sortedAllFieldMap = MapUtils.newHashMapWithExpectedSize(
+            orderFieldMap.size() + indexFieldMap.size());
 
-        Map<Integer, Field> tempIndexFieldMap = new HashMap<Integer, Field>(indexFieldMap);
+        Map<Integer, FieldWrapper> tempIndexFieldMap = MapUtils.newLinkedHashMapWithExpectedSize(indexFieldMap.size());
         int index = 0;
-        for (List<Field> fieldList : orderFieldMap.values()) {
-            for (Field field : fieldList) {
+        for (List<FieldWrapper> fieldList : orderFieldMap.values()) {
+            for (FieldWrapper field : fieldList) {
                 while (tempIndexFieldMap.containsKey(index)) {
                     sortedAllFieldMap.put(index, tempIndexFieldMap.get(index));
                     tempIndexFieldMap.remove(index);
@@ -454,34 +454,45 @@ public class ClassUtils {
         return sortedAllFieldMap;
     }
 
-    private static void declaredOneField(Field field, Map<Integer, List<Field>> orderFieldMap,
-        Map<Integer, Field> indexFieldMap, Map<String, Field> ignoreMap,
+    private static void declaredOneField(Field field, Map<Integer, List<FieldWrapper>> orderFieldMap,
+        Map<Integer, FieldWrapper> indexFieldMap, Set<String> ignoreSet,
         ExcelIgnoreUnannotated excelIgnoreUnannotated) {
+        String fieldName = FieldUtils.resolveCglibFieldName(field);
+        FieldWrapper fieldWrapper = new FieldWrapper();
+        fieldWrapper.setField(field);
+        fieldWrapper.setFieldName(fieldName);
 
         ExcelIgnore excelIgnore = field.getAnnotation(ExcelIgnore.class);
+
         if (excelIgnore != null) {
-            ignoreMap.put(field.getName(), field);
+            ignoreSet.add(fieldName);
             return;
         }
         ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
         boolean noExcelProperty = excelProperty == null && excelIgnoreUnannotated != null;
         if (noExcelProperty) {
-            ignoreMap.put(field.getName(), field);
+            ignoreSet.add(fieldName);
             return;
         }
         boolean isStaticFinalOrTransient =
             (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()))
                 || Modifier.isTransient(field.getModifiers());
         if (excelProperty == null && isStaticFinalOrTransient) {
-            ignoreMap.put(field.getName(), field);
+            ignoreSet.add(fieldName);
             return;
         }
+        // set heads
+        if (excelProperty != null) {
+            fieldWrapper.setHeads(excelProperty.value());
+        }
+
         if (excelProperty != null && excelProperty.index() >= 0) {
             if (indexFieldMap.containsKey(excelProperty.index())) {
-                throw new ExcelCommonException("The index of '" + indexFieldMap.get(excelProperty.index()).getName()
-                    + "' and '" + field.getName() + "' must be inconsistent");
+                throw new ExcelCommonException(
+                    "The index of '" + indexFieldMap.get(excelProperty.index()).getFieldName()
+                        + "' and '" + field.getName() + "' must be inconsistent");
             }
-            indexFieldMap.put(excelProperty.index(), field);
+            indexFieldMap.put(excelProperty.index(), fieldWrapper);
             return;
         }
 
@@ -489,8 +500,8 @@ public class ClassUtils {
         if (excelProperty != null) {
             order = excelProperty.order();
         }
-        List<Field> orderFieldList = orderFieldMap.computeIfAbsent(order, key -> ListUtils.newArrayList());
-        orderFieldList.add(field);
+        List<FieldWrapper> orderFieldList = orderFieldMap.computeIfAbsent(order, key -> ListUtils.newArrayList());
+        orderFieldList.add(fieldWrapper);
     }
 
     /**

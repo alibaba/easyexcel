@@ -58,9 +58,9 @@ public class WriteBasicParameter extends BasicParameter {
     private Collection<String> includeColumnFieldNames;
 
     /**
-     * Data will be sorted according to  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
      *
      * default is false.
      */
-    private Boolean sortByIncludeColumn;
+    private Boolean orderByIncludeColumn;
 }

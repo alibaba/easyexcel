@@ -11,6 +11,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.ConfigurationHolder;
 import com.alibaba.excel.metadata.FieldCache;
+import com.alibaba.excel.metadata.FieldWrapper;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.util.ClassUtils;
@@ -107,7 +108,7 @@ public class ExcelHeadProperty {
         }
         FieldCache fieldCache = ClassUtils.declaredFields(headClazz, configurationHolder);
 
-        for (Map.Entry<Integer, Field> entry : fieldCache.getSortedFieldMap().entrySet()) {
+        for (Map.Entry<Integer, FieldWrapper> entry : fieldCache.getSortedFieldMap().entrySet()) {
             initOneColumnProperty(entry.getKey(), entry.getValue(),
                 fieldCache.getIndexFieldMap().containsKey(entry.getKey()));
         }
@@ -122,22 +123,20 @@ public class ExcelHeadProperty {
      * @param forceIndex
      * @return Ignore current field
      */
-    private void initOneColumnProperty(int index, Field field, Boolean forceIndex) {
-        ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-        List<String> tmpHeadList = new ArrayList<String>();
-        String fieldName = FieldUtils.resolveCglibFieldName(field);
-        boolean notForceName = excelProperty == null || excelProperty.value().length <= 0
-            || (excelProperty.value().length == 1 && StringUtils.isEmpty((excelProperty.value())[0]));
+    private void initOneColumnProperty(int index, FieldWrapper field, Boolean forceIndex) {
+        List<String> tmpHeadList = new ArrayList<>();
+        boolean notForceName = field.getHeads() == null || field.getHeads().length == 0
+            || (field.getHeads().length == 1 && StringUtils.isEmpty(field.getHeads()[0]));
         if (headMap.containsKey(index)) {
             tmpHeadList.addAll(headMap.get(index).getHeadNameList());
         } else {
             if (notForceName) {
-                tmpHeadList.add(fieldName);
+                tmpHeadList.add(field.getFieldName());
             } else {
-                Collections.addAll(tmpHeadList, excelProperty.value());
+                Collections.addAll(tmpHeadList, field.getHeads());
             }
         }
-        Head head = new Head(index, field, fieldName, tmpHeadList, forceIndex, !notForceName);
+        Head head = new Head(index, field.getField(), field.getFieldName(), tmpHeadList, forceIndex, !notForceName);
         headMap.put(index, head);
     }
 

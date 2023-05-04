@@ -54,6 +54,6 @@ public class GlobalConfiguration {
         this.use1904windowing = Boolean.FALSE;
         this.locale = Locale.getDefault();
         this.useScientificFormat = Boolean.FALSE;
-        this.filedCacheLocation = CacheLocationEnum.MEMORY;
+        this.filedCacheLocation = CacheLocationEnum.THREAD_LOCAL;
     }
 }

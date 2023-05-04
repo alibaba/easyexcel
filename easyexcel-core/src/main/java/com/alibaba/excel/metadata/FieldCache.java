@@ -2,6 +2,7 @@ package com.alibaba.excel.metadata;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -23,15 +24,10 @@ public class FieldCache {
      * A field cache that has been sorted by a class.
      * It will exclude fields that are not needed.
      */
-    private Map<Integer, Field> sortedFieldMap;
+    private Map<Integer, FieldWrapper> sortedFieldMap;
 
     /**
      * Fields using the index attribute
      */
-    private Map<Integer, Field> indexFieldMap;
-
-    /**
-     * Fields to ignore
-     */
-    private Map<String, Field> ignoreMap;
+    private Map<Integer, FieldWrapper> indexFieldMap;
 }

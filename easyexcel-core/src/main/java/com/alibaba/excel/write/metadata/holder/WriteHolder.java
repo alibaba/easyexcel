@@ -49,11 +49,11 @@ public interface WriteHolder extends ConfigurationHolder {
     int relativeHeadRowIndex();
 
     /**
-     * Data will be sorted according to  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
      *
      * default is false.
      */
-    boolean sortByIncludeColumn();
+    boolean orderByIncludeColumn();
 
     /**
      * Only output the custom columns.

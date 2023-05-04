@@ -14,7 +14,6 @@ import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ConverterKeyBuild;
 import com.alibaba.excel.converters.DefaultConverterLoader;
 import com.alibaba.excel.enums.HeadKindEnum;
-import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.event.NotRepeatExecutor;
 import com.alibaba.excel.metadata.AbstractHolder;
 import com.alibaba.excel.metadata.Head;
@@ -97,11 +96,11 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     private Collection<String> includeColumnFieldNames;
 
     /**
-     * Data will be sorted according to  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
      *
      * default is false.
      */
-    private Boolean sortByIncludeColumn;
+    private Boolean orderByIncludeColumn;
 
     /**
      * Write handler
@@ -203,14 +202,14 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
             this.includeColumnFieldNames = writeBasicParameter.getIncludeColumnFieldNames();
         }
 
-        if (writeBasicParameter.getSortByIncludeColumn() == null) {
+        if (writeBasicParameter.getOrderByIncludeColumn() == null) {
             if (parentAbstractWriteHolder == null) {
-                this.sortByIncludeColumn = Boolean.FALSE;
+                this.orderByIncludeColumn = Boolean.FALSE;
             } else {
-                this.sortByIncludeColumn = parentAbstractWriteHolder.getSortByIncludeColumn();
+                this.orderByIncludeColumn = parentAbstractWriteHolder.getOrderByIncludeColumn();
             }
         } else {
-            this.sortByIncludeColumn = writeBasicParameter.getSortByIncludeColumn();
+            this.orderByIncludeColumn = writeBasicParameter.getOrderByIncludeColumn();
         }
 
         if (writeBasicParameter.getIncludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
@@ -500,8 +499,8 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     }
 
     @Override
-    public boolean sortByIncludeColumn() {
-        return getSortByIncludeColumn();
+    public boolean orderByIncludeColumn() {
+        return getOrderByIncludeColumn();
     }
 
     @Override

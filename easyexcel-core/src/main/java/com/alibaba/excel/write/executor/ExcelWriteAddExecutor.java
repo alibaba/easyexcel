@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.FieldCache;
+import com.alibaba.excel.metadata.FieldWrapper;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.BeanMapUtils;
@@ -183,9 +184,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         maxCellIndex++;
 
         FieldCache fieldCache = ClassUtils.declaredFields(oneRowData.getClass(), writeContext.currentWriteHolder());
-        for (Map.Entry<Integer, Field> entry : fieldCache.getSortedFieldMap().entrySet()) {
-            Field field = entry.getValue();
-            String fieldName = FieldUtils.resolveCglibFieldName(field);
+        for (Map.Entry<Integer, FieldWrapper> entry : fieldCache.getSortedFieldMap().entrySet()) {
+            FieldWrapper field = entry.getValue();
+            String fieldName = field.getFieldName();
             boolean uselessData = !beanKeySet.contains(fieldName) || beanMapHandledSet.contains(fieldName);
             if (uselessData) {
                 continue;
@@ -211,20 +212,6 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
             WriteHandlerUtils.afterCellDispose(cellWriteHandlerContext);
             maxCellIndex++;
         }
-    }
-
-    private void initSortedAllFieldMapFieldList(Class<?> clazz, Map<Integer, Field> sortedAllFieldMap) {
-        if (!sortedAllFieldMap.isEmpty()) {
-            return;
-        }
-
-        WriteSheetHolder writeSheetHolder = writeContext.writeSheetHolder();
-        boolean needIgnore =
-            !CollectionUtils.isEmpty(writeSheetHolder.getExcludeColumnFieldNames()) || !CollectionUtils
-                .isEmpty(writeSheetHolder.getExcludeColumnIndexes()) || !CollectionUtils
-                .isEmpty(writeSheetHolder.getIncludeColumnFieldNames()) || !CollectionUtils
-                .isEmpty(writeSheetHolder.getIncludeColumnIndexes());
-        ClassUtils.declaredFields(clazz, writeSheetHolder);
     }
 
 }
