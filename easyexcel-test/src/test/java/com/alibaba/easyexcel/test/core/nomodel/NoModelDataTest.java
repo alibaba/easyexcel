@@ -15,16 +15,16 @@ import com.alibaba.excel.util.DateUtils;
 import com.alibaba.fastjson2.JSON;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @Slf4j
 public class NoModelDataTest {
 
@@ -35,7 +35,7 @@ public class NoModelDataTest {
     private static File fileRepeat03;
     private static File fileRepeatCsv;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("noModel07.xlsx");
         file03 = TestFileUtil.createNewFile("noModel03.xls");
@@ -63,11 +63,11 @@ public class NoModelDataTest {
     private void readAndWrite(File file, File fileRepeat, boolean isCsv) throws Exception {
         EasyExcel.write(file).sheet().doWrite(data());
         List<Map<Integer, String>> result = EasyExcel.read(file).headRowNumber(0).sheet().doReadSync();
-        Assert.assertEquals(10, result.size());
+        Assertions.assertEquals(10, result.size());
         Map<Integer, String> data10 = result.get(9);
-        Assert.assertEquals("string19", data10.get(0));
-        Assert.assertEquals("109", data10.get(1));
-        Assert.assertEquals("2020-01-01 01:01:01", data10.get(2));
+        Assertions.assertEquals("string19", data10.get(0));
+        Assertions.assertEquals("109", data10.get(1));
+        Assertions.assertEquals("2020-01-01 01:01:01", data10.get(2));
 
         List<Map<Integer, Object>> actualDataList = EasyExcel.read(file)
             .headRowNumber(0)
@@ -75,16 +75,16 @@ public class NoModelDataTest {
             .sheet()
             .doReadSync();
         log.info("actualDataList:{}", JSON.toJSONString(actualDataList));
-        Assert.assertEquals(10, actualDataList.size());
+        Assertions.assertEquals(10, actualDataList.size());
         Map<Integer, Object> actualData10 = actualDataList.get(9);
-        Assert.assertEquals("string19", actualData10.get(0));
+        Assertions.assertEquals("string19", actualData10.get(0));
         if (isCsv) {
             //  CSV only string type
-            Assert.assertEquals("109", actualData10.get(1));
-            Assert.assertEquals("2020-01-01 01:01:01", actualData10.get(2));
+            Assertions.assertEquals("109", actualData10.get(1));
+            Assertions.assertEquals("2020-01-01 01:01:01", actualData10.get(2));
         } else {
-            Assert.assertEquals(0, new BigDecimal("109").compareTo((BigDecimal)actualData10.get(1)));
-            Assert.assertEquals(LocalDateTime.of(2020, 1, 1, 1, 1, 1), actualData10.get(2));
+            Assertions.assertEquals(0, new BigDecimal("109").compareTo((BigDecimal)actualData10.get(1)));
+            Assertions.assertEquals(LocalDateTime.of(2020, 1, 1, 1, 1, 1), actualData10.get(2));
         }
 
         List<Map<Integer, ReadCellData<?>>> readCellDataList = EasyExcel.read(file)
@@ -93,25 +93,25 @@ public class NoModelDataTest {
             .sheet()
             .doReadSync();
         log.info("readCellDataList:{}", JSON.toJSONString(readCellDataList));
-        Assert.assertEquals(10, readCellDataList.size());
+        Assertions.assertEquals(10, readCellDataList.size());
         Map<Integer, ReadCellData<?>> readCellData10 = readCellDataList.get(9);
-        Assert.assertEquals("string19", readCellData10.get(0).getData());
+        Assertions.assertEquals("string19", readCellData10.get(0).getData());
         if (isCsv) {
             //  CSV only string type
-            Assert.assertEquals("109", readCellData10.get(1).getData());
-            Assert.assertEquals("2020-01-01 01:01:01", readCellData10.get(2).getData());
+            Assertions.assertEquals("109", readCellData10.get(1).getData());
+            Assertions.assertEquals("2020-01-01 01:01:01", readCellData10.get(2).getData());
         } else {
-            Assert.assertEquals(0, new BigDecimal("109").compareTo((BigDecimal)readCellData10.get(1).getData()));
-            Assert.assertEquals(LocalDateTime.of(2020, 1, 1, 1, 1, 1), readCellData10.get(2).getData());
+            Assertions.assertEquals(0, new BigDecimal("109").compareTo((BigDecimal)readCellData10.get(1).getData()));
+            Assertions.assertEquals(LocalDateTime.of(2020, 1, 1, 1, 1, 1), readCellData10.get(2).getData());
         }
 
         EasyExcel.write(fileRepeat).sheet().doWrite(result);
         result = EasyExcel.read(fileRepeat).headRowNumber(0).sheet().doReadSync();
-        Assert.assertEquals(10, result.size());
+        Assertions.assertEquals(10, result.size());
         data10 = result.get(9);
-        Assert.assertEquals("string19", data10.get(0));
-        Assert.assertEquals("109", data10.get(1));
-        Assert.assertEquals("2020-01-01 01:01:01", data10.get(2));
+        Assertions.assertEquals("string19", data10.get(0));
+        Assertions.assertEquals("109", data10.get(1));
+        Assertions.assertEquals("2020-01-01 01:01:01", data10.get(2));
     }
 
     private List<List<Object>> data() throws Exception {

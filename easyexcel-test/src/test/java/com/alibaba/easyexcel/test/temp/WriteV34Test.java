@@ -3,13 +3,6 @@ package com.alibaba.easyexcel.test.temp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -17,12 +10,18 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 临时测试
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 public class WriteV34Test {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteV34Test.class);
@@ -52,10 +51,10 @@ public class WriteV34Test {
             new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
 
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
-        EasyExcel.write(fileName,DemoData.class).head(head()).registerWriteHandler(horizontalCellStyleStrategy).sheet("模板")
+        EasyExcel.write(fileName, DemoData.class).head(head()).registerWriteHandler(horizontalCellStyleStrategy).sheet(
+                "模板")
             .doWrite(data(1));
     }
-
 
     private List<List<String>> head() {
         List<List<String>> list = new ArrayList<List<String>>();
@@ -70,8 +69,8 @@ public class WriteV34Test {
         head3.add("日期" + System.currentTimeMillis());
         list.add(head0);
         list.add(head1);
-        list.add(head2);        list.add(head3);
-
+        list.add(head2);
+        list.add(head3);
 
         return list;
     }

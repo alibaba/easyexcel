@@ -6,30 +6,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.easyexcel.test.core.large.LargeData;
-import com.alibaba.easyexcel.test.core.large.LargeDataListener;
 import com.alibaba.easyexcel.test.core.simple.SimpleData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.cache.Ehcache;
-import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.enums.ReadDefaultReturnEnum;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.fastjson2.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.TempFile;
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Compatible with some special files
  *
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @Slf4j
 public class CompatibilityTest {
 
@@ -38,9 +35,9 @@ public class CompatibilityTest {
         // https://github.com/alibaba/easyexcel/issues/2236
         List<Map<Integer, Object>> list = EasyExcel.read(TestFileUtil.getPath() + "compatibility/t01.xls").sheet()
             .doReadSync();
-        Assert.assertEquals(2, list.size());
+        Assertions.assertEquals(2, list.size());
         Map<Integer, Object> row1 = list.get(1);
-        Assert.assertEquals("Q235(碳钢)", row1.get(0));
+        Assertions.assertEquals("Q235(碳钢)", row1.get(0));
     }
 
     @Test
@@ -49,9 +46,9 @@ public class CompatibilityTest {
         List<Map<Integer, Object>> list = EasyExcel.read(TestFileUtil.getPath() + "compatibility/t02.xlsx").sheet()
             .headRowNumber(0).doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
-        Assert.assertEquals(3, list.size());
+        Assertions.assertEquals(3, list.size());
         Map<Integer, Object> row2 = list.get(2);
-        Assert.assertEquals("1，2-戊二醇", row2.get(2));
+        Assertions.assertEquals("1，2-戊二醇", row2.get(2));
     }
 
     @Test
@@ -60,9 +57,9 @@ public class CompatibilityTest {
         List<Map<Integer, Object>> list = EasyExcel.read(TestFileUtil.getPath() + "compatibility/t03.xlsx").sheet()
             .doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
-        Assert.assertEquals(1, list.size());
+        Assertions.assertEquals(1, list.size());
         Map<Integer, Object> row0 = list.get(0);
-        Assert.assertEquals(12, row0.size());
+        Assertions.assertEquals(12, row0.size());
     }
 
     @Test
@@ -71,9 +68,9 @@ public class CompatibilityTest {
         List<Map<Integer, Object>> list = EasyExcel.read(TestFileUtil.getPath() + "compatibility/t04.xlsx").sheet()
             .doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
-        Assert.assertEquals(56, list.size());
+        Assertions.assertEquals(56, list.size());
         Map<Integer, Object> row0 = list.get(0);
-        Assert.assertEquals("QQSJK28F152A012242S0081", row0.get(5));
+        Assertions.assertEquals("QQSJK28F152A012242S0081", row0.get(5));
     }
 
     @Test
@@ -85,11 +82,11 @@ public class CompatibilityTest {
             .sheet()
             .doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
-        Assert.assertEquals("2023-01-01 00:00:00", list.get(0).get(0));
-        Assert.assertEquals("2023-01-01 00:00:00", list.get(1).get(0));
-        Assert.assertEquals("2023-01-01 00:00:00", list.get(2).get(0));
-        Assert.assertEquals("2023-01-01 00:00:01", list.get(3).get(0));
-        Assert.assertEquals("2023-01-01 00:00:01", list.get(4).get(0));
+        Assertions.assertEquals("2023-01-01 00:00:00", list.get(0).get(0));
+        Assertions.assertEquals("2023-01-01 00:00:00", list.get(1).get(0));
+        Assertions.assertEquals("2023-01-01 00:00:00", list.get(2).get(0));
+        Assertions.assertEquals("2023-01-01 00:00:01", list.get(3).get(0));
+        Assertions.assertEquals("2023-01-01 00:00:01", list.get(4).get(0));
     }
 
     @Test
@@ -101,7 +98,7 @@ public class CompatibilityTest {
             .sheet()
             .doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
-        Assert.assertEquals("2087.03", list.get(0).get(2));
+        Assertions.assertEquals("2087.03", list.get(0).get(2));
     }
 
     @Test
@@ -114,14 +111,14 @@ public class CompatibilityTest {
             .sheet()
             .doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
-        Assert.assertEquals(0, new BigDecimal("24.1998124").compareTo((BigDecimal)list.get(0).get(11)));
+        Assertions.assertEquals(0, new BigDecimal("24.1998124").compareTo((BigDecimal)list.get(0).get(11)));
 
         list = EasyExcel
             .read(TestFileUtil.getPath() + "compatibility/t07.xlsx")
             .sheet()
             .doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
-        Assert.assertEquals("24.20", list.get(0).get(11));
+        Assertions.assertEquals("24.20", list.get(0).get(11));
     }
 
     @Test
@@ -137,7 +134,7 @@ public class CompatibilityTest {
             .readCache(new Ehcache(null, 20))
             .sheet()
             .doReadSync();
-        Assert.assertEquals(10L, list.size());
+        Assertions.assertEquals(10L, list.size());
 
         FileUtils.delete(new File(System.getProperty(TempFile.JAVA_IO_TMPDIR)));
 
@@ -145,7 +142,7 @@ public class CompatibilityTest {
             .readCache(new Ehcache(null, 20))
             .sheet()
             .doReadSync();
-        Assert.assertEquals(10L, list.size());
+        Assertions.assertEquals(10L, list.size());
     }
 
     @Test
@@ -157,9 +154,9 @@ public class CompatibilityTest {
             .sheet()
             .doReadSync();
         log.info("data:{}", JSON.toJSONString(list));
-        Assert.assertEquals(1, list.size());
+        Assertions.assertEquals(1, list.size());
 
-        Assert.assertEquals("SH_x000D_Z002", list.get(0).get(0));
+        Assertions.assertEquals("SH_x000D_Z002", list.get(0).get(0));
     }
 
     private List<SimpleData> data() {

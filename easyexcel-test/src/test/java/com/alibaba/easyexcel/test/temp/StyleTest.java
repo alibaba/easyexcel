@@ -7,6 +7,9 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson2.JSON;
+
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -22,20 +25,16 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson2.JSON;
 
 /**
  * 临时测试
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 public class StyleTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(StyleTest.class);
 

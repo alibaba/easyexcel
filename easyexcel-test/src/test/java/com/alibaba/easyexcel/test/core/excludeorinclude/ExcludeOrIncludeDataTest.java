@@ -10,16 +10,16 @@ import java.util.Set;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ExcludeOrIncludeDataTest {
 
     private static File excludeIndex07;
@@ -42,7 +42,7 @@ public class ExcludeOrIncludeDataTest {
     private static File includeFieldNameOrderIndex03;
     private static File includeFieldNameOrderIndexCsv;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         excludeIndex07 = TestFileUtil.createNewFile("excludeIndex.xlsx");
         excludeIndex03 = TestFileUtil.createNewFile("excludeIndex.xls");
@@ -93,7 +93,6 @@ public class ExcludeOrIncludeDataTest {
     public void t13ExcludeFieldNameCsv() {
         excludeFieldName(excludeFieldNameCsv);
     }
-
 
     @Test
     public void t21IncludeIndex07() {
@@ -162,11 +161,11 @@ public class ExcludeOrIncludeDataTest {
         EasyExcel.write(file, ExcludeOrIncludeData.class).excludeColumnIndexes(excludeColumnIndexes).sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
-        Assert.assertEquals(1, dataMap.size());
+        Assertions.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);
-        Assert.assertEquals(2, record.size());
-        Assert.assertEquals("column2", record.get(0));
-        Assert.assertEquals("column3", record.get(1));
+        Assertions.assertEquals(2, record.size());
+        Assertions.assertEquals("column2", record.get(0));
+        Assertions.assertEquals("column3", record.get(1));
 
     }
 
@@ -178,10 +177,10 @@ public class ExcludeOrIncludeDataTest {
         EasyExcel.write(file, ExcludeOrIncludeData.class).excludeColumnFieldNames(excludeColumnFieldNames).sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
-        Assert.assertEquals(1, dataMap.size());
+        Assertions.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);
-        Assert.assertEquals(1, record.size());
-        Assert.assertEquals("column2", record.get(0));
+        Assertions.assertEquals(1, record.size());
+        Assertions.assertEquals("column2", record.get(0));
 
     }
 
@@ -192,11 +191,11 @@ public class ExcludeOrIncludeDataTest {
         EasyExcel.write(file, ExcludeOrIncludeData.class).includeColumnIndexes(includeColumnIndexes).sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
-        Assert.assertEquals(1, dataMap.size());
+        Assertions.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);
-        Assert.assertEquals(2, record.size());
-        Assert.assertEquals("column2", record.get(0));
-        Assert.assertEquals("column3", record.get(1));
+        Assertions.assertEquals(2, record.size());
+        Assertions.assertEquals("column2", record.get(0));
+        Assertions.assertEquals("column3", record.get(1));
 
     }
 
@@ -207,13 +206,12 @@ public class ExcludeOrIncludeDataTest {
         EasyExcel.write(file, ExcludeOrIncludeData.class).includeColumnFieldNames(includeColumnFieldNames).sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
-        Assert.assertEquals(1, dataMap.size());
+        Assertions.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);
-        Assert.assertEquals(2, record.size());
-        Assert.assertEquals("column2", record.get(0));
-        Assert.assertEquals("column3", record.get(1));
+        Assertions.assertEquals(2, record.size());
+        Assertions.assertEquals("column2", record.get(0));
+        Assertions.assertEquals("column3", record.get(1));
     }
-
 
     private void includeFieldNameOrderIndex(File file) {
         List<Integer> includeColumnIndexes = new ArrayList<>();
@@ -227,14 +225,15 @@ public class ExcludeOrIncludeDataTest {
             sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
-        Assert.assertEquals(1, dataMap.size());
+        Assertions.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);
-        Assert.assertEquals(4, record.size());
-        Assert.assertEquals("column4", record.get(0));
-        Assert.assertEquals("column2", record.get(1));
-        Assert.assertEquals("column3", record.get(2));
-        Assert.assertEquals("column1", record.get(3));
+        Assertions.assertEquals(4, record.size());
+        Assertions.assertEquals("column4", record.get(0));
+        Assertions.assertEquals("column2", record.get(1));
+        Assertions.assertEquals("column3", record.get(2));
+        Assertions.assertEquals("column1", record.get(3));
     }
+
     private void includeFieldNameOrder(File file) {
         List<String> includeColumnFieldNames = new ArrayList<>();
         includeColumnFieldNames.add("column4");
@@ -246,12 +245,12 @@ public class ExcludeOrIncludeDataTest {
             sheet()
             .doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
-        Assert.assertEquals(1, dataMap.size());
+        Assertions.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);
-        Assert.assertEquals(3, record.size());
-        Assert.assertEquals("column4", record.get(0));
-        Assert.assertEquals("column2", record.get(1));
-        Assert.assertEquals("column3", record.get(2));
+        Assertions.assertEquals(3, record.size());
+        Assertions.assertEquals("column4", record.get(0));
+        Assertions.assertEquals("column2", record.get(1));
+        Assertions.assertEquals("column3", record.get(2));
     }
 
     private List<ExcludeOrIncludeData> data() {

@@ -6,15 +6,15 @@ import com.alibaba.excel.converters.WriteConverterContext;
 import com.alibaba.excel.converters.floatconverter.FloatNumberConverter;
 import com.alibaba.excel.metadata.data.WriteCellData;
 
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ConverterTest {
 
     @Test
@@ -23,7 +23,7 @@ public class ConverterTest {
         WriteConverterContext<Float> context = new WriteConverterContext<>();
         context.setValue(95.62F);
         WriteCellData<?> writeCellData = floatNumberConverter.convertToExcelData(context);
-        Assert.assertEquals(0, writeCellData.getNumberValue().compareTo(new BigDecimal("95.62")));
+        Assertions.assertEquals(0, writeCellData.getNumberValue().compareTo(new BigDecimal("95.62")));
     }
 
 }

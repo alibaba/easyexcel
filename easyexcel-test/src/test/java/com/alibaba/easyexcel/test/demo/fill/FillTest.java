@@ -16,8 +16,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 写的填充写法
@@ -25,7 +24,7 @@ import org.junit.Test;
  * @author Jiaju Zhuang
  * @since 2.1.1
  */
-@Ignore
+
 public class FillTest {
     /**
      * 最简单的填充

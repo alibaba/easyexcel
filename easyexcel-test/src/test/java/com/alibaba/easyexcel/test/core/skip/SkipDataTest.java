@@ -14,23 +14,23 @@ import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class SkipDataTest {
 
     private static File file07;
     private static File file03;
     private static File fileCsv;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("skip.xlsx");
         file03 = TestFileUtil.createNewFile("skip.xls");
@@ -49,7 +49,7 @@ public class SkipDataTest {
 
     @Test
     public void t03ReadAndWriteCsv() {
-        Assert.assertThrows(ExcelGenerateException.class, () -> readAndWrite(fileCsv));
+        Assertions.assertThrows(ExcelGenerateException.class, () -> readAndWrite(fileCsv));
     }
 
     private void readAndWrite(File file) {
@@ -65,8 +65,8 @@ public class SkipDataTest {
         }
 
         List<SkipData> list = EasyExcel.read(file, SkipData.class, null).sheet("第二个").doReadSync();
-        Assert.assertEquals(1, list.size());
-        Assert.assertEquals("name2", list.get(0).getName());
+        Assertions.assertEquals(1, list.size());
+        Assertions.assertEquals("name2", list.get(0).getName());
 
         SyncReadListener syncReadListener = new SyncReadListener();
         try (ExcelReader excelReader = EasyExcel.read(file, SkipData.class, null).registerReadListener(syncReadListener)
@@ -75,9 +75,9 @@ public class SkipDataTest {
             ReadSheet readSheet3 = EasyExcel.readSheet("第四个").build();
             excelReader.read(readSheet1, readSheet3);
             List<Object> syncList = syncReadListener.getList();
-            Assert.assertEquals(2, syncList.size());
-            Assert.assertEquals("name2", ((SkipData)syncList.get(0)).getName());
-            Assert.assertEquals("name4", ((SkipData)syncList.get(1)).getName());
+            Assertions.assertEquals(2, syncList.size());
+            Assertions.assertEquals("name2", ((SkipData)syncList.get(0)).getName());
+            Assertions.assertEquals("name4", ((SkipData)syncList.get(1)).getName());
         }
     }
 

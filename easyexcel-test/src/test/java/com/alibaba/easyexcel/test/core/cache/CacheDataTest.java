@@ -21,16 +21,16 @@ import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.FieldUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @Slf4j
 public class CacheDataTest {
 
@@ -40,7 +40,7 @@ public class CacheDataTest {
     private static File fileCacheInvokeMemory;
     private static File fileCacheInvokeMemory2;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("cache/cache.xlsx");
         fileCacheInvoke = TestFileUtil.createNewFile("cache/fileCacheInvoke.xlsx");
@@ -54,14 +54,14 @@ public class CacheDataTest {
         Field field = FieldUtils.getField(ClassUtils.class, "FIELD_THREAD_LOCAL", true);
         ThreadLocal<Map<Class<?>, FieldCache>> fieldThreadLocal = (ThreadLocal<Map<Class<?>, FieldCache>>)field.get(
             ClassUtils.class.newInstance());
-        Assert.assertNull(fieldThreadLocal.get());
+        Assertions.assertNull(fieldThreadLocal.get());
         EasyExcel.write(file07, CacheData.class).sheet().doWrite(data());
         EasyExcel.read(file07, CacheData.class, new PageReadListener<DemoData>(dataList -> {
-                Assert.assertNotNull(fieldThreadLocal.get());
+                Assertions.assertNotNull(fieldThreadLocal.get());
             }))
             .sheet()
             .doRead();
-        Assert.assertNull(fieldThreadLocal.get());
+        Assertions.assertNull(fieldThreadLocal.get());
     }
 
     @Test
@@ -71,9 +71,9 @@ public class CacheDataTest {
 
                 @Override
                 public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
-                    Assert.assertEquals(2, headMap.size());
-                    Assert.assertEquals("姓名", headMap.get(0));
-                    Assert.assertEquals("年龄", headMap.get(1));
+                    Assertions.assertEquals(2, headMap.size());
+                    Assertions.assertEquals("姓名", headMap.get(0));
+                    Assertions.assertEquals("年龄", headMap.get(1));
                 }
 
                 @Override
@@ -100,9 +100,9 @@ public class CacheDataTest {
 
                 @Override
                 public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
-                    Assert.assertEquals(2, headMap.size());
-                    Assert.assertEquals("姓名2", headMap.get(0));
-                    Assert.assertEquals("年龄", headMap.get(1));
+                    Assertions.assertEquals(2, headMap.size());
+                    Assertions.assertEquals("姓名2", headMap.get(0));
+                    Assertions.assertEquals("年龄", headMap.get(1));
                 }
 
                 @Override
@@ -129,9 +129,9 @@ public class CacheDataTest {
 
                     @Override
                     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
-                        Assert.assertEquals(2, headMap.size());
-                        Assert.assertEquals("姓名", headMap.get(0));
-                        Assert.assertEquals("年龄", headMap.get(1));
+                        Assertions.assertEquals(2, headMap.size());
+                        Assertions.assertEquals("姓名", headMap.get(0));
+                        Assertions.assertEquals("年龄", headMap.get(1));
                     }
 
                     @Override
@@ -164,9 +164,9 @@ public class CacheDataTest {
 
                     @Override
                     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
-                        Assert.assertEquals(2, headMap.size());
-                        Assert.assertEquals("姓名", headMap.get(0));
-                        Assert.assertEquals("年龄", headMap.get(1));
+                        Assertions.assertEquals(2, headMap.size());
+                        Assertions.assertEquals("姓名", headMap.get(0));
+                        Assertions.assertEquals("年龄", headMap.get(1));
                     }
 
                     @Override

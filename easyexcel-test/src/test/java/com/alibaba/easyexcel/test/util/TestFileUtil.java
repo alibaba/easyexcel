@@ -1,14 +1,13 @@
 package com.alibaba.easyexcel.test.util;
 
-import org.springframework.util.CollectionUtils;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestFileUtil {
+import org.springframework.util.CollectionUtils;
 
+public class TestFileUtil {
 
     public static InputStream getResourcesFileInputStream(String fileName) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream("" + fileName);
@@ -42,7 +41,6 @@ public class TestFileUtil {
         return new File(System.getProperty("user.home") + File.separator + pathName);
     }
 
-
     /**
      * build to test file path
      **/
@@ -74,6 +72,5 @@ public class TestFileUtil {
         }
 
     }
-
 
 }

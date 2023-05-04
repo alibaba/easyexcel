@@ -11,13 +11,11 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class HeadType {
 
-
     /**
      * 任务id
      */
     @ExcelProperty("任务ID")
     private Integer id;
-
 
     @ExcelProperty(value = "备注1")
     private String firstRemark;

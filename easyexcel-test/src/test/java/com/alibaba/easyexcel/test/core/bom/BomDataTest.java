@@ -1,37 +1,32 @@
 package com.alibaba.easyexcel.test.core.bom;
 
-import com.alibaba.easyexcel.test.core.simple.SimpleData;
-import com.alibaba.easyexcel.test.demo.read.DemoData;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.metadata.data.ReadCellData;
-import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.ListUtils;
-import com.alibaba.fastjson2.JSON;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * bom test
  *
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @Slf4j
 public class BomDataTest {
 
@@ -72,7 +67,7 @@ public class BomDataTest {
                 @Override
                 public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context) {
                     String head = headMap.get(0).getStringValue();
-                    Assert.assertEquals("姓名", head);
+                    Assertions.assertEquals("姓名", head);
                 }
 
                 @Override
@@ -82,10 +77,10 @@ public class BomDataTest {
 
                 @Override
                 public void doAfterAllAnalysed(AnalysisContext context) {
-                    Assert.assertEquals(dataList.size(), 10);
+                    Assertions.assertEquals(dataList.size(), 10);
                     BomData bomData = dataList.get(0);
-                    Assert.assertEquals("姓名0", bomData.getName());
-                    Assert.assertEquals(20, (long)bomData.getAge());
+                    Assertions.assertEquals("姓名0", bomData.getName());
+                    Assertions.assertEquals(20, (long)bomData.getAge());
                 }
             })
             .charset(charset)
@@ -100,7 +95,7 @@ public class BomDataTest {
             @Override
             public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context) {
                 String head = headMap.get(0).getStringValue();
-                Assert.assertEquals("姓名", head);
+                Assertions.assertEquals("姓名", head);
             }
 
             @Override
@@ -110,10 +105,10 @@ public class BomDataTest {
 
             @Override
             public void doAfterAllAnalysed(AnalysisContext context) {
-                Assert.assertEquals(dataList.size(), 10);
+                Assertions.assertEquals(dataList.size(), 10);
                 BomData bomData = dataList.get(0);
-                Assert.assertEquals("姓名0", bomData.getName());
-                Assert.assertEquals(20L, (long)bomData.getAge());
+                Assertions.assertEquals("姓名0", bomData.getName());
+                Assertions.assertEquals(20L, (long)bomData.getAge());
             }
         }).sheet().doRead();
     }
