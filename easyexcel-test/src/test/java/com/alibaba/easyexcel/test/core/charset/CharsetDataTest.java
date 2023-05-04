@@ -14,11 +14,11 @@ import com.alibaba.excel.read.listener.ReadListener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * charset
@@ -26,14 +26,14 @@ import org.junit.runners.MethodSorters;
  * @author Jiaju Zhuang
  */
 @Slf4j
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class CharsetDataTest {
     private static final Charset GBK = Charset.forName("GBK");
     private static File fileCsvGbk;
     private static File fileCsvUtf8;
     private static File fileCsvError;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         fileCsvGbk = TestFileUtil.createNewFile("charset" + File.separator + "fileCsvGbk.csv");
         fileCsvUtf8 = TestFileUtil.createNewFile("charset" + File.separator + "fileCsvUtf8.csv");
@@ -56,7 +56,7 @@ public class CharsetDataTest {
             @Override
             public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context) {
                 String head = headMap.get(0).getStringValue();
-                Assert.assertNotEquals("姓名", head);
+                Assertions.assertNotEquals("姓名", head);
             }
 
             @Override
@@ -79,7 +79,7 @@ public class CharsetDataTest {
             @Override
             public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context) {
                 String head = headMap.get(0).getStringValue();
-                Assert.assertEquals("姓名", head);
+                Assertions.assertEquals("姓名", head);
             }
 
             @Override
@@ -89,10 +89,10 @@ public class CharsetDataTest {
 
             @Override
             public void doAfterAllAnalysed(AnalysisContext context) {
-                Assert.assertEquals(dataList.size(), 10);
+                Assertions.assertEquals(dataList.size(), 10);
                 CharsetData charsetData = dataList.get(0);
-                Assert.assertEquals("姓名0", charsetData.getName());
-                Assert.assertEquals(0, (long)charsetData.getAge());
+                Assertions.assertEquals("姓名0", charsetData.getName());
+                Assertions.assertEquals(0, (long)charsetData.getAge());
             }
         }).charset(charset).sheet().doRead();
     }

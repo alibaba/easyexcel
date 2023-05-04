@@ -7,10 +7,8 @@ import java.util.List;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-@Ignore
 public class Issue1662Test {
     @Test
     public void test1662() {
@@ -18,7 +16,6 @@ public class Issue1662Test {
         System.out.println(fileName);
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
-
 
     private List<List<String>> head() {
         List<List<String>> list = new ArrayList<List<String>>();

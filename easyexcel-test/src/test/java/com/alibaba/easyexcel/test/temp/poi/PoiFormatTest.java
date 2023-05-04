@@ -11,8 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 public class PoiFormatTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(PoiFormatTest.class);
 

@@ -37,7 +37,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.poi.hssf.usermodel.PoiUtils;
+
+import com.alibaba.excel.util.PoiUtils;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -215,7 +217,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 }
                 Object value = dataMap.get(variable);
                 ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(dataMap,
-                    writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(), variable);
+                    writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(), variable,
+                    writeContext.currentWriteHolder());
                 cellWriteHandlerContext.setExcelContentProperty(excelContentProperty);
 
                 createCell(analysisCell, fillConfig, cellWriteHandlerContext, rowWriteHandlerContext);
@@ -249,7 +252,8 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                     }
                     Object value = dataMap.get(variable);
                     ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(dataMap,
-                        writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(), variable);
+                        writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(), variable,
+                        writeContext.currentWriteHolder());
                     cellWriteHandlerContext.setOriginalValue(value);
                     cellWriteHandlerContext.setOriginalFieldClass(FieldUtils.getFieldClass(dataMap, variable, value));
                     cellWriteHandlerContext.setExcelContentProperty(excelContentProperty);

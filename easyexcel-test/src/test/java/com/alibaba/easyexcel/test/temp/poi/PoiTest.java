@@ -28,8 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 public class PoiTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(PoiTest.class);
 
@@ -84,7 +83,6 @@ public class PoiTest {
         LOGGER.info("bbb:{}", cellStyle1.getFont().getBold());
         LOGGER.info("bbb:{}", cellStyle1.getFont().getFontName());
 
-
         XSSFFont xssfFont = xssfWorkbook.createFont();
 
         xssfFont.setColor(myColor);
@@ -93,7 +91,6 @@ public class PoiTest {
         xssfFont.setBold(Boolean.TRUE);
         cellStyle1.setFont(xssfFont);
         cellStyle1.setFillForegroundColor(IndexedColors.PINK.getIndex());
-
 
         LOGGER.info("aaa:{}", cellStyle1.getFont().getColor());
 
@@ -118,7 +115,6 @@ public class PoiTest {
         xssfWorkbook.close();
     }
 
-
     @Test
     public void lastRowNumXSSFv22() throws IOException {
 
@@ -141,7 +137,6 @@ public class PoiTest {
         LOGGER.info("单元格2的字体:{}", cellStyle1.getFontIndexAsInt());
 
         LOGGER.info("bbb:{}", cellStyle1.getFont(xssfWorkbook).getColor());
-
 
         HSSFFont xssfFont = xssfWorkbook.createFont();
 
