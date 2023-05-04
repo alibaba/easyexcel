@@ -431,13 +431,12 @@ public class ClassUtils {
         }
     }
 
-    private static Map<Integer, FieldWrapper> buildSortedAllFieldMap(Map<Integer, List<FieldWrapper>> orderFieldMap,
-        Map<Integer, FieldWrapper> indexFieldMap) {
+    private static Map<Integer, FieldWrapper> buildSortedAllFieldMap(Map<Integer, List<FieldWrapper>> orderFieldMap, Map<Integer, FieldWrapper> indexFieldMap) {
 
-        Map<Integer, FieldWrapper> sortedAllFieldMap = MapUtils.newHashMapWithExpectedSize(
-            orderFieldMap.size() + indexFieldMap.size());
+        Map<Integer, FieldWrapper> sortedAllFieldMap = new HashMap<>(
+            (orderFieldMap.size() + indexFieldMap.size()) * 4 / 3 + 1);
 
-        Map<Integer, FieldWrapper> tempIndexFieldMap = MapUtils.newLinkedHashMapWithExpectedSize(indexFieldMap.size());
+        Map<Integer, FieldWrapper> tempIndexFieldMap = new HashMap<>(indexFieldMap);
         int index = 0;
         for (List<FieldWrapper> fieldList : orderFieldMap.values()) {
             for (FieldWrapper field : fieldList) {
