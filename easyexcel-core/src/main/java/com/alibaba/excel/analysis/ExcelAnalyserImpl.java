@@ -12,8 +12,10 @@ import com.alibaba.excel.context.xlsx.DefaultXlsxReadContext;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
+import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.ReadWorkbook;
+import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.csv.CsvReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
@@ -125,6 +127,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Custom stop!");
                 }
+                callBackCustomListener(analysisContext);
             }
         } catch (RuntimeException e) {
             finish();
@@ -230,5 +233,17 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     @Override
     public AnalysisContext analysisContext() {
         return analysisContext;
+    }
+
+    /**
+     * custom listener call back should be execute when ExcelAnalysisStopException
+     *
+     * @see ExcelAnalysisStopException
+     **/
+    private void callBackCustomListener(AnalysisContext analysisContext) {
+        ReadSheetHolder readSheetHolder = analysisContext.readSheetHolder();
+        for (ReadListener<?> readListener : readSheetHolder.readListenerList()) {
+            readListener.doAfterAllAnalysed(analysisContext);
+        }
     }
 }
