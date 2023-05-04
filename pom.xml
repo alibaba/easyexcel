@@ -242,6 +242,7 @@
                         <exclude>com/alibaba/excel/metadata/format/ExcelGeneralNumberFormat.java</exclude>
                         <exclude>com/alibaba/excel/metadata/csv/CsvDataFormat.java</exclude>
                         <exclude>com/alibaba/excel/write/executor/ExcelWriteFillExecutor.java</exclude>
+                        <exclude>com/alibaba/excel/analysis/v07/handlers/sax/SharedStringsTableHandler.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>

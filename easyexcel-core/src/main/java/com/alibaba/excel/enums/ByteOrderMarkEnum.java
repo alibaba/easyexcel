@@ -16,10 +16,25 @@ import org.apache.commons.io.ByteOrderMark;
 @Getter
 public enum ByteOrderMarkEnum {
 
+    /**
+     * UTF_8
+     */
     UTF_8(ByteOrderMark.UTF_8),
+    /**
+     * UTF_16BE
+     */
     UTF_16BE(ByteOrderMark.UTF_16BE),
+    /**
+     * UTF_16LE
+     */
     UTF_16LE(ByteOrderMark.UTF_16LE),
+    /**
+     * UTF_32BE
+     */
     UTF_32BE(ByteOrderMark.UTF_32BE),
+    /**
+     * UTF_32LE
+     */
     UTF_32LE(ByteOrderMark.UTF_32LE),
 
     ;

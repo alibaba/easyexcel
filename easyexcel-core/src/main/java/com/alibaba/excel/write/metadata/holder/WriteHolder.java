@@ -52,25 +52,37 @@ public interface WriteHolder extends ConfigurationHolder {
      * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
      *
      * default is false.
+     *
+     * @return
      */
+
     boolean orderByIncludeColumn();
 
     /**
      * Only output the custom columns.
+     *
+     * @return
      */
     Collection<Integer> includeColumnIndexes();
 
     /**
      * Only output the custom columns.
+     *
+     * @return
      */
     Collection<String> includeColumnFieldNames();
 
     /**
      * Ignore the custom columns.
+     *
+     * @return
      */
-     Collection<Integer> excludeColumnIndexes();
+    Collection<Integer> excludeColumnIndexes();
+
     /**
      * Ignore the custom columns.
+     *
+     * @return
      */
-     Collection<String> excludeColumnFieldNames();
+    Collection<String> excludeColumnFieldNames();
 }
