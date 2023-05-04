@@ -70,11 +70,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <excludes>
-                        <exclude>/com/alibaba/easyexcel/test/demo/**/*.java</exclude>
-                        <exclude>/com/alibaba/easyexcel/test/temp/**/*.java</exclude>
-                        <exclude>/com/alibaba/easyexcel/test/util/**/*.java</exclude>
-                    </excludes>
+                    <includes>
+                        <include>/com/alibaba/easyexcel/test/core/**/*.java</include>
+                    </includes>
                     <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
