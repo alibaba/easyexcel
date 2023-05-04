@@ -1,6 +1,5 @@
 package com.alibaba.excel.util;
 
-import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
@@ -35,7 +33,6 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
-import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 import lombok.AllArgsConstructor;
@@ -274,10 +271,8 @@ public class ClassUtils {
     /**
      * Parsing field in the class
      *
-     * @param clazz         Need to parse the class
-     * @param needIgnore    If you want to ignore fields need to ignore
-     * @param holder        holder
-     * @param cacheLocation cache lcation
+     * @param clazz               Need to parse the class
+     * @param configurationHolder configuration
      */
     public static FieldCache declaredFields(Class<?> clazz, ConfigurationHolder configurationHolder) {
         switch (configurationHolder.globalConfiguration().getFiledCacheLocation()) {
@@ -431,7 +426,8 @@ public class ClassUtils {
         }
     }
 
-    private static Map<Integer, FieldWrapper> buildSortedAllFieldMap(Map<Integer, List<FieldWrapper>> orderFieldMap, Map<Integer, FieldWrapper> indexFieldMap) {
+    private static Map<Integer, FieldWrapper> buildSortedAllFieldMap(Map<Integer, List<FieldWrapper>> orderFieldMap,
+        Map<Integer, FieldWrapper> indexFieldMap) {
 
         Map<Integer, FieldWrapper> sortedAllFieldMap = new HashMap<>(
             (orderFieldMap.size() + indexFieldMap.size()) * 4 / 3 + 1);
