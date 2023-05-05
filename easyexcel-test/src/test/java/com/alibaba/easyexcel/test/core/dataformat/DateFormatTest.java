@@ -8,23 +8,23 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @Slf4j
 public class DateFormatTest {
 
     private static File file07;
     private static File file03;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xlsx");
         file03 = TestFileUtil.readFile("dataformat" + File.separator + "dataformat.xls");
@@ -54,8 +54,8 @@ public class DateFormatTest {
             }
         }
         for (DateFormatData data : list) {
-            Assert.assertEquals(data.getDateStringCn(), data.getDate());
-            Assert.assertEquals(data.getNumberStringCn(), data.getNumber());
+            Assertions.assertEquals(data.getDateStringCn(), data.getDate());
+            Assertions.assertEquals(data.getNumberStringCn(), data.getNumber());
         }
     }
 
@@ -71,8 +71,8 @@ public class DateFormatTest {
             }
         }
         for (DateFormatData data : list) {
-            Assert.assertEquals(data.getDateStringUs(), data.getDate());
-            Assert.assertEquals(data.getNumberStringUs(), data.getNumber());
+            Assertions.assertEquals(data.getDateStringUs(), data.getDate());
+            Assertions.assertEquals(data.getNumberStringUs(), data.getNumber());
         }
     }
 }

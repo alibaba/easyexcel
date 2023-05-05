@@ -120,4 +120,16 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
         parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
         return self();
     }
+
+    /**
+     * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     *
+     * default is false.
+     *
+     * @since 3.3.0
+     **/
+    public T orderByIncludeColumn(Boolean orderByIncludeColumn) {
+        parameter().setOrderByIncludeColumn(orderByIncludeColumn);
+        return self();
+    }
 }

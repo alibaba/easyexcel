@@ -1,10 +1,30 @@
+/* ====================================================================
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+==================================================================== */
+
 package com.alibaba.excel.analysis.v07.handlers.sax;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.constant.ExcelXmlConstants;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Sax read sharedStringsTable.xml
@@ -12,6 +32,8 @@ import com.alibaba.excel.constant.ExcelXmlConstants;
  * @author Jiaju Zhuang
  */
 public class SharedStringsTableHandler extends DefaultHandler {
+
+    private static final Pattern UTF_PATTTERN = Pattern.compile("_x([0-9A-Fa-f]{4})_");
 
     /**
      * The final piece of data
@@ -86,7 +108,7 @@ public class SharedStringsTableHandler extends DefaultHandler {
                 if (currentData == null) {
                     readCache.put(null);
                 } else {
-                    readCache.put(currentData.toString());
+                    readCache.put(utfDecode(currentData.toString()));
                 }
                 break;
             case ExcelXmlConstants.SHAREDSTRINGS_RPH_TAG:
@@ -108,5 +130,52 @@ public class SharedStringsTableHandler extends DefaultHandler {
             currentElementData = new StringBuilder();
         }
         currentElementData.append(ch, start, length);
+    }
+
+    /**
+     * from poi XSSFRichTextString
+     *
+     * @param value the string to decode
+     * @return the decoded string or null if the input string is null
+     * <p>
+     * For all characters which cannot be represented in XML as defined by the XML 1.0 specification,
+     * the characters are escaped using the Unicode numerical character representation escape character
+     * format _xHHHH_, where H represents a hexadecimal character in the character's value.
+     * <p>
+     * Example: The Unicode character 0D is invalid in an XML 1.0 document,
+     * so it shall be escaped as <code>_x000D_</code>.
+     * </p>
+     * See section 3.18.9 in the OOXML spec.
+     * @see org.apache.poi.xssf.usermodel.XSSFRichTextString#utfDecode(String)
+     */
+    static String utfDecode(String value) {
+        if (value == null || !value.contains("_x")) {
+            return value;
+        }
+
+        StringBuilder buf = new StringBuilder();
+        Matcher m = UTF_PATTTERN.matcher(value);
+        int idx = 0;
+        while (m.find()) {
+            int pos = m.start();
+            if (pos > idx) {
+                buf.append(value, idx, pos);
+            }
+
+            String code = m.group(1);
+            int icode = Integer.decode("0x" + code);
+            buf.append((char)icode);
+
+            idx = m.end();
+        }
+
+        // small optimization: don't go via StringBuilder if not necessary,
+        // the encodings are very rare, so we should almost always go via this shortcut.
+        if (idx == 0) {
+            return value;
+        }
+
+        buf.append(value.substring(idx));
+        return buf.toString();
     }
 }

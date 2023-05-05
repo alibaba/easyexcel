@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,18 +11,17 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.easyexcel.test.util.TestUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.metadata.data.WriteCellData;
-import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
 
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ConverterDataTest {
 
     private static File file07;
@@ -33,7 +30,7 @@ public class ConverterDataTest {
     private static File fileImage07;
     private static File fileImage03;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("converter07.xlsx");
         file03 = TestFileUtil.createNewFile("converter03.xls");

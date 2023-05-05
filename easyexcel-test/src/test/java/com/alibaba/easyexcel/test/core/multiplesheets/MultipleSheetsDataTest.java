@@ -8,22 +8,22 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.read.metadata.ReadSheet;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class MultipleSheetsDataTest {
 
     private static File file07;
     private static File file03;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.readFile("multiplesheets" + File.separator + "multiplesheets.xlsx");
         file03 = TestFileUtil.readFile("multiplesheets" + File.separator + "multiplesheets.xls");
@@ -56,7 +56,7 @@ public class MultipleSheetsDataTest {
             int count = 1;
             for (ReadSheet readSheet : sheets) {
                 excelReader.read(readSheet);
-                Assert.assertEquals(multipleSheetsListener.getList().size(), count);
+                Assertions.assertEquals(multipleSheetsListener.getList().size(), count);
                 count++;
             }
         }

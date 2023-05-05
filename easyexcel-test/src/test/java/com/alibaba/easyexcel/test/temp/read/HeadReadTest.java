@@ -6,8 +6,7 @@ import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.cache.Ehcache;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 public class HeadReadTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeadReadTest.class);
 
@@ -37,6 +36,5 @@ public class HeadReadTest {
         LOGGER.info("------------------");
         EasyExcel.read(file, HeadReadData.class, new HDListener()).readCache(new Ehcache(20)).sheet(0).doRead();
     }
-
 
 }

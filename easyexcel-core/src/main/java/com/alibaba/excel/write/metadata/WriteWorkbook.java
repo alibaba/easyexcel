@@ -41,6 +41,13 @@ public class WriteWorkbook extends WriteBasicParameter {
      * Only work on the CSV file
      */
     private Charset charset;
+
+    /**
+     * Set the encoding prefix in the csv file, otherwise the office may open garbled characters.
+     * Default true.
+     */
+    private Boolean withBom;
+
     /**
      * Template input stream
      * <p>

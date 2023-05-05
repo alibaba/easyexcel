@@ -1,34 +1,20 @@
 package com.alibaba.easyexcel.test.temp.write;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.easyexcel.test.demo.read.CustomStringStringConverter;
-import com.alibaba.easyexcel.test.demo.write.DemoData;
-import com.alibaba.easyexcel.test.demo.write.ImageDemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.enums.CellDataTypeEnum;
-import com.alibaba.excel.metadata.data.ImageData;
-import com.alibaba.excel.metadata.data.ImageData.ImageType;
-import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
-import com.alibaba.excel.write.metadata.WriteSheet;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -36,17 +22,10 @@ import org.apache.poi.xssf.streaming.SXSSFDrawing;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.cglib.beans.BeanMap;
 
-@Ignore
 @Slf4j
 public class TempWriteTest {
 
@@ -166,7 +145,8 @@ public class TempWriteTest {
     public void large() throws Exception {
         String file = "/Users/zhuangjiaju/test/imagetest" + System.currentTimeMillis() + ".xlsx";
         SXSSFWorkbook workbook = new SXSSFWorkbook(new XSSFWorkbook(
-            new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/easyexcel-test/src/test/resources/large/large07.xlsx")));
+            new File(
+                "/Users/zhuangjiaju/IdeaProjects/easyexcel/easyexcel-test/src/test/resources/large/large07.xlsx")));
         SXSSFSheet sheet = workbook.createSheet("测试");
 
         SXSSFRow row = sheet.createRow(500000);

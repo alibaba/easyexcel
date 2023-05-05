@@ -9,16 +9,16 @@ import java.util.Map;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class SortDataTest {
 
     private static File file07;
@@ -28,7 +28,7 @@ public class SortDataTest {
     private static File sortNoHead03;
     private static File sortNoHeadCsv;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("sort.xlsx");
         file03 = TestFileUtil.createNewFile("sort.xls");
@@ -71,14 +71,14 @@ public class SortDataTest {
     private void readAndWrite(File file) {
         EasyExcel.write(file, SortData.class).sheet().doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
-        Assert.assertEquals(1, dataMap.size());
+        Assertions.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);
-        Assert.assertEquals("column1", record.get(0));
-        Assert.assertEquals("column2", record.get(1));
-        Assert.assertEquals("column3", record.get(2));
-        Assert.assertEquals("column4", record.get(3));
-        Assert.assertEquals("column5", record.get(4));
-        Assert.assertEquals("column6", record.get(5));
+        Assertions.assertEquals("column1", record.get(0));
+        Assertions.assertEquals("column2", record.get(1));
+        Assertions.assertEquals("column3", record.get(2));
+        Assertions.assertEquals("column4", record.get(3));
+        Assertions.assertEquals("column5", record.get(4));
+        Assertions.assertEquals("column6", record.get(5));
 
         EasyExcel.read(file, SortData.class, new SortDataListener()).sheet().doRead();
     }
@@ -86,14 +86,14 @@ public class SortDataTest {
     private void readAndWriteNoHead(File file) {
         EasyExcel.write(file).head(head()).sheet().doWrite(data());
         List<Map<Integer, String>> dataMap = EasyExcel.read(file).sheet().doReadSync();
-        Assert.assertEquals(1, dataMap.size());
+        Assertions.assertEquals(1, dataMap.size());
         Map<Integer, String> record = dataMap.get(0);
-        Assert.assertEquals("column1", record.get(0));
-        Assert.assertEquals("column2", record.get(1));
-        Assert.assertEquals("column3", record.get(2));
-        Assert.assertEquals("column4", record.get(3));
-        Assert.assertEquals("column5", record.get(4));
-        Assert.assertEquals("column6", record.get(5));
+        Assertions.assertEquals("column1", record.get(0));
+        Assertions.assertEquals("column2", record.get(1));
+        Assertions.assertEquals("column3", record.get(2));
+        Assertions.assertEquals("column4", record.get(3));
+        Assertions.assertEquals("column5", record.get(4));
+        Assertions.assertEquals("column6", record.get(5));
         EasyExcel.read(file, SortData.class, new SortDataListener()).sheet().doRead();
     }
 

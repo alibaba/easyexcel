@@ -15,7 +15,6 @@ import lombok.Setter;
 
 /**
  * 图片导出类
- *
  */
 @Getter
 @Setter

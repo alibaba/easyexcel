@@ -23,10 +23,12 @@ public enum ExcelTypeEnum {
      * csv
      */
     CSV(".csv", new byte[] {-27, -89, -109, -27}),
+
     /**
      * xls
      */
     XLS(".xls", new byte[] {-48, -49, 17, -32, -95, -79, 26, -31}),
+
     /**
      * xlsx
      */
@@ -96,13 +98,11 @@ public enum ExcelTypeEnum {
         byte[] data = IOUtils.peekFirstNBytes(inputStream, MAX_PATTERN_LENGTH);
         if (findMagic(XLSX.magic, data)) {
             return XLSX;
-        } else if (findMagic(CSV.magic, data)) {
-            return CSV;
         } else if (findMagic(XLS.magic, data)) {
             return XLS;
         }
-        throw new ExcelCommonException(
-            "Convert excel format exception.You can try specifying the 'excelType' yourself");
+        // csv has no fixed prefix, if the format is not specified, it defaults to csv
+        return CSV;
     }
 
     private static boolean findMagic(byte[] expected, byte[] actual) {
