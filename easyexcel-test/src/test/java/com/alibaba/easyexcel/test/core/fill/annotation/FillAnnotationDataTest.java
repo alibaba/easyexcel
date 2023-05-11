@@ -22,17 +22,17 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.apache.poi.xssf.usermodel.XSSFShape;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class FillAnnotationDataTest {
 
     private static File file07;
@@ -40,7 +40,7 @@ public class FillAnnotationDataTest {
     private static File fileTemplate07;
     private static File fileTemplate03;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("fillAnnotation07.xlsx");
         file03 = TestFileUtil.createNewFile("fillAnnotation03.xls");
@@ -65,14 +65,14 @@ public class FillAnnotationDataTest {
             Sheet sheet = workbook.getSheetAt(0);
 
             Row row1 = sheet.getRow(1);
-            Assert.assertEquals(2000, row1.getHeight(), 0);
+            Assertions.assertEquals(2000, row1.getHeight(), 0);
             Cell cell10 = row1.getCell(0);
             Date date = cell10.getDateCellValue();
-            Assert.assertEquals(DateUtils.parseDate("2020-01-01 01:01:01").getTime(), date.getTime());
+            Assertions.assertEquals(DateUtils.parseDate("2020-01-01 01:01:01").getTime(), date.getTime());
             String dataFormatString = cell10.getCellStyle().getDataFormatString();
-            Assert.assertEquals("yyyy年MM月dd日HH时mm分ss秒", dataFormatString);
+            Assertions.assertEquals("yyyy年MM月dd日HH时mm分ss秒", dataFormatString);
             Cell cell11 = row1.getCell(1);
-            Assert.assertEquals(99.99, cell11.getNumericCellValue(), 2);
+            Assertions.assertEquals(99.99, cell11.getNumericCellValue(), 2);
             boolean hasMerge = false;
             for (CellRangeAddress mergedRegion : sheet.getMergedRegions()) {
                 if (mergedRegion.getFirstRow() == 1 && mergedRegion.getLastRow() == 1
@@ -81,25 +81,25 @@ public class FillAnnotationDataTest {
                     break;
                 }
             }
-            Assert.assertTrue(hasMerge);
+            Assertions.assertTrue(hasMerge);
             if (sheet instanceof XSSFSheet) {
                 XSSFSheet xssfSheet = (XSSFSheet)sheet;
                 List<XSSFShape> shapeList = xssfSheet.getDrawingPatriarch().getShapes();
                 XSSFShape shape0 = shapeList.get(0);
-                Assert.assertTrue(shape0 instanceof XSSFPicture);
+                Assertions.assertTrue(shape0 instanceof XSSFPicture);
                 XSSFPicture picture0 = (XSSFPicture)shape0;
                 CTMarker ctMarker0 = picture0.getPreferredSize().getFrom();
-                Assert.assertEquals(1, ctMarker0.getRow());
-                Assert.assertEquals(4, ctMarker0.getCol());
+                Assertions.assertEquals(1, ctMarker0.getRow());
+                Assertions.assertEquals(4, ctMarker0.getCol());
             } else {
                 HSSFSheet hssfSheet = (HSSFSheet)sheet;
                 List<HSSFShape> shapeList = hssfSheet.getDrawingPatriarch().getChildren();
                 HSSFShape shape0 = shapeList.get(0);
-                Assert.assertTrue(shape0 instanceof HSSFPicture);
+                Assertions.assertTrue(shape0 instanceof HSSFPicture);
                 HSSFPicture picture0 = (HSSFPicture)shape0;
                 HSSFClientAnchor anchor = (HSSFClientAnchor)picture0.getAnchor();
-                Assert.assertEquals(1, anchor.getRow1());
-                Assert.assertEquals(4, anchor.getCol1());
+                Assertions.assertEquals(1, anchor.getRow1());
+                Assertions.assertEquals(4, anchor.getCol1());
             }
         }
     }

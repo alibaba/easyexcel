@@ -1,6 +1,7 @@
 package com.alibaba.excel.analysis.csv;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.context.csv.CsvReadContext;
+import com.alibaba.excel.enums.ByteOrderMarkEnum;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
@@ -27,6 +29,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.input.BOMInputStream;
 
 /**
  * read executor
@@ -82,17 +85,26 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
     private CSVParser csvParser() throws IOException {
         CsvReadWorkbookHolder csvReadWorkbookHolder = csvReadContext.csvReadWorkbookHolder();
         CSVFormat csvFormat = csvReadWorkbookHolder.getCsvFormat();
-
+        ByteOrderMarkEnum byteOrderMark = ByteOrderMarkEnum.valueOfByCharsetName(
+            csvReadContext.csvReadWorkbookHolder().getCharset().name());
         if (csvReadWorkbookHolder.getMandatoryUseInputStream()) {
-            return csvFormat.parse(
-                new InputStreamReader(csvReadWorkbookHolder.getInputStream(), csvReadWorkbookHolder.getCharset()));
+            return buildCsvParser(csvFormat, csvReadWorkbookHolder.getInputStream(), byteOrderMark);
         }
         if (csvReadWorkbookHolder.getFile() != null) {
-            return csvFormat.parse(new InputStreamReader(Files.newInputStream(csvReadWorkbookHolder.getFile().toPath()),
-                csvReadWorkbookHolder.getCharset()));
+            return buildCsvParser(csvFormat, Files.newInputStream(csvReadWorkbookHolder.getFile().toPath()),
+                byteOrderMark);
         }
-        return csvFormat.parse(
-            new InputStreamReader(csvReadWorkbookHolder.getInputStream(), csvReadWorkbookHolder.getCharset()));
+        return buildCsvParser(csvFormat, csvReadWorkbookHolder.getInputStream(), byteOrderMark);
+    }
+
+    private CSVParser buildCsvParser(CSVFormat csvFormat, InputStream inputStream, ByteOrderMarkEnum byteOrderMark)
+        throws IOException {
+        if (byteOrderMark == null) {
+            return csvFormat.parse(
+                new InputStreamReader(inputStream, csvReadContext.csvReadWorkbookHolder().getCharset()));
+        }
+        return csvFormat.parse(new InputStreamReader(new BOMInputStream(inputStream, byteOrderMark.getByteOrderMark()),
+            csvReadContext.csvReadWorkbookHolder().getCharset()));
     }
 
     private void dealRecord(CSVRecord record, int rowIndex) {

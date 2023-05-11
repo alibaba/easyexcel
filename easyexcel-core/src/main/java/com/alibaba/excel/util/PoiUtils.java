@@ -1,7 +1,5 @@
 package com.alibaba.excel.util;
 
-import java.lang.reflect.Field;
-
 import com.alibaba.excel.exception.ExcelRuntimeException;
 
 import org.apache.poi.hssf.record.RowRecord;
@@ -10,6 +8,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.util.BitField;
 import org.apache.poi.util.BitFieldFactory;
 import org.apache.poi.xssf.usermodel.XSSFRow;
+
+import java.lang.reflect.Field;
 
 /**
  * utils
@@ -23,7 +23,7 @@ public class PoiUtils {
      */
     public static final BitField CUSTOM_HEIGHT = BitFieldFactory.getInstance(0x640);
 
-    private static volatile Field ROW_RECORD_FIELD;
+    private static final Field ROW_RECORD_FIELD = FieldUtils.getField(HSSFRow.class, "row", true);
 
     /**
      * Whether to customize the height
@@ -39,27 +39,11 @@ public class PoiUtils {
         if (row instanceof HSSFRow) {
             HSSFRow hssfRow = (HSSFRow)row;
             try {
-                if (ROW_RECORD_FIELD == null) {
-                    synchronized (PoiUtils.class) {
-                        if (ROW_RECORD_FIELD == null) {
-                            initRowRecordField();
-                        }
-                    }
-                }
                 RowRecord record = (RowRecord)ROW_RECORD_FIELD.get(hssfRow);
                 return CUSTOM_HEIGHT.getValue(record.getOptionFlags()) == 1;
             } catch (IllegalAccessException ignore) {
             }
         }
         return false;
-    }
-
-    private static void initRowRecordField() {
-        try {
-            ROW_RECORD_FIELD = HSSFRow.class.getDeclaredField("row");
-            ROW_RECORD_FIELD.setAccessible(true);
-        } catch (NoSuchFieldException e) {
-            throw new ExcelRuntimeException(e);
-        }
     }
 }

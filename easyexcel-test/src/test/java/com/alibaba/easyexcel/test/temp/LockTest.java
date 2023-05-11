@@ -7,8 +7,7 @@ import java.util.Map;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson2.JSON;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,14 +16,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 public class LockTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(LockTest.class);
 
     @Test
     public void test() throws Exception {
         List<Object> list =
-            EasyExcel.read(new FileInputStream("/Users/zhuangjiaju/Downloads/-0304.2.xlsx")).useDefaultListener(false).doReadAllSync();
+            EasyExcel.read(new FileInputStream("/Users/zhuangjiaju/Downloads/-0304.2.xlsx")).useDefaultListener(false)
+                .doReadAllSync();
         for (Object data : list) {
             LOGGER.info("返回数据：{}", JSON.toJSONString(data));
         }

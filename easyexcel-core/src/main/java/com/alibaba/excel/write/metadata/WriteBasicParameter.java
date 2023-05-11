@@ -56,4 +56,11 @@ public class WriteBasicParameter extends BasicParameter {
      * Only output the custom columns.
      */
     private Collection<String> includeColumnFieldNames;
+
+    /**
+     * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     *
+     * default is false.
+     */
+    private Boolean orderByIncludeColumn;
 }

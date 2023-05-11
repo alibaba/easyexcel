@@ -15,7 +15,7 @@ import org.apache.commons.collections4.CollectionUtils;
  */
 public class PageReadListener<T> implements ReadListener<T> {
     /**
-     * Defuault single handle the amount of data
+     * Default single handle the amount of data
      */
     public static int BATCH_COUNT = 100;
     /**

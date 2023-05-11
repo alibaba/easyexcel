@@ -8,7 +8,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson2.JSON;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,16 +26,16 @@ public class CellDataDataListener extends AnalysisEventListener<CellDataReadData
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        Assert.assertEquals(list.size(), 1);
+        Assertions.assertEquals(list.size(), 1);
         CellDataReadData cellDataData = list.get(0);
 
-        Assert.assertEquals("2020年01月01日", cellDataData.getDate().getData());
-        Assert.assertEquals((long)cellDataData.getInteger1().getData(), 2L);
-        Assert.assertEquals((long)cellDataData.getInteger2(), 2L);
+        Assertions.assertEquals("2020年01月01日", cellDataData.getDate().getData());
+        Assertions.assertEquals((long)cellDataData.getInteger1().getData(), 2L);
+        Assertions.assertEquals((long)cellDataData.getInteger2(), 2L);
         if (context.readWorkbookHolder().getExcelType() != ExcelTypeEnum.CSV) {
-            Assert.assertEquals(cellDataData.getFormulaValue().getFormulaData().getFormulaValue(), "B2+C2");
+            Assertions.assertEquals(cellDataData.getFormulaValue().getFormulaData().getFormulaValue(), "B2+C2");
         } else {
-            Assert.assertNull(cellDataData.getFormulaValue().getData());
+            Assertions.assertNull(cellDataData.getFormulaValue().getData());
         }
         LOGGER.debug("First row:{}", JSON.toJSONString(list.get(0)));
     }

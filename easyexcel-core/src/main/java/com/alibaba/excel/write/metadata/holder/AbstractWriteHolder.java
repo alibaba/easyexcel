@@ -96,6 +96,13 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
     private Collection<String> includeColumnFieldNames;
 
     /**
+     * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     *
+     * default is false.
+     */
+    private Boolean orderByIncludeColumn;
+
+    /**
      * Write handler
      */
     private List<WriteHandler> writeHandlerList;
@@ -194,6 +201,17 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         } else {
             this.includeColumnFieldNames = writeBasicParameter.getIncludeColumnFieldNames();
         }
+
+        if (writeBasicParameter.getOrderByIncludeColumn() == null) {
+            if (parentAbstractWriteHolder == null) {
+                this.orderByIncludeColumn = Boolean.FALSE;
+            } else {
+                this.orderByIncludeColumn = parentAbstractWriteHolder.getOrderByIncludeColumn();
+            }
+        } else {
+            this.orderByIncludeColumn = writeBasicParameter.getOrderByIncludeColumn();
+        }
+
         if (writeBasicParameter.getIncludeColumnIndexes() == null && parentAbstractWriteHolder != null) {
             this.includeColumnIndexes = parentAbstractWriteHolder.getIncludeColumnIndexes();
         } else {
@@ -480,4 +498,28 @@ public abstract class AbstractWriteHolder extends AbstractHolder implements Writ
         return getAutomaticMergeHead();
     }
 
+    @Override
+    public boolean orderByIncludeColumn() {
+        return getOrderByIncludeColumn();
+    }
+
+    @Override
+    public Collection<Integer> includeColumnIndexes() {
+        return getIncludeColumnIndexes();
+    }
+
+    @Override
+    public Collection<String> includeColumnFieldNames() {
+        return getIncludeColumnFieldNames();
+    }
+
+    @Override
+    public Collection<Integer> excludeColumnIndexes() {
+        return getExcludeColumnIndexes();
+    }
+
+    @Override
+    public Collection<String> excludeColumnFieldNames() {
+        return getExcludeColumnFieldNames();
+    }
 }

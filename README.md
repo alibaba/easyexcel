@@ -31,7 +31,7 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.1</version>
 </dependency>
 ```
 

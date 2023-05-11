@@ -14,8 +14,7 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 public class WriteLargeTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteLargeTest.class);

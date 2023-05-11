@@ -12,23 +12,22 @@ import com.alibaba.excel.metadata.data.FormulaData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.DateUtils;
 
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class CellDataDataTest {
 
     private static File file07;
     private static File file03;
     private static File fileCsv;
 
-
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("cellData07.xlsx");
         file03 = TestFileUtil.createNewFile("cellData03.xls");
@@ -49,7 +48,6 @@ public class CellDataDataTest {
     public void t03ReadAndWriteCsv() throws Exception {
         readAndWrite(fileCsv);
     }
-
 
     private void readAndWrite(File file) throws Exception {
         EasyExcel.write(file, CellDataWriteData.class).sheet().doWrite(data());

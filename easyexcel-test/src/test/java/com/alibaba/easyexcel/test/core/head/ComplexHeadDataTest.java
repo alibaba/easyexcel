@@ -7,15 +7,15 @@ import java.util.List;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ComplexHeadDataTest {
 
     private static File file07;
@@ -25,7 +25,7 @@ public class ComplexHeadDataTest {
     private static File file03AutomaticMergeHead;
     private static File fileCsvAutomaticMergeHead;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("complexHead07.xlsx");
         file03 = TestFileUtil.createNewFile("complexHead03.xls");

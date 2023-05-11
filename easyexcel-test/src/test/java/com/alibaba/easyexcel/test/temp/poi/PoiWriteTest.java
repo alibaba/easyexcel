@@ -14,8 +14,7 @@ import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 public class PoiWriteTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(PoiWriteTest.class);
 
@@ -110,10 +109,11 @@ public class PoiWriteTest {
     @Test
     public void part4() throws IOException {
         //URL url=new URL("http://120.55.161.4/group1/M00/00/00/i8QJ8WFfwMiAXKYrAAACqC1MFiY641.png");
-        URL url=new URL("https://img-blog.csdn.net/20160729002743309?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center");
+        URL url = new URL(
+            "https://img-blog.csdn.net/20160729002743309?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T"
+                + "/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center");
 
         InputStream in = new BufferedInputStream(url.openStream());
-
 
     }
 

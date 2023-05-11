@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.CacheLocationEnum;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -54,4 +55,11 @@ public class BasicParameter {
      * default is false
      */
     private Boolean useScientificFormat;
+
+    /**
+     * The cache used when parsing fields such as head.
+     *
+     * default is THREAD_LOCAL.
+     */
+    private CacheLocationEnum filedCacheLocation;
 }
