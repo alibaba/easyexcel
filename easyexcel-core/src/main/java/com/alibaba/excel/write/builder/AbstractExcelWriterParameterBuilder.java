@@ -106,8 +106,9 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
     /**
      * Only output the custom columns.
      *
-     * @deprecated use {@link  #includeColumnFieldNames(Collection)}
+     * @deprecated use {@link  #includeColumnFieldNames(Collection)} spelling mistake
      */
+    @Deprecated
     public T includeColumnFiledNames(Collection<String> includeColumnFieldNames) {
         parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
         return self();
