@@ -102,11 +102,11 @@ public class ClassUtils {
      * @return
      */
     public static ExcelContentProperty declaredExcelContentProperty(Map<?, ?> dataMap, Class<?> headClazz,
-                                                                    String fieldName,
-                                                                    ConfigurationHolder configurationHolder) {
+        String fieldName,
+        ConfigurationHolder configurationHolder) {
         Class<?> clazz = null;
         if (dataMap instanceof BeanMap) {
-            Object bean = ((BeanMap) dataMap).getBean();
+            Object bean = ((BeanMap)dataMap).getBean();
             if (bean != null) {
                 clazz = bean.getClass();
             }
@@ -115,7 +115,7 @@ public class ClassUtils {
     }
 
     private static ExcelContentProperty getExcelContentProperty(Class<?> clazz, Class<?> headClass, String fieldName,
-                                                                ConfigurationHolder configurationHolder) {
+        ConfigurationHolder configurationHolder) {
         switch (configurationHolder.globalConfiguration().getFiledCacheLocation()) {
             case THREAD_LOCAL:
                 Map<ContentPropertyKey, ExcelContentProperty> contentCacheMap = CONTENT_THREAD_LOCAL.get();
@@ -138,8 +138,8 @@ public class ClassUtils {
     }
 
     private static ExcelContentProperty doGetExcelContentProperty(Class<?> clazz, Class<?> headClass,
-                                                                  String fieldName,
-                                                                  ConfigurationHolder configurationHolder) {
+        String fieldName,
+        ConfigurationHolder configurationHolder) {
         ExcelContentProperty excelContentProperty = Optional.ofNullable(
                 declaredFieldContentMap(clazz, configurationHolder))
             .map(map -> map.get(fieldName))
@@ -158,7 +158,7 @@ public class ClassUtils {
     }
 
     public static void combineExcelContentProperty(ExcelContentProperty combineExcelContentProperty,
-                                                   ExcelContentProperty excelContentProperty) {
+        ExcelContentProperty excelContentProperty) {
         if (excelContentProperty == null) {
             return;
         }
@@ -187,7 +187,7 @@ public class ClassUtils {
     }
 
     private static Map<String, ExcelContentProperty> declaredFieldContentMap(Class<?> clazz,
-                                                                             ConfigurationHolder configurationHolder) {
+        ConfigurationHolder configurationHolder) {
         if (clazz == null) {
             return null;
         }
@@ -324,7 +324,7 @@ public class ClassUtils {
             return fieldCache;
         }
 
-        WriteHolder writeHolder = (WriteHolder) configurationHolder;
+        WriteHolder writeHolder = (WriteHolder)configurationHolder;
 
         boolean needIgnore = !CollectionUtils.isEmpty(writeHolder.excludeColumnFieldNames())
             || !CollectionUtils.isEmpty(writeHolder.excludeColumnIndexes())
@@ -427,7 +427,7 @@ public class ClassUtils {
     }
 
     private static Map<Integer, FieldWrapper> buildSortedAllFieldMap(Map<Integer, List<FieldWrapper>> orderFieldMap,
-                                                                     Map<Integer, FieldWrapper> indexFieldMap) {
+        Map<Integer, FieldWrapper> indexFieldMap) {
 
         Map<Integer, FieldWrapper> sortedAllFieldMap = new HashMap<>(
             (orderFieldMap.size() + indexFieldMap.size()) * 4 / 3 + 1);
@@ -450,8 +450,8 @@ public class ClassUtils {
     }
 
     private static void declaredOneField(Field field, Map<Integer, List<FieldWrapper>> orderFieldMap,
-                                         Map<Integer, FieldWrapper> indexFieldMap, Set<String> ignoreSet,
-                                         ExcelIgnoreUnannotated excelIgnoreUnannotated) {
+        Map<Integer, FieldWrapper> indexFieldMap, Set<String> ignoreSet,
+        ExcelIgnoreUnannotated excelIgnoreUnannotated) {
         String fieldName = FieldUtils.resolveCglibFieldName(field);
         FieldWrapper fieldWrapper = new FieldWrapper();
         fieldWrapper.setField(field);
