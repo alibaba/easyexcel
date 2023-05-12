@@ -341,13 +341,11 @@ public class ClassUtils {
 
             // The current field needs to be ignored
             if (writeHolder.ignore(field.getFieldName(), entry.getKey())) {
-                if (ignoreSet != null) {
-                    ignoreSet.add(field.getFieldName());
-                }
+                ignoreSet.add(field.getFieldName());
                 indexFieldMap.remove(index);
             } else {
                 // Mandatory sorted fields
-                if (ignoreSet.contains(key)) {
+                if (indexFieldMap.containsKey(key)) {
                     tempSortedFieldMapp.put(key, field);
                 } else {
                     // Need to reorder automatically
