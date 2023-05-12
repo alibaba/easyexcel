@@ -341,13 +341,11 @@ public class ClassUtils {
 
             // The current field needs to be ignored
             if (writeHolder.ignore(field.getFieldName(), entry.getKey())) {
-                if (ignoreSet != null) {
-                    ignoreSet.add(field.getFieldName());
-                }
+                ignoreSet.add(field.getFieldName());
                 indexFieldMap.remove(index);
             } else {
                 // Mandatory sorted fields
-                if (ignoreSet.contains(key)) {
+                if (indexFieldMap.containsKey(key)) {
                     tempSortedFieldMapp.put(key, field);
                 } else {
                     // Need to reorder automatically
@@ -367,9 +365,9 @@ public class ClassUtils {
     }
 
     /**
-     * it only works when {@link WriteHolder#getIncludeColumnFieldNames()} or
-     * {@link WriteHolder#getIncludeColumnIndexes()} ()} has value
-     * and {@link WriteHolder#getOrderByIncludeColumn()} ()} is true
+     * it only works when {@link WriteHolder#includeColumnFieldNames()}  or
+     * {@link WriteHolder#includeColumnIndexes()}  has value
+     * and {@link WriteHolder#orderByIncludeColumn()}  is true
      **/
     private static void resortField(WriteHolder writeHolder, FieldCache fieldCache) {
         if (!writeHolder.orderByIncludeColumn()) {
@@ -559,3 +557,4 @@ public class ClassUtils {
         CONTENT_THREAD_LOCAL.remove();
     }
 }
+
