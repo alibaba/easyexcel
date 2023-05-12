@@ -49,7 +49,7 @@ import org.springframework.cglib.beans.BeanMap;
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -102,8 +102,7 @@ public class ClassUtils {
      * @return
      */
     public static ExcelContentProperty declaredExcelContentProperty(Map<?, ?> dataMap, Class<?> headClazz,
-        String fieldName,
-        ConfigurationHolder configurationHolder) {
+        String fieldName, ConfigurationHolder configurationHolder) {
         Class<?> clazz = null;
         if (dataMap instanceof BeanMap) {
             Object bean = ((BeanMap)dataMap).getBean();
@@ -138,8 +137,7 @@ public class ClassUtils {
     }
 
     private static ExcelContentProperty doGetExcelContentProperty(Class<?> clazz, Class<?> headClass,
-        String fieldName,
-        ConfigurationHolder configurationHolder) {
+        String fieldName, ConfigurationHolder configurationHolder) {
         ExcelContentProperty excelContentProperty = Optional.ofNullable(
                 declaredFieldContentMap(clazz, configurationHolder))
             .map(map -> map.get(fieldName))
@@ -335,7 +333,7 @@ public class ClassUtils {
             return fieldCache;
         }
         // ignore filed
-        Map<Integer, FieldWrapper> tempSortedFieldMap = MapUtils.newHashMap();
+        Map<Integer, FieldWrapper> tempSortedFieldMapp = MapUtils.newHashMap();
         int index = 0;
         for (Map.Entry<Integer, FieldWrapper> entry : sortedFieldMap.entrySet()) {
             Integer key = entry.getKey();
@@ -348,18 +346,18 @@ public class ClassUtils {
             } else {
                 // Mandatory sorted fields
                 if (indexFieldMap.containsKey(key)) {
-                    tempSortedFieldMap.put(key, field);
+                    tempSortedFieldMapp.put(key, field);
                 } else {
                     // Need to reorder automatically
                     // Check whether the current key is already in use
-                    while (tempSortedFieldMap.containsKey(index)) {
+                    while (tempSortedFieldMapp.containsKey(index)) {
                         index++;
                     }
-                    tempSortedFieldMap.put(index++, field);
+                    tempSortedFieldMapp.put(index++, field);
                 }
             }
         }
-        fieldCache.setSortedFieldMap(tempSortedFieldMap);
+        fieldCache.setSortedFieldMap(tempSortedFieldMapp);
 
         // resort field
         resortField(writeHolder, fieldCache);
@@ -559,3 +557,4 @@ public class ClassUtils {
         CONTENT_THREAD_LOCAL.remove();
     }
 }
+
