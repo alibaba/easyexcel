@@ -3,11 +3,7 @@ package com.alibaba.easyexcel.test.demo.write;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -30,6 +26,7 @@ import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
@@ -55,7 +52,40 @@ import org.junit.jupiter.api.Test;
  */
 
 public class WriteTest {
-
+    /**
+     * 根据模板写入
+     * <p>
+     * 1. 创建excel对应的实体对象 参照{@link IndexData}
+     * <p>
+     * 2. 使用{@link ExcelProperty}注解指定写入可能带有缺失值的列
+     * <p>
+     * 3. 使用withTemplate 写取模板
+     * <p>
+     * 4. 直接写即可
+     */
+    @Test
+    public void templateWrite_1(){
+        // 采用List<Map>构造两条数据
+        List<Object> datas = new ArrayList<>();
+        {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("account", "account1");
+            // 此处缺少name，所以未设置name
+            // 因为数据库是按照纵表方式设计和存储的，读取出来的数据可能缺少某些key
+            datas.add(map);
+        }
+        {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("account", "account2");
+            map.put("name", "name2");
+            datas.add(map);
+        }
+        // 按列表填充方式生成excel文件
+        String templateFileName = "C:\\Users\\Tan\\Desktop\\easyexcel\\easyexcel-test\\src\\test\\resources\\fill\\t.xlsx";
+        String fileName = "users.xlsx";
+        ExcelWriterSheetBuilder sheet = EasyExcel.write(fileName).withTemplate(templateFileName).sheet();
+        sheet.doFill(datas);
+    }
     /**
      * 最简单的写
      * <p>
