@@ -564,11 +564,13 @@ public class ClassUtils {
 
         FieldCacheKey(Class<?> clazz, ConfigurationHolder configurationHolder) {
             this.clazz = clazz;
-            WriteHolder writeHolder = (WriteHolder)configurationHolder;
-            this.excludeColumnFieldNames = writeHolder.excludeColumnFieldNames();
-            this.excludeColumnIndexes = writeHolder.excludeColumnIndexes();
-            this.includeColumnFieldNames = writeHolder.includeColumnFieldNames();
-            this.includeColumnIndexes = writeHolder.includeColumnIndexes();
+            if (configurationHolder instanceof WriteHolder) {
+                WriteHolder writeHolder = (WriteHolder)configurationHolder;
+                this.excludeColumnFieldNames = writeHolder.excludeColumnFieldNames();
+                this.excludeColumnIndexes = writeHolder.excludeColumnIndexes();
+                this.includeColumnFieldNames = writeHolder.includeColumnFieldNames();
+                this.includeColumnIndexes = writeHolder.includeColumnIndexes();
+            }
         }
     }
 
