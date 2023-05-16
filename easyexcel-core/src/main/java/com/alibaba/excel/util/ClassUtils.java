@@ -333,7 +333,7 @@ public class ClassUtils {
             return fieldCache;
         }
         // ignore filed
-        Map<Integer, FieldWrapper> tempSortedFieldMapp = MapUtils.newHashMap();
+        Map<Integer, FieldWrapper> tempSortedFieldMap = MapUtils.newHashMap();
         int index = 0;
         for (Map.Entry<Integer, FieldWrapper> entry : sortedFieldMap.entrySet()) {
             Integer key = entry.getKey();
@@ -346,18 +346,18 @@ public class ClassUtils {
             } else {
                 // Mandatory sorted fields
                 if (indexFieldMap.containsKey(key)) {
-                    tempSortedFieldMapp.put(key, field);
+                    tempSortedFieldMap.put(key, field);
                 } else {
                     // Need to reorder automatically
                     // Check whether the current key is already in use
-                    while (tempSortedFieldMapp.containsKey(index)) {
+                    while (tempSortedFieldMap.containsKey(index)) {
                         index++;
                     }
-                    tempSortedFieldMapp.put(index++, field);
+                    tempSortedFieldMap.put(index++, field);
                 }
             }
         }
-        fieldCache.setSortedFieldMap(tempSortedFieldMapp);
+        fieldCache.setSortedFieldMap(tempSortedFieldMap);
 
         // resort field
         resortField(writeHolder, fieldCache);
