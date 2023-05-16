@@ -1,20 +1,5 @@
 package com.alibaba.excel.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -34,7 +19,6 @@ import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,6 +26,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.cglib.beans.BeanMap;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -564,11 +553,13 @@ public class ClassUtils {
 
         FieldCacheKey(Class<?> clazz, ConfigurationHolder configurationHolder) {
             this.clazz = clazz;
-            WriteHolder writeHolder = (WriteHolder)configurationHolder;
-            this.excludeColumnFieldNames = writeHolder.excludeColumnFieldNames();
-            this.excludeColumnIndexes = writeHolder.excludeColumnIndexes();
-            this.includeColumnFieldNames = writeHolder.includeColumnFieldNames();
-            this.includeColumnIndexes = writeHolder.includeColumnIndexes();
+            if (configurationHolder instanceof WriteHolder) {
+                WriteHolder writeHolder = (WriteHolder) configurationHolder;
+                this.excludeColumnFieldNames = writeHolder.excludeColumnFieldNames();
+                this.excludeColumnIndexes = writeHolder.excludeColumnIndexes();
+                this.includeColumnFieldNames = writeHolder.includeColumnFieldNames();
+                this.includeColumnIndexes = writeHolder.includeColumnIndexes();
+            }
         }
     }
 
