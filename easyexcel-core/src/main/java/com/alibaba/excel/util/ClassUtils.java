@@ -36,6 +36,7 @@ import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,7 +50,7 @@ import org.springframework.cglib.beans.BeanMap;
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -102,7 +103,8 @@ public class ClassUtils {
      * @return
      */
     public static ExcelContentProperty declaredExcelContentProperty(Map<?, ?> dataMap, Class<?> headClazz,
-        String fieldName, ConfigurationHolder configurationHolder) {
+        String fieldName,
+        ConfigurationHolder configurationHolder) {
         Class<?> clazz = null;
         if (dataMap instanceof BeanMap) {
             Object bean = ((BeanMap)dataMap).getBean();
@@ -137,7 +139,8 @@ public class ClassUtils {
     }
 
     private static ExcelContentProperty doGetExcelContentProperty(Class<?> clazz, Class<?> headClass,
-        String fieldName, ConfigurationHolder configurationHolder) {
+        String fieldName,
+        ConfigurationHolder configurationHolder) {
         ExcelContentProperty excelContentProperty = Optional.ofNullable(
                 declaredFieldContentMap(clazz, configurationHolder))
             .map(map -> map.get(fieldName))
@@ -406,8 +409,8 @@ public class ClassUtils {
             // Index sorted map
             Map<Integer, Integer> filedIndexMap = MapUtils.newHashMap();
             int fieldIndex = 0;
-            for (Integer includeColumnIndexe : includeColumnIndexes) {
-                filedIndexMap.put(includeColumnIndexe, fieldIndex++);
+            for (Integer includeColumnIndex : includeColumnIndexes) {
+                filedIndexMap.put(includeColumnIndex, fieldIndex++);
             }
 
             // rebuild sortedFieldMap
@@ -550,6 +553,7 @@ public class ClassUtils {
         private Class<?> headClass;
         private String fieldName;
     }
+
 
     public static void removeThreadLocalCache() {
         FIELD_THREAD_LOCAL.remove();
