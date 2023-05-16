@@ -65,7 +65,7 @@ public class ClassUtils {
      */
     public static final ConcurrentHashMap<Class<?>, FieldCache> FIELD_CACHE = new ConcurrentHashMap<>();
     /**
-     * thread local cahe
+     * thread local cache
      */
     private static final ThreadLocal<Map<Class<?>, FieldCache>> FIELD_THREAD_LOCAL = new ThreadLocal<>();
 
