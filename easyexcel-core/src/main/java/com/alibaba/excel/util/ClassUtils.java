@@ -64,11 +64,11 @@ public class ClassUtils {
     /**
      * memory cache
      */
-    public static final ConcurrentHashMap<Class<?>, FieldCache> FIELD_CACHE = new ConcurrentHashMap<>();
+    public static final Map<FieldCacheKey, FieldCache> FIELD_CACHE = new ConcurrentHashMap<>();
     /**
      * thread local cache
      */
-    private static final ThreadLocal<Map<Class<?>, FieldCache>> FIELD_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<Map<FieldCacheKey, FieldCache>> FIELD_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
      * The cache configuration information for each of the class
@@ -280,16 +280,16 @@ public class ClassUtils {
     public static FieldCache declaredFields(Class<?> clazz, ConfigurationHolder configurationHolder) {
         switch (configurationHolder.globalConfiguration().getFiledCacheLocation()) {
             case THREAD_LOCAL:
-                Map<Class<?>, FieldCache> fieldCacheMap = FIELD_THREAD_LOCAL.get();
+                Map<FieldCacheKey, FieldCache> fieldCacheMap = FIELD_THREAD_LOCAL.get();
                 if (fieldCacheMap == null) {
                     fieldCacheMap = MapUtils.newHashMap();
                     FIELD_THREAD_LOCAL.set(fieldCacheMap);
                 }
-                return fieldCacheMap.computeIfAbsent(clazz, key -> {
+                return fieldCacheMap.computeIfAbsent(new FieldCacheKey(clazz, configurationHolder), key -> {
                     return doDeclaredFields(clazz, configurationHolder);
                 });
             case MEMORY:
-                return FIELD_CACHE.computeIfAbsent(clazz, key -> {
+                return FIELD_CACHE.computeIfAbsent(new FieldCacheKey(clazz, configurationHolder), key -> {
                     return doDeclaredFields(clazz, configurationHolder);
                 });
             case NONE:
@@ -554,6 +554,23 @@ public class ClassUtils {
         private String fieldName;
     }
 
+    @Data
+    public static class FieldCacheKey {
+        private Class<?> clazz;
+        private Collection<String> excludeColumnFieldNames;
+        private Collection<Integer> excludeColumnIndexes;
+        private Collection<String> includeColumnFieldNames;
+        private Collection<Integer> includeColumnIndexes;
+
+        FieldCacheKey(Class<?> clazz, ConfigurationHolder configurationHolder) {
+            this.clazz = clazz;
+            WriteHolder writeHolder = (WriteHolder)configurationHolder;
+            this.excludeColumnFieldNames = writeHolder.excludeColumnFieldNames();
+            this.excludeColumnIndexes = writeHolder.excludeColumnIndexes();
+            this.includeColumnFieldNames = writeHolder.includeColumnFieldNames();
+            this.includeColumnIndexes = writeHolder.includeColumnIndexes();
+        }
+    }
 
     public static void removeThreadLocalCache() {
         FIELD_THREAD_LOCAL.remove();

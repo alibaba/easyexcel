@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.easyexcel.test.core.head.ComplexHeadData;
+import com.alibaba.easyexcel.test.demo.read.ConverterData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -409,7 +412,7 @@ public class WriteTest {
     /**
      * 列宽、行高
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData}
+     * 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData }
      * <p>
      * 2. 使用注解{@link ColumnWidth}、{@link HeadRowHeight}、{@link ContentRowHeight}指定宽度或高度
      * <p>
@@ -703,6 +706,19 @@ public class WriteTest {
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
+    @Test
+    public void sheetCol(){
+        String fileName = TestFileUtil.getPath() + "customCol" + System.currentTimeMillis() + ".xlsx";
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).includeColumnFieldNames(Arrays.asList("string","date","doubleData")).build()) {
+            // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").includeColumnFieldNames(Arrays.asList("string","date")).build();
+            excelWriter.write(data(), writeSheet);
+            writeSheet = EasyExcel.writerSheet(1,"模板1").needHead(false).build();
+            // 第二次写如也会创建头，然后在第一次的后面写入数据
+            WriteTable string = EasyExcel.writerTable().needHead(true).includeColumnFieldNames(Arrays.asList("string")).build();
+            excelWriter.write(data(),writeSheet,string);
+        }
+    }
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
