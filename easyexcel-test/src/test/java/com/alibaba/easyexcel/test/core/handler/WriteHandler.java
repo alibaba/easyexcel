@@ -14,7 +14,7 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * @author JiaJu Zhuang
@@ -38,18 +38,18 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     public void beforeCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
         Head head, Integer columnIndex, Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
-            Assert.assertEquals(0L, beforeCellCreate);
-            Assert.assertEquals(0L, afterCellCreate);
-            Assert.assertEquals(0L, afterCellDataConverted);
-            Assert.assertEquals(0L, afterCellDispose);
-            Assert.assertEquals(1L, beforeRowCreate);
-            Assert.assertEquals(1L, afterRowCreate);
-            Assert.assertEquals(0L, afterRowDispose);
-            Assert.assertEquals(1L, beforeSheetCreate);
-            Assert.assertEquals(1L, afterSheetCreate);
-            Assert.assertEquals(1L, beforeWorkbookCreate);
-            Assert.assertEquals(1L, afterWorkbookCreate);
-            Assert.assertEquals(0L, afterWorkbookDispose);
+            Assertions.assertEquals(0L, beforeCellCreate);
+            Assertions.assertEquals(0L, afterCellCreate);
+            Assertions.assertEquals(0L, afterCellDataConverted);
+            Assertions.assertEquals(0L, afterCellDispose);
+            Assertions.assertEquals(1L, beforeRowCreate);
+            Assertions.assertEquals(1L, afterRowCreate);
+            Assertions.assertEquals(0L, afterRowDispose);
+            Assertions.assertEquals(1L, beforeSheetCreate);
+            Assertions.assertEquals(1L, afterSheetCreate);
+            Assertions.assertEquals(1L, beforeWorkbookCreate);
+            Assertions.assertEquals(1L, afterWorkbookCreate);
+            Assertions.assertEquals(0L, afterWorkbookDispose);
             beforeCellCreate++;
         }
 
@@ -59,18 +59,18 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     public void afterCellCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Cell cell,
         Head head, Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
-            Assert.assertEquals(1L, beforeCellCreate);
-            Assert.assertEquals(0L, afterCellCreate);
-            Assert.assertEquals(0L, afterCellDataConverted);
-            Assert.assertEquals(0L, afterCellDispose);
-            Assert.assertEquals(1L, beforeRowCreate);
-            Assert.assertEquals(1L, afterRowCreate);
-            Assert.assertEquals(0L, afterRowDispose);
-            Assert.assertEquals(1L, beforeSheetCreate);
-            Assert.assertEquals(1L, afterSheetCreate);
-            Assert.assertEquals(1L, beforeWorkbookCreate);
-            Assert.assertEquals(1L, afterWorkbookCreate);
-            Assert.assertEquals(0L, afterWorkbookDispose);
+            Assertions.assertEquals(1L, beforeCellCreate);
+            Assertions.assertEquals(0L, afterCellCreate);
+            Assertions.assertEquals(0L, afterCellDataConverted);
+            Assertions.assertEquals(0L, afterCellDispose);
+            Assertions.assertEquals(1L, beforeRowCreate);
+            Assertions.assertEquals(1L, afterRowCreate);
+            Assertions.assertEquals(0L, afterRowDispose);
+            Assertions.assertEquals(1L, beforeSheetCreate);
+            Assertions.assertEquals(1L, afterSheetCreate);
+            Assertions.assertEquals(1L, beforeWorkbookCreate);
+            Assertions.assertEquals(1L, afterWorkbookCreate);
+            Assertions.assertEquals(0L, afterWorkbookDispose);
             afterCellCreate++;
         }
     }
@@ -78,18 +78,18 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     @Override
     public void afterCellDataConverted(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
         WriteCellData<?> cellData, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
-        Assert.assertEquals(1L, beforeCellCreate);
-        Assert.assertEquals(1L, afterCellCreate);
-        Assert.assertEquals(0L, afterCellDataConverted);
-        Assert.assertEquals(1, afterCellDispose);
-        Assert.assertEquals(1L, beforeRowCreate);
-        Assert.assertEquals(1L, afterRowCreate);
-        Assert.assertEquals(1L, afterRowDispose);
-        Assert.assertEquals(1L, beforeSheetCreate);
-        Assert.assertEquals(1L, afterSheetCreate);
-        Assert.assertEquals(1L, beforeWorkbookCreate);
-        Assert.assertEquals(1L, afterWorkbookCreate);
-        Assert.assertEquals(0L, afterWorkbookDispose);
+        Assertions.assertEquals(1L, beforeCellCreate);
+        Assertions.assertEquals(1L, afterCellCreate);
+        Assertions.assertEquals(0L, afterCellDataConverted);
+        Assertions.assertEquals(1, afterCellDispose);
+        Assertions.assertEquals(1L, beforeRowCreate);
+        Assertions.assertEquals(1L, afterRowCreate);
+        Assertions.assertEquals(1L, afterRowDispose);
+        Assertions.assertEquals(1L, beforeSheetCreate);
+        Assertions.assertEquals(1L, afterSheetCreate);
+        Assertions.assertEquals(1L, beforeWorkbookCreate);
+        Assertions.assertEquals(1L, afterWorkbookCreate);
+        Assertions.assertEquals(0L, afterWorkbookDispose);
         afterCellDataConverted++;
     }
 
@@ -97,18 +97,18 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     public void afterCellDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder,
         List<WriteCellData<?>> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
-            Assert.assertEquals(1L, beforeCellCreate);
-            Assert.assertEquals(1L, afterCellCreate);
-            Assert.assertEquals(0L, afterCellDataConverted);
-            Assert.assertEquals(0L, afterCellDispose);
-            Assert.assertEquals(1L, beforeRowCreate);
-            Assert.assertEquals(1L, afterRowCreate);
-            Assert.assertEquals(0L, afterRowDispose);
-            Assert.assertEquals(1L, beforeSheetCreate);
-            Assert.assertEquals(1L, afterSheetCreate);
-            Assert.assertEquals(1L, beforeWorkbookCreate);
-            Assert.assertEquals(1L, afterWorkbookCreate);
-            Assert.assertEquals(0L, afterWorkbookDispose);
+            Assertions.assertEquals(1L, beforeCellCreate);
+            Assertions.assertEquals(1L, afterCellCreate);
+            Assertions.assertEquals(0L, afterCellDataConverted);
+            Assertions.assertEquals(0L, afterCellDispose);
+            Assertions.assertEquals(1L, beforeRowCreate);
+            Assertions.assertEquals(1L, afterRowCreate);
+            Assertions.assertEquals(0L, afterRowDispose);
+            Assertions.assertEquals(1L, beforeSheetCreate);
+            Assertions.assertEquals(1L, afterSheetCreate);
+            Assertions.assertEquals(1L, beforeWorkbookCreate);
+            Assertions.assertEquals(1L, afterWorkbookCreate);
+            Assertions.assertEquals(0L, afterWorkbookDispose);
             afterCellDispose++;
         }
     }
@@ -117,18 +117,18 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     public void beforeRowCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Integer rowIndex,
         Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
-            Assert.assertEquals(0L, beforeCellCreate);
-            Assert.assertEquals(0L, afterCellCreate);
-            Assert.assertEquals(0L, afterCellDataConverted);
-            Assert.assertEquals(0L, afterCellDispose);
-            Assert.assertEquals(0L, beforeRowCreate);
-            Assert.assertEquals(0L, afterRowCreate);
-            Assert.assertEquals(0L, afterRowDispose);
-            Assert.assertEquals(1L, beforeSheetCreate);
-            Assert.assertEquals(1L, afterSheetCreate);
-            Assert.assertEquals(1L, beforeWorkbookCreate);
-            Assert.assertEquals(1L, afterWorkbookCreate);
-            Assert.assertEquals(0L, afterWorkbookDispose);
+            Assertions.assertEquals(0L, beforeCellCreate);
+            Assertions.assertEquals(0L, afterCellCreate);
+            Assertions.assertEquals(0L, afterCellDataConverted);
+            Assertions.assertEquals(0L, afterCellDispose);
+            Assertions.assertEquals(0L, beforeRowCreate);
+            Assertions.assertEquals(0L, afterRowCreate);
+            Assertions.assertEquals(0L, afterRowDispose);
+            Assertions.assertEquals(1L, beforeSheetCreate);
+            Assertions.assertEquals(1L, afterSheetCreate);
+            Assertions.assertEquals(1L, beforeWorkbookCreate);
+            Assertions.assertEquals(1L, afterWorkbookCreate);
+            Assertions.assertEquals(0L, afterWorkbookDispose);
             beforeRowCreate++;
         }
 
@@ -138,18 +138,18 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     public void afterRowCreate(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
         Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
-            Assert.assertEquals(0L, beforeCellCreate);
-            Assert.assertEquals(0L, afterCellCreate);
-            Assert.assertEquals(0L, afterCellDataConverted);
-            Assert.assertEquals(0L, afterCellDispose);
-            Assert.assertEquals(1L, beforeRowCreate);
-            Assert.assertEquals(0L, afterRowCreate);
-            Assert.assertEquals(0L, afterRowDispose);
-            Assert.assertEquals(1L, beforeSheetCreate);
-            Assert.assertEquals(1L, afterSheetCreate);
-            Assert.assertEquals(1L, beforeWorkbookCreate);
-            Assert.assertEquals(1L, afterWorkbookCreate);
-            Assert.assertEquals(0L, afterWorkbookDispose);
+            Assertions.assertEquals(0L, beforeCellCreate);
+            Assertions.assertEquals(0L, afterCellCreate);
+            Assertions.assertEquals(0L, afterCellDataConverted);
+            Assertions.assertEquals(0L, afterCellDispose);
+            Assertions.assertEquals(1L, beforeRowCreate);
+            Assertions.assertEquals(0L, afterRowCreate);
+            Assertions.assertEquals(0L, afterRowDispose);
+            Assertions.assertEquals(1L, beforeSheetCreate);
+            Assertions.assertEquals(1L, afterSheetCreate);
+            Assertions.assertEquals(1L, beforeWorkbookCreate);
+            Assertions.assertEquals(1L, afterWorkbookCreate);
+            Assertions.assertEquals(0L, afterWorkbookDispose);
             afterRowCreate++;
         }
     }
@@ -158,120 +158,120 @@ public class WriteHandler implements WorkbookWriteHandler, SheetWriteHandler, Ro
     public void afterRowDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row,
         Integer relativeRowIndex, Boolean isHead) {
         if (isHead) {
-            Assert.assertEquals(1L, beforeCellCreate);
-            Assert.assertEquals(1L, afterCellCreate);
-            Assert.assertEquals(0L, afterCellDataConverted);
-            Assert.assertEquals(1L, afterCellDispose);
-            Assert.assertEquals(1L, beforeRowCreate);
-            Assert.assertEquals(1L, afterRowCreate);
-            Assert.assertEquals(0L, afterRowDispose);
-            Assert.assertEquals(1L, beforeSheetCreate);
-            Assert.assertEquals(1L, afterSheetCreate);
-            Assert.assertEquals(1L, beforeWorkbookCreate);
-            Assert.assertEquals(1L, afterWorkbookCreate);
-            Assert.assertEquals(0L, afterWorkbookDispose);
+            Assertions.assertEquals(1L, beforeCellCreate);
+            Assertions.assertEquals(1L, afterCellCreate);
+            Assertions.assertEquals(0L, afterCellDataConverted);
+            Assertions.assertEquals(1L, afterCellDispose);
+            Assertions.assertEquals(1L, beforeRowCreate);
+            Assertions.assertEquals(1L, afterRowCreate);
+            Assertions.assertEquals(0L, afterRowDispose);
+            Assertions.assertEquals(1L, beforeSheetCreate);
+            Assertions.assertEquals(1L, afterSheetCreate);
+            Assertions.assertEquals(1L, beforeWorkbookCreate);
+            Assertions.assertEquals(1L, afterWorkbookCreate);
+            Assertions.assertEquals(0L, afterWorkbookDispose);
             afterRowDispose++;
         }
     }
 
     @Override
     public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
-        Assert.assertEquals(0L, beforeCellCreate);
-        Assert.assertEquals(0L, afterCellCreate);
-        Assert.assertEquals(0L, afterCellDataConverted);
-        Assert.assertEquals(0L, afterCellDispose);
-        Assert.assertEquals(0L, beforeRowCreate);
-        Assert.assertEquals(0L, afterRowCreate);
-        Assert.assertEquals(0L, afterRowDispose);
-        Assert.assertEquals(0L, beforeSheetCreate);
-        Assert.assertEquals(0L, afterSheetCreate);
-        Assert.assertEquals(1L, beforeWorkbookCreate);
-        Assert.assertEquals(1L, afterWorkbookCreate);
-        Assert.assertEquals(0L, afterWorkbookDispose);
+        Assertions.assertEquals(0L, beforeCellCreate);
+        Assertions.assertEquals(0L, afterCellCreate);
+        Assertions.assertEquals(0L, afterCellDataConverted);
+        Assertions.assertEquals(0L, afterCellDispose);
+        Assertions.assertEquals(0L, beforeRowCreate);
+        Assertions.assertEquals(0L, afterRowCreate);
+        Assertions.assertEquals(0L, afterRowDispose);
+        Assertions.assertEquals(0L, beforeSheetCreate);
+        Assertions.assertEquals(0L, afterSheetCreate);
+        Assertions.assertEquals(1L, beforeWorkbookCreate);
+        Assertions.assertEquals(1L, afterWorkbookCreate);
+        Assertions.assertEquals(0L, afterWorkbookDispose);
         beforeSheetCreate++;
     }
 
     @Override
     public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
-        Assert.assertEquals(0L, beforeCellCreate);
-        Assert.assertEquals(0L, afterCellCreate);
-        Assert.assertEquals(0L, afterCellDataConverted);
-        Assert.assertEquals(0L, afterCellDispose);
-        Assert.assertEquals(0L, beforeRowCreate);
-        Assert.assertEquals(0L, afterRowCreate);
-        Assert.assertEquals(0L, afterRowDispose);
-        Assert.assertEquals(1L, beforeSheetCreate);
-        Assert.assertEquals(0L, afterSheetCreate);
-        Assert.assertEquals(1L, beforeWorkbookCreate);
-        Assert.assertEquals(1L, afterWorkbookCreate);
-        Assert.assertEquals(0L, afterWorkbookDispose);
+        Assertions.assertEquals(0L, beforeCellCreate);
+        Assertions.assertEquals(0L, afterCellCreate);
+        Assertions.assertEquals(0L, afterCellDataConverted);
+        Assertions.assertEquals(0L, afterCellDispose);
+        Assertions.assertEquals(0L, beforeRowCreate);
+        Assertions.assertEquals(0L, afterRowCreate);
+        Assertions.assertEquals(0L, afterRowDispose);
+        Assertions.assertEquals(1L, beforeSheetCreate);
+        Assertions.assertEquals(0L, afterSheetCreate);
+        Assertions.assertEquals(1L, beforeWorkbookCreate);
+        Assertions.assertEquals(1L, afterWorkbookCreate);
+        Assertions.assertEquals(0L, afterWorkbookDispose);
         afterSheetCreate++;
     }
 
     @Override
     public void beforeWorkbookCreate() {
-        Assert.assertEquals(0L, beforeCellCreate);
-        Assert.assertEquals(0L, afterCellCreate);
-        Assert.assertEquals(0L, afterCellDataConverted);
-        Assert.assertEquals(0L, afterCellDispose);
-        Assert.assertEquals(0L, beforeRowCreate);
-        Assert.assertEquals(0L, afterRowCreate);
-        Assert.assertEquals(0L, afterRowDispose);
-        Assert.assertEquals(0L, beforeSheetCreate);
-        Assert.assertEquals(0L, afterSheetCreate);
-        Assert.assertEquals(0L, beforeWorkbookCreate);
-        Assert.assertEquals(0L, afterWorkbookCreate);
-        Assert.assertEquals(0L, afterWorkbookDispose);
+        Assertions.assertEquals(0L, beforeCellCreate);
+        Assertions.assertEquals(0L, afterCellCreate);
+        Assertions.assertEquals(0L, afterCellDataConverted);
+        Assertions.assertEquals(0L, afterCellDispose);
+        Assertions.assertEquals(0L, beforeRowCreate);
+        Assertions.assertEquals(0L, afterRowCreate);
+        Assertions.assertEquals(0L, afterRowDispose);
+        Assertions.assertEquals(0L, beforeSheetCreate);
+        Assertions.assertEquals(0L, afterSheetCreate);
+        Assertions.assertEquals(0L, beforeWorkbookCreate);
+        Assertions.assertEquals(0L, afterWorkbookCreate);
+        Assertions.assertEquals(0L, afterWorkbookDispose);
         beforeWorkbookCreate++;
     }
 
     @Override
     public void afterWorkbookCreate(WriteWorkbookHolder writeWorkbookHolder) {
-        Assert.assertEquals(0L, beforeCellCreate);
-        Assert.assertEquals(0L, afterCellCreate);
-        Assert.assertEquals(0L, afterCellDataConverted);
-        Assert.assertEquals(0L, afterCellDispose);
-        Assert.assertEquals(0L, beforeRowCreate);
-        Assert.assertEquals(0L, afterRowCreate);
-        Assert.assertEquals(0L, afterRowDispose);
-        Assert.assertEquals(0L, beforeSheetCreate);
-        Assert.assertEquals(0L, afterSheetCreate);
-        Assert.assertEquals(1L, beforeWorkbookCreate);
-        Assert.assertEquals(0L, afterWorkbookCreate);
-        Assert.assertEquals(0L, afterWorkbookDispose);
+        Assertions.assertEquals(0L, beforeCellCreate);
+        Assertions.assertEquals(0L, afterCellCreate);
+        Assertions.assertEquals(0L, afterCellDataConverted);
+        Assertions.assertEquals(0L, afterCellDispose);
+        Assertions.assertEquals(0L, beforeRowCreate);
+        Assertions.assertEquals(0L, afterRowCreate);
+        Assertions.assertEquals(0L, afterRowDispose);
+        Assertions.assertEquals(0L, beforeSheetCreate);
+        Assertions.assertEquals(0L, afterSheetCreate);
+        Assertions.assertEquals(1L, beforeWorkbookCreate);
+        Assertions.assertEquals(0L, afterWorkbookCreate);
+        Assertions.assertEquals(0L, afterWorkbookDispose);
         afterWorkbookCreate++;
     }
 
     @Override
     public void afterWorkbookDispose(WriteWorkbookHolder writeWorkbookHolder) {
-        Assert.assertEquals(1L, beforeCellCreate);
-        Assert.assertEquals(1L, afterCellCreate);
-        Assert.assertEquals(1L, afterCellDataConverted);
-        Assert.assertEquals(1L, afterCellDispose);
-        Assert.assertEquals(1L, beforeRowCreate);
-        Assert.assertEquals(1L, afterRowCreate);
-        Assert.assertEquals(1L, afterRowDispose);
-        Assert.assertEquals(1L, beforeSheetCreate);
-        Assert.assertEquals(1L, afterSheetCreate);
-        Assert.assertEquals(1L, beforeWorkbookCreate);
-        Assert.assertEquals(1L, afterWorkbookCreate);
-        Assert.assertEquals(0L, afterWorkbookDispose);
+        Assertions.assertEquals(1L, beforeCellCreate);
+        Assertions.assertEquals(1L, afterCellCreate);
+        Assertions.assertEquals(1L, afterCellDataConverted);
+        Assertions.assertEquals(1L, afterCellDispose);
+        Assertions.assertEquals(1L, beforeRowCreate);
+        Assertions.assertEquals(1L, afterRowCreate);
+        Assertions.assertEquals(1L, afterRowDispose);
+        Assertions.assertEquals(1L, beforeSheetCreate);
+        Assertions.assertEquals(1L, afterSheetCreate);
+        Assertions.assertEquals(1L, beforeWorkbookCreate);
+        Assertions.assertEquals(1L, afterWorkbookCreate);
+        Assertions.assertEquals(0L, afterWorkbookDispose);
         afterWorkbookDispose++;
 
     }
 
     public void afterAll() {
-        Assert.assertEquals(1L, beforeCellCreate);
-        Assert.assertEquals(1L, afterCellCreate);
-        Assert.assertEquals(1L, afterCellDataConverted);
-        Assert.assertEquals(1L, afterCellDispose);
-        Assert.assertEquals(1L, beforeRowCreate);
-        Assert.assertEquals(1L, afterRowCreate);
-        Assert.assertEquals(1L, afterRowDispose);
-        Assert.assertEquals(1L, beforeSheetCreate);
-        Assert.assertEquals(1L, afterSheetCreate);
-        Assert.assertEquals(1L, beforeWorkbookCreate);
-        Assert.assertEquals(1L, afterWorkbookCreate);
-        Assert.assertEquals(1L, afterWorkbookDispose);
+        Assertions.assertEquals(1L, beforeCellCreate);
+        Assertions.assertEquals(1L, afterCellCreate);
+        Assertions.assertEquals(1L, afterCellDataConverted);
+        Assertions.assertEquals(1L, afterCellDispose);
+        Assertions.assertEquals(1L, beforeRowCreate);
+        Assertions.assertEquals(1L, afterRowCreate);
+        Assertions.assertEquals(1L, afterRowDispose);
+        Assertions.assertEquals(1L, beforeSheetCreate);
+        Assertions.assertEquals(1L, afterSheetCreate);
+        Assertions.assertEquals(1L, beforeWorkbookCreate);
+        Assertions.assertEquals(1L, afterWorkbookCreate);
+        Assertions.assertEquals(1L, afterWorkbookDispose);
     }
 }

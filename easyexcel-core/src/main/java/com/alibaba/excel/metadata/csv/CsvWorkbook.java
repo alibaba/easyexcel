@@ -2,6 +2,7 @@ package com.alibaba.excel.metadata.csv;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -71,11 +72,25 @@ public class CsvWorkbook implements Workbook {
      */
     private List<CsvCellStyle> csvCellStyleList;
 
-    public CsvWorkbook(Appendable out, Locale locale, Boolean use1904windowing, Boolean useScientificFormat) {
+    /**
+     * charset.
+     */
+    private Charset charset;
+
+    /**
+     * Set the encoding prefix in the csv file, otherwise the office may open garbled characters.
+     * Default true.
+     */
+    private Boolean withBom;
+
+    public CsvWorkbook(Appendable out, Locale locale, Boolean use1904windowing, Boolean useScientificFormat,
+        Charset charset, Boolean withBom) {
         this.out = out;
         this.locale = locale;
         this.use1904windowing = use1904windowing;
         this.useScientificFormat = useScientificFormat;
+        this.charset = charset;
+        this.withBom = withBom;
     }
 
     @Override

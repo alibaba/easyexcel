@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.easyexcel.test.core.head.ComplexHeadData;
+import com.alibaba.easyexcel.test.demo.read.ConverterData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -46,15 +49,14 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 写的常见写法
  *
  * @author Jiaju Zhuang
  */
-@Ignore
+
 public class WriteTest {
 
     /**
@@ -410,7 +412,7 @@ public class WriteTest {
     /**
      * 列宽、行高
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData}
+     * 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData }
      * <p>
      * 2. 使用注解{@link ColumnWidth}、{@link HeadRowHeight}、{@link ContentRowHeight}指定宽度或高度
      * <p>
@@ -704,6 +706,7 @@ public class WriteTest {
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
+
     /**
      * 数据验证自定义拦截器
      * <p>
@@ -721,6 +724,21 @@ public class WriteTest {
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new DataValidationSheetWriteHandler())
             .sheet("模板").doWrite(new ArrayList<>());
+    }
+
+
+    @Test
+    public void sheetCol(){
+        String fileName = TestFileUtil.getPath() + "customCol" + System.currentTimeMillis() + ".xlsx";
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).includeColumnFieldNames(Arrays.asList("string","date","doubleData")).build()) {
+            // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").includeColumnFieldNames(Arrays.asList("string","date")).build();
+            excelWriter.write(data(), writeSheet);
+            writeSheet = EasyExcel.writerSheet(1,"模板1").needHead(false).build();
+            // 第二次写如也会创建头，然后在第一次的后面写入数据
+            WriteTable string = EasyExcel.writerTable().needHead(true).includeColumnFieldNames(Arrays.asList("string")).build();
+            excelWriter.write(data(),writeSheet,string);
+        }
     }
 
     private List<LongestMatchColumnWidthData> dataLong() {

@@ -1,9 +1,7 @@
 package com.alibaba.easyexcel.test.temp;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
-import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 
 import lombok.EqualsAndHashCode;

@@ -95,6 +95,15 @@ public class ExcelWriterBuilder extends AbstractExcelWriterParameterBuilder<Exce
     }
 
     /**
+     * Set the encoding prefix in the csv file, otherwise the office may open garbled characters.
+     * Default true.
+     */
+    public ExcelWriterBuilder withBom(Boolean withBom) {
+        writeWorkbook.setWithBom(withBom);
+        return this;
+    }
+
+    /**
      * Template file.
      * This file is read into memory, excessive cases can lead to OOM.
      */

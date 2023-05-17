@@ -5,7 +5,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson2.JSON;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +31,9 @@ public class LargeDataListener extends AnalysisEventListener<LargeData> {
     public void doAfterAllAnalysed(AnalysisContext context) {
         LOGGER.info("Large row count:{}", count);
         if (context.readWorkbookHolder().getExcelType() != ExcelTypeEnum.CSV) {
-            Assert.assertEquals(count, 464509);
+            Assertions.assertEquals(count, 464509);
         } else {
-            Assert.assertEquals(count, 499999);
+            Assertions.assertEquals(count, 499999);
         }
     }
 }

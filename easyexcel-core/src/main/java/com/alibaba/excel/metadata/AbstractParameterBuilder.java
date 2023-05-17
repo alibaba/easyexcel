@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.CacheLocationEnum;
 import com.alibaba.excel.util.ListUtils;
 
 /**
@@ -70,6 +71,18 @@ public abstract class AbstractParameterBuilder<T extends AbstractParameterBuilde
      */
     public T locale(Locale locale) {
         parameter().setLocale(locale);
+        return self();
+    }
+
+    /**
+     * The cache used when parsing fields such as head.
+     *
+     * default is THREAD_LOCAL.
+     *
+     * @since 3.3.0
+     */
+    public T filedCacheLocation(CacheLocationEnum filedCacheLocation) {
+        parameter().setFiledCacheLocation(filedCacheLocation);
         return self();
     }
 
