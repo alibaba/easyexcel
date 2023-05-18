@@ -149,7 +149,8 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
             ReadCellData<?> cellData = cellDataMap.get(index);
             Object value = ConverterUtils.convertToJavaObject(cellData, head.getField(),
                 ClassUtils.declaredExcelContentProperty(dataMap, readSheetHolder.excelReadHeadProperty().getHeadClazz(),
-                    fieldName), readSheetHolder.converterMap(), context, context.readRowHolder().getRowIndex(), index);
+                    fieldName, readSheetHolder), readSheetHolder.converterMap(), context,
+                context.readRowHolder().getRowIndex(), index);
             if (value != null) {
                 dataMap.put(fieldName, value);
             }

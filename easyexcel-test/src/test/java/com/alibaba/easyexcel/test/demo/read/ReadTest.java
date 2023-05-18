@@ -20,15 +20,14 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson2.JSON;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 读的常见写法
  *
  * @author Jiaju Zhuang
  */
-@Ignore
+
 @Slf4j
 public class ReadTest {
 

@@ -15,8 +15,8 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 public class WriteData {
-//    @ContentStyle(locked = true)
+    //    @ContentStyle(locked = true)
     private Date dd;
-//    @ContentStyle(locked = false)
+    //    @ContentStyle(locked = false)
     private float f1;
 }

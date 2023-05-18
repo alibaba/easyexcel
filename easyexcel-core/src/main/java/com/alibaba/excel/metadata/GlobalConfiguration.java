@@ -2,6 +2,8 @@ package com.alibaba.excel.metadata;
 
 import java.util.Locale;
 
+import com.alibaba.excel.enums.CacheLocationEnum;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +34,7 @@ public class GlobalConfiguration {
      * used when formatting dates and numbers.
      */
     private Locale locale;
+
     /**
      * Whether to use scientific Format.
      *
@@ -39,10 +42,18 @@ public class GlobalConfiguration {
      */
     private Boolean useScientificFormat;
 
+    /**
+     * The cache used when parsing fields such as head.
+     *
+     * default is THREAD_LOCAL.
+     */
+    private CacheLocationEnum filedCacheLocation;
+
     public GlobalConfiguration() {
         this.autoTrim = Boolean.TRUE;
         this.use1904windowing = Boolean.FALSE;
         this.locale = Locale.getDefault();
         this.useScientificFormat = Boolean.FALSE;
+        this.filedCacheLocation = CacheLocationEnum.THREAD_LOCAL;
     }
 }

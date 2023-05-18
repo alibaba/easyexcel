@@ -19,6 +19,7 @@ import com.alibaba.excel.read.metadata.holder.csv.CsvReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
@@ -212,6 +213,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     private void removeThreadLocalCache() {
         NumberDataFormatterUtils.removeThreadLocalCache();
         DateUtils.removeThreadLocalCache();
+        ClassUtils.removeThreadLocalCache();
     }
 
     private void clearEncrypt03() {
