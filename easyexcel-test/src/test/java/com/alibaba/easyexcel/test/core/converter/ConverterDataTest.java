@@ -55,6 +55,7 @@ public class ConverterDataTest {
     }
 
     private void readAndWrite(File file) throws Exception {
+        file = new File("aaa.xlsx");
         EasyExcel.write(file, ConverterWriteData.class).sheet().doWrite(data());
         EasyExcel.read(file, ConverterReadData.class, new ConverterDataListener()).sheet().doRead();
     }
@@ -115,6 +116,7 @@ public class ConverterDataTest {
         converterWriteData.setDate(TestUtil.TEST_DATE);
         converterWriteData.setLocalDate(TestUtil.TEST_LOCAL_DATE);
         converterWriteData.setLocalDateTime(TestUtil.TEST_LOCAL_DATE_TIME);
+        converterWriteData.setInstant(TestUtil.TEST_LOCAL_INSTANT);
         converterWriteData.setBooleanData(Boolean.TRUE);
         converterWriteData.setBigDecimal(BigDecimal.ONE);
         converterWriteData.setBigInteger(BigInteger.ONE);
