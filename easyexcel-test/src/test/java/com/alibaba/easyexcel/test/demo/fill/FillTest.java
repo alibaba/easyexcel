@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -14,6 +15,7 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
+import com.alibaba.excel.write.metadata.fill.FillFunctionWrapper;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,39 @@ import org.junit.jupiter.api.Test;
  */
 
 public class FillTest {
+
+    @Test
+    void testFill() {
+
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        String templateFileName =
+            TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "simple.xlsx";
+
+        // 方案1 根据对象填充
+        String fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";
+
+        Map<String, Function<String, ?>> columnMap = new HashMap<>();
+        columnMap.put("name", new Function<String, String>() {
+            @Override
+            public String apply(String s) {
+                System.out.println(s);
+                return "张三";
+            }
+        });
+
+        columnMap.put("number", new Function<String, Double>() {
+            @Override
+            public Double apply(String s) {
+                System.out.println(s);
+                return 5.2D;
+            }
+        });
+
+        FillFunctionWrapper functionWrapper = new FillFunctionWrapper(columnMap, 10);
+        EasyExcel.write(fileName).withTemplate(templateFileName).sheet().doFill(functionWrapper);
+
+    }
+
     /**
      * 最简单的填充
      *
