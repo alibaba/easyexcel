@@ -1,9 +1,6 @@
 package com.alibaba.excel.write.metadata.fill.pipe;
 
-import com.alibaba.excel.write.metadata.fill.pipe.handler.TrimFilter;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Description:
