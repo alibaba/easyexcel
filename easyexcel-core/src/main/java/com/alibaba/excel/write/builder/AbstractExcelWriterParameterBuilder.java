@@ -2,10 +2,14 @@ package com.alibaba.excel.write.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 import com.alibaba.excel.metadata.AbstractParameterBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteBasicParameter;
+import com.alibaba.excel.write.metadata.fill.pipe.PipeFilter;
 
 /**
  * Build ExcelBuilder
@@ -124,13 +128,30 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
 
     /**
      * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
-     *
+     * <p>
      * default is false.
      *
      * @since 3.3.0
      **/
     public T orderByIncludeColumn(Boolean orderByIncludeColumn) {
         parameter().setOrderByIncludeColumn(orderByIncludeColumn);
+        return self();
+    }
+
+    /**
+     * 注册 pipe filter
+     *
+     * @param name       pipe filter name
+     * @param pipeFilter pipe filter
+     */
+    public T registerPipeFilterHandler(String name, Supplier<PipeFilter<Object, Object>> pipeFilter) {
+        if (parameter().getCustomPipeFilterMap() == null) {
+            parameter().setCustomPipeFilterMap(new HashMap<>(16));
+        }
+        if (Objects.isNull(name) || Objects.isNull(pipeFilter)) {
+            return self();
+        }
+        parameter().getCustomPipeFilterMap().put(name.toLowerCase(), pipeFilter);
         return self();
     }
 }

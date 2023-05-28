@@ -1,12 +1,12 @@
 package com.alibaba.excel.write.metadata;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.function.Supplier;
 
 import com.alibaba.excel.metadata.BasicParameter;
 import com.alibaba.excel.write.handler.WriteHandler;
 
+import com.alibaba.excel.write.metadata.fill.pipe.PipeFilter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,8 +59,13 @@ public class WriteBasicParameter extends BasicParameter {
 
     /**
      * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
-     *
+     * <p>
      * default is false.
      */
     private Boolean orderByIncludeColumn;
+
+    /**
+     * pipe filter map
+     */
+    private Map<String, Supplier<PipeFilter<Object, Object>>> customPipeFilterMap = new HashMap<>();
 }
