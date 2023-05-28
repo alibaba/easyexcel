@@ -1,5 +1,6 @@
 package com.alibaba.excel.write.handler.filter;
 
+import com.alibaba.excel.exception.ExcelRuntimeException;
 import com.alibaba.excel.write.handler.PipeFilter;
 
 import java.util.Objects;
@@ -7,6 +8,7 @@ import java.util.Objects;
 /**
  * Description:
  * trim pipe filter
+ *
  * @author linfeng
  * @version 1.0.0
  * @since 2023/5/26 8:34
@@ -19,6 +21,6 @@ public class TrimFilter extends PipeFilter<Object, Object> {
         if (value instanceof String) {
             return value.toString().trim();
         }
-        throw new RuntimeException("传入对象必须是字符串");
+        throw new ExcelRuntimeException("传入对象必须是字符串");
     }
 }

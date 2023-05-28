@@ -4,6 +4,7 @@ import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.exception.ExcelRuntimeException;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.PipeFilterUtils;
+import com.alibaba.excel.write.handler.filter.ImagePriorityFilter;
 import com.alibaba.excel.write.handler.filter.TrimFilter;
 
 import java.util.*;
@@ -24,6 +25,7 @@ public class PipeFilterFactory extends PipeFilter<Object, Object> {
     static {
         // 初始化内置管道过滤器
         PIPE_FILTER_MAP.put("trim", TrimFilter::new);
+        PIPE_FILTER_MAP.put("image-priority", ImagePriorityFilter::new);
     }
 
     private PipeFilterFactory(WriteContext writeContext) {
