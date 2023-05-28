@@ -1,6 +1,5 @@
-package com.alibaba.excel.write.metadata.fill.pipe;
+package com.alibaba.excel.util;
 
-import com.alibaba.excel.util.StringUtils;
 import org.springframework.lang.Nullable;
 
 import java.util.Collection;
@@ -14,7 +13,7 @@ import java.util.Objects;
  * @version 1.0.0
  * @since 2023/5/27 22:51
  */
-public final class PipeFilterUtils {
+public class PipeFilterUtils {
 
     private static final String PIPELINE_FLAG = "|";
     private static final String MULTI_PIPE_FLAG = "\\|";

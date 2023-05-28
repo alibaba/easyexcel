@@ -1,4 +1,4 @@
-package com.alibaba.excel.write.metadata.fill.pipe;
+package com.alibaba.excel.write.handler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 /**
  * Description:
- * 管道过滤器
+ * pipeline filter
  *
  * @author linfeng
  * @version 1.0.0
@@ -15,7 +15,7 @@ import java.util.function.Function;
  */
 public abstract class PipeFilter<T, R> implements Function<T, R> {
 
-    private final List<String> pipeFilterParams = new ArrayList<>();
+    private final List<String> filterParams = new ArrayList<>();
 
     /**
      * filter 参数
@@ -23,7 +23,7 @@ public abstract class PipeFilter<T, R> implements Function<T, R> {
      * @return 参数集合
      */
     protected List<String> params() {
-        return pipeFilterParams;
+        return filterParams;
     }
 
     /**

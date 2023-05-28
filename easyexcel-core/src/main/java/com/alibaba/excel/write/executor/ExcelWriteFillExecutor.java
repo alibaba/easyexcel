@@ -30,8 +30,8 @@ import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
-import com.alibaba.excel.write.metadata.fill.pipe.PipeFilterFactory;
-import com.alibaba.excel.write.metadata.fill.pipe.PipeFilterUtils;
+import com.alibaba.excel.write.handler.PipeFilterFactory;
+import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import lombok.AllArgsConstructor;

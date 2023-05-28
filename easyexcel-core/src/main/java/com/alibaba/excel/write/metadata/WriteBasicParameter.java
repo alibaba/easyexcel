@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import com.alibaba.excel.metadata.BasicParameter;
 import com.alibaba.excel.write.handler.WriteHandler;
 
-import com.alibaba.excel.write.metadata.fill.pipe.PipeFilter;
+import com.alibaba.excel.write.handler.PipeFilter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

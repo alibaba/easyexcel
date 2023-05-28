@@ -1,12 +1,12 @@
-package com.alibaba.excel.write.metadata.fill.pipe.handler;
+package com.alibaba.excel.write.handler.filter;
 
-import com.alibaba.excel.write.metadata.fill.pipe.PipeFilter;
+import com.alibaba.excel.write.handler.PipeFilter;
 
 import java.util.Objects;
 
 /**
  * Description:
- *
+ * trim pipe filter
  * @author linfeng
  * @version 1.0.0
  * @since 2023/5/26 8:34

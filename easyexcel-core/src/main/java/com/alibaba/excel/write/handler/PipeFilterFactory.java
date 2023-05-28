@@ -1,10 +1,10 @@
-package com.alibaba.excel.write.metadata.fill.pipe;
+package com.alibaba.excel.write.handler;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.exception.ExcelRuntimeException;
 import com.alibaba.excel.util.StringUtils;
-import com.alibaba.excel.write.metadata.fill.pipe.handler.TrimFilter;
-import org.springframework.util.CollectionUtils;
+import com.alibaba.excel.util.PipeFilterUtils;
+import com.alibaba.excel.write.handler.filter.TrimFilter;
 
 import java.util.*;
 import java.util.function.Function;
@@ -19,11 +19,11 @@ import java.util.function.Supplier;
  */
 public class PipeFilterFactory extends PipeFilter<Object, Object> {
 
-    private final Map<String, Supplier<PipeFilter<Object, Object>>> pipeFilterMap = new HashMap<>();
+    private static final Map<String, Supplier<PipeFilter<Object, Object>>> PIPE_FILTER_MAP = new HashMap<>();
 
-    {
+    static {
         // 初始化内置管道过滤器
-        pipeFilterMap.put("trim", TrimFilter::new);
+        PIPE_FILTER_MAP.put("trim", TrimFilter::new);
     }
 
     private PipeFilterFactory(WriteContext writeContext) {
@@ -31,7 +31,7 @@ public class PipeFilterFactory extends PipeFilter<Object, Object> {
             && Objects.nonNull(writeContext.writeWorkbookHolder())
             && Objects.nonNull(writeContext.writeWorkbookHolder().getWriteWorkbook())
             && PipeFilterUtils.isEmpty(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap())) {
-            this.pipeFilterMap.putAll(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap());
+            PIPE_FILTER_MAP.putAll(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap());
         }
     }
 
@@ -79,7 +79,7 @@ public class PipeFilterFactory extends PipeFilter<Object, Object> {
                 continue;
             }
 
-            Supplier<PipeFilter<Object, Object>> supplier = pipeFilterMap.get(filterName);
+            Supplier<PipeFilter<Object, Object>> supplier = PIPE_FILTER_MAP.get(filterName);
             if (Objects.isNull(supplier)) {
                 throw new ExcelRuntimeException(String.format("没有[%s]的管道过滤器", filterName));
             }
