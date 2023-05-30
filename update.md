@@ -1,3 +1,7 @@
+# 3.3.2
+
+* 修复`includeColumnIndexes`和`includeColumnFieldNames`在sheet后面失效的问题
+
 # 3.3.1
 
 * 修改版本发布问题
