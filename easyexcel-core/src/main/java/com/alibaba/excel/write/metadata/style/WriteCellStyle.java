@@ -167,7 +167,7 @@ public class WriteCellStyle {
                 WriteFont.merge(source.getWriteFont(), targetWriteFont);
                 target.setWriteFont(targetWriteFont);
             } else {
-                WriteFont.merge(source.getWriteFont(), target.getWriteFont());
+                WriteFont.merge(source.getWriteFont(), targetWriteFont);
             }
         }
         if (source.getHidden() != null) {
