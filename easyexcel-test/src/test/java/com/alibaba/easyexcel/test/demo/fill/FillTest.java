@@ -16,6 +16,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
+import org.apache.poi.ss.usermodel.SheetVisibility;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -214,6 +215,35 @@ public class FillTest {
             map.put("date", new Date());
 
             excelWriter.fill(map, writeSheet);
+        }
+    }
+
+    /**
+     * 多表单填充
+     *
+     * @since 2.1.1
+     */
+    @Test
+    public void multiSheetFill() {
+        // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
+        // {} 代表普通变量 {.} 代表是list的变量 {前缀.} 前缀可以区分不同的list
+        String templateFileName =
+                TestFileUtil.getPath() + "demo" + File.separator + "fill" + File.separator + "simple.xlsx";
+
+        String fileName = TestFileUtil.getPath() + "multiSheetFill" + System.currentTimeMillis() + ".xlsx";
+
+        // 方案1
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName).withTemplate(templateFileName).build()) {
+            int numberOfSheets = excelWriter.writeContext().writeWorkbookHolder().getWorkbook()
+                                            .getNumberOfSheets();
+            for (int i = 0; i < numberOfSheets; i++) {
+                if (excelWriter.writeContext().writeWorkbookHolder().getWorkbook()
+                               .getSheetVisibility(i) == SheetVisibility.VISIBLE) {
+
+                    WriteSheet writeSheet = EasyExcel.writerSheet(i).build();
+                    excelWriter.fill(data(), writeSheet);
+                }
+            }
         }
     }
 
