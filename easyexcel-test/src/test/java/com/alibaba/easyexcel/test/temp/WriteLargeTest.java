@@ -2,16 +2,19 @@ package com.alibaba.easyexcel.test.temp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.easyexcel.test.core.large.LargeData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.junit.jupiter.api.Test;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Jiaju Zhuang
  **/
 
+@Slf4j
 public class WriteLargeTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WriteLargeTest.class);
@@ -61,6 +65,21 @@ public class WriteLargeTest {
             LOGGER.info("{} fill success.", j);
         }
         excelWriter.finish();
+
+    }
+
+    @Test
+    public void read() throws Exception {
+        log.info("start");
+        String fileName = "/Users/zhuangjiaju/Downloads/1e9e0578a9634abbbbd9b67f338f142a.xls";
+        // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
+        // 这里默认每次会读取100条数据 然后返回过来 直接调用使用数据就行
+        // 具体需要返回多少行可以在`PageReadListener`的构造函数设置
+        EasyExcel.read(fileName, new PageReadListener<List<Map<String, String>>>(dataList -> {
+            log.info("SIZEL：{}", dataList.size());
+        })).sheet().doRead();
+
+        log.info("test");
 
     }
 
