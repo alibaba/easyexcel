@@ -705,6 +705,19 @@ public class WriteTest {
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
+    @Test
+    public void sheetCol(){
+        String fileName = TestFileUtil.getPath() + "customCol" + System.currentTimeMillis() + ".xlsx";
+        try (ExcelWriter excelWriter = EasyExcel.write(fileName, DemoData.class).includeColumnFieldNames(Arrays.asList("string","date","doubleData")).build()) {
+            // 把sheet设置为不需要头 不然会输出sheet的头 这样看起来第一个table 就有2个头了
+            WriteSheet writeSheet = EasyExcel.writerSheet("模板").includeColumnFieldNames(Arrays.asList("string","date")).build();
+            excelWriter.write(data(), writeSheet);
+            writeSheet = EasyExcel.writerSheet(1,"模板1").needHead(false).build();
+            // 第二次写如也会创建头，然后在第一次的后面写入数据
+            WriteTable string = EasyExcel.writerTable().needHead(true).includeColumnFieldNames(Arrays.asList("string")).build();
+            excelWriter.write(data(),writeSheet,string);
+        }
+    }
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {

@@ -25,17 +25,21 @@ import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 import com.alibaba.excel.util.WriteHandlerUtils;
+import com.alibaba.excel.write.handler.PipeDataWrapper;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
+import com.alibaba.excel.write.handler.PipeFilterFactory;
+import com.alibaba.excel.util.PipeFilterUtils;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
 import com.alibaba.excel.util.PoiUtils;
@@ -51,6 +55,7 @@ import org.apache.poi.ss.usermodel.Sheet;
  *
  * @author Jiaju Zhuang
  */
+@Slf4j
 public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
     private static final String ESCAPE_FILL_PREFIX = "\\\\\\{";
@@ -59,6 +64,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     private static final String FILL_SUFFIX = "}";
     private static final char IGNORE_CHAR = '\\';
     private static final String COLLECTION_PREFIX = ".";
+    private static final String DEFAULT_ERROR_FIELD = "error";
     /**
      * Fields to replace in the template
      */
@@ -91,6 +97,19 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         super(writeContext);
     }
 
+    /**
+     * 填充错误信息的字段名
+     */
+    private String fillErrorField;
+
+    public void setFillErrorField(String fillErrorField) {
+        this.fillErrorField = fillErrorField;
+    }
+
+    public String getFillErrorField() {
+        return StringUtils.isBlank(fillErrorField) ? DEFAULT_ERROR_FIELD : fillErrorField;
+    }
+
     public void fill(Object data, FillConfig fillConfig) {
         if (data == null) {
             data = new HashMap<String, Object>(16);
@@ -105,7 +124,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         String currentDataPrefix;
 
         if (data instanceof FillWrapper) {
-            FillWrapper fillWrapper = (FillWrapper)data;
+            FillWrapper fillWrapper = (FillWrapper) data;
             currentDataPrefix = fillWrapper.getName();
             realData = fillWrapper.getCollectionData();
         } else {
@@ -117,7 +136,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         // processing data
         if (realData instanceof Collection) {
             List<AnalysisCell> analysisCellList = readTemplateData(templateCollectionAnalysisCache);
-            Collection<?> collectionData = (Collection<?>)realData;
+            Collection<?> collectionData = (Collection<?>) realData;
             if (CollectionUtils.isEmpty(collectionData)) {
                 return;
             }
@@ -174,7 +193,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void increaseRowIndex(Map<UniqueDataFlagKey, List<AnalysisCell>> templateAnalysisCache, int number,
-        int maxRowIndex) {
+                                  int maxRowIndex) {
         for (Map.Entry<UniqueDataFlagKey, List<AnalysisCell>> entry : templateAnalysisCache.entrySet()) {
             UniqueDataFlagKey uniqueDataFlagKey = entry.getKey();
             if (!Objects.equals(currentUniqueDataFlag.getSheetNo(), uniqueDataFlagKey.getSheetNo()) || !Objects.equals(
@@ -190,17 +209,18 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void doFill(List<AnalysisCell> analysisCellList, Object oneRowData, FillConfig fillConfig,
-        Integer relativeRowIndex) {
+                        Integer relativeRowIndex) {
         if (CollectionUtils.isEmpty(analysisCellList) || oneRowData == null) {
             return;
         }
+        //noinspection rawtypes
         Map dataMap;
         if (oneRowData instanceof Map) {
-            dataMap = (Map)oneRowData;
+            //noinspection rawtypes
+            dataMap = (Map) oneRowData;
         } else {
             dataMap = BeanMapUtils.create(oneRowData);
         }
-        Set<String> dataKeySet = new HashSet<>(dataMap.keySet());
 
         RowWriteHandlerContext rowWriteHandlerContext = WriteHandlerUtils.createRowWriteHandlerContext(writeContext,
             null, relativeRowIndex, Boolean.FALSE);
@@ -212,10 +232,30 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
             if (analysisCell.getOnlyOneVariable()) {
                 String variable = analysisCell.getVariableList().get(0);
-                if (!dataKeySet.contains(variable)) {
-                    continue;
+
+                Object value;
+                // 判断是否包含管道
+                if (PipeFilterUtils.isPipeline(variable)) {
+                    value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
+                    try {
+                        PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext)
+                            .setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
+                            .addParams(variable).apply(PipeDataWrapper.success(value));
+                        if (wrapper.success()) {
+                            value = wrapper.getData();
+                        } else {
+                            value = wrapper.getData();
+                            fillError2DataMap(dataMap, wrapper.getMessage());
+                        }
+                    } catch (Exception e) {
+                        value = "";
+                        fillError2DataMap(dataMap, e.getMessage());
+                    }
+                } else {
+
+                    value = PipeFilterUtils.getValueOfMap(dataMap, variable);
                 }
-                Object value = dataMap.get(variable);
+
                 ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(dataMap,
                     writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(), variable,
                     writeContext.currentWriteHolder());
@@ -247,10 +287,30 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
 
                 for (String variable : analysisCell.getVariableList()) {
                     cellValueBuild.append(analysisCell.getPrepareDataList().get(index++));
-                    if (!dataKeySet.contains(variable)) {
-                        continue;
+
+                    Object value;
+                    // 判断是否包含管道
+                    if (PipeFilterUtils.isPipeline(variable)) {
+                        value = PipeFilterUtils.getValueOfMap(dataMap, PipeFilterUtils.getVariableName(variable));
+                        try {
+                            PipeDataWrapper<Object> wrapper = PipeFilterFactory.createPipeFilter(writeContext)
+                                .setCell(analysisCell.getRowIndex(), analysisCell.getColumnIndex())
+                                .addParams(variable).apply(PipeDataWrapper.success(value));
+                            if (wrapper.success()) {
+                                value = wrapper.getData();
+                            } else {
+                                value = wrapper.getData();
+                                fillError2DataMap(dataMap, wrapper.getMessage());
+                            }
+                        } catch (Exception e) {
+                            value = "";
+                            fillError2DataMap(dataMap, e.getMessage());
+                        }
+                    } else {
+
+                        value = PipeFilterUtils.getValueOfMap(dataMap, variable);
                     }
-                    Object value = dataMap.get(variable);
+
                     ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(dataMap,
                         writeContext.currentWriteHolder().excelWriteHeadProperty().getHeadClazz(), variable,
                         writeContext.currentWriteHolder());
@@ -302,6 +362,26 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         }
     }
 
+    /**
+     * 填充错误信息到数据map中，用于后续填充excel
+     *
+     * @param dataMap 待填充excel的数据
+     * @param msg     消息
+     */
+    private void fillError2DataMap(@SuppressWarnings("rawtypes") Map dataMap, String msg) {
+        if (dataMap.containsKey(getFillErrorField())) {
+            Object errorData = dataMap.get(getFillErrorField());
+            if (Objects.nonNull(errorData)) {
+
+                //noinspection unchecked
+                dataMap.put(getFillErrorField(), errorData + "," + msg);
+            } else {
+                //noinspection unchecked
+                dataMap.put(getFillErrorField(), msg);
+            }
+        }
+    }
+
     private Integer getRelativeRowIndex() {
         Integer relativeRowIndex = relativeRowIndexMap.get(currentUniqueDataFlag);
         if (relativeRowIndex == null) {
@@ -314,7 +394,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     private void createCell(AnalysisCell analysisCell, FillConfig fillConfig,
-        CellWriteHandlerContext cellWriteHandlerContext, RowWriteHandlerContext rowWriteHandlerContext) {
+                            CellWriteHandlerContext cellWriteHandlerContext, RowWriteHandlerContext rowWriteHandlerContext) {
         Sheet cachedSheet = writeContext.writeSheetHolder().getCachedSheet();
         if (WriteTemplateAnalysisCellTypeEnum.COMMON.equals(analysisCell.getCellType())) {
             Row row = cachedSheet.getRow(analysisCell.getRowIndex());
@@ -377,7 +457,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     private Cell createCellIfNecessary(Row row, Integer lastColumnIndex,
-        CellWriteHandlerContext cellWriteHandlerContext) {
+                                       CellWriteHandlerContext cellWriteHandlerContext) {
         Cell cell = row.getCell(lastColumnIndex);
         if (cell != null) {
             return cell;
@@ -391,7 +471,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     private Row createRowIfNecessary(Sheet sheet, Sheet cachedSheet, Integer lastRowIndex, FillConfig fillConfig,
-        AnalysisCell analysisCell, boolean isOriginalCell, RowWriteHandlerContext rowWriteHandlerContext) {
+                                     AnalysisCell analysisCell, boolean isOriginalCell, RowWriteHandlerContext rowWriteHandlerContext) {
         rowWriteHandlerContext.setRowIndex(lastRowIndex);
         Row row = sheet.getRow(lastRowIndex);
         if (row != null) {
@@ -481,7 +561,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
      * @return Returns the data that the cell needs to replace
      */
     private String prepareData(Cell cell, int rowIndex, int columnIndex,
-        Map<UniqueDataFlagKey, Set<Integer>> firstRowCache) {
+                               Map<UniqueDataFlagKey, Set<Integer>> firstRowCache) {
         if (!CellType.STRING.equals(cell.getCellType())) {
             return null;
         }
@@ -564,7 +644,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
     }
 
     private String dealAnalysisCell(AnalysisCell analysisCell, String value, int rowIndex, int lastPrepareDataIndex,
-        int length, Map<UniqueDataFlagKey, Set<Integer>> firstRowCache, StringBuilder preparedData) {
+                                    int length, Map<UniqueDataFlagKey, Set<Integer>> firstRowCache, StringBuilder preparedData) {
         if (analysisCell != null) {
             if (lastPrepareDataIndex == length) {
                 analysisCell.getPrepareDataList().add(StringUtils.EMPTY);

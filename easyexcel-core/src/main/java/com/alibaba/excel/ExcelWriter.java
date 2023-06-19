@@ -2,14 +2,18 @@ package com.alibaba.excel;
 
 import java.io.Closeable;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.write.ExcelBuilder;
 import com.alibaba.excel.write.ExcelBuilderImpl;
+import com.alibaba.excel.write.executor.ExcelWriteFillExecutor;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
+import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +90,6 @@ public class ExcelWriter implements Closeable {
         excelBuilder.addContent(supplier.get(), writeSheet, writeTable);
         return this;
     }
-
     /**
      * Fill value to a sheet
      *
@@ -128,10 +131,20 @@ public class ExcelWriter implements Closeable {
      * @param supplier
      * @param fillConfig
      * @param writeSheet
-     * @return
+     * @return this
      */
     public ExcelWriter fill(Supplier<Object> supplier, FillConfig fillConfig, WriteSheet writeSheet) {
         excelBuilder.fill(supplier.get(), fillConfig, writeSheet);
+        return this;
+    }
+
+    /**
+     * 设置自动填充错误的字段
+     * @param errorField 错误字段
+     * @return this
+     */
+    public ExcelWriter autoFillError(String errorField) {
+        excelBuilder.setAutoErrorField(errorField);
         return this;
     }
 

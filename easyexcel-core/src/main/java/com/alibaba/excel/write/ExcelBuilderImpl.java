@@ -1,6 +1,8 @@
 package com.alibaba.excel.write;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
@@ -13,6 +15,7 @@ import com.alibaba.excel.write.executor.ExcelWriteFillExecutor;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.metadata.WriteWorkbook;
+import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -98,6 +101,14 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (context != null) {
             context.finish(onException);
         }
+    }
+
+    @Override
+    public void setAutoErrorField(String errorField) {
+        if (excelWriteFillExecutor == null) {
+            excelWriteFillExecutor = new ExcelWriteFillExecutor(context);
+        }
+        excelWriteFillExecutor.setFillErrorField(errorField);
     }
 
     @Override

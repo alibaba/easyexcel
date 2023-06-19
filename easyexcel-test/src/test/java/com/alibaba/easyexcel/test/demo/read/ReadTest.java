@@ -1,8 +1,10 @@
 package com.alibaba.easyexcel.test.demo.read;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -16,6 +18,7 @@ import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson2.JSON;
 
@@ -31,6 +34,30 @@ import org.junit.jupiter.api.Test;
 @Slf4j
 public class ReadTest {
 
+
+    @Test
+    public void simpleRead1() {
+        List<String> headList = new ArrayList<>();
+        for (int i = 0; i < 53; i++) {
+            headList.add("标题"+i);
+        }
+        List<List<String>> head = new ArrayList<>();
+        head.add(headList);
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo2.xlsx";
+        List<Map<Integer, String>> dataList = EasyExcel.read(fileName).sheet(0).head(head).headRowNumber(0).doReadSync();
+//        System.out.println(dataList);
+
+        String writeFileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+//        EasyExcel.write(writeFileName)
+//            .sheet("模板")
+//            .doWrite(() -> {
+//                // 分页查询数据
+//                return dataList;
+//            });
+        EasyExcel.write(writeFileName).registerWriteHandler(new Custemhandler()).sheet("导入资料").head(head).doWrite(dataList);
+    }
     /**
      * 最简单的读
      * <p>
@@ -309,4 +336,16 @@ public class ReadTest {
         // 这里 只要，然后读取第一个sheet 同步读取会自动finish
         EasyExcel.read(fileName, new NoModelDataListener()).sheet().doRead();
     }
+
+    /**
+     * 不创建对象的读
+     */
+    @Test
+    public void readCsv() {
+        String fileName = TestFileUtil.getPath() + "demo" + File.separator + "demo1.xls";
+        // 这里 只要，然后读取第一个sheet 同步读取会自动finish
+        List<Object> objects = EasyExcel.read(fileName).sheet().sheetName("测试").doReadSync();
+        System.out.println(objects.size());
+    }
+
 }
