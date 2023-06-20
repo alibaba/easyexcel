@@ -1,5 +1,5 @@
-# 🔥作者最新开源项目[Chat2DB](https://github.com/alibaba/Chat2DB)
-[Chat2DB](https://github.com/alibaba/Chat2DB) 智能数据库客户端，数据报表工具，自然语言生成SQL，生成报表。 GitHub地址 [https://github.com/alibaba/Chat2DB](https://github.com/alibaba/Chat2DB)
+# 🔥作者最新开源项目[Chat2DB](https://github.com/chat2db/Chat2DB)
+[Chat2DB](https://github.com/chat2db/Chat2DB) 智能数据库客户端，数据报表工具，自然语言生成SQL，生成报表。 GitHub地址 [https://github.com/alibaba/Chat2DB](https://github.com/chat2db/Chat2DB)
 
 EasyExcel
 ======================
