@@ -50,7 +50,7 @@ public class PipeFilterFactory extends BasePipeFilter<Object, Object> {
         if (Objects.nonNull(writeContext)
             && Objects.nonNull(writeContext.writeWorkbookHolder())
             && Objects.nonNull(writeContext.writeWorkbookHolder().getWriteWorkbook())
-            && PipeFilterUtils.isEmpty(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap())) {
+            && !PipeFilterUtils.isEmpty(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap())) {
             PIPE_FILTER_MAP.putAll(writeContext.writeWorkbookHolder().getWriteWorkbook().getCustomPipeFilterMap());
         }
     }
