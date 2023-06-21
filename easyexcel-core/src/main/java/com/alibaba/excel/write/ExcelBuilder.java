@@ -1,11 +1,15 @@
 package com.alibaba.excel.write;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.excel.context.WriteContext;
+import com.alibaba.excel.write.executor.ExcelWriteFillExecutor;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
+import com.alibaba.excel.write.metadata.fill.AnalysisCell;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 
 /**
@@ -76,4 +80,9 @@ public interface ExcelBuilder {
      */
     void finish(boolean onException);
 
+    /**
+     * Automatic filling error, setting error fields
+     * @param errorField error field
+     */
+    void setAutoErrorField(String errorField);
 }
