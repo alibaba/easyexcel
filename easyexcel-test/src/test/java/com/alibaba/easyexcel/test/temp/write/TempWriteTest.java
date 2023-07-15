@@ -11,6 +11,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.support.cglib.beans.BeanMap;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -24,7 +25,6 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
-import org.springframework.cglib.beans.BeanMap;
 
 @Slf4j
 public class TempWriteTest {
