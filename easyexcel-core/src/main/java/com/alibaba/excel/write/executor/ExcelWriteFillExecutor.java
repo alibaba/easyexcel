@@ -98,7 +98,7 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
         if (fillConfig == null) {
             fillConfig = FillConfig.builder().build();
         }
-        fillConfig.init();
+        // fillConfig.init();
 
         Object realData;
         // The data prefix that is populated this time
