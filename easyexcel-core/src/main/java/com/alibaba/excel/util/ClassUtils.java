@@ -36,6 +36,7 @@ import com.alibaba.excel.metadata.property.StyleProperty;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,7 +50,7 @@ import org.springframework.cglib.beans.BeanMap;
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -63,11 +64,11 @@ public class ClassUtils {
     /**
      * memory cache
      */
-    public static final ConcurrentHashMap<Class<?>, FieldCache> FIELD_CACHE = new ConcurrentHashMap<>();
+    public static final Map<FieldCacheKey, FieldCache> FIELD_CACHE = new ConcurrentHashMap<>();
     /**
-     * thread local cahe
+     * thread local cache
      */
-    private static final ThreadLocal<Map<Class<?>, FieldCache>> FIELD_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<Map<FieldCacheKey, FieldCache>> FIELD_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
      * The cache configuration information for each of the class
@@ -102,7 +103,8 @@ public class ClassUtils {
      * @return
      */
     public static ExcelContentProperty declaredExcelContentProperty(Map<?, ?> dataMap, Class<?> headClazz,
-        String fieldName, ConfigurationHolder configurationHolder) {
+        String fieldName,
+        ConfigurationHolder configurationHolder) {
         Class<?> clazz = null;
         if (dataMap instanceof BeanMap) {
             Object bean = ((BeanMap)dataMap).getBean();
@@ -137,7 +139,8 @@ public class ClassUtils {
     }
 
     private static ExcelContentProperty doGetExcelContentProperty(Class<?> clazz, Class<?> headClass,
-        String fieldName, ConfigurationHolder configurationHolder) {
+        String fieldName,
+        ConfigurationHolder configurationHolder) {
         ExcelContentProperty excelContentProperty = Optional.ofNullable(
                 declaredFieldContentMap(clazz, configurationHolder))
             .map(map -> map.get(fieldName))
@@ -277,16 +280,16 @@ public class ClassUtils {
     public static FieldCache declaredFields(Class<?> clazz, ConfigurationHolder configurationHolder) {
         switch (configurationHolder.globalConfiguration().getFiledCacheLocation()) {
             case THREAD_LOCAL:
-                Map<Class<?>, FieldCache> fieldCacheMap = FIELD_THREAD_LOCAL.get();
+                Map<FieldCacheKey, FieldCache> fieldCacheMap = FIELD_THREAD_LOCAL.get();
                 if (fieldCacheMap == null) {
                     fieldCacheMap = MapUtils.newHashMap();
                     FIELD_THREAD_LOCAL.set(fieldCacheMap);
                 }
-                return fieldCacheMap.computeIfAbsent(clazz, key -> {
+                return fieldCacheMap.computeIfAbsent(new FieldCacheKey(clazz, configurationHolder), key -> {
                     return doDeclaredFields(clazz, configurationHolder);
                 });
             case MEMORY:
-                return FIELD_CACHE.computeIfAbsent(clazz, key -> {
+                return FIELD_CACHE.computeIfAbsent(new FieldCacheKey(clazz, configurationHolder), key -> {
                     return doDeclaredFields(clazz, configurationHolder);
                 });
             case NONE:
@@ -333,7 +336,7 @@ public class ClassUtils {
             return fieldCache;
         }
         // ignore filed
-        Map<Integer, FieldWrapper> tempSortedFieldMapp = MapUtils.newHashMap();
+        Map<Integer, FieldWrapper> tempSortedFieldMap = MapUtils.newHashMap();
         int index = 0;
         for (Map.Entry<Integer, FieldWrapper> entry : sortedFieldMap.entrySet()) {
             Integer key = entry.getKey();
@@ -346,18 +349,18 @@ public class ClassUtils {
             } else {
                 // Mandatory sorted fields
                 if (indexFieldMap.containsKey(key)) {
-                    tempSortedFieldMapp.put(key, field);
+                    tempSortedFieldMap.put(key, field);
                 } else {
                     // Need to reorder automatically
                     // Check whether the current key is already in use
-                    while (tempSortedFieldMapp.containsKey(index)) {
+                    while (tempSortedFieldMap.containsKey(index)) {
                         index++;
                     }
-                    tempSortedFieldMapp.put(index++, field);
+                    tempSortedFieldMap.put(index++, field);
                 }
             }
         }
-        fieldCache.setSortedFieldMap(tempSortedFieldMapp);
+        fieldCache.setSortedFieldMap(tempSortedFieldMap);
 
         // resort field
         resortField(writeHolder, fieldCache);
@@ -406,8 +409,8 @@ public class ClassUtils {
             // Index sorted map
             Map<Integer, Integer> filedIndexMap = MapUtils.newHashMap();
             int fieldIndex = 0;
-            for (Integer includeColumnIndexe : includeColumnIndexes) {
-                filedIndexMap.put(includeColumnIndexe, fieldIndex++);
+            for (Integer includeColumnIndex : includeColumnIndexes) {
+                filedIndexMap.put(includeColumnIndex, fieldIndex++);
             }
 
             // rebuild sortedFieldMap
@@ -549,6 +552,26 @@ public class ClassUtils {
         private Class<?> clazz;
         private Class<?> headClass;
         private String fieldName;
+    }
+
+    @Data
+    public static class FieldCacheKey {
+        private Class<?> clazz;
+        private Collection<String> excludeColumnFieldNames;
+        private Collection<Integer> excludeColumnIndexes;
+        private Collection<String> includeColumnFieldNames;
+        private Collection<Integer> includeColumnIndexes;
+
+        FieldCacheKey(Class<?> clazz, ConfigurationHolder configurationHolder) {
+            this.clazz = clazz;
+            if (configurationHolder instanceof WriteHolder) {
+                WriteHolder writeHolder = (WriteHolder)configurationHolder;
+                this.excludeColumnFieldNames = writeHolder.excludeColumnFieldNames();
+                this.excludeColumnIndexes = writeHolder.excludeColumnIndexes();
+                this.includeColumnFieldNames = writeHolder.includeColumnFieldNames();
+                this.includeColumnIndexes = writeHolder.includeColumnIndexes();
+            }
+        }
     }
 
     public static void removeThreadLocalCache() {

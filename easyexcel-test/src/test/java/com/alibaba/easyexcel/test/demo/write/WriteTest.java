@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.easyexcel.test.core.head.ComplexHeadData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -409,7 +411,7 @@ public class WriteTest {
     /**
      * 列宽、行高
      * <p>
-     * 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData}
+     * 1. 创建excel对应的实体对象 参照{@link WidthAndHeightData }
      * <p>
      * 2. 使用注解{@link ColumnWidth}、{@link HeadRowHeight}、{@link ContentRowHeight}指定宽度或高度
      * <p>
