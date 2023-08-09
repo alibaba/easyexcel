@@ -1,5 +1,5 @@
 # 🔥作者最新开源项目[Chat2DB](https://github.com/chat2db/Chat2DB)
-- 
+
 - GitHub地址 [https://github.com/chat2db/Chat2DB](https://github.com/chat2db/Chat2DB)
 - 官 网 地 址 [https://chat2db.ai](https://chat2db.ai)
 
