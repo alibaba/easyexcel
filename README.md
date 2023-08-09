@@ -1,5 +1,10 @@
 # 🔥作者最新开源项目[Chat2DB](https://github.com/chat2db/Chat2DB)
-[Chat2DB](https://github.com/chat2db/Chat2DB) 智能数据库客户端，数据报表工具，自然语言生成SQL，生成报表。 GitHub地址 [https://github.com/chat2db/chat2db](https://github.com/chat2db/Chat2DB)
+- 
+- GitHub地址 [https://github.com/chat2db/chat2db](https://github.com/chat2db/Chat2DB)
+- 官 网 地 址 [https://chat2db.ai](https://chat2db.ai)
+
+<a><img width="1720" alt="crete datasource" src="https://github.com/chat2db/Chat2DB/assets/22975773/16050747-0f6c-4e98-ba91-323033584eec"></a>
+
 
 EasyExcel
 ======================
