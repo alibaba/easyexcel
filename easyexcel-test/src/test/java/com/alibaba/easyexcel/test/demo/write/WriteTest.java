@@ -366,7 +366,7 @@ public class WriteTest {
         writeCellStyleData.setFillForegroundColor(IndexedColors.GREEN.getIndex());
 
         // 设置单个单元格多种样式
-        // 这里需要设置 inMomery=true 不然会导致无法展示单个单元格多种样式，所以慎用
+        // 这里需要设置 inMemory=true 不然会导致无法展示单个单元格多种样式，所以慎用
         WriteCellData<String> richTest = new WriteCellData<>();
         richTest.setType(CellDataTypeEnum.RICH_TEXT_STRING);
         writeCellDemoData.setRichText(richTest);
