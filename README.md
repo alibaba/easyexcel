@@ -1,5 +1,10 @@
-# 🔥作者最新开源项目[Chat2DB](https://github.com/alibaba/Chat2DB)
-[Chat2DB](https://github.com/alibaba/Chat2DB) 智能数据库客户端，比Navicat、DataGrip更智能，体验更好，永久免费无需破解。 GitHub地址 [https://github.com/alibaba/Chat2DB](https://github.com/alibaba/Chat2DB)
+# 🔥作者最新开源项目[Chat2DB](https://github.com/chat2db/Chat2DB)
+
+- GitHub地址 [https://github.com/chat2db/Chat2DB](https://github.com/chat2db/Chat2DB)
+- 官 网 地 址 [https://chat2db.ai](https://chat2db.ai)
+
+<a href= "https://github.com/chat2db/Chat2DB" ><img width="1720" alt="crete datasource" src="https://github.com/chat2db/Chat2DB/assets/22975773/16050747-0f6c-4e98-ba91-323033584eec"></a>
+
 
 EasyExcel
 ======================
@@ -39,33 +44,6 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 
 开源不易，如果觉得EasyExcel对您的工作还是有帮助的话，请帮忙在<a target="_blank" href='https://github.com/alibaba/easyexcel'><img src="https://img.shields.io/github/stars/alibaba/easyexcel.svg?style=flat-square&label=Stars&logo=github" alt="github star"/></a>
 的右上角点个⭐Star，您的支持是使EasyExcel变得更好最大的动力。
-
-# 人员招聘
-
-由于工作较忙，需要招聘一些同学加入`EasyExcel`开源，一起跟着`EasyExcel`成长。
-
-## 你将获得
-
-* 认识一帮热爱开源的小伙伴
-* 你写的代码可以被无数人看到，提升自我编码能力
-* 可能会有一定的物质奖励（在和公司申请，不一定能过）
-
-## 你的工作
-
-* 群&`issue`答疑
-* 做一些代码的`PR`合并去修复bug
-* 讨论`EasyExcel`规划
-
-## 招聘要求
-
-* 3年以上Java编程经验，基础扎实
-* 对技术比较热爱，并且喜欢阅读源码
-* 自驱力强，能主动的研究一些问题
-* 需要持之以恒，开源需要长期维护
-
-## 联系方式
-
-直接加钉钉群，联系是仪即可
 
 # 如何获取帮助
 
@@ -110,7 +88,7 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 
 # 维护者
 
-姬朋飞（玉霄)、庄家钜、怀宇
+姬朋飞（玉霄)、庄家钜、怀宇、敖丙
 
 # 快速开始
 
