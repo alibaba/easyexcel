@@ -67,7 +67,6 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 ## 也可以加入钉钉&QQ群来解决问题
 
 加入钉钉或QQ群，看完公告可以获得帮助 。  
-比较推荐钉钉群，`QQ` 公司不让用，当然QQ群也会有热心网友帮忙解决。   
 [QQ1群(已满): 662022184](https://jq.qq.com/?_wv=1027&k=1T21jJxh)  
 [QQ2群(已满): 1097936804](https://jq.qq.com/?_wv=1027&k=j5zEy6Xl)  
 [QQ3群(已满): 453928496](https://qm.qq.com/cgi-bin/qm/qr?k=e2ULsA5A0GldhV2CXJ8sIbAyu9I6qqs7&jump_from=webapi)  
