@@ -74,6 +74,7 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 [QQ4群(已满): 496594404](https://qm.qq.com/cgi-bin/qm/qr?k=e_aVG1Q7gi0PJUBkbrUGAgbeO3kUEInK&jump_from=webapi)   
 [QQ5群(已满): 451925680](https://jq.qq.com/?_wv=1027&k=6VHhvxyf)   
 [QQ6群: 784741035](https://jq.qq.com/?_wv=1027&k=BbLBIo9P)   
+[QQ7群: 667889383](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=XdTLw3Z3pr63VT0IkyoY-2t25TG7WxbG&authKey=gQKvTXipsjfUO1aNfL9zdHTfOmkqC6E%2BQ2zDg2jym8h3qXuQ7RtkpeAHeg9I4UhL&noverify=0&group_code=667889383)
 [钉钉1群（已满）: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)  
 [钉钉2群（已满）: 32796397](https://qr.dingtalk.com/action/joingroup?code=v1,k1,jyU9GtEuNU5S0QTyklqYcYJ8qDZtUuTPMM7uPZTS8Hs=&_dt_no_comment=1&origin=11)  
 [钉钉3群（已满）: 33797247](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3UGlEScTGQaHpW2cIRo+gkxJ9EVZ5fz26M6nW3uFP30=&_dt_no_comment=1&origin=11)  
@@ -84,7 +85,8 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 [钉钉8群（已满）: 44752220](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingea96808beee421693fd4ba7542d6e5da&0380092a-fa46=a6a40905-7951&cbdbhh=qwertyuiop)   
 [钉钉9群（已满）: 11045002277](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dinge338d2215891c0459c13cd6b2cb108a6&6972d=b92f9&cbdbhh=qwertyuiop)   
 [钉钉10群(已满): 27360019755](https://qr.dingtalk.com/action/joingroup?code=v1,k1,v25LHn2liWmrWUKlkhIzOTcK7s7onp/sZP8mO5oIYSs=&_dt_no_comment=1&origin=11)   
-[钉钉11群:24330026964](https://qr.dingtalk.com/action/joingroup?code=v1,k1,63PjvTncu81oQ3X6XmGEJqnwQHCQxi/jaVlbUStq79o=&_dt_no_comment=1&origin=11)
+[钉钉11群:24330026964](https://qr.dingtalk.com/action/joingroup?code=v1,k1,63PjvTncu81oQ3X6XmGEJqnwQHCQxi/jaVlbUStq79o=&_dt_no_comment=1&origin=11)   
+[钉钉12群:27210038956](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3mKi7VTGlYO+IsDX5n7sYYm2Qrlm220kMBPsJFzKRis=&_dt_no_comment=1&origin=11)   
 
 # 维护者
 
