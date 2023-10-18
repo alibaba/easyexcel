@@ -9,16 +9,16 @@ import java.util.List;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ExceptionDataTest {
 
     private static File file07;
@@ -27,7 +27,7 @@ public class ExceptionDataTest {
     private static File fileException03;
     private static File fileCsv;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("exception.xlsx");
         file03 = TestFileUtil.createNewFile("exception.xls");
@@ -63,10 +63,10 @@ public class ExceptionDataTest {
 
     private void readAndWriteException(File file) throws Exception {
         EasyExcel.write(new FileOutputStream(file), ExceptionData.class).sheet().doWrite(data());
-        ArithmeticException exception = Assert.assertThrows(ArithmeticException.class, () -> EasyExcel.read(
+        ArithmeticException exception = Assertions.assertThrows(ArithmeticException.class, () -> EasyExcel.read(
             new FileInputStream(file), ExceptionData.class,
             new ExceptionThrowDataListener()).sheet().doRead());
-        Assert.assertEquals("/ by zero",exception.getMessage());
+        Assertions.assertEquals("/ by zero", exception.getMessage());
     }
 
     private void readAndWrite(File file) throws Exception {

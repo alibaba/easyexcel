@@ -20,7 +20,7 @@
 
 
     <properties>
-        <revision>3.2.1</revision>
+        <revision>3.3.2</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <gpg.skip>true</gpg.skip>
@@ -128,34 +128,10 @@
                 <artifactId>lombok</artifactId>
                 <version>1.18.20</version>
             </dependency>
-
-
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>5.3.15</version>
-            </dependency>
-
-            <!--test-->
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.fastjson2</groupId>
-                <artifactId>fastjson2</artifactId>
-                <version>2.0.23</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>2.6.3</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -266,6 +242,7 @@
                         <exclude>com/alibaba/excel/metadata/format/ExcelGeneralNumberFormat.java</exclude>
                         <exclude>com/alibaba/excel/metadata/csv/CsvDataFormat.java</exclude>
                         <exclude>com/alibaba/excel/write/executor/ExcelWriteFillExecutor.java</exclude>
+                        <exclude>com/alibaba/excel/analysis/v07/handlers/sax/SharedStringsTableHandler.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>

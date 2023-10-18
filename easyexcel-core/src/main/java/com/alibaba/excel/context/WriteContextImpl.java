@@ -265,7 +265,7 @@ public class WriteContextImpl implements WriteContext {
             Head head = entry.getValue();
             int columnIndex = entry.getKey();
             ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(null,
-                currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), head.getFieldName());
+                currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), head.getFieldName(), currentWriteHolder);
 
             CellWriteHandlerContext cellWriteHandlerContext = WriteHandlerUtils.createCellWriteHandlerContext(this, row,
                 rowIndex, head, columnIndex, relativeRowIndex, Boolean.TRUE, excelContentProperty);
@@ -427,6 +427,7 @@ public class WriteContextImpl implements WriteContext {
     private void removeThreadLocalCache() {
         NumberDataFormatterUtils.removeThreadLocalCache();
         DateUtils.removeThreadLocalCache();
+        ClassUtils.removeThreadLocalCache();
     }
 
     @Override

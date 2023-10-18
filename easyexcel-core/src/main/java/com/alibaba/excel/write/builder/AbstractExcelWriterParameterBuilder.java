@@ -106,8 +106,9 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
     /**
      * Only output the custom columns.
      *
-     * @deprecated use {@link  #includeColumnFieldNames(Collection)}
+     * @deprecated use {@link  #includeColumnFieldNames(Collection)} spelling mistake
      */
+    @Deprecated
     public T includeColumnFiledNames(Collection<String> includeColumnFieldNames) {
         parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
         return self();
@@ -118,6 +119,18 @@ public abstract class AbstractExcelWriterParameterBuilder<T extends AbstractExce
      */
     public T includeColumnFieldNames(Collection<String> includeColumnFieldNames) {
         parameter().setIncludeColumnFieldNames(includeColumnFieldNames);
+        return self();
+    }
+
+    /**
+     * Data will be order by  {@link #includeColumnFieldNames} or  {@link #includeColumnIndexes}.
+     *
+     * default is false.
+     *
+     * @since 3.3.0
+     **/
+    public T orderByIncludeColumn(Boolean orderByIncludeColumn) {
+        parameter().setOrderByIncludeColumn(orderByIncludeColumn);
         return self();
     }
 }

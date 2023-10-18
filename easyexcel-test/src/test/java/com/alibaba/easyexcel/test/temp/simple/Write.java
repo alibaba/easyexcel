@@ -16,8 +16,7 @@ import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.fastjson2.JSON;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jiaju Zhuang
  **/
-@Ignore
+
 @Slf4j
 public class Write {
     private static final Logger LOGGER = LoggerFactory.getLogger(Write.class);
@@ -68,8 +67,9 @@ public class Write {
         String fileName = TestFileUtil.getPath() + "t33" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去读，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         // 如果这里想使用03 则 传入excelType参数即可
-        EasyExcel.write(fileName).head(head()).inMemory(true).sheet("模板").registerWriteHandler(new WriteCellHandler()).doWrite(
-            data1());
+        EasyExcel.write(fileName).head(head()).inMemory(true).sheet("模板").registerWriteHandler(new WriteCellHandler())
+            .doWrite(
+                data1());
     }
 
     @Test

@@ -15,13 +15,11 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-@Ignore
 public class FillTest {
     @Test
-    public void TestFillNullPoint(){
+    public void TestFillNullPoint() {
         String templateFileName =
             TestFileUtil.getPath() + "temp/issue1663" + File.separator + "template.xlsx";
 
@@ -37,8 +35,10 @@ public class FillTest {
         excelWriter.fill(map, writeSheet);
         excelWriter.finish();
     }
+
     private List<com.alibaba.easyexcel.test.demo.fill.FillData> data() {
-        List<com.alibaba.easyexcel.test.demo.fill.FillData> list = new ArrayList<com.alibaba.easyexcel.test.demo.fill.FillData>();
+        List<com.alibaba.easyexcel.test.demo.fill.FillData> list
+            = new ArrayList<com.alibaba.easyexcel.test.demo.fill.FillData>();
         for (int i = 0; i < 10; i++) {
             com.alibaba.easyexcel.test.demo.fill.FillData fillData = new FillData();
             list.add(fillData);

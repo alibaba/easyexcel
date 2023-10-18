@@ -11,10 +11,8 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.handler.RowWriteHandler;
-import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.handler.WorkbookWriteHandler;
 import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
-import com.alibaba.excel.write.handler.context.SheetWriteHandlerContext;
 import com.alibaba.excel.write.handler.context.WorkbookWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
@@ -24,15 +22,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 记录一些不太常见的案例
  *
  * @author Jiaju Zhuang
  */
-@Ignore
+
 @Slf4j
 public class WriteTest {
 

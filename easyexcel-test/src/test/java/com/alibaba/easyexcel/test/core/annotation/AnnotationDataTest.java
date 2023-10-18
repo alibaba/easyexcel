@@ -14,16 +14,16 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class AnnotationDataTest {
 
     private static File file07;
@@ -32,7 +32,7 @@ public class AnnotationDataTest {
     private static File fileStyle07;
     private static File fileStyle03;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("annotation07.xlsx");
         file03 = TestFileUtil.createNewFile("annotation03.xls");
@@ -74,24 +74,24 @@ public class AnnotationDataTest {
 
         Row row0 = sheet.getRow(0);
         Cell cell00 = row0.getCell(0);
-        Assert.assertArrayEquals(new byte[] {-1, 0, -1}, StyleTestUtils.getFillForegroundColor(cell00));
-        Assert.assertArrayEquals(new byte[] {-1, -52, 0}, StyleTestUtils.getFontColor(cell00, workbook));
-        Assert.assertEquals(40, StyleTestUtils.getFontHeightInPoints(cell00, workbook));
+        Assertions.assertArrayEquals(new byte[] {-1, 0, -1}, StyleTestUtils.getFillForegroundColor(cell00));
+        Assertions.assertArrayEquals(new byte[] {-1, -52, 0}, StyleTestUtils.getFontColor(cell00, workbook));
+        Assertions.assertEquals(40, StyleTestUtils.getFontHeightInPoints(cell00, workbook));
 
         Cell cell01 = row0.getCell(1);
-        Assert.assertArrayEquals(new byte[] {-1, 0, 0}, StyleTestUtils.getFillForegroundColor(cell01));
-        Assert.assertArrayEquals(new byte[] {0, -1, -1}, StyleTestUtils.getFontColor(cell01, workbook));
-        Assert.assertEquals(20, StyleTestUtils.getFontHeightInPoints(cell01, workbook));
+        Assertions.assertArrayEquals(new byte[] {-1, 0, 0}, StyleTestUtils.getFillForegroundColor(cell01));
+        Assertions.assertArrayEquals(new byte[] {0, -1, -1}, StyleTestUtils.getFontColor(cell01, workbook));
+        Assertions.assertEquals(20, StyleTestUtils.getFontHeightInPoints(cell01, workbook));
 
         Row row1 = sheet.getRow(1);
         Cell cell10 = row1.getCell(0);
-        Assert.assertArrayEquals(new byte[] {0, -52, -1}, StyleTestUtils.getFillForegroundColor(cell10));
-        Assert.assertArrayEquals(new byte[] {0, 0, -1}, StyleTestUtils.getFontColor(cell10, workbook));
-        Assert.assertEquals(50, StyleTestUtils.getFontHeightInPoints(cell10, workbook));
+        Assertions.assertArrayEquals(new byte[] {0, -52, -1}, StyleTestUtils.getFillForegroundColor(cell10));
+        Assertions.assertArrayEquals(new byte[] {0, 0, -1}, StyleTestUtils.getFontColor(cell10, workbook));
+        Assertions.assertEquals(50, StyleTestUtils.getFontHeightInPoints(cell10, workbook));
         Cell cell11 = row1.getCell(1);
-        Assert.assertArrayEquals(new byte[] {0, -128, 0}, StyleTestUtils.getFillForegroundColor(cell11));
-        Assert.assertArrayEquals(new byte[] {-64, -64, -64}, StyleTestUtils.getFontColor(cell11, workbook));
-        Assert.assertEquals(30, StyleTestUtils.getFontHeightInPoints(cell11, workbook));
+        Assertions.assertArrayEquals(new byte[] {0, -128, 0}, StyleTestUtils.getFillForegroundColor(cell11));
+        Assertions.assertArrayEquals(new byte[] {-64, -64, -64}, StyleTestUtils.getFontColor(cell11, workbook));
+        Assertions.assertEquals(30, StyleTestUtils.getFontHeightInPoints(cell11, workbook));
     }
 
     private void readAndWrite(File file) throws Exception {
@@ -103,13 +103,13 @@ public class AnnotationDataTest {
 
         Workbook workbook = WorkbookFactory.create(file);
         Sheet sheet = workbook.getSheetAt(0);
-        Assert.assertEquals(50 * 256, sheet.getColumnWidth(0), 0);
+        Assertions.assertEquals(50 * 256, sheet.getColumnWidth(0), 0);
 
         Row row0 = sheet.getRow(0);
-        Assert.assertEquals(1000, row0.getHeight(), 0);
+        Assertions.assertEquals(1000, row0.getHeight(), 0);
 
         Row row1 = sheet.getRow(1);
-        Assert.assertEquals(2000, row1.getHeight(), 0);
+        Assertions.assertEquals(2000, row1.getHeight(), 0);
     }
 
     private List<AnnotationStyleData> dataStyle() throws Exception {

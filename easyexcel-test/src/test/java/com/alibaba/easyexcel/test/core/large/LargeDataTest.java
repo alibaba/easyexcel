@@ -2,35 +2,30 @@ package com.alibaba.easyexcel.test.core.large;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.cache.Ehcache;
-import com.alibaba.excel.cache.ReadCache;
-import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
-import org.apache.poi.util.TempFile;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class LargeDataTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(LargeDataTest.class);
     private static File fileFill07;
@@ -42,7 +37,7 @@ public class LargeDataTest {
 
     private int i = 0;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         fileFill07 = TestFileUtil.createNewFile("largefill07.xlsx");
         fileWrite07 = TestFileUtil.createNewFile("large" + File.separator + "fileWrite07.xlsx");
@@ -59,7 +54,6 @@ public class LargeDataTest {
             new LargeDataListener()).headRowNumber(2).sheet().doRead();
         LOGGER.info("Large data total time spent:{}", System.currentTimeMillis() - start);
     }
-
 
     @Test
     public void t02Fill() {
@@ -131,7 +125,7 @@ public class LargeDataTest {
         long costPoi = System.currentTimeMillis() - start;
         LOGGER.info("poi write cost:{}", System.currentTimeMillis() - start);
         LOGGER.info("{} vs {}", cost, costPoi);
-        Assert.assertTrue(costPoi * 2 > cost);
+        Assertions.assertTrue(costPoi * 2 > cost);
     }
 
     private List<LargeData> data() {

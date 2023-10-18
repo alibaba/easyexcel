@@ -122,7 +122,7 @@ DEMO：[https://github.com/alibaba/easyexcel/blob/master/src/test/java/com/aliba
      *  1. Create an entity object, refer to{@link DownloadData}. 
      *     Each property of the entity object corresponds to a specific field of Excel
      *  2. Specify the returned properties
-     *  3. Invoke wirte function, then the OutputStream is automatically closed when it ends.
+     *  3. Invoke write function, then the OutputStream is automatically closed when it ends.
      * </p>
      */
     @GetMapping("download")

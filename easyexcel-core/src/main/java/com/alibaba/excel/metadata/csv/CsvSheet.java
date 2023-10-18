@@ -3,24 +3,30 @@ package com.alibaba.excel.metadata.csv;
 import java.io.Closeable;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.excel.constant.BuiltinFormats;
+import com.alibaba.excel.enums.ByteOrderMarkEnum;
 import com.alibaba.excel.enums.NumericCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.io.ByteOrderMark;
 import org.apache.poi.ss.usermodel.AutoFilter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellRange;
@@ -51,6 +57,7 @@ import org.apache.poi.ss.util.PaneInformation;
 @Setter
 @EqualsAndHashCode
 public class CsvSheet implements Sheet, Closeable {
+
     /**
      * workbook
      */
@@ -109,6 +116,13 @@ public class CsvSheet implements Sheet, Closeable {
         }
         rowCache = ListUtils.newArrayListWithExpectedSize(rowCacheCount);
         try {
+            if (csvWorkbook.getWithBom()) {
+                ByteOrderMarkEnum byteOrderMark = ByteOrderMarkEnum.valueOfByCharsetName(
+                    csvWorkbook.getCharset().name());
+                if (byteOrderMark != null) {
+                    out.append(byteOrderMark.getStringPrefix());
+                }
+            }
             csvPrinter = csvFormat.print(out);
         } catch (IOException e) {
             throw new ExcelGenerateException(e);
