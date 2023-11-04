@@ -54,8 +54,8 @@ import org.apache.poi.ss.usermodel.FractionFormat;
 import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.util.LocaleUtil;
-import org.apache.poi.util.POILogFactory;
-import org.apache.poi.util.POILogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DataFormatter contains methods for formatting the value stored in an Cell. This can be useful for reports and GUI
@@ -245,7 +245,7 @@ public class DataFormatter1 implements Observer {
     /**
      * For logging any problems we find
      */
-    private static POILogger logger = POILogFactory.getLogger(DataFormatter.class);
+    private static Logger logger = LoggerFactory.getLogger(DataFormatter.class);
 
     /**
      * Creates a formatter using the {@link Locale#getDefault() default locale}.
@@ -358,7 +358,7 @@ public class DataFormatter1 implements Observer {
                 // Wrap and return (non-cachable - CellFormat does that)
                 return new CellFormatResultWrapper(cfmt.apply(cellValueO));
             } catch (Exception e) {
-                logger.log(POILogger.WARN, "Formatting failed for format " + formatStr + ", falling back", e);
+                logger.warn("Formatting failed for format {}, falling back", formatStr, e);
             }
         }
 
@@ -598,7 +598,7 @@ public class DataFormatter1 implements Observer {
         try {
             return new ExcelStyleDateFormatter(formatStr, dateSymbols);
         } catch (IllegalArgumentException iae) {
-            logger.log(POILogger.DEBUG, "Formatting failed for format " + formatStr + ", falling back", iae);
+            logger.debug( "Formatting failed for format {}, falling back", formatStr, iae);
             // the pattern could not be parsed correctly,
             // so fall back to the default number format
             return getDefaultFormat(cellValue);
@@ -759,7 +759,7 @@ public class DataFormatter1 implements Observer {
         try {
             return new InternalDecimalFormatWithScale(format, symbols);
         } catch (IllegalArgumentException iae) {
-            logger.log(POILogger.DEBUG, "Formatting failed for format " + formatStr + ", falling back", iae);
+            logger.debug( "Formatting failed for format {}, falling back", formatStr, iae);
             // the pattern could not be parsed correctly,
             // so fall back to the default number format
             return getDefaultFormat(cellValue);
