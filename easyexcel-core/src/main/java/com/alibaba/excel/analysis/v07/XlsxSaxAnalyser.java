@@ -41,6 +41,7 @@ import org.apache.poi.openxml4j.opc.PackageRelationshipCollection;
 import org.apache.poi.openxml4j.opc.PackagingURIHelper;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.Comments;
 import org.apache.poi.xssf.model.CommentsTable;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFComment;
@@ -79,7 +80,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
     /**
      * excel comments key: sheetNo value: CommentsTable
      */
-    private final Map<Integer, CommentsTable> commentsTableMap;
+    private final Map<Integer, Comments> commentsMap;
 
     public XlsxSaxAnalyser(XlsxReadContext xlsxReadContext, InputStream decryptedStream) throws Exception {
         this.xlsxReadContext = xlsxReadContext;
@@ -107,7 +108,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
 
         sheetList = new ArrayList<>();
         sheetMap = new HashMap<>();
-        commentsTableMap = new HashMap<>();
+        commentsMap = new HashMap<>();
         Map<Integer, PackageRelationshipCollection> packageRelationshipCollectionMap = MapUtils.newHashMap();
         xlsxReadWorkbookHolder.setPackageRelationshipCollectionMap(packageRelationshipCollectionMap);
 
@@ -121,9 +122,9 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             sheetList.add(new ReadSheet(index, ite.getSheetName()));
             sheetMap.put(index, inputStream);
             if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT)) {
-                CommentsTable commentsTable = ite.getSheetComments();
-                if (null != commentsTable) {
-                    commentsTableMap.put(index, commentsTable);
+                Comments comments = ite.getSheetComments();
+                if (null != comments) {
+                    commentsMap.put(index, comments);
                 }
             }
             if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.HYPERLINK)) {
@@ -270,14 +271,14 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         if (!xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT)) {
             return;
         }
-        CommentsTable commentsTable = commentsTableMap.get(readSheet.getSheetNo());
-        if (commentsTable == null) {
+        Comments comments = commentsMap.get(readSheet.getSheetNo());
+        if (comments == null) {
             return;
         }
-        Iterator<CellAddress> cellAddresses = commentsTable.getCellAddresses();
+        Iterator<CellAddress> cellAddresses = comments.getCellAddresses();
         while (cellAddresses.hasNext()) {
             CellAddress cellAddress = cellAddresses.next();
-            XSSFComment cellComment = commentsTable.findCellComment(cellAddress);
+            XSSFComment cellComment = comments.findCellComment(cellAddress);
             CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.COMMENT, cellComment.getString().toString(),
                 cellAddress.getRow(), cellAddress.getColumn());
             xlsxReadContext.readSheetHolder().setCellExtra(cellExtra);
