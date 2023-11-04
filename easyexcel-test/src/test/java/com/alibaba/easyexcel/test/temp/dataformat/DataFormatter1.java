@@ -358,7 +358,7 @@ public class DataFormatter1 implements Observer {
                 // Wrap and return (non-cachable - CellFormat does that)
                 return new CellFormatResultWrapper(cfmt.apply(cellValueO));
             } catch (Exception e) {
-                logger.warn("Formatting failed for format  {}, falling back", formatStr, e);
+                logger.warn("Formatting failed for format {}, falling back", formatStr, e);
             }
         }
 
