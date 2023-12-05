@@ -127,13 +127,12 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.20</version>
+                <version>1.18.26</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.11.0</version>
-                <version>1.18.26</version>
             </dependency>
 
             <!-- test -->
