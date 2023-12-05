@@ -21,12 +21,6 @@
     </properties>
 
     <dependencies>
-        <!-- slf4j -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>

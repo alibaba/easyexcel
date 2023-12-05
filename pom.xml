@@ -113,14 +113,10 @@
                 <artifactId>ehcache</artifactId>
                 <version>3.9.9</version>
             </dependency>
-
-            <!-- spring -->
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.7.8</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
             </dependency>
 
             <!-- provided -->
@@ -128,18 +124,6 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.18.26</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.11.0</version>
-            </dependency>
-
-            <!-- test -->
-            <dependency>
-                <groupId>com.alibaba.fastjson2</groupId>
-                <artifactId>fastjson2</artifactId>
-                <version>2.0.23</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
