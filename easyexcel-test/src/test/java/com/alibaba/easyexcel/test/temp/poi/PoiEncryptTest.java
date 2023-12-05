@@ -17,27 +17,23 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * TODO
  *
  * @author Jiaju Zhuang
  */
-@Ignore
+
 public class PoiEncryptTest {
     @Test
     public void encrypt() throws Exception {
-
-
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(workbook);
 
         Sheet sheet = sxssfWorkbook.createSheet("sheet1");
         sheet.createRow(0).createCell(0).setCellValue("T2");
-
 
         POIFSFileSystem fs = new POIFSFileSystem();
         EncryptionInfo info = new EncryptionInfo(EncryptionMode.agile);
@@ -62,7 +58,7 @@ public class PoiEncryptTest {
     @Test
     public void encryptExcel() throws Exception {
         EasyExcel.write(TestFileUtil.createNewFile("encryptv2" + System.currentTimeMillis() + ".xlsx"),
-            EncryptData.class).password("123456")
+                EncryptData.class).password("123456")
             .sheet().doWrite(data());
     }
 

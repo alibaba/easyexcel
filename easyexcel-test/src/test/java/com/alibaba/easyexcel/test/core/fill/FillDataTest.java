@@ -16,16 +16,16 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @author Jiaju Zhuang
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class FillDataTest {
 
     private static File file07;
@@ -51,7 +51,7 @@ public class FillDataTest {
     private static File fileComposite03;
     private static File compositeFillTemplate03;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         file07 = TestFileUtil.createNewFile("fill07.xlsx");
         file03 = TestFileUtil.createNewFile("fill03.xls");
@@ -89,9 +89,9 @@ public class FillDataTest {
 
     @Test
     public void t03FillCsv() {
-        ExcelGenerateException excelGenerateException = Assert.assertThrows(ExcelGenerateException.class,
+        ExcelGenerateException excelGenerateException = Assertions.assertThrows(ExcelGenerateException.class,
             () -> fill(fileCsv, simpleTemplateCsv));
-        Assert.assertEquals("csv cannot use template.", excelGenerateException.getMessage());
+        Assertions.assertEquals("csv cannot use template.", excelGenerateException.getMessage());
     }
 
     @Test
@@ -159,11 +159,11 @@ public class FillDataTest {
 
         List<Object> list = EasyExcel.read(file).ignoreEmptyRow(false).sheet().headRowNumber(0).doReadSync();
         Map<String, String> map0 = (Map<String, String>)list.get(0);
-        Assert.assertEquals("张三", map0.get(21));
+        Assertions.assertEquals("张三", map0.get(21));
         Map<String, String> map27 = (Map<String, String>)list.get(27);
-        Assert.assertEquals("张三", map27.get(0));
+        Assertions.assertEquals("张三", map27.get(0));
         Map<String, String> map29 = (Map<String, String>)list.get(29);
-        Assert.assertEquals("张三", map29.get(3));
+        Assertions.assertEquals("张三", map29.get(3));
     }
 
     private void horizontalFill(File file, File template) {
@@ -179,9 +179,9 @@ public class FillDataTest {
         }
 
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(0).doReadSync();
-        Assert.assertEquals(list.size(), 5L);
+        Assertions.assertEquals(list.size(), 5L);
         Map<String, String> map0 = (Map<String, String>)list.get(0);
-        Assert.assertEquals("张三", map0.get(2));
+        Assertions.assertEquals("张三", map0.get(2));
     }
 
     private void complexFill(File file, File template) {
@@ -196,9 +196,9 @@ public class FillDataTest {
             excelWriter.fill(map, writeSheet);
         }
         List<Object> list = EasyExcel.read(file).sheet().headRowNumber(3).doReadSync();
-        Assert.assertEquals(list.size(), 21L);
+        Assertions.assertEquals(list.size(), 21L);
         Map<String, String> map19 = (Map<String, String>)list.get(19);
-        Assert.assertEquals("张三", map19.get(0));
+        Assertions.assertEquals("张三", map19.get(0));
     }
 
     private void fill(File file, File template) {

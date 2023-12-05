@@ -18,8 +18,6 @@ import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.metadata.data.ReadCellData;
-import com.alibaba.excel.util.NumberDataFormatterUtils;
-import com.alibaba.excel.util.NumberUtils;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
@@ -32,11 +30,10 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 /**
  * 临时测试
@@ -55,7 +52,8 @@ public class Lock2Test {
         File file = new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/src/test/resources/converter/converter07.xlsx");
 
         List<Object> list = EasyExcel.read(
-                "/Users/zhuangjiaju/IdeaProjects/easyexcel/easyexcel-test/target/test-classes/simpleWrite1674051907397.xlsx")
+                "/Users/zhuangjiaju/IdeaProjects/easyexcel/easyexcel-test/target/test-classes"
+                    + "/simpleWrite1674051907397.xlsx")
             //.useDefaultListener(false)
             .sheet(0)
             .headRowNumber(0).doReadSync();
@@ -266,9 +264,9 @@ public class Lock2Test {
             Date date = new Date(dateTime);
             double excelDate = DateUtil.getExcelDate(date);
 
-            Assert.assertEquals("测试基本转换错误" + dateTime, format.format(date),
+            Assertions.assertEquals("测试基本转换错误" + dateTime, format.format(date),
                 format.format(DateUtil.getJavaDate(excelDate, false)));
-            Assert.assertEquals("测试精度5转换错误" + dateTime, format.format(date),
+            Assertions.assertEquals("测试精度5转换错误" + dateTime, format.format(date),
                 format.format(DateUtil.getJavaDate(BigDecimal.valueOf(excelDate)
                     .setScale(10, RoundingMode.HALF_UP).doubleValue(), false)));
             LOGGER.info("date:{}", format2.format(DateUtil.getJavaDate(BigDecimal.valueOf(excelDate)
@@ -353,9 +351,8 @@ public class Lock2Test {
 
     @Test
     public void numberforamt99() throws Exception {
-        LocalDateTime localDateTime=LocalDateTime.of(2023, 1, 1, 0, 0, 0, 995000000);
-        log.info("date:{}",localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
-
+        LocalDateTime localDateTime = LocalDateTime.of(2023, 1, 1, 0, 0, 0, 995000000);
+        log.info("date:{}", localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
 
     }
 

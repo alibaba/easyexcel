@@ -16,6 +16,7 @@ import com.alibaba.excel.annotation.write.style.HeadStyle;
 import com.alibaba.excel.annotation.write.style.OnceAbsoluteMerge;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
+import com.alibaba.excel.metadata.ConfigurationHolder;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.metadata.property.ColumnWidthProperty;
@@ -44,8 +45,8 @@ public class ExcelWriteHeadProperty extends ExcelHeadProperty {
     private RowHeightProperty contentRowHeightProperty;
     private OnceAbsoluteMergeProperty onceAbsoluteMergeProperty;
 
-    public ExcelWriteHeadProperty(Holder holder, Class<?> headClazz, List<List<String>> head) {
-        super(holder, headClazz, head);
+    public ExcelWriteHeadProperty(ConfigurationHolder configurationHolder, Class<?> headClazz, List<List<String>> head) {
+        super(configurationHolder, headClazz, head);
         if (getHeadKind() != HeadKindEnum.CLASS) {
             return;
         }

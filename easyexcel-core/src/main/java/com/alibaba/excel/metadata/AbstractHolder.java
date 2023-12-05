@@ -83,6 +83,15 @@ public abstract class AbstractHolder implements ConfigurationHolder {
             globalConfiguration.setLocale(basicParameter.getLocale());
         }
 
+        if (basicParameter.getFiledCacheLocation() == null) {
+            if (prentAbstractHolder != null) {
+                globalConfiguration.setFiledCacheLocation(
+                    prentAbstractHolder.getGlobalConfiguration().getFiledCacheLocation());
+            }
+        } else {
+            globalConfiguration.setFiledCacheLocation(basicParameter.getFiledCacheLocation());
+        }
+
     }
 
     @Override

@@ -1,8 +1,5 @@
 package com.alibaba.excel.analysis;
 
-import java.io.InputStream;
-import java.util.List;
-
 import com.alibaba.excel.analysis.csv.CsvExcelReadExecutor;
 import com.alibaba.excel.analysis.v03.XlsSaxAnalyser;
 import com.alibaba.excel.analysis.v07.XlsxSaxAnalyser;
@@ -22,11 +19,11 @@ import com.alibaba.excel.read.metadata.holder.csv.CsvReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.NumberDataFormatterUtils;
 import com.alibaba.excel.util.StringUtils;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.poifs.crypt.Decryptor;
@@ -35,6 +32,9 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * @author jipengfei
@@ -158,16 +158,16 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         }
         try {
             if ((readWorkbookHolder instanceof XlsxReadWorkbookHolder)
-                && ((XlsxReadWorkbookHolder)readWorkbookHolder).getOpcPackage() != null) {
-                ((XlsxReadWorkbookHolder)readWorkbookHolder).getOpcPackage().revert();
+                && ((XlsxReadWorkbookHolder) readWorkbookHolder).getOpcPackage() != null) {
+                ((XlsxReadWorkbookHolder) readWorkbookHolder).getOpcPackage().revert();
             }
         } catch (Throwable t) {
             throwable = t;
         }
         try {
             if ((readWorkbookHolder instanceof XlsReadWorkbookHolder)
-                && ((XlsReadWorkbookHolder)readWorkbookHolder).getPoifsFileSystem() != null) {
-                ((XlsReadWorkbookHolder)readWorkbookHolder).getPoifsFileSystem().close();
+                && ((XlsReadWorkbookHolder) readWorkbookHolder).getPoifsFileSystem() != null) {
+                ((XlsReadWorkbookHolder) readWorkbookHolder).getPoifsFileSystem().close();
             }
         } catch (Throwable t) {
             throwable = t;
@@ -177,8 +177,9 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
         // https://github.com/alibaba/easyexcel/issues/2309
         try {
             if ((readWorkbookHolder instanceof CsvReadWorkbookHolder)
-                && ((CsvReadWorkbookHolder)readWorkbookHolder).getCsvParser() != null) {
-                ((CsvReadWorkbookHolder)readWorkbookHolder).getCsvParser().close();
+                && ((CsvReadWorkbookHolder) readWorkbookHolder).getCsvParser() != null
+                && analysisContext.readWorkbookHolder().getAutoCloseStream()) {
+                ((CsvReadWorkbookHolder) readWorkbookHolder).getCsvParser().close();
             }
         } catch (Throwable t) {
             throwable = t;
@@ -212,6 +213,7 @@ public class ExcelAnalyserImpl implements ExcelAnalyser {
     private void removeThreadLocalCache() {
         NumberDataFormatterUtils.removeThreadLocalCache();
         DateUtils.removeThreadLocalCache();
+        ClassUtils.removeThreadLocalCache();
     }
 
     private void clearEncrypt03() {

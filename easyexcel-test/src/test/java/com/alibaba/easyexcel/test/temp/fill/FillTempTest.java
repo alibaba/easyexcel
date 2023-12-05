@@ -16,16 +16,15 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 写的填充写法
  *
- * @since 2.1.1
  * @author Jiaju Zhuang
+ * @since 2.1.1
  */
-@Ignore
+
 public class FillTempTest {
     /**
      * 最简单的填充
@@ -35,7 +34,7 @@ public class FillTempTest {
     @Test
     public void simpleFill() {
         // 模板注意 用{} 来表示你要用的变量 如果本来就有"{","}" 特殊字符 用"\{","\}"代替
-        String templateFileName ="/Users/zhuangjiaju/Downloads/simple.xlsx";
+        String templateFileName = "/Users/zhuangjiaju/Downloads/simple.xlsx";
 
         // 方案1 根据对象填充
         String fileName = TestFileUtil.getPath() + "simpleFill" + System.currentTimeMillis() + ".xlsx";

@@ -121,16 +121,24 @@ import org.slf4j.LoggerFactory;
 public class DataFormatter1 implements Observer {
     private static final String defaultFractionWholePartFormat = "#";
     private static final String defaultFractionFractionPartFormat = "#/##";
-    /** Pattern to find a number format: "0" or "#" */
+    /**
+     * Pattern to find a number format: "0" or "#"
+     */
     private static final Pattern numPattern = Pattern.compile("[0#]+");
 
-    /** Pattern to find days of week as text "ddd...." */
+    /**
+     * Pattern to find days of week as text "ddd...."
+     */
     private static final Pattern daysAsText = Pattern.compile("([d]{3,})", Pattern.CASE_INSENSITIVE);
 
-    /** Pattern to find "AM/PM" marker */
+    /**
+     * Pattern to find "AM/PM" marker
+     */
     private static final Pattern amPmPattern = Pattern.compile("((A|P)[M/P]*)", Pattern.CASE_INSENSITIVE);
 
-    /** Pattern to find formats with condition ranges e.g. [>=100] */
+    /**
+     * Pattern to find formats with condition ranges e.g. [>=100]
+     */
     private static final Pattern rangeConditionalPattern =
         Pattern.compile(".*\\[\\s*(>|>=|<|<=|=)\\s*[0-9]*\\.*[0-9].*");
 
@@ -168,10 +176,10 @@ public class DataFormatter1 implements Observer {
      * ("#").
      */
     private static final String invalidDateTimeString;
+
     static {
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < 255; i++)
-            buf.append('#');
+        for (int i = 0; i < 255; i++) {buf.append('#');}
         invalidDateTimeString = buf.toString();
     }
 
@@ -190,10 +198,14 @@ public class DataFormatter1 implements Observer {
      */
     private DateFormat defaultDateformat;
 
-    /** <em>General</em> format for numbers. */
+    /**
+     * <em>General</em> format for numbers.
+     */
     private Format generalNumberFormat;
 
-    /** A default format to use when a number pattern cannot be parsed. */
+    /**
+     * A default format to use when a number pattern cannot be parsed.
+     */
     private Format defaultNumFormat;
 
     /**
@@ -203,10 +215,14 @@ public class DataFormatter1 implements Observer {
 
     private final boolean emulateCSV;
 
-    /** stores the locale valid it the last formatting call */
+    /**
+     * stores the locale valid it the last formatting call
+     */
     private Locale locale;
 
-    /** stores if the locale should change according to {@link LocaleUtil#getUserLocale()} */
+    /**
+     * stores if the locale should change according to {@link LocaleUtil#getUserLocale()}
+     */
     private boolean localeIsAdapting;
 
     private class LocaleChangeObservable extends Observable {
@@ -215,19 +231,21 @@ public class DataFormatter1 implements Observer {
         }
 
         void checkForLocaleChange(Locale newLocale) {
-            if (!localeIsAdapting)
-                return;
-            if (newLocale.equals(locale))
-                return;
+            if (!localeIsAdapting) {return;}
+            if (newLocale.equals(locale)) {return;}
             super.setChanged();
             notifyObservers(newLocale);
         }
     }
 
-    /** the Observable to notify, when the locale has been changed */
+    /**
+     * the Observable to notify, when the locale has been changed
+     */
     private final LocaleChangeObservable localeChangedObservable = new LocaleChangeObservable();
 
-    /** For logging any problems we find */
+    /**
+     * For logging any problems we find
+     */
     private static final Logger logger = LoggerFactory.getLogger(ExcelAnalyserImpl.class);
 
     /**
@@ -240,8 +258,7 @@ public class DataFormatter1 implements Observer {
     /**
      * Creates a formatter using the {@link Locale#getDefault() default locale}.
      *
-     * @param emulateCSV
-     *            whether to emulate CSV output.
+     * @param emulateCSV whether to emulate CSV output.
      */
     public DataFormatter1(boolean emulateCSV) {
         this(LocaleUtil.getUserLocale(), true, emulateCSV);
@@ -257,8 +274,7 @@ public class DataFormatter1 implements Observer {
     /**
      * Creates a formatter using the given locale.
      *
-     * @param emulateCSV
-     *            whether to emulate CSV output.
+     * @param emulateCSV whether to emulate CSV output.
      */
     public DataFormatter1(Locale locale, boolean emulateCSV) {
         this(locale, false, emulateCSV);
@@ -267,10 +283,8 @@ public class DataFormatter1 implements Observer {
     /**
      * Creates a formatter using the given locale.
      *
-     * @param localeIsAdapting
-     *            (true only if locale is not user-specified)
-     * @param emulateCSV
-     *            whether to emulate CSV output.
+     * @param localeIsAdapting (true only if locale is not user-specified)
+     * @param emulateCSV       whether to emulate CSV output.
      */
     private DataFormatter1(Locale locale, boolean localeIsAdapting, boolean emulateCSV) {
         this.localeIsAdapting = true;
@@ -293,13 +307,11 @@ public class DataFormatter1 implements Observer {
      * <li>the format string cannot be recognized as either a number or date</li>
      * </ul>
      *
-     * @param cell
-     *            The cell to retrieve a Format for
+     * @param cell The cell to retrieve a Format for
      * @return A Format for the format String
      */
     private Format getFormat(Cell cell, ConditionalFormattingEvaluator cfEvaluator) {
-        if (cell == null)
-            return null;
+        if (cell == null) {return null;}
 
         ExcelNumberFormat numFmt = ExcelNumberFormat.from(cell, cfEvaluator);
 
@@ -340,7 +352,7 @@ public class DataFormatter1 implements Observer {
                 // CellFormat requires callers to identify date vs not, so do so
                 Object cellValueO = Double.valueOf(cellValue);
                 if (DateUtil.isADateFormat(formatIndex, formatStr) &&
-                // don't try to handle Date value 0, let a 3 or 4-part format take care of it
+                    // don't try to handle Date value 0, let a 3 or 4-part format take care of it
                     ((Double)cellValueO).doubleValue() != 0.0) {
                     cellValueO = DateUtil.getJavaDate(cellValue);
                 }
@@ -377,8 +389,7 @@ public class DataFormatter1 implements Observer {
      * Create and return a Format based on the format string from a cell's style. If the pattern cannot be parsed,
      * return a default pattern.
      *
-     * @param cell
-     *            The Excel cell
+     * @param cell The Excel cell
      * @return A Format representing the excel format. May return null.
      */
     public Format createFormat(Cell cell) {
@@ -400,11 +411,9 @@ public class DataFormatter1 implements Observer {
 
             // Paranoid replacement...
             int at = formatStr.indexOf(colour);
-            if (at == -1)
-                break;
+            if (at == -1) {break;}
             String nFormatStr = formatStr.substring(0, at) + formatStr.substring(at + colour.length());
-            if (nFormatStr.equals(formatStr))
-                break;
+            if (nFormatStr.equals(formatStr)) {break;}
 
             // Try again in case there's multiple
             formatStr = nFormatStr;
@@ -433,7 +442,7 @@ public class DataFormatter1 implements Observer {
             return generalNumberFormat;
         }
 
-        if ("".equals("")||(DateUtil.isADateFormat(formatIndex, formatStr) && DateUtil.isValidExcelDate(cellValue))) {
+        if ("".equals("") || (DateUtil.isADateFormat(formatIndex, formatStr) && DateUtil.isValidExcelDate(cellValue))) {
             return createDateFormat(formatStr, cellValue);
         }
         // Excel supports fractions in format strings, which Java doesn't
@@ -761,8 +770,7 @@ public class DataFormatter1 implements Observer {
     /**
      * Returns a default format for a cell.
      *
-     * @param cell
-     *            The cell
+     * @param cell The cell
      * @return a default format
      */
     public Format getDefaultFormat(Cell cell) {
@@ -796,10 +804,8 @@ public class DataFormatter1 implements Observer {
      * number format, or no rules apply, the cell's style format is used. If the style does not have a format, the
      * default date format is applied.
      *
-     * @param cell
-     *            to format
-     * @param cfEvaluator
-     *            ConditionalFormattingEvaluator (if available)
+     * @param cell        to format
+     * @param cfEvaluator ConditionalFormattingEvaluator (if available)
      * @return Formatted value
      */
     private String getFormattedDateString(Cell cell, ConditionalFormattingEvaluator cfEvaluator) {
@@ -820,10 +826,8 @@ public class DataFormatter1 implements Observer {
      * Format comes from either the highest priority conditional format rule with a specified format, or from the cell
      * style.
      *
-     * @param cell
-     *            The cell
-     * @param cfEvaluator
-     *            if available, or null
+     * @param cell        The cell
+     * @param cfEvaluator if available, or null
      * @return a formatted number string
      */
     private String getFormattedNumberString(Cell cell, ConditionalFormattingEvaluator cfEvaluator) {
@@ -906,8 +910,7 @@ public class DataFormatter1 implements Observer {
      * will not be evaluated.
      * </p>
      *
-     * @param cell
-     *            The cell
+     * @param cell The cell
      * @return the formatted cell value as a String
      */
     public String formatCellValue(Cell cell) {
@@ -925,10 +928,8 @@ public class DataFormatter1 implements Observer {
      * String will be returned. The caller is responsible for setting the currentRow on the evaluator
      * </p>
      *
-     * @param cell
-     *            The cell (can be null)
-     * @param evaluator
-     *            The FormulaEvaluator (can be null)
+     * @param cell      The cell (can be null)
+     * @param evaluator The FormulaEvaluator (can be null)
      * @return a string value of the cell
      */
     public String formatCellValue(Cell cell, FormulaEvaluator evaluator) {
@@ -954,12 +955,9 @@ public class DataFormatter1 implements Observer {
      * The two evaluators should be from the same context, to avoid inconsistencies in cached values.
      * </p>
      *
-     * @param cell
-     *            The cell (can be null)
-     * @param evaluator
-     *            The FormulaEvaluator (can be null)
-     * @param cfEvaluator
-     *            ConditionalFormattingEvaluator (can be null)
+     * @param cell        The cell (can be null)
+     * @param evaluator   The FormulaEvaluator (can be null)
+     * @param cfEvaluator ConditionalFormattingEvaluator (can be null)
      * @return a string value of the cell
      */
     public String formatCellValue(Cell cell, FormulaEvaluator evaluator, ConditionalFormattingEvaluator cfEvaluator) {
@@ -979,10 +977,10 @@ public class DataFormatter1 implements Observer {
         switch (cellType) {
             case NUMERIC:
 
-//                if (DateUtil.isCellDateFormatted(cell, cfEvaluator)) {
-                    return getFormattedDateString(cell, cfEvaluator);
-//                }
-//                return getFormattedNumberString(cell, cfEvaluator);
+                //                if (DateUtil.isCellDateFormatted(cell, cfEvaluator)) {
+                return getFormattedDateString(cell, cfEvaluator);
+            //                }
+            //                return getFormattedNumberString(cell, cfEvaluator);
 
             case STRING:
                 return cell.getRichStringCellValue().getString();
@@ -1010,8 +1008,7 @@ public class DataFormatter1 implements Observer {
      * <code>Number</code> value.
      * </p>
      *
-     * @param format
-     *            A Format instance to be used as a default
+     * @param format A Format instance to be used as a default
      * @see java.text.Format#format
      */
     public void setDefaultNumberFormat(Format format) {
@@ -1031,10 +1028,8 @@ public class DataFormatter1 implements Observer {
      * <code>Number</code> value.
      * </p>
      *
-     * @param excelFormatStr
-     *            The data format string
-     * @param format
-     *            A Format instance
+     * @param excelFormatStr The data format string
+     * @param format         A Format instance
      */
     public void addFormat(String excelFormatStr, Format format) {
         formats.put(excelFormatStr, format);
@@ -1062,10 +1057,8 @@ public class DataFormatter1 implements Observer {
     /**
      * Enables custom rounding mode on the given Decimal Format.
      *
-     * @param format
-     *            DecimalFormat
-     * @param roundingMode
-     *            RoundingMode
+     * @param format       DecimalFormat
+     * @param roundingMode RoundingMode
      */
     public static void setExcelStyleRoundingMode(DecimalFormat format, RoundingMode roundingMode) {
         format.setRoundingMode(roundingMode);
@@ -1087,17 +1080,13 @@ public class DataFormatter1 implements Observer {
     /**
      * Update formats when locale has been changed
      *
-     * @param observable
-     *            usually this is our own Observable instance
-     * @param localeObj
-     *            only reacts on Locale objects
+     * @param observable usually this is our own Observable instance
+     * @param localeObj  only reacts on Locale objects
      */
     public void update(Observable observable, Object localeObj) {
-        if (!(localeObj instanceof Locale))
-            return;
+        if (!(localeObj instanceof Locale)) {return;}
         Locale newLocale = (Locale)localeObj;
-        if (!localeIsAdapting || newLocale.equals(locale))
-            return;
+        if (!localeIsAdapting || newLocale.equals(locale)) {return;}
 
         locale = newLocale;
 
@@ -1142,7 +1131,9 @@ public class DataFormatter1 implements Observer {
             // enforce singleton
         }
 
-        /** Format a number as an SSN */
+        /**
+         * Format a number as an SSN
+         */
         public static String format(Number num) {
             String result = df.format(num);
             return result.substring(0, 3) + '-' + result.substring(3, 5) + '-' + result.substring(5, 9);
@@ -1173,7 +1164,9 @@ public class DataFormatter1 implements Observer {
             // enforce singleton
         }
 
-        /** Format a number as Zip + 4 */
+        /**
+         * Format a number as Zip + 4
+         */
         public static String format(Number num) {
             String result = df.format(num);
             return result.substring(0, 5) + '-' + result.substring(5, 9);
@@ -1204,7 +1197,9 @@ public class DataFormatter1 implements Observer {
             // enforce singleton
         }
 
-        /** Format a number as a phone number */
+        /**
+         * Format a number as a phone number
+         */
         public static String format(Number num) {
             String result = df.format(num);
             StringBuilder sb = new StringBuilder();
@@ -1244,7 +1239,6 @@ public class DataFormatter1 implements Observer {
      *
      * This format is used to simulate Excel's handling of a format string of all # when the value is 0. Excel will
      * output "", Java will output "0".
-     *
      */
     @SuppressWarnings("serial")
     private static final class ConstantStringFormat extends Format {
