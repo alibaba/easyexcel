@@ -67,6 +67,11 @@ public class ReadSheetHolder extends AbstractReadHolder {
      */
     private Integer maxNotEmptyDataHeadSize;
 
+    /**
+     * Reading this sheet has ended.
+     */
+    private Boolean ended;
+
     public ReadSheetHolder(ReadSheet readSheet, ReadWorkbookHolder readWorkbookHolder) {
         super(readSheet, readWorkbookHolder);
         this.readSheet = readSheet;
