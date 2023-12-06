@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -31,6 +32,7 @@ import com.alibaba.excel.util.SheetUtils;
 import com.alibaba.excel.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
@@ -79,6 +81,9 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
      */
     private final Map<Integer, CommentsTable> commentsTableMap;
 
+    private final Map<Integer, PackagePart> drawingMap;
+    private final Map<Integer, PackagePart> drawingResMap;
+
     public XlsxSaxAnalyser(XlsxReadContext xlsxReadContext, InputStream decryptedStream) throws Exception {
         this.xlsxReadContext = xlsxReadContext;
         // Initialize cache
@@ -106,6 +111,20 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         sheetList = new ArrayList<>();
         sheetMap = new HashMap<>();
         commentsTableMap = new HashMap<>();
+        drawingMap = MapUtils.newHashMap();
+        drawingResMap = MapUtils.newHashMap();
+
+        // Reading images
+        if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.IMAGE)) {
+            List<PackagePart> drawingsPackagePartList = pkg.getPartsByName(
+                Pattern.compile("xl/drawings/drawing[0-9]+.xml"));
+            if (CollectionUtils.isNotEmpty(drawingsPackagePartList)) {
+                for (PackagePart drawingPackagePart : drawingsPackagePartList) {
+                    log.info("xx{}", drawingPackagePart);
+                }
+            }
+        }
+
         Map<Integer, PackageRelationshipCollection> packageRelationshipCollectionMap = MapUtils.newHashMap();
         xlsxReadWorkbookHolder.setPackageRelationshipCollectionMap(packageRelationshipCollectionMap);
 
@@ -121,7 +140,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT)) {
                 Comments comments = ite.getSheetComments();
                 if (comments instanceof CommentsTable) {
-                    commentsTableMap.put(index, (CommentsTable) comments);
+                    commentsTableMap.put(index, (CommentsTable)comments);
                 }
             }
             if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.HYPERLINK)) {
@@ -258,10 +277,34 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
                 parseXmlSource(sheetMap.get(readSheet.getSheetNo()), new XlsxRowHandler(xlsxReadContext));
                 // Read comments
                 readComments(readSheet);
+                // Read image
+                readImages(readSheet);
                 // The last sheet is read
                 xlsxReadContext.analysisEventProcessor().endSheet(xlsxReadContext);
             }
         }
+    }
+
+    private void readImages(ReadSheet readSheet) {
+        if (!xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.IMAGE)) {
+            return;
+        }
+
+        //xlsxReadContext.xlsxReadWorkbookHolder().getOpcPackage().getPart();
+        //
+        //CommentsTable commentsTable = commentsTableMap.get(readSheet.getSheetNo());
+        //if (commentsTable == null) {
+        //    return;
+        //}
+        //Iterator<CellAddress> cellAddresses = commentsTable.getCellAddresses();
+        //while (cellAddresses.hasNext()) {
+        //    CellAddress cellAddress = cellAddresses.next();
+        //    XSSFComment cellComment = commentsTable.findCellComment(cellAddress);
+        //    CellExtra cellExtra = new CellExtra(CellExtraTypeEnum.COMMENT, cellComment.getString().toString(),
+        //        cellAddress.getRow(), cellAddress.getColumn());
+        //    xlsxReadContext.readSheetHolder().setCellExtra(cellExtra);
+        //    xlsxReadContext.analysisEventProcessor().extra(xlsxReadContext);
+        //}
     }
 
     private void readComments(ReadSheet readSheet) {

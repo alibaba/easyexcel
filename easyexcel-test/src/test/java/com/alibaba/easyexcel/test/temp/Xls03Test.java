@@ -3,14 +3,13 @@ package com.alibaba.easyexcel.test.temp;
 import java.util.List;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.cglib.beans.BeanMap;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.fastjson2.JSON;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cglib.beans.BeanMap;
-import org.springframework.cglib.core.DebuggingClassWriter;
 
 /**
  * 临时测试
@@ -32,8 +31,8 @@ public class Xls03Test {
     @Test
     public void test2() {
         System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
-        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY,
-            "/Users/zhuangjiaju/IdeaProjects/easyexcel/target");
+        //System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY,
+        //    "/Users/zhuangjiaju/IdeaProjects/easyexcel/target");
 
         CamlData camlData = new CamlData();
         //camlData.setTest("test2");
