@@ -313,10 +313,12 @@ public class ClassUtils {
         Map<Integer, List<FieldWrapper>> orderFieldMap = new TreeMap<>();
         Map<Integer, FieldWrapper> indexFieldMap = new TreeMap<>();
         Set<String> ignoreSet = new HashSet<>();
+        Map<String, Field> excelPropertyFieldMap = new HashMap<>(16);
 
         ExcelIgnoreUnannotated excelIgnoreUnannotated = clazz.getAnnotation(ExcelIgnoreUnannotated.class);
         for (Field field : tempFieldList) {
-            declaredOneField(field, orderFieldMap, indexFieldMap, ignoreSet, excelIgnoreUnannotated);
+            declaredOneField(field, orderFieldMap, indexFieldMap, ignoreSet, excelPropertyFieldMap,
+                    excelIgnoreUnannotated);
         }
         Map<Integer, FieldWrapper> sortedFieldMap = buildSortedAllFieldMap(orderFieldMap, indexFieldMap);
         FieldCache fieldCache = new FieldCache(sortedFieldMap, indexFieldMap);
@@ -451,7 +453,7 @@ public class ClassUtils {
     }
 
     private static void declaredOneField(Field field, Map<Integer, List<FieldWrapper>> orderFieldMap,
-        Map<Integer, FieldWrapper> indexFieldMap, Set<String> ignoreSet,
+        Map<Integer, FieldWrapper> indexFieldMap, Set<String> ignoreSet, Map<String, Field> excelPropertyFieldMap,
         ExcelIgnoreUnannotated excelIgnoreUnannotated) {
         String fieldName = FieldUtils.resolveCglibFieldName(field);
         FieldWrapper fieldWrapper = new FieldWrapper();
@@ -477,6 +479,19 @@ public class ClassUtils {
             ignoreSet.add(fieldName);
             return;
         }
+
+        // Ignore parent field when the child field is set to be ignored
+        if (ignoreSet.contains(field.getName())) {
+            return;
+        }
+
+        // Ignore parent field when the child field is set to be excel column
+        if (excelPropertyFieldMap.containsKey(field.getName())) {
+            return;
+        }
+
+        excelPropertyFieldMap.put(field.getName(), field);
+        
         // set heads
         if (excelProperty != null) {
             fieldWrapper.setHeads(excelProperty.value());
