@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
  */
 public class PivotUtils {
 
+    private PivotUtils() {}
+
     /**
      * get pivot table head and data
      *
