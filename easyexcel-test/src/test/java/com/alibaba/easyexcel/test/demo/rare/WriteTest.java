@@ -36,7 +36,7 @@ public class WriteTest {
     /**
      * 压缩临时文件
      * 在导出Excel且格式为xlsx的时候会生成一个临时的xml文件，会比较大，再磁盘不太够的情况下，可以压缩。
-     * 当然压缩式耗费性能的
+     * 当然压缩是耗费性能的
      */
     @Test
     public void compressedTemporaryFile() {
