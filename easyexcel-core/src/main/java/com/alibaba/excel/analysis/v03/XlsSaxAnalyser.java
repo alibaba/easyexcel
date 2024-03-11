@@ -171,6 +171,7 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
                 log.debug("Custom stop!", e);
             }
             xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.TRUE);
+            xlsReadContext.xlsReadWorkbookHolder().setCurrentSheetStopped(Boolean.TRUE);
         }
     }
 

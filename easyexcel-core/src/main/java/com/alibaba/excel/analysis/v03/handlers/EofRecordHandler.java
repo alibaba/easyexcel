@@ -24,9 +24,18 @@ public class EofRecordHandler extends AbstractXlsRecordHandler {
         if (xlsReadContext.readSheetHolder() == null) {
             return;
         }
+
+        //Represents the current sheet does not need to be read or the user manually stopped reading the sheet.
+        if (BooleanUtils.isTrue(xlsReadContext.xlsReadWorkbookHolder().getIgnoreRecord())) {
+            // When the user manually stops reading the sheet, the method to end the sheet needs to be called.
+            if (BooleanUtils.isTrue(xlsReadContext.xlsReadWorkbookHolder().getCurrentSheetStopped())) {
+                xlsReadContext.analysisEventProcessor().endSheet(xlsReadContext);
+            }
+            return;
+        }
+
         // Sometimes tables lack the end record of the last column
-        if (BooleanUtils.isNotTrue(xlsReadContext.xlsReadWorkbookHolder().getIgnoreRecord())
-            && !xlsReadContext.xlsReadSheetHolder().getCellMap().isEmpty()) {
+        if (!xlsReadContext.xlsReadSheetHolder().getCellMap().isEmpty()) {
             XlsReadSheetHolder xlsReadSheetHolder = xlsReadContext.xlsReadSheetHolder();
             // Forge a termination data
             xlsReadContext.readRowHolder(new ReadRowHolder(xlsReadContext.xlsReadSheetHolder().getRowIndex() + 1,
