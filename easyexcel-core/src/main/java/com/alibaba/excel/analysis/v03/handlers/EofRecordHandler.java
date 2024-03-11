@@ -10,13 +10,14 @@ import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder;
+import com.alibaba.excel.util.BooleanUtils;
 
 /**
  * Record handler
  *
  * @author Dan Zheng
  */
-public class EofRecordHandler extends AbstractXlsRecordHandler implements IgnorableXlsRecordHandler {
+public class EofRecordHandler extends AbstractXlsRecordHandler {
 
     @Override
     public void processRecord(XlsReadContext xlsReadContext, Record record) {
@@ -24,7 +25,8 @@ public class EofRecordHandler extends AbstractXlsRecordHandler implements Ignora
             return;
         }
         // Sometimes tables lack the end record of the last column
-        if (!xlsReadContext.xlsReadSheetHolder().getCellMap().isEmpty()) {
+        if (BooleanUtils.isNotTrue(xlsReadContext.xlsReadWorkbookHolder().getIgnoreRecord())
+            && !xlsReadContext.xlsReadSheetHolder().getCellMap().isEmpty()) {
             XlsReadSheetHolder xlsReadSheetHolder = xlsReadContext.xlsReadSheetHolder();
             // Forge a termination data
             xlsReadContext.readRowHolder(new ReadRowHolder(xlsReadContext.xlsReadSheetHolder().getRowIndex() + 1,
