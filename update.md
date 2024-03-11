@@ -1,3 +1,7 @@
+# 3.3.4
+
+* 支持停止单个`sheet`以后继续读取其他`sheet`,使用`ExcelAnalysisStopSheetException`
+
 # 3.3.3
 
 * 兼容某些特殊的xls: 缺少每个sheet的终止符
