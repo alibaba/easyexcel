@@ -63,20 +63,19 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 
 /**
- * /** * A text extractor for Excel files. *
+ * A text extractor for Excel files.
  * <p>
- * * Returns the textual content of the file, suitable for * indexing by something like Lucene, but not really *
- * intended for display to the user. *
+ * Returns the textual content of the file, suitable for indexing by something like Lucene, but not really intended for
+ * display to the user.
  * </p>
- * *
+ *
  * <p>
- * * To turn an excel file into a CSV or similar, then see * the XLS2CSVmra example *
+ * To turn an excel file into a CSV or similar, then see the XLS2CSVmra example
  * </p>
- * * * @see <a href=
- * "http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/hssf/eventusermodel/examples/XLS2CSVmra
- * .java">XLS2CSVmra</a>
+ *
  *
  * @author jipengfei
+ * @see <a href="http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/hssf/eventusermodel/examples/XLS2CSVmra.java">XLS2CSVmra</a>
  */
 @Slf4j
 public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
