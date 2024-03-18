@@ -75,9 +75,9 @@ public class NumberUtils {
      */
     public static Short parseShort(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return new BigDecimal(string).shortValue();
+            return new BigDecimal(string.trim()).shortValue();
         }
-        return parse(string, contentProperty).shortValue();
+        return parse(string.trim(), contentProperty).shortValue();
     }
 
     /**
@@ -89,9 +89,9 @@ public class NumberUtils {
      */
     public static Long parseLong(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return new BigDecimal(string).longValue();
+            return new BigDecimal(string.trim()).longValue();
         }
-        return parse(string, contentProperty).longValue();
+        return parse(string.trim(), contentProperty).longValue();
     }
 
     /**
@@ -103,9 +103,9 @@ public class NumberUtils {
      */
     public static Integer parseInteger(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return new BigDecimal(string).intValue();
+            return new BigDecimal(string.trim()).intValue();
         }
-        return parse(string, contentProperty).intValue();
+        return parse(string.trim(), contentProperty).intValue();
     }
 
     /**
@@ -117,9 +117,9 @@ public class NumberUtils {
      */
     public static Float parseFloat(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return new BigDecimal(string).floatValue();
+            return new BigDecimal(string.trim()).floatValue();
         }
-        return parse(string, contentProperty).floatValue();
+        return parse(string.trim(), contentProperty).floatValue();
     }
 
     /**
@@ -132,9 +132,9 @@ public class NumberUtils {
     public static BigDecimal parseBigDecimal(String string, ExcelContentProperty contentProperty)
         throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return new BigDecimal(string);
+            return new BigDecimal(string.trim());
         }
-        return new BigDecimal(parse(string, contentProperty).toString());
+        return new BigDecimal(parse(string.trim(), contentProperty).toString());
     }
 
     /**
@@ -146,9 +146,9 @@ public class NumberUtils {
      */
     public static Byte parseByte(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return new BigDecimal(string).byteValue();
+            return new BigDecimal(string.trim()).byteValue();
         }
-        return parse(string, contentProperty).byteValue();
+        return parse(string.trim(), contentProperty).byteValue();
     }
 
     /**
@@ -160,9 +160,9 @@ public class NumberUtils {
      */
     public static Double parseDouble(String string, ExcelContentProperty contentProperty) throws ParseException {
         if (!hasFormat(contentProperty)) {
-            return new BigDecimal(string).doubleValue();
+            return new BigDecimal(string.trim()).doubleValue();
         }
-        return parse(string, contentProperty).doubleValue();
+        return parse(string.trim(), contentProperty).doubleValue();
     }
 
     private static boolean hasFormat(ExcelContentProperty contentProperty) {
