@@ -2,6 +2,7 @@ package com.alibaba.easyexcel.test.core.converter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -26,6 +27,8 @@ public class ConverterReadData {
     private LocalDate localDate;
     @ExcelProperty("本地日期时间")
     private LocalDateTime localDateTime;
+    @ExcelProperty("本地instant")
+    private Instant instant;
     @ExcelProperty("布尔")
     private Boolean booleanData;
     @ExcelProperty("大数")
