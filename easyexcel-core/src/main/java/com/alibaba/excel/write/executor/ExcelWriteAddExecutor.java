@@ -1,12 +1,7 @@
 package com.alibaba.excel.write.executor;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
@@ -72,7 +67,9 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
         rowWriteHandlerContext.setRow(row);
 
         WriteHandlerUtils.afterRowCreate(rowWriteHandlerContext);
-
+        if (oneRowData.getClass().isArray()) {
+            oneRowData = new ArrayList<>(Arrays.asList((Object[]) oneRowData));
+        }
         if (oneRowData instanceof Collection<?>) {
             addBasicTypeToExcel(new CollectionRowData((Collection<?>)oneRowData), row, rowIndex, relativeRowIndex);
         } else if (oneRowData instanceof Map) {
