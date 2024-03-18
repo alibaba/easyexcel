@@ -1,11 +1,6 @@
 package com.alibaba.easyexcel.test.temp.csv;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +34,7 @@ public class CsvReadTest {
     @Test
     public void read1() throws Exception {
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withNullString("").parse(
-            new FileReader("/Users/zhuangjiaju/IdeaProjects/easyexcel/target/test-classes/t1.csv"));
+            new InputStreamReader(new FileInputStream("/Users/zhuangjiaju/test/test1.csv"),"UTF-8"));
         for (CSVRecord record : records) {
             String lastName = record.get(0);
             String firstName = record.get(1);
