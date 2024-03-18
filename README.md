@@ -12,8 +12,9 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 
 # 🔥阿里巴巴（淘天集团）岗位内推
 * 内推优势
-    * EasyExcel作者协助简历优化
+    * 更专业的简历指导
     * 更多岗位前置知识
+    * 更快的面试进度以及进度查询
 * 内推岗位
     * 🔥可在 [淘猫集团岗位搜索](https://talent.taotian.com/off-campus/position-list?lang=zh&search=) 搜索岗位
     * [非淘天集团岗位搜索](https://talent.alibaba.com/) 首页往下拉可以看到各个集团
