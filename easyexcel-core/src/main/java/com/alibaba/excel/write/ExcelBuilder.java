@@ -1,7 +1,5 @@
 package com.alibaba.excel.write;
 
-import java.util.Collection;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.write.merge.OnceAbsoluteMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
@@ -20,10 +18,10 @@ public interface ExcelBuilder {
      *            java basic type or java model extend BaseModel
      * @param writeSheet
      *            Write the sheet
-     * @deprecated please use{@link ExcelBuilder#addContent(Collection, WriteSheet, WriteTable)}
+     * @deprecated please use{@link ExcelBuilder#addContent(Iterable, WriteSheet, WriteTable)}
      */
     @Deprecated
-    void addContent(Collection<?> data, WriteSheet writeSheet);
+    void addContent(Iterable<?> data, WriteSheet writeSheet);
 
     /**
      * WorkBook increase value
@@ -35,7 +33,7 @@ public interface ExcelBuilder {
      * @param writeTable
      *            Write the table
      */
-    void addContent(Collection<?> data, WriteSheet writeSheet, WriteTable writeTable);
+    void addContent(Iterable<?> data, WriteSheet writeSheet, WriteTable writeTable);
 
     /**
      * WorkBook fill value

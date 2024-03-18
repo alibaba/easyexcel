@@ -55,7 +55,7 @@ public class ExcelWriterSheetBuilder extends AbstractExcelWriterParameterBuilder
         return writeSheet;
     }
 
-    public void doWrite(Collection<?> data) {
+    public void doWrite(Iterable<?> data) {
         if (excelWriter == null) {
             throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
         }

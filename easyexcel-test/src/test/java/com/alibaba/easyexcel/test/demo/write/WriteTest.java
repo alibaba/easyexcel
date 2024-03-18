@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +43,7 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -58,6 +60,17 @@ import org.junit.jupiter.api.Test;
 
 public class WriteTest {
 
+
+    @Test
+    public void testPageWrite() {
+        String fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // data from RPC or Database
+        final Iterator<DemoData> demoDataIterator = IteratorUtils.chainedIterator(
+            data().iterator(),
+            data().iterator());
+        EasyExcel.write(fileName, DemoData.class).sheet("模板")
+            .doWrite(IteratorUtils.asIterable(demoDataIterator));
+    }
     /**
      * 最简单的写
      * <p>
