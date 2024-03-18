@@ -128,7 +128,7 @@ public class StyleUtil {
         }
         if (StringUtils.isNotBlank(dataFormatData.getFormat())) {
             if (log.isDebugEnabled()) {
-                log.info("create new data fromat:{}", dataFormatData);
+                log.info("create new data format:{}", dataFormatData);
             }
             DataFormat dataFormatCreate = workbook.createDataFormat();
             return dataFormatCreate.getFormat(dataFormatData.getFormat());

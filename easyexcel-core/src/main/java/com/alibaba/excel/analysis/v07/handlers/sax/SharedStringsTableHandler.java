@@ -33,7 +33,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SharedStringsTableHandler extends DefaultHandler {
 
-    private static final Pattern UTF_PATTTERN = Pattern.compile("_x([0-9A-Fa-f]{4})_");
+    private static final Pattern UTF_PATTERN = Pattern.compile("_x([0-9A-Fa-f]{4})_");
 
     /**
      * The final piece of data
@@ -154,7 +154,7 @@ public class SharedStringsTableHandler extends DefaultHandler {
         }
 
         StringBuilder buf = new StringBuilder();
-        Matcher m = UTF_PATTTERN.matcher(value);
+        Matcher m = UTF_PATTERN.matcher(value);
         int idx = 0;
         while (m.find()) {
             int pos = m.start();
