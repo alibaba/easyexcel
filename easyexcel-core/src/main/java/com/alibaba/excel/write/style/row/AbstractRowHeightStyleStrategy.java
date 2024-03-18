@@ -29,7 +29,7 @@ public abstract class AbstractRowHeightStyleStrategy implements RowWriteHandler 
      * @param row
      * @param relativeRowIndex
      */
-    protected abstract void setHeadColumnHeight(Row row, int relativeRowIndex);
+    protected abstract void setHeadColumnHeight(Row row, Integer relativeRowIndex);
 
     /**
      * Sets the height of content
@@ -37,6 +37,6 @@ public abstract class AbstractRowHeightStyleStrategy implements RowWriteHandler 
      * @param row
      * @param relativeRowIndex
      */
-    protected abstract void setContentColumnHeight(Row row, int relativeRowIndex);
+    protected abstract void setContentColumnHeight(Row row, Integer relativeRowIndex);
 
 }
