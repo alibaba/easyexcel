@@ -438,7 +438,7 @@ public class DataFormatter {
             } else if (Character.isLetter(c)) {
                 mIsMonth = true;
                 ms.clear();
-                if (c == 'y' || c == 'Y') {
+                if (c == 'y' || c == 'Y' || c == 'e') {
                     sb.append('y');
                 } else if (c == 'd' || c == 'D') {
                     sb.append('d');
