@@ -66,8 +66,41 @@ public class Head {
      */
     private FontProperty headFontProperty;
 
+    /**
+     * is sub data
+     */
+    private boolean isSubData = false;
+    /**
+     * sub data FillForegroundColors
+     */
+    private Short[] subFillForegroundColors;
+
+
+    public Short nextFillForegroundColor(int depth) {
+        if (subFillForegroundColors == null || subFillForegroundColors.length == 0) {
+            return null;
+        }
+        int index = depth;
+
+        if (index == -1) {
+            return null;
+        }
+
+        if (index < subFillForegroundColors.length) {
+            return subFillForegroundColors[index];
+        }
+
+        // 表面上有 len种颜色 实际上 加上没有颜色 应该是有 len+1种
+        index = depth % (subFillForegroundColors.length + 1) - 1;
+        if (index == -1) {
+            return null;
+        }
+        return subFillForegroundColors[index];
+    }
+
+
     public Head(Integer columnIndex, Field field, String fieldName, List<String> headNameList, Boolean forceIndex,
-        Boolean forceName) {
+                Boolean forceName) {
         this.columnIndex = columnIndex;
         this.field = field;
         this.fieldName = fieldName;

@@ -460,7 +460,7 @@ public class WriteTest {
         // 背景设置为红色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.RED.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)20);
+        headWriteFont.setFontHeightInPoints((short) 20);
         headWriteCellStyle.setWriteFont(headWriteFont);
         // 内容的策略
         WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
@@ -470,7 +470,7 @@ public class WriteTest {
         contentWriteCellStyle.setFillForegroundColor(IndexedColors.GREEN.getIndex());
         WriteFont contentWriteFont = new WriteFont();
         // 字体大小
-        contentWriteFont.setFontHeightInPoints((short)20);
+        contentWriteFont.setFontHeightInPoints((short) 20);
         contentWriteCellStyle.setWriteFont(contentWriteFont);
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
@@ -705,6 +705,16 @@ public class WriteTest {
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
     }
 
+    /**
+     * 支持嵌套树形结构的用例
+     */
+    @Test
+    public void treeWrite() {
+        String fileName = TestFileUtil.getPath() + "treeWrite" + System.currentTimeMillis() + ".xlsx";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, TreeDemoData.class).sheet("模板").doWrite(treeData());
+    }
+
     private List<LongestMatchColumnWidthData> dataLong() {
         List<LongestMatchColumnWidthData> list = ListUtils.newArrayList();
         for (int i = 0; i < 10; i++) {
@@ -765,6 +775,24 @@ public class WriteTest {
             data.setDate(new Date());
             data.setDoubleData(0.56);
             list.add(data);
+        }
+        return list;
+    }
+
+    private List<TreeDemoData> treeData() {
+        List<TreeDemoData> list = ListUtils.newArrayList();
+        for (int i = 0; i < 10; i++) {
+            TreeDemoData school = new TreeDemoData("学校:" + i, 100.1);
+            list.add(school);
+            for (int j = 0; j < i + 3; j++) {
+                TreeDemoData grade = new TreeDemoData("年级:" + i, 2000.22);
+                school.addSub(grade);
+                for (int k = 0; k < i + 3; k++) {
+                    TreeDemoData mClass = new TreeDemoData("班级:" + i, 333333333.1);
+                    grade.addSub(mClass);
+                }
+
+            }
         }
         return list;
     }
