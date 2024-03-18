@@ -57,7 +57,11 @@ public class DateUtils {
     public static final String DATE_FORMAT_17 = "yyyyMMdd HH:mm:ss";
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
+    public static final String DATE_FORMAT_SIMPLE_SLASH = "yyyy/M/d HH:mm:ss";
+
     private static final String MINUS = "-";
+    private static final String SLASH = "/";
+
 
     public static String defaultDateFormat = DATE_FORMAT_19;
 
@@ -150,7 +154,12 @@ public class DateUtils {
                 } else {
                     return DATE_FORMAT_16_FORWARD_SLASH;
                 }
+            case 18:
+                return DATE_FORMAT_SIMPLE_SLASH;
             case 17:
+                if (dateString.contains(SLASH)) {
+                    return DATE_FORMAT_SIMPLE_SLASH;
+                }
                 return DATE_FORMAT_17;
             case 14:
                 return DATE_FORMAT_14;
