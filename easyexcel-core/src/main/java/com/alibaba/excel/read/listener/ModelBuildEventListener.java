@@ -12,6 +12,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.enums.ReadDefaultReturnEnum;
 import com.alibaba.excel.exception.ExcelDataConvertException;
+import com.alibaba.excel.exception.ExcelDataConvertGroupException;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.data.ReadCellData;
@@ -25,6 +26,7 @@ import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.MapUtils;
 import com.alibaba.excel.util.StringUtils;
 
+import org.apache.commons.math3.exception.util.ExceptionContext;
 import org.springframework.cglib.beans.BeanMap;
 
 /**
@@ -49,6 +51,8 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
         AnalysisContext context) {
         int index = 0;
         Map<Integer, Object> map = MapUtils.newLinkedHashMapWithExpectedSize(cellDataMap.size());
+        Integer rowIndex = context.readRowHolder().getRowIndex();
+        ExcelDataConvertGroupException groupException = new ExcelDataConvertGroupException(rowIndex);
         for (Map.Entry<Integer, ReadCellData<?>> entry : cellDataMap.entrySet()) {
             Integer key = entry.getKey();
             ReadCellData<?> cellData = entry.getValue();
@@ -60,10 +64,14 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
 
             ReadDefaultReturnEnum readDefaultReturn = context.readWorkbookHolder().getReadDefaultReturn();
             if (readDefaultReturn == ReadDefaultReturnEnum.STRING) {
-                // string
-                map.put(key,
-                    (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
-                        context, context.readRowHolder().getRowIndex(), key));
+                try {
+                    // string
+                    map.put(key,
+                        (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
+                            context, context.readRowHolder().getRowIndex(), key));
+                } catch (ExcelDataConvertException e) {
+                   groupException.addException(e);
+                }
             } else {
                 // retrun ReadCellData
                 ReadCellData<?> convertedReadCellData = convertReadCellData(cellData,
@@ -74,6 +82,9 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
                     map.put(key, convertedReadCellData.getData());
                 }
             }
+        }
+        if(!groupException.getGroup().isEmpty()){
+            throw groupException;
         }
         // fix https://github.com/alibaba/easyexcel/issues/2014
         int headSize = calculateHeadSize(readSheetHolder);
@@ -139,6 +150,8 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
         }
         Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();
         BeanMap dataMap = BeanMapUtils.create(resultModel);
+        Integer rowIndex = context.readRowHolder().getRowIndex();
+        ExcelDataConvertGroupException groupException = new ExcelDataConvertGroupException(rowIndex );
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Integer index = entry.getKey();
             Head head = entry.getValue();
@@ -146,14 +159,22 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
             if (!cellDataMap.containsKey(index)) {
                 continue;
             }
-            ReadCellData<?> cellData = cellDataMap.get(index);
-            Object value = ConverterUtils.convertToJavaObject(cellData, head.getField(),
-                ClassUtils.declaredExcelContentProperty(dataMap, readSheetHolder.excelReadHeadProperty().getHeadClazz(),
-                    fieldName, readSheetHolder), readSheetHolder.converterMap(), context,
-                context.readRowHolder().getRowIndex(), index);
-            if (value != null) {
-                dataMap.put(fieldName, value);
+
+            try {
+                ReadCellData<?> cellData = cellDataMap.get(index);
+                Object value = ConverterUtils.convertToJavaObject(cellData, head.getField(),
+                        ClassUtils.declaredExcelContentProperty(dataMap, readSheetHolder.excelReadHeadProperty().getHeadClazz(),
+                                fieldName, readSheetHolder), readSheetHolder.converterMap(), context,
+                        context.readRowHolder().getRowIndex(), index);
+                if (value != null) {
+                    dataMap.put(fieldName, value);
+                }
+            }catch (ExcelDataConvertException e){
+                groupException.addException(e);
             }
+        }
+        if(!groupException.getGroup().isEmpty()){
+            throw groupException;
         }
         return resultModel;
     }
