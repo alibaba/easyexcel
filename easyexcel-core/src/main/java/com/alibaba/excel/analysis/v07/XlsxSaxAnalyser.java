@@ -117,7 +117,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         // Reading images
         if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.IMAGE)) {
             List<PackagePart> drawingsPackagePartList = pkg.getPartsByName(
-                Pattern.compile("xl/drawings/drawing[0-9]+.xml"));
+                Pattern.compile("/xl/drawings/drawing[0-9]+.xml"));
             if (CollectionUtils.isNotEmpty(drawingsPackagePartList)) {
                 for (PackagePart drawingPackagePart : drawingsPackagePartList) {
                     log.info("xx{}", drawingPackagePart);

@@ -17,7 +17,9 @@ import java.util.Map;
 import com.alibaba.easyexcel.test.demo.write.DemoData;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.PositionUtils;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
@@ -52,9 +54,9 @@ public class Lock2Test {
         File file = new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/src/test/resources/converter/converter07.xlsx");
 
         List<Object> list = EasyExcel.read(
-                "/Users/zhuangjiaju/IdeaProjects/easyexcel/easyexcel-test/target/test-classes"
-                    + "/simpleWrite1674051907397.xlsx")
+                "/Users/zhuangjiaju/测试数据/imagetest.xlsx")
             //.useDefaultListener(false)
+            .extraRead(CellExtraTypeEnum.IMAGE)
             .sheet(0)
             .headRowNumber(0).doReadSync();
         LOGGER.info("数据：{}", list.size());
