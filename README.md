@@ -10,7 +10,7 @@ EasyExcel
 Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都存在一个严重的问题就是非常的耗内存，poi有一套SAX模式的API可以一定程度的解决一些内存溢出的问题，但POI还是有一些缺陷，比如07版Excel解压缩以及解压后存储都是在内存中完成的，内存消耗依然很大。  
 easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析依然需要100M左右内存，改用easyexcel可以降低到几M，并且再大的excel也不会出现内存溢出；03版依赖POI的sax模式，在上层做了模型转换的封装，让使用者更加简单方便
 
-# 推荐 Chat2DB 
+# 🔥作者强烈推荐的数据库管理工具：Chat2DB 
 AI 驱动的数据库管理、数据分析工具，支持Mysql、pg、oracle、sqlserver、redis等10多种数据库
 *  Github 地址: [https://github.com/chat2db/Chat2DB](https://github.com/chat2db/Chat2DB)
 *  官网：[https://chat2db-ai.com](https://chat2db-ai.com)
@@ -78,7 +78,7 @@ AI 驱动的数据库管理、数据分析工具，支持Mysql、pg、oracle、s
 [QQ5群(已满): 451925680](https://jq.qq.com/?_wv=1027&k=6VHhvxyf)   
 [QQ6群(已满): 784741035](https://jq.qq.com/?_wv=1027&k=BbLBIo9P)   
 [QQ7群(已满): 667889383](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=XdTLw3Z3pr63VT0IkyoY-2t25TG7WxbG&authKey=gQKvTXipsjfUO1aNfL9zdHTfOmkqC6E%2BQ2zDg2jym8h3qXuQ7RtkpeAHeg9I4UhL&noverify=0&group_code=667889383)   
-[QQ8群: 113968681](https://qm.qq.com/q/qwfl5RRBAG)
+[QQ8群: 113968681](https://qm.qq.com/q/qwfl5RRBAG)   
 [钉钉1群（已满）: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)  
 [钉钉2群（已满）: 32796397](https://qr.dingtalk.com/action/joingroup?code=v1,k1,jyU9GtEuNU5S0QTyklqYcYJ8qDZtUuTPMM7uPZTS8Hs=&_dt_no_comment=1&origin=11)  
 [钉钉3群（已满）: 33797247](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3UGlEScTGQaHpW2cIRo+gkxJ9EVZ5fz26M6nW3uFP30=&_dt_no_comment=1&origin=11)  
