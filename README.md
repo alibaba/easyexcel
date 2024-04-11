@@ -1,11 +1,3 @@
-# 🔥作者最新开源项目[Chat2DB](https://github.com/chat2db/Chat2DB)
-
-- GitHub地址 [https://github.com/chat2db/Chat2DB](https://github.com/chat2db/Chat2DB)
-- 官 网 地 址 [https://chat2db.ai](https://chat2db.ai)
-
-<a href= "https://github.com/chat2db/Chat2DB" ><img width="1720" alt="crete datasource" src="https://github.com/chat2db/Chat2DB/assets/22975773/16050747-0f6c-4e98-ba91-323033584eec"></a>
-
-
 EasyExcel
 ======================
 [![Build Status](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml?query=branch%3Amaster)
@@ -18,6 +10,17 @@ EasyExcel
 Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都存在一个严重的问题就是非常的耗内存，poi有一套SAX模式的API可以一定程度的解决一些内存溢出的问题，但POI还是有一些缺陷，比如07版Excel解压缩以及解压后存储都是在内存中完成的，内存消耗依然很大。  
 easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析依然需要100M左右内存，改用easyexcel可以降低到几M，并且再大的excel也不会出现内存溢出；03版依赖POI的sax模式，在上层做了模型转换的封装，让使用者更加简单方便
 
+# 推荐 Chat2DB 
+AI 驱动的数据库管理、数据分析工具，支持Mysql、pg、oracle、sqlserver、redis等10多种数据库
+*  Github 地址: [https://github.com/chat2db/Chat2DB](https://github.com/chat2db/Chat2DB)
+*  官网：[https://chat2db-ai.com](https://chat2db-ai.com)
+<p align="center">
+    <a href="https://chat2db.ai/" target="_blank">
+        <img src="https://chat2db-cdn.oss-us-west-1.aliyuncs.com/website/img/cover.png" alt="Chat2DB" />
+    </a>
+</p>
+
+  
 # 网站
 *  官方网站：[https://easyexcel.opensource.alibaba.com/](https://easyexcel.opensource.alibaba.com/)
 * github地址：[https://github.com/alibaba/easyexcel](https://github.com/alibaba/easyexcel)
@@ -36,7 +39,7 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>3.3.2</version>
+    <version>3.3.4</version>
 </dependency>
 ```
 
@@ -64,32 +67,16 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 不管`github`、`gitee`都会定期有人回答您的问题，比较紧急可以在提完`issue`以后在钉钉群艾特群主并发送`issue`地址帮忙解决。   
 `QQ` 公司不让用，有时候也会去看，但是核心肯定还是在钉钉。
 
-## 也可以加入钉钉&QQ群来解决问题
+## 关注作者：程序员小獭
 
-加入钉钉或QQ群，看完公告可以获得帮助 。  
-[QQ1群(已满): 662022184](https://jq.qq.com/?_wv=1027&k=1T21jJxh)  
-[QQ2群(已满): 1097936804](https://jq.qq.com/?_wv=1027&k=j5zEy6Xl)  
-[QQ3群(已满): 453928496](https://qm.qq.com/cgi-bin/qm/qr?k=e2ULsA5A0GldhV2CXJ8sIbAyu9I6qqs7&jump_from=webapi)  
-[QQ4群(已满): 496594404](https://qm.qq.com/cgi-bin/qm/qr?k=e_aVG1Q7gi0PJUBkbrUGAgbeO3kUEInK&jump_from=webapi)   
-[QQ5群(已满): 451925680](https://jq.qq.com/?_wv=1027&k=6VHhvxyf)   
-[QQ6群(已满): 784741035](https://jq.qq.com/?_wv=1027&k=BbLBIo9P)   
-[QQ7群: 667889383](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=XdTLw3Z3pr63VT0IkyoY-2t25TG7WxbG&authKey=gQKvTXipsjfUO1aNfL9zdHTfOmkqC6E%2BQ2zDg2jym8h3qXuQ7RtkpeAHeg9I4UhL&noverify=0&group_code=667889383)   
-[钉钉1群（已满）: 21960511](https://qr.dingtalk.com/action/joingroup?code=v1,k1,cchz6k12ci9B08NNqhNRFGXocNVHrZtW0kaOtTKg/Rk=&_dt_no_comment=1&origin=11)  
-[钉钉2群（已满）: 32796397](https://qr.dingtalk.com/action/joingroup?code=v1,k1,jyU9GtEuNU5S0QTyklqYcYJ8qDZtUuTPMM7uPZTS8Hs=&_dt_no_comment=1&origin=11)  
-[钉钉3群（已满）: 33797247](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3UGlEScTGQaHpW2cIRo+gkxJ9EVZ5fz26M6nW3uFP30=&_dt_no_comment=1&origin=11)  
-[钉钉4群（已满）: 33491624](https://qr.dingtalk.com/action/joingroup?code=v1,k1,V14Pb65Too70rQkEaJ9ohb6lZBZbtp6jIL/q9EWh9vA=&_dt_no_comment=1&origin=11)  
-[钉钉5群（已满）: 32134498](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingb9fa1325d9dccc3ecac589edd02f1650&5233a=71a83&cbdbhh=qwertyuiop)  
-[钉钉6群（已满）: 34707941](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingcf68008a1d443ac012d5427bdb061b7a&6ae36c3d-0c80-4=22398493-6c2a-4&cbdbhh=qwertyuiop)  
-[钉钉7群（已满）: 35235427](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=ding532b9018c06c7fc8660273c4b78e6440&167fb=ed003&cbdbhh=qwertyuiop)  
-[钉钉8群（已满）: 44752220](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dingea96808beee421693fd4ba7542d6e5da&0380092a-fa46=a6a40905-7951&cbdbhh=qwertyuiop)   
-[钉钉9群（已满）: 11045002277](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dinge338d2215891c0459c13cd6b2cb108a6&6972d=b92f9&cbdbhh=qwertyuiop)   
-[钉钉10群(已满): 27360019755](https://qr.dingtalk.com/action/joingroup?code=v1,k1,v25LHn2liWmrWUKlkhIzOTcK7s7onp/sZP8mO5oIYSs=&_dt_no_comment=1&origin=11)   
-[钉钉11群(已满):24330026964](https://qr.dingtalk.com/action/joingroup?code=v1,k1,63PjvTncu81oQ3X6XmGEJqnwQHCQxi/jaVlbUStq79o=&_dt_no_comment=1&origin=11)   
-[钉钉12群:27210038956](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3mKi7VTGlYO+IsDX5n7sYYm2Qrlm220kMBPsJFzKRis=&_dt_no_comment=1&origin=11)   
+可以加群交流
+
+![qrcode_for_gh_c43212c8d0ed_258](https://github.com/alibaba/easyexcel/assets/22975773/13ceff34-d547-421b-b9a9-04f388792099)
+
 
 # 维护者
 
-姬朋飞（玉霄)、庄家钜、怀宇、敖丙
+姬朋飞（玉霄)、庄家钜
 
 # 快速开始
 

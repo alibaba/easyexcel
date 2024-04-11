@@ -3,8 +3,6 @@ package com.alibaba.excel.read.processor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -16,11 +14,12 @@ import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
+import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
+import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.StringUtils;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +52,12 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
 
     @Override
     public void endSheet(AnalysisContext analysisContext) {
+        ReadSheetHolder readSheetHolder = analysisContext.readSheetHolder();
+        if (BooleanUtils.isTrue(readSheetHolder.getEnded())) {
+            return;
+        }
+        readSheetHolder.setEnded(Boolean.TRUE);
+
         for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
             readListener.doAfterAllAnalysed(analysisContext);
         }
