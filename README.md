@@ -70,7 +70,7 @@ AI 驱动的数据库管理、数据分析工具，支持Mysql、pg、oracle、s
 ## 也可以加入钉钉&QQ群来解决问题
 
 加入钉钉或QQ群，看完公告可以获得帮助 。  
-比较推荐钉钉群，`QQ` 公司不让用，当然QQ群也会有热心网友帮忙解决。
+比较推荐钉钉群，`QQ` 公司不让用，当然QQ群也会有热心网友帮忙解决。   
 [QQ1群(已满): 662022184](https://jq.qq.com/?_wv=1027&k=1T21jJxh)  
 [QQ2群(已满): 1097936804](https://jq.qq.com/?_wv=1027&k=j5zEy6Xl)  
 [QQ3群(已满): 453928496](https://qm.qq.com/cgi-bin/qm/qr?k=e2ULsA5A0GldhV2CXJ8sIbAyu9I6qqs7&jump_from=webapi)  
@@ -90,8 +90,8 @@ AI 驱动的数据库管理、数据分析工具，支持Mysql、pg、oracle、s
 [钉钉9群（已满）: 11045002277](https://h5.dingtalk.com/circle/healthCheckin.html?dtaction=os&corpId=dinge338d2215891c0459c13cd6b2cb108a6&6972d=b92f9&cbdbhh=qwertyuiop)   
 [钉钉10群(已满): 27360019755](https://qr.dingtalk.com/action/joingroup?code=v1,k1,v25LHn2liWmrWUKlkhIzOTcK7s7onp/sZP8mO5oIYSs=&_dt_no_comment=1&origin=11)   
 [钉钉11群(已满):24330026964](https://qr.dingtalk.com/action/joingroup?code=v1,k1,63PjvTncu81oQ3X6XmGEJqnwQHCQxi/jaVlbUStq79o=&_dt_no_comment=1&origin=11)   
-[钉钉12群(已满):27210038956](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3mKi7VTGlYO+IsDX5n7sYYm2Qrlm220kMBPsJFzKRis=&_dt_no_comment=1&origin=11)
-[钉钉13群:83695000992](https://qr.dingtalk.com/action/joingroup?code=v1,k1,2JFUbWfxD1fGiq7LRW+mYjcK7s7onp/s1ZqOvfzkFGE=&_dt_no_comment=1&origin=11)
+[钉钉12群(已满):27210038956](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3mKi7VTGlYO+IsDX5n7sYYm2Qrlm220kMBPsJFzKRis=&_dt_no_comment=1&origin=11)   
+[钉钉13群:83695000992](https://qr.dingtalk.com/action/joingroup?code=v1,k1,2JFUbWfxD1fGiq7LRW+mYjcK7s7onp/s1ZqOvfzkFGE=&_dt_no_comment=1&origin=11)   
 
 ## 关注作者：程序员小獭
 
