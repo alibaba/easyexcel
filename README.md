@@ -1,11 +1,3 @@
-# 🔥作者最新开源项目[Chat2DB](https://github.com/chat2db/Chat2DB)
-
-- GitHub地址 [https://github.com/chat2db/Chat2DB](https://github.com/chat2db/Chat2DB)
-- 官 网 地 址 [https://chat2db.ai](https://chat2db.ai)
-
-<a href= "https://github.com/chat2db/Chat2DB" ><img width="1720" alt="crete datasource" src="https://github.com/chat2db/Chat2DB/assets/22975773/16050747-0f6c-4e98-ba91-323033584eec"></a>
-
-
 EasyExcel
 ======================
 [![Build Status](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml?query=branch%3Amaster)
@@ -18,6 +10,17 @@ EasyExcel
 Java解析、生成Excel比较有名的框架有Apache poi、jxl。但他们都存在一个严重的问题就是非常的耗内存，poi有一套SAX模式的API可以一定程度的解决一些内存溢出的问题，但POI还是有一些缺陷，比如07版Excel解压缩以及解压后存储都是在内存中完成的，内存消耗依然很大。  
 easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析依然需要100M左右内存，改用easyexcel可以降低到几M，并且再大的excel也不会出现内存溢出；03版依赖POI的sax模式，在上层做了模型转换的封装，让使用者更加简单方便
 
+# 推荐 Chat2DB 
+AI 驱动的数据库管理、数据分析工具，支持Mysql、pg、oracle、sqlserver、redis等10多种数据库
+*  Github 地址: [https://github.com/chat2db/Chat2DB](https://github.com/chat2db/Chat2DB)
+*  官网：[https://chat2db-ai.com](https://chat2db-ai.com)
+<p align="center">
+    <a href="https://chat2db.ai/" target="_blank">
+        <img src="https://chat2db-cdn.oss-us-west-1.aliyuncs.com/website/img/cover.png" alt="Chat2DB" />
+    </a>
+</p>
+
+  
 # 网站
 *  官方网站：[https://easyexcel.opensource.alibaba.com/](https://easyexcel.opensource.alibaba.com/)
 * github地址：[https://github.com/alibaba/easyexcel](https://github.com/alibaba/easyexcel)
@@ -36,7 +39,7 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>3.3.2</version>
+    <version>3.3.4</version>
 </dependency>
 ```
 

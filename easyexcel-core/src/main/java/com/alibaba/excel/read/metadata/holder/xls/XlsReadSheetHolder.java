@@ -8,11 +8,20 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.holder.ReadWorkbookHolder;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * sheet holder
  *
  * @author Jiaju Zhuang
  */
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
 public class XlsReadSheetHolder extends ReadSheetHolder {
     /**
      * Row type.Temporary storage, last set in <code>ReadRowHolder</code>.
@@ -31,30 +40,5 @@ public class XlsReadSheetHolder extends ReadSheetHolder {
         super(readSheet, readWorkbookHolder);
         tempRowType = RowTypeEnum.EMPTY;
         objectCacheMap = new HashMap<Integer, String>(16);
-    }
-
-    public RowTypeEnum getTempRowType() {
-        return tempRowType;
-    }
-
-    public void setTempRowType(RowTypeEnum tempRowType) {
-        this.tempRowType = tempRowType;
-    }
-
-
-    public Integer getTempObjectIndex() {
-        return tempObjectIndex;
-    }
-
-    public void setTempObjectIndex(Integer tempObjectIndex) {
-        this.tempObjectIndex = tempObjectIndex;
-    }
-
-    public Map<Integer, String> getObjectCacheMap() {
-        return objectCacheMap;
-    }
-
-    public void setObjectCacheMap(Map<Integer, String> objectCacheMap) {
-        this.objectCacheMap = objectCacheMap;
     }
 }

@@ -5,6 +5,14 @@
 * `slf4j-api`由`1.7.32`升级到`1.7.36`
 * `ehcache`由`3.9.9`升级到`3.10.8`
 
+# 3.3.4
+
+* 支持停止单个`sheet`以后继续读取其他`sheet`,使用`ExcelAnalysisStopSheetException`
+
+# 3.3.3
+
+* 兼容某些特殊的xls: 缺少每个sheet的终止符
+
 # 3.3.2
 
 * 修复`includeColumnIndexes`和`includeColumnFieldNames`在sheet后面失效的问题

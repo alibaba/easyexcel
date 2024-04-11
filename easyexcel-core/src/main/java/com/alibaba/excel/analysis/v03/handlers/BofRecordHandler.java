@@ -49,6 +49,7 @@ public class BofRecordHandler extends AbstractXlsRecordHandler {
         } else {
             xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.TRUE);
         }
+        xlsReadContext.xlsReadWorkbookHolder().setCurrentSheetStopped(Boolean.FALSE);
         // Go read the next one
         xlsReadWorkbookHolder.setReadSheetIndex(xlsReadWorkbookHolder.getReadSheetIndex() + 1);
     }
