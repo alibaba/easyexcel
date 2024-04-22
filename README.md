@@ -1,3 +1,7 @@
+# 必读
+
+* [必读](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
+
 EasyExcel
 ======================
 [![Build Status](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/alibaba/easyexcel/actions/workflows/ci.yml?query=branch%3Amaster)
