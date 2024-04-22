@@ -9,7 +9,7 @@ EasyExcel
 
 # 新手必读
 
-* 新手必读：🔥🔥🔥 [必读！！！](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
+* 新手必读：🔥🔥🔥 [https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
 * 官方网站：[https://easyexcel.opensource.alibaba.com/](https://easyexcel.opensource.alibaba.com/)
 * github地址：[https://github.com/alibaba/easyexcel](https://github.com/alibaba/easyexcel)
 * gitee地址：[https://gitee.com/easyexcel/easyexcel](https://gitee.com/easyexcel/easyexcel)
