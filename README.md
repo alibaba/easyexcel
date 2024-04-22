@@ -1,6 +1,4 @@
-# 必读
 
-* [必读](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
 
 EasyExcel
 ======================
@@ -8,6 +6,10 @@ EasyExcel
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/easyexcel/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/easyexcel)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![](https://img.shields.io/badge/EasyExcel-%E6%9F%A5%E7%9C%8B%E8%B4%A1%E7%8C%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=easyexcel)
+
+
+
+* [新手必读 https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw ](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
 
 # JAVA解析Excel工具
 
