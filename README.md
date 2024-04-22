@@ -9,7 +9,9 @@ EasyExcel
 
 
 
-* [新手必读 https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw ](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
+* [新手必读 🔥🔥🔥](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
+
+
 
 # JAVA解析Excel工具
 
