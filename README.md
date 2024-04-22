@@ -7,10 +7,12 @@ EasyExcel
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![](https://img.shields.io/badge/EasyExcel-%E6%9F%A5%E7%9C%8B%E8%B4%A1%E7%8C%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=easyexcel)
 
+# 新手必读
 
-
-* [新手必读 🔥🔥🔥](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
-
+* 新手必读：🔥🔥🔥 [必读！！！](https://mp.weixin.qq.com/s/8RCyyx1EspiDPFnoYMx-Kw)
+* 官方网站：[https://easyexcel.opensource.alibaba.com/](https://easyexcel.opensource.alibaba.com/)
+* github地址：[https://github.com/alibaba/easyexcel](https://github.com/alibaba/easyexcel)
+* gitee地址：[https://gitee.com/easyexcel/easyexcel](https://gitee.com/easyexcel/easyexcel)
 
 
 # JAVA解析Excel工具
@@ -27,12 +29,6 @@ AI 驱动的数据库管理、数据分析工具，支持Mysql、pg、oracle、s
         <img src="https://chat2db-cdn.oss-us-west-1.aliyuncs.com/website/img/cover.png" alt="Chat2DB" />
     </a>
 </p>
-
-  
-# 网站
-*  官方网站：[https://easyexcel.opensource.alibaba.com/](https://easyexcel.opensource.alibaba.com/)
-* github地址：[https://github.com/alibaba/easyexcel](https://github.com/alibaba/easyexcel)
-* gitee地址：[https://gitee.com/easyexcel/easyexcel](https://gitee.com/easyexcel/easyexcel)
 
 # 16M内存23秒读取75M(46W行25列)的Excel（3.2.1+版本）
 
