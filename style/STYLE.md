@@ -16,12 +16,12 @@
 * 点击`Apply`完成配置
 ![step](../img/style/eclipse/step.jpg)
 #### idea
-* 依次点击进入插件界面：`File->Settings->Plugins`，搜索 eclipse code formatter，如已有插件则不需安装，如没有，点击Search in repositories自动搜索线上插件。
+* 依次点击进入插件界面：`File->Settings->Plugins`，搜索 Adapter for Eclipse Code Formatter ，如已有插件则不需安装，如没有，点击Search in repositories自动搜索线上插件。
 ![step1](../img/style/idea/step1.png)
 * 导入`style/eclipse/codestyle.xml` 这里记住用的也是eclipse里面的 点击OK
-![step1](../img/style/idea/step2.png)
+![step2](../img/style/idea/step2.png)
 * 依次点击进入插件界面：`File->Settings->Editor->Code Style->Java->Import Scheme->Intellij IDEA code style XML`，导入`style/idea/codestyle.xml` 这里用的是idea的配置文件
-![step1](../img/style/idea/step3.png)
+![step3](../img/style/idea/step3.png)
 * 完成
 
 ### 附
