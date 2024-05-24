@@ -87,10 +87,6 @@ easyexcel重写了poi对07版Excel的解析，一个3M的excel用POI sax解析�
 [钉钉12群(已满):27210038956](https://qr.dingtalk.com/action/joingroup?code=v1,k1,3mKi7VTGlYO+IsDX5n7sYYm2Qrlm220kMBPsJFzKRis=&_dt_no_comment=1&origin=11)   
 [钉钉13群:83695000992](https://qr.dingtalk.com/action/joingroup?code=v1,k1,2JFUbWfxD1fGiq7LRW+mYjcK7s7onp/s1ZqOvfzkFGE=&_dt_no_comment=1&origin=11)   
 
-## 关注作者：程序员小獭
-
-![qrcode_for_gh_c43212c8d0ed_258](https://github.com/alibaba/easyexcel/assets/22975773/13ceff34-d547-421b-b9a9-04f388792099)
-
 
 # 维护者
 
