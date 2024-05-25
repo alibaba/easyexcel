@@ -1,13 +1,10 @@
 package com.alibaba.excel.metadata.property;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.ExcelSubData;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.ConfigurationHolder;
 import com.alibaba.excel.metadata.FieldCache;
@@ -24,6 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,9 +109,54 @@ public class ExcelHeadProperty {
         for (Map.Entry<Integer, FieldWrapper> entry : fieldCache.getSortedFieldMap().entrySet()) {
             initOneColumnProperty(entry.getKey(), entry.getValue(),
                 fieldCache.getIndexFieldMap().containsKey(entry.getKey()));
+            initSubProperty(entry.getKey(), entry.getValue());
+
         }
         headKind = HeadKindEnum.CLASS;
     }
+
+    /**
+     * Parse the @ExcelSubData annotation on the corresponding field
+     *
+     * @param index index
+     * @param fieldWrapper fieldWrapper
+     */
+    private void initSubProperty(int index, FieldWrapper fieldWrapper) {
+        Field field = fieldWrapper.getField();
+        if (!Collection.class.isAssignableFrom(field.getType())) {
+            return;
+        }
+        ExcelSubData excelSub = field.getAnnotation(ExcelSubData.class);
+        if (excelSub == null) {
+            return;
+        }
+        String fieldName = FieldUtils.resolveCglibFieldName(field);
+        List<String> tmpHeadList = new ArrayList<String>();
+        tmpHeadList.add(fieldName);
+        Head head = headMap.computeIfAbsent(index, key -> new Head(index, field, fieldName, tmpHeadList, false, false));
+        head.setSubData(true);
+        head.setSubFillForegroundColors(excelSubFillForegroundColors(excelSub));
+    }
+
+    /**
+     * Parse the FillForegroundColors parameter in the @ExcelSubData annotation
+     *
+     * @param excelSub Annotations that need to be parsed
+     * @return color code
+     */
+    private Short[] excelSubFillForegroundColors(ExcelSubData excelSub) {
+        IndexedColors[] indexedColors = excelSub.fillForegroundColors();
+        if (indexedColors == null || indexedColors.length == 0) {
+            return null;
+        }
+        Short[] shorts = new Short[indexedColors.length];
+        int index = 0;
+        for (IndexedColors color : excelSub.fillForegroundColors()) {
+            shorts[index++] = color.index;
+        }
+        return shorts;
+    }
+
 
     /**
      * Initialization column property

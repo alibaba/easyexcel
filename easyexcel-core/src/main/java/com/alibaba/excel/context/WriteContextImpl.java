@@ -260,9 +260,12 @@ public class WriteContextImpl implements WriteContext {
     }
 
     private void addOneRowOfHeadDataToExcel(Row row, Integer rowIndex, Map<Integer, Head> headMap,
-        int relativeRowIndex) {
+                                            int relativeRowIndex) {
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Head head = entry.getValue();
+            if (head.isSubData()) {
+                continue;
+            }
             int columnIndex = entry.getKey();
             ExcelContentProperty excelContentProperty = ClassUtils.declaredExcelContentProperty(null,
                 currentWriteHolder.excelWriteHeadProperty().getHeadClazz(), head.getFieldName(), currentWriteHolder);
@@ -388,7 +391,7 @@ public class WriteContextImpl implements WriteContext {
         try {
             Workbook workbook = writeWorkbookHolder.getWorkbook();
             if (workbook instanceof SXSSFWorkbook) {
-                ((SXSSFWorkbook)workbook).dispose();
+                ((SXSSFWorkbook) workbook).dispose();
             }
         } catch (Throwable t) {
             throwable = t;
