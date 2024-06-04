@@ -1,7 +1,5 @@
 package com.alibaba.excel.util;
 
-import com.alibaba.excel.exception.ExcelRuntimeException;
-
 import org.apache.poi.hssf.record.RowRecord;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.ss.usermodel.Row;

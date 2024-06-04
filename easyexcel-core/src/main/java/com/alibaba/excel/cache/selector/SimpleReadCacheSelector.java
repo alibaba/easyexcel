@@ -2,7 +2,6 @@ package com.alibaba.excel.cache.selector;
 
 import java.io.IOException;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
