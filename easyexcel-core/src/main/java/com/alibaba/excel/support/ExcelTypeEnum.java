@@ -74,11 +74,6 @@ public enum ExcelTypeEnum {
                 } else if (fileName.endsWith(CSV.getValue())) {
                     return CSV;
                 }
-                if (StringUtils.isEmpty(readWorkbook.getPassword())) {
-                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
-                        return recognitionExcelType(bufferedInputStream);
-                    }
-                }
             }
             if (!inputStream.markSupported()) {
                 inputStream = new BufferedInputStream(inputStream);
