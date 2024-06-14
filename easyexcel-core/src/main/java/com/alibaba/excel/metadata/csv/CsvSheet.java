@@ -136,9 +136,12 @@ public class CsvSheet implements Sheet, Closeable {
 
     @Override
     public Row getRow(int rownum) {
+        if (rowCache == null) {
+            return null;
+        }
         int actualRowIndex = rownum - (lastRowIndex - rowCache.size()) - 1;
         if (actualRowIndex < 0 || actualRowIndex > rowCache.size() - 1) {
-            throw new UnsupportedOperationException("The current data does not exist or has been flushed to disk\n.");
+            return null;
         }
         return rowCache.get(actualRowIndex);
     }
