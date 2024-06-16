@@ -76,7 +76,7 @@ public class CsvCellStyle implements CellStyle {
     }
 
     @Override
-    public short getFontIndex() {
+    public int getFontIndex() {
         return 0;
     }
 
@@ -125,10 +125,6 @@ public class CsvCellStyle implements CellStyle {
         return null;
     }
 
-    @Override
-    public HorizontalAlignment getAlignmentEnum() {
-        return null;
-    }
 
     @Override
     public void setWrapText(boolean wrapped) {
@@ -150,10 +146,6 @@ public class CsvCellStyle implements CellStyle {
         return null;
     }
 
-    @Override
-    public VerticalAlignment getVerticalAlignmentEnum() {
-        return null;
-    }
 
     @Override
     public void setRotation(short rotation) {
@@ -185,10 +177,6 @@ public class CsvCellStyle implements CellStyle {
         return null;
     }
 
-    @Override
-    public BorderStyle getBorderLeftEnum() {
-        return null;
-    }
 
     @Override
     public void setBorderRight(BorderStyle border) {
@@ -200,10 +188,6 @@ public class CsvCellStyle implements CellStyle {
         return null;
     }
 
-    @Override
-    public BorderStyle getBorderRightEnum() {
-        return null;
-    }
 
     @Override
     public void setBorderTop(BorderStyle border) {
@@ -215,10 +199,6 @@ public class CsvCellStyle implements CellStyle {
         return null;
     }
 
-    @Override
-    public BorderStyle getBorderTopEnum() {
-        return null;
-    }
 
     @Override
     public void setBorderBottom(BorderStyle border) {
@@ -230,10 +210,6 @@ public class CsvCellStyle implements CellStyle {
         return null;
     }
 
-    @Override
-    public BorderStyle getBorderBottomEnum() {
-        return null;
-    }
 
     @Override
     public void setLeftBorderColor(short color) {
@@ -285,13 +261,14 @@ public class CsvCellStyle implements CellStyle {
         return null;
     }
 
-    @Override
-    public FillPatternType getFillPatternEnum() {
-        return null;
-    }
 
     @Override
     public void setFillBackgroundColor(short bg) {
+
+    }
+
+    @Override
+    public void setFillBackgroundColor(Color color) {
 
     }
 
@@ -307,6 +284,11 @@ public class CsvCellStyle implements CellStyle {
 
     @Override
     public void setFillForegroundColor(short bg) {
+
+    }
+
+    @Override
+    public void setFillForegroundColor(Color color) {
 
     }
 

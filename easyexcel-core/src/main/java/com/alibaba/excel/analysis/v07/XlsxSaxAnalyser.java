@@ -43,6 +43,7 @@ import org.apache.poi.openxml4j.opc.PackageRelationshipCollection;
 import org.apache.poi.openxml4j.opc.PackagingURIHelper;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
+import org.apache.poi.xssf.model.Comments;
 import org.apache.poi.xssf.model.CommentsTable;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFComment;
@@ -81,7 +82,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
     /**
      * excel comments key: sheetNo value: CommentsTable
      */
-    private final Map<Integer, CommentsTable> commentsTableMap;
+    private final Map<Integer, Comments> commentsTableMap;
 
     public XlsxSaxAnalyser(XlsxReadContext xlsxReadContext, InputStream decryptedStream) throws Exception {
         this.xlsxReadContext = xlsxReadContext;
@@ -123,7 +124,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
             sheetList.add(new ReadSheet(index, ite.getSheetName()));
             sheetMap.put(index, inputStream);
             if (xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT)) {
-                CommentsTable commentsTable = ite.getSheetComments();
+                Comments commentsTable = ite.getSheetComments();
                 if (null != commentsTable) {
                     commentsTableMap.put(index, commentsTable);
                 }
@@ -278,7 +279,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         if (!xlsxReadContext.readWorkbookHolder().getExtraReadSet().contains(CellExtraTypeEnum.COMMENT)) {
             return;
         }
-        CommentsTable commentsTable = commentsTableMap.get(readSheet.getSheetNo());
+        Comments commentsTable = commentsTableMap.get(readSheet.getSheetNo());
         if (commentsTable == null) {
             return;
         }
