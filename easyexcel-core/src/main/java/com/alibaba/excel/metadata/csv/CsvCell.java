@@ -227,10 +227,6 @@ public class CsvCell extends CellBase {
         return getCellType();
     }
 
-    @Override
-    public CellType getCachedFormulaResultTypeEnum() {
-        return getCellType();
-    }
 
     @Override
     public String getCellFormula() {

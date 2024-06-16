@@ -20,6 +20,7 @@
 
 
     <properties>
+        <poi.version>5.2.3</poi.version>
         <revision>3.3.4</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
@@ -96,22 +97,17 @@
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
-                <version>4.1.2</version>
+                <version>${poi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
-                <version>4.1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi-ooxml-schemas</artifactId>
-                <version>4.1.2</version>
+                <version>${poi.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-csv</artifactId>
-                <version>1.8</version>
+                <version>1.10.0</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -131,7 +127,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.11.0</version>
+                <version>2.15.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
