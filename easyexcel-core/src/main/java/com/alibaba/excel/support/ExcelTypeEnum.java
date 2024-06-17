@@ -59,12 +59,6 @@ public enum ExcelTypeEnum {
                 if (!file.exists()) {
                     throw new ExcelAnalysisException("File " + file.getAbsolutePath() + " not exists.");
                 }
-                // If there is a password, use the FileMagic first
-                if (!StringUtils.isEmpty(readWorkbook.getPassword())) {
-                    try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
-                        return recognitionExcelType(bufferedInputStream);
-                    }
-                }
                 // Use the name to determine the type
                 String fileName = file.getName();
                 if (fileName.endsWith(XLSX.getValue())) {
@@ -73,6 +67,10 @@ public enum ExcelTypeEnum {
                     return XLS;
                 } else if (fileName.endsWith(CSV.getValue())) {
                     return CSV;
+                }
+                //If cannot get the name, use the magic number to determine the type
+                try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
+                    return recognitionExcelType(bufferedInputStream);
                 }
             }
             if (!inputStream.markSupported()) {
