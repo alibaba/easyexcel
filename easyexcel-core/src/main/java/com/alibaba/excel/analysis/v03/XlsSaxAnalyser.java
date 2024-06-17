@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.eventusermodel.HSSFEventFactory;
 import org.apache.poi.hssf.eventusermodel.HSSFListener;
 import org.apache.poi.hssf.eventusermodel.HSSFRequest;
 import org.apache.poi.hssf.eventusermodel.MissingRecordAwareHSSFListener;
+import org.apache.poi.hssf.eventusermodel.dummyrecord.MissingRowDummyRecord;
 import org.apache.poi.hssf.record.BOFRecord;
 import org.apache.poi.hssf.record.BlankRecord;
 import org.apache.poi.hssf.record.BoolErrRecord;
@@ -56,23 +58,26 @@ import com.alibaba.excel.analysis.v03.handlers.TextObjectRecordHandler;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelAnalysisStopException;
+import com.alibaba.excel.exception.ExcelAnalysisStopSheetException;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.xls.XlsReadWorkbookHolder;
 
 /**
- * /** * A text extractor for Excel files. *
+ * A text extractor for Excel files.
  * <p>
- * * Returns the textual content of the file, suitable for * indexing by something like Lucene, but not really *
- * intended for display to the user. *
+ * Returns the textual content of the file, suitable for indexing by something like Lucene, but not really intended for
+ * display to the user.
  * </p>
- * *
+ *
  * <p>
- * * To turn an excel file into a CSV or similar, then see * the XLS2CSVmra example *
+ * To turn an excel file into a CSV or similar, then see the XLS2CSVmra example
  * </p>
- * * * @see <a href= "http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/hssf/eventusermodel/examples/XLS2CSVmra.java">XLS2CSVmra</a>
+ *
  *
  * @author jipengfei
+ * @see <a href="http://svn.apache.org/repos/asf/poi/trunk/src/examples/src/org/apache/poi/hssf/eventusermodel/examples/XLS2CSVmra.java">XLS2CSVmra</a>
  */
+@Slf4j
 public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XlsSaxAnalyser.class);
@@ -137,6 +142,9 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         } catch (IOException e) {
             throw new ExcelAnalysisException(e);
         }
+
+        // There are some special xls that do not have the terminator "[EOF]", so an additional
+        xlsReadContext.analysisEventProcessor().endSheet(xlsReadContext);
     }
 
     @Override
@@ -154,7 +162,16 @@ public class XlsSaxAnalyser implements HSSFListener, ExcelReadExecutor {
         if (!handler.support(xlsReadContext, record)) {
             return;
         }
-        handler.processRecord(xlsReadContext, record);
+
+        try {
+            handler.processRecord(xlsReadContext, record);
+        } catch (ExcelAnalysisStopSheetException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("Custom stop!", e);
+            }
+            xlsReadContext.xlsReadWorkbookHolder().setIgnoreRecord(Boolean.TRUE);
+            xlsReadContext.xlsReadWorkbookHolder().setCurrentSheetStopped(Boolean.TRUE);
+        }
     }
 
 }

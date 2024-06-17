@@ -16,6 +16,8 @@ import com.alibaba.excel.enums.ByteOrderMarkEnum;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelAnalysisStopException;
+import com.alibaba.excel.exception.ExcelAnalysisStopSheetException;
 import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.ReadSheet;
@@ -69,12 +71,18 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
             if (readSheet == null) {
                 continue;
             }
-            csvReadContext.currentSheet(readSheet);
+            try {
+                csvReadContext.currentSheet(readSheet);
 
-            int rowIndex = 0;
+                int rowIndex = 0;
 
-            for (CSVRecord record : csvParser) {
-                dealRecord(record, rowIndex++);
+                for (CSVRecord record : csvParser) {
+                    dealRecord(record, rowIndex++);
+                }
+            } catch (ExcelAnalysisStopSheetException e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Custom stop!", e);
+                }
             }
 
             // The last sheet is read

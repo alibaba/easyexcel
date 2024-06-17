@@ -22,6 +22,8 @@ import com.alibaba.excel.cache.ReadCache;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
 import com.alibaba.excel.enums.CellExtraTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelAnalysisStopException;
+import com.alibaba.excel.exception.ExcelAnalysisStopSheetException;
 import com.alibaba.excel.metadata.CellExtra;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadWorkbookHolder;
@@ -254,10 +256,16 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
         for (ReadSheet readSheet : sheetList) {
             readSheet = SheetUtils.match(readSheet, xlsxReadContext);
             if (readSheet != null) {
-                xlsxReadContext.currentSheet(readSheet);
-                parseXmlSource(sheetMap.get(readSheet.getSheetNo()), new XlsxRowHandler(xlsxReadContext));
-                // Read comments
-                readComments(readSheet);
+                try {
+                    xlsxReadContext.currentSheet(readSheet);
+                    parseXmlSource(sheetMap.get(readSheet.getSheetNo()), new XlsxRowHandler(xlsxReadContext));
+                    // Read comments
+                    readComments(readSheet);
+                } catch (ExcelAnalysisStopSheetException e) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Custom stop!", e);
+                    }
+                }
                 // The last sheet is read
                 xlsxReadContext.analysisEventProcessor().endSheet(xlsxReadContext);
             }
