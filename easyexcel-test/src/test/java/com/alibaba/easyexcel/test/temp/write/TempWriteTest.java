@@ -8,6 +8,7 @@ import java.util.Map;
 import com.alibaba.easyexcel.test.demo.read.CustomStringStringConverter;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.cglib.beans.BeanMap;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
@@ -24,7 +25,6 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
-import org.springframework.cglib.beans.BeanMap;
 
 @Slf4j
 public class TempWriteTest {
