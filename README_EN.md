@@ -34,7 +34,7 @@ Of course, there is also a very fast mode can be faster, but the memory consumpt
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.3.4</version>
+            <version>4.0.0</version>
         </dependency>
 ```
 # How to get help
