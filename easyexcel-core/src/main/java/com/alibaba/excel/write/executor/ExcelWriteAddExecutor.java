@@ -1,12 +1,10 @@
 package com.alibaba.excel.write.executor;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
@@ -14,6 +12,7 @@ import com.alibaba.excel.metadata.FieldCache;
 import com.alibaba.excel.metadata.FieldWrapper;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
+import com.alibaba.excel.support.cglib.beans.BeanMap;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.FieldUtils;
@@ -30,7 +29,6 @@ import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.springframework.cglib.beans.BeanMap;
 
 /**
  * Add the data into excel

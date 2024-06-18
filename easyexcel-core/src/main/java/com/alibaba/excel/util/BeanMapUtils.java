@@ -1,7 +1,7 @@
 package com.alibaba.excel.util;
 
-import org.springframework.cglib.beans.BeanMap;
-import org.springframework.cglib.core.DefaultNamingPolicy;
+import com.alibaba.excel.support.cglib.beans.BeanMap;
+import com.alibaba.excel.support.cglib.core.DefaultNamingPolicy;
 
 /**
  * bean utils
