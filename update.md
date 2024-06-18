@@ -1,6 +1,7 @@
 # 4.0.1
 
 * `commons-io` 修改为依赖 `poi`的版本
+* 修复临时目录被清理可能提示`NoSuchFileException`的异常
 
 # 4.0.0
 
