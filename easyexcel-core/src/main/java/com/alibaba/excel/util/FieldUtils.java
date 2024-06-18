@@ -5,8 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import com.alibaba.excel.metadata.NullObject;
-
-import org.springframework.cglib.beans.BeanMap;
+import com.alibaba.excel.support.cglib.beans.BeanMap;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
