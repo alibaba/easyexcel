@@ -230,11 +230,13 @@
                         <exclude>com/alibaba/excel/metadata/DataFormatter.java</exclude>
                         <exclude>com/alibaba/excel/util/DateUtils.java</exclude>
                         <exclude>com/alibaba/excel/util/MapUtils.java</exclude>
+                        <exclude>com/alibaba/excel/util/EasyExcelTempFileCreationStrategy.java</exclude>
                         <exclude>com/alibaba/excel/metadata/format/DataFormatter.java</exclude>
                         <exclude>com/alibaba/excel/metadata/format/ExcelGeneralNumberFormat.java</exclude>
                         <exclude>com/alibaba/excel/metadata/csv/CsvDataFormat.java</exclude>
                         <exclude>com/alibaba/excel/write/executor/ExcelWriteFillExecutor.java</exclude>
                         <exclude>com/alibaba/excel/analysis/v07/handlers/sax/SharedStringsTableHandler.java</exclude>
+                        <exclude>com/alibaba/excel/write/executor/ExcelWriteFillExecutor.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>
