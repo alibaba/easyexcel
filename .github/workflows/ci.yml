@@ -50,7 +50,7 @@ jobs:
         run: ./mvnw test -B -Dmaven.test.skip=false
       - name: Test with Maven
         if: ${{ matrix.java != '8' }}
-        run: ./mvnw test -B -Dmaven.test.skip=false --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED
+        run: ./mvnw test -B -Dmaven.test.skip=false -DargLine="--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED"
       - name: Maven Build
         run: ./mvnw install -B -V
       - name: Java Doc
