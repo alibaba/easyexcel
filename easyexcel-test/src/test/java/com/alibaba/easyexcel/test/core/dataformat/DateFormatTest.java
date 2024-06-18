@@ -3,6 +3,7 @@ package com.alibaba.easyexcel.test.core.dataformat;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -54,7 +55,12 @@ public class DateFormatTest {
             }
         }
         for (DateFormatData data : list) {
-            Assertions.assertEquals(data.getDateStringCn(), data.getDate());
+            // The way dates are read in Chinese is different on Linux and Mac, so it is acceptable if it matches either one.
+            // For example, on Linux: 1-Jan -> 1-1月
+            // On Mac: 1-Jan -> 1-一月
+            Assertions.assertTrue(
+                Objects.equals(data.getDateStringCn(), data.getDate()) || Objects.equals(data.getDateStringCn2(),
+                    data.getDate()));
             Assertions.assertEquals(data.getNumberStringCn(), data.getNumber());
         }
     }
