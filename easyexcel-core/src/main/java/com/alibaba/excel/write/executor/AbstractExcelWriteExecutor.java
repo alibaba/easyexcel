@@ -16,6 +16,7 @@ import com.alibaba.excel.metadata.data.ImageData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.FileTypeUtils;
 import com.alibaba.excel.util.ListUtils;
@@ -310,9 +311,9 @@ public abstract class AbstractExcelWriteExecutor implements ExcelWriteExecutor {
             if (writeContext.writeWorkbookHolder().getExcelType() == ExcelTypeEnum.CSV) {
                 cellWriteHandlerContext.setTargetCellDataType(CellDataTypeEnum.STRING);
             }
-            converter = writeContext.currentWriteHolder().converterMap().get(
-                ConverterKeyBuild.buildKey(cellWriteHandlerContext.getOriginalFieldClass(),
-                    cellWriteHandlerContext.getTargetCellDataType()));
+            ConverterKeyBuild.ConverterKey key = ConverterKeyBuild.buildKey(cellWriteHandlerContext.getOriginalFieldClass(),
+                    cellWriteHandlerContext.getTargetCellDataType());
+            converter = ConverterUtils.findConverter(key, writeContext.currentWriteHolder().converterMap());
         }
         if (cellWriteHandlerContext.getOriginalValue() == null && !(converter instanceof NullableObjectConverter)) {
             return new WriteCellData<>(CellDataTypeEnum.EMPTY);
