@@ -181,7 +181,7 @@ public class ConverterUtils {
             return converter.convertToJavaData(new ReadConverterContext<>(cellData, contentProperty, context));
         } catch (Exception e) {
             throw new ExcelDataConvertException(rowIndex, columnIndex, cellData, contentProperty,
-                "Convert data " + cellData + " to " + clazz + " error ", e);
+                "Convert data [" + cellData.getStringValue() + "] to " + clazz + " error on row: " + rowIndex + " column: " + columnIndex, e);
         }
     }
 }
