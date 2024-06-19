@@ -51,6 +51,19 @@ public class ExcelWriterSheetBuilder extends AbstractExcelWriterParameterBuilder
         return this;
     }
 
+    /**
+     * 自动填充错误
+     * @param errorField 错误字段
+     * @return this
+     */
+    public ExcelWriterSheetBuilder autoFillError(String errorField) {
+        if (excelWriter == null) {
+            throw new ExcelGenerateException("Must use 'EasyExcelFactory.write().sheet()' to call this method");
+        }
+        excelWriter.autoFillError(errorField);
+        return this;
+    }
+
     public WriteSheet build() {
         return writeSheet;
     }
