@@ -98,11 +98,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
 
         boolean isData = rowIndex >= currentHeadRowNumber;
 
-        // Last head column
-        if (!isData && currentHeadRowNumber == rowIndex + 1) {
-            buildHead(analysisContext, cellDataMap);
-        }
-        // Now is data
+        // invoke data or invoke head
         for (ReadListener readListener : analysisContext.currentReadHolder().readListenerList()) {
             try {
                 if (isData) {
@@ -117,6 +113,11 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
             if (!readListener.hasNext(analysisContext)) {
                 throw new ExcelAnalysisStopException();
             }
+        }
+
+        // Last head column
+        if (!isData && currentHeadRowNumber == rowIndex + 1) {
+            buildHead(analysisContext, cellDataMap);
         }
     }
 
