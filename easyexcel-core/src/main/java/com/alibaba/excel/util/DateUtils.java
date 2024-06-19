@@ -58,6 +58,7 @@ public class DateUtils {
     public static final String DATE_FORMAT_19 = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_19_FORWARD_SLASH = "yyyy/MM/dd HH:mm:ss";
     private static final String MINUS = "-";
+    private static final String DEFAULT_LOCAL_TIME_FORMAT = "HH:mm:ss";
 
     public static String defaultDateFormat = DATE_FORMAT_19;
 
@@ -115,6 +116,25 @@ public class DateUtils {
             return LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat));
         } else {
             return LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, local));
+        }
+    }
+
+    /**
+     * convert string to date
+     *
+     * @param dateString
+     * @param dateFormat
+     * @param local
+     * @return
+     */
+    public static LocalTime parseLocalTime(String dateString, String dateFormat, Locale local) {
+        if (StringUtils.isEmpty(dateFormat)) {
+            dateFormat = DEFAULT_LOCAL_TIME_FORMAT;
+        }
+        if (local == null) {
+            return LocalTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat));
+        } else {
+            return LocalTime.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, local));
         }
     }
 
@@ -252,6 +272,38 @@ public class DateUtils {
      */
     public static String format(LocalDateTime date, String dateFormat) {
         return format(date, dateFormat, null);
+    }
+
+    /**
+     * Format date
+     *
+     * @param date
+     * @param dateFormat
+     * @return
+     */
+    public static String format(LocalTime date, String dateFormat) {
+        return format(date, dateFormat, null);
+    }
+
+    /**
+     * Format date
+     *
+     * @param date
+     * @param dateFormat
+     * @return
+     */
+    public static String format(LocalTime date, String dateFormat, Locale local) {
+        if (date == null) {
+            return null;
+        }
+        if (StringUtils.isEmpty(dateFormat)) {
+            dateFormat = DEFAULT_LOCAL_TIME_FORMAT;
+        }
+        if (local == null) {
+            return date.format(DateTimeFormatter.ofPattern(dateFormat));
+        } else {
+            return date.format(DateTimeFormatter.ofPattern(dateFormat, local));
+        }
     }
 
     /**

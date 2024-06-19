@@ -113,6 +113,7 @@ public class ConverterDataTest {
         List<ConverterWriteData> list = new ArrayList<ConverterWriteData>();
         ConverterWriteData converterWriteData = new ConverterWriteData();
         converterWriteData.setDate(TestUtil.TEST_DATE);
+        converterWriteData.setLocalTime(TestUtil.TEST_LOCAL_TIME);
         converterWriteData.setLocalDate(TestUtil.TEST_LOCAL_DATE);
         converterWriteData.setLocalDateTime(TestUtil.TEST_LOCAL_DATE_TIME);
         converterWriteData.setBooleanData(Boolean.TRUE);
