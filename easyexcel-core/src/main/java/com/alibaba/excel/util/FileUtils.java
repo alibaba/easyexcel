@@ -12,7 +12,6 @@ import java.util.UUID;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelCommonException;
 
-import org.apache.poi.util.DefaultTempFileCreationStrategy;
 import org.apache.poi.util.TempFile;
 
 /**
@@ -111,7 +110,7 @@ public class FileUtils {
     /**
      * Write inputStream to file
      *
-     * @param file file
+     * @param file        file
      * @param inputStream inputStream
      */
     public static void writeToFile(File file, InputStream inputStream) {
@@ -121,8 +120,8 @@ public class FileUtils {
     /**
      * Write inputStream to file
      *
-     * @param file file
-     * @param inputStream inputStream
+     * @param file             file
+     * @param inputStream      inputStream
      * @param closeInputStream closeInputStream
      */
     public static void writeToFile(File file, InputStream inputStream, boolean closeInputStream) {
@@ -154,11 +153,8 @@ public class FileUtils {
         }
     }
 
-
     public static void createPoiFilesDirectory() {
-        File poiFilesPathFile = new File(poiFilesPath);
-        createDirectory(poiFilesPathFile);
-        TempFile.setTempFileCreationStrategy(new DefaultTempFileCreationStrategy(poiFilesPathFile));
+        TempFile.setTempFileCreationStrategy(new EasyExcelTempFileCreationStrategy());
     }
 
     public static File createCacheTmpFile() {
@@ -171,7 +167,6 @@ public class FileUtils {
     }
 
     /**
-     *
      * @param directory
      */
     public static File createDirectory(File directory) {

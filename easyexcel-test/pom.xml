@@ -74,7 +74,7 @@
                     <includes>
                         <include>/com/alibaba/easyexcel/test/core/**/*.java</include>
                     </includes>
-                    <testFailureIgnore>true</testFailureIgnore>
+                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
         </plugins>
