@@ -2,11 +2,7 @@ package com.alibaba.excel.enums;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.alibaba.excel.metadata.data.CellData;
-import com.alibaba.excel.util.StringUtils;
 
 /**
  * Read not to {@code com.alibaba.excel.metadata.BasicParameter#clazz} value, the default will return type.

@@ -4,7 +4,6 @@ import java.util.LinkedHashMap;
 
 import org.apache.poi.hssf.record.Record;
 
-import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.Cell;
