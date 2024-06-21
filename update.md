@@ -1,3 +1,16 @@
+# 4.0.1
+
+* `commons-io` 修改为依赖 `poi`的版本
+* 修复临时目录被清理可能提示`NoSuchFileException`的异常
+
+# 4.0.0
+
+* `poi`由`4.1.2`升级到`5.2.5`
+* `commons-csv`由`1.1.0`升级到`1.10.0`
+* `slf4j-api`由`1.7.32`升级到`1.7.36`
+* `ehcache`由`3.9.9`升级到`3.9.11`
+* 支持`jdk21`
+
 # 3.3.4
 
 * 支持停止单个`sheet`以后继续读取其他`sheet`,使用`ExcelAnalysisStopSheetException`

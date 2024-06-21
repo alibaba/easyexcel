@@ -33,6 +33,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.metadata.property.FontProperty;
 import com.alibaba.excel.metadata.property.NumberFormatProperty;
 import com.alibaba.excel.metadata.property.StyleProperty;
+import com.alibaba.excel.support.cglib.beans.BeanMap;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 
 import lombok.AllArgsConstructor;
@@ -41,7 +42,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.cglib.beans.BeanMap;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more

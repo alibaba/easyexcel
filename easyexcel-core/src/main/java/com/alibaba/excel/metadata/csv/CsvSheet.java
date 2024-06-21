@@ -34,6 +34,8 @@ import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Footer;
 import org.apache.poi.ss.usermodel.Header;
 import org.apache.poi.ss.usermodel.Hyperlink;
+import org.apache.poi.ss.usermodel.PageMargin;
+import org.apache.poi.ss.usermodel.PaneType;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -407,7 +409,17 @@ public class CsvSheet implements Sheet, Closeable {
     }
 
     @Override
+    public double getMargin(PageMargin pageMargin) {
+        return 0;
+    }
+
+    @Override
     public void setMargin(short margin, double size) {
+
+    }
+
+    @Override
+    public void setMargin(PageMargin pageMargin, double v) {
 
     }
 
@@ -473,6 +485,11 @@ public class CsvSheet implements Sheet, Closeable {
 
     @Override
     public void createSplitPane(int xSplitPos, int ySplitPos, int leftmostColumn, int topRow, int activePane) {
+
+    }
+
+    @Override
+    public void createSplitPane(int i, int i1, int i2, int i3, PaneType paneType) {
 
     }
 

@@ -10,7 +10,6 @@ import java.util.List;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson2.JSON;
 
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -180,7 +179,7 @@ public class StyleTest {
     private void isDate(Cell cell) {
         System.out.println(
             DateUtil.isADateFormat(cell.getCellStyle().getDataFormat(), cell.getCellStyle().getDataFormatString()));
-        System.out.println(HSSFDateUtil.isCellDateFormatted(cell));
+        //System.out.println(HSSFDateUtil.isCellDateFormatted(cell));
         DataFormatter f = new DataFormatter();
         System.out.println(f.formatCellValue(cell));
 

@@ -21,6 +21,7 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel-core</artifactId>
@@ -28,17 +29,17 @@
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
-            <version>2.0.29</version>
+            <version>2.0.51</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.7.11</version>
+            <version>2.7.18</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.7.11</version>
+            <version>2.7.18</version>
         </dependency>
 
         <!-- logback -->
@@ -60,7 +61,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.12</version>
+            <version>1.5.6</version>
         </dependency>
     </dependencies>
 
@@ -73,7 +74,7 @@
                     <includes>
                         <include>/com/alibaba/easyexcel/test/core/**/*.java</include>
                     </includes>
-                    <testFailureIgnore>true</testFailureIgnore>
+                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
         </plugins>
