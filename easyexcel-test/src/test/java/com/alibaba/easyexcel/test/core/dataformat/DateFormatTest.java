@@ -3,6 +3,7 @@ package com.alibaba.easyexcel.test.core.dataformat;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
@@ -46,15 +47,22 @@ public class DateFormatTest {
         List<DateFormatData> list =
             EasyExcel.read(file, DateFormatData.class, null).locale(Locale.CHINA).sheet().doReadSync();
         for (DateFormatData data : list) {
-            if (data.getDateStringCn() != null && !data.getDateStringCn().equals(data.getDate())) {
-                log.info("date:cn:{},{}", data.getDateStringCn(), data.getDate());
+            if (!Objects.equals(data.getDateStringCn(), data.getDate()) && !Objects.equals(data.getDateStringCn2(),
+                data.getDate())) {
+                log.info("date:cn:{},{},{}", data.getDateStringCn(), data.getDateStringCn2(), data.getDate());
             }
             if (data.getNumberStringCn() != null && !data.getNumberStringCn().equals(data.getNumber())) {
                 log.info("number:cn{},{}", data.getNumberStringCn(), data.getNumber());
             }
         }
         for (DateFormatData data : list) {
-            Assertions.assertEquals(data.getDateStringCn(), data.getDate());
+            // The way dates are read in Chinese is different on Linux and Mac, so it is acceptable if it matches
+            // either one.
+            // For example, on Linux: 1-Jan -> 1-1月
+            // On Mac: 1-Jan -> 1-一月
+            Assertions.assertTrue(
+                Objects.equals(data.getDateStringCn(), data.getDate()) || Objects.equals(data.getDateStringCn2(),
+                    data.getDate()));
             Assertions.assertEquals(data.getNumberStringCn(), data.getNumber());
         }
     }

@@ -13,6 +13,7 @@ import lombok.Setter;
 public class DateFormatData {
     private String date;
     private String dateStringCn;
+    private String dateStringCn2;
     private String dateStringUs;
     private String number;
     private String numberStringCn;

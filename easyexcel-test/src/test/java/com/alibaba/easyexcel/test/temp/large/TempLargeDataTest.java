@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import com.alibaba.easyexcel.test.core.large.LargeDataTest;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -31,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 public class TempLargeDataTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LargeDataTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TempLargeDataTest.class);
     private int i = 0;
 
     private static File fileFill07;
