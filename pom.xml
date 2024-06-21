@@ -20,7 +20,7 @@
 
 
     <properties>
-        <revision>4.0.0</revision>
+        <revision>4.0.1</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <gpg.skip>true</gpg.skip>
@@ -114,11 +114,6 @@
                 <version>3.9.11</version>
             </dependency>
             <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.11.0</version>
-            </dependency>
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.36</version>
@@ -190,12 +185,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.2.4</version>
+                    <version>3.6.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -235,11 +230,13 @@
                         <exclude>com/alibaba/excel/metadata/DataFormatter.java</exclude>
                         <exclude>com/alibaba/excel/util/DateUtils.java</exclude>
                         <exclude>com/alibaba/excel/util/MapUtils.java</exclude>
+                        <exclude>com/alibaba/excel/util/EasyExcelTempFileCreationStrategy.java</exclude>
                         <exclude>com/alibaba/excel/metadata/format/DataFormatter.java</exclude>
                         <exclude>com/alibaba/excel/metadata/format/ExcelGeneralNumberFormat.java</exclude>
                         <exclude>com/alibaba/excel/metadata/csv/CsvDataFormat.java</exclude>
                         <exclude>com/alibaba/excel/write/executor/ExcelWriteFillExecutor.java</exclude>
                         <exclude>com/alibaba/excel/analysis/v07/handlers/sax/SharedStringsTableHandler.java</exclude>
+                        <exclude>com/alibaba/excel/write/executor/ExcelWriteFillExecutor.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>

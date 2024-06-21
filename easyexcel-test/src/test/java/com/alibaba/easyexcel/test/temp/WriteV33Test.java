@@ -1,5 +1,8 @@
 package com.alibaba.easyexcel.test.temp;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -133,6 +136,13 @@ public class WriteV33Test {
             list.add(data);
         }
         return list;
+    }
+
+
+    @Test
+    public void test4() throws Exception{
+       Path path= Files.createTempFile(new File("/Users/zhuangjiaju/test/test0422/test/xx").toPath(),System.currentTimeMillis()+"",".jpg");
+        System.out.println(path);
     }
 
 }
