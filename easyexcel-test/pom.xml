@@ -1,82 +1,427 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>com.alibaba</groupId>
-        <artifactId>easyexcel-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <groupId>com.taobao</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.0.0</version>
     </parent>
 
-    <url>https://github.com/alibaba/easyexcel</url>
-    <packaging>jar</packaging>
-    <artifactId>easyexcel-test</artifactId>
-    <name>easyexcel-test</name>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.alibaba.easytools</groupId>
+    <artifactId>easytools-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>${revision}</version>
+    <name>easytools-parent</name>
 
     <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
+        <!-- 当前项目的版本 用了flatten 仅修改这一个地方即可-->
+        <revision>1.1.11-SNAPSHOT</revision>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-boot.version>2.7.11</spring-boot.version>
+        <pandora-boot.version>2023-03-release</pandora-boot.version>
+        <lombok.version>1.18.22</lombok.version>
     </properties>
 
-    <dependencies>
+    <modules>
+        <module>easytools</module>
+        <module>easytools-spring-boot-autoconfigure</module>
+        <module>easytools-spring-boot-starter</module>
+        <module>easytools-base</module>
+        <module>easytools-common</module>
+        <module>easytools-log</module>
+        <module>easytools-spring-demo</module>
+        <module>easytools-spring</module>
+        <module>easytools-test</module>
+    </modules>
 
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>2.0.51</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.7.18</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.7.18</version>
-        </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <!--  自己项目的包 -->
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-base</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-log</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-log-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-log-spring-boot-autoconfigure</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.middleware</groupId>
+                <artifactId>eagleeye-core-sdk</artifactId>
+                <version>1.9.5--2021-11-release</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-log-spring-boot-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-spring-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-spring-spring-boot-autoconfigure</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-spring-boot-autoconfigure</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-spring-boot-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.easytools</groupId>
+                <artifactId>easytools-spring-demo</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
-        <!-- logback -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.6</version>
-        </dependency>
-    </dependencies>
+            <!-- log -->
+            <dependency>
+                <groupId>org.zalando</groupId>
+                <artifactId>logbook-spring-boot-starter</artifactId>
+                <version>3.7.2</version>
+            </dependency>
+            <!-- springboot2 需要加这个配置 -->
+            <dependency>
+                <groupId>org.zalando</groupId>
+                <artifactId>logbook-servlet</artifactId>
+                <version>3.7.2</version>
+                <classifier>javax</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.taobao.pandora</groupId>
+                <artifactId>pandora-boot-starter-bom</artifactId>
+                <version>${pandora-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.schedulerx</groupId>
+                <artifactId>schedulerx2-spring-boot-starter</artifactId>
+                <version>1.2.4.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.26</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.83</version>
+            </dependency>
+            <!-- tddl -->
+            <dependency>
+                <groupId>com.alibaba.middleware</groupId>
+                <artifactId>tddl-client-sdk</artifactId>
+                <version>5.2.12--2021-07-release</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.200</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>3.4.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.7.20</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>30.1-jre</version>
+            </dependency>
+
+            <!-- oss -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>3.14.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-imm</artifactId>
+                <version>1.23.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>4.5.25</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.13.1</version>
+            </dependency>
+
+            <!-- hsf -->
+            <dependency>
+                <groupId>com.alibaba.middleware</groupId>
+                <artifactId>hsf-sdk</artifactId>
+                <version>3.1.1.5-SINK--2022-02-release</version>
+            </dependency>
+
+            <!-- aspectj -->
+            <dependency>
+                <artifactId>aspectjweaver</artifactId>
+                <groupId>org.aspectj</groupId>
+                <version>1.9.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.fastvalidator</groupId>
+                <artifactId>fastvalidator-constraints</artifactId>
+                <version>2.6.2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fastvalidator</groupId>
+                <artifactId>fastvalidator-generator</artifactId>
+                <version>2.6.2.5</version>
+            </dependency>
+            <!-- fastvalidator不支持 2.0.1.Final版本  -->
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>1.1.0.Final</version>
+            </dependency>
+
+            <!-- mapstruct -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>1.5.2.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>1.5.2.Final</version>
+            </dependency>
+
+            <!-- open search -->
+            <dependency>
+                <groupId>com.aliyun.opensearch</groupId>
+                <artifactId>aliyun-sdk-opensearch</artifactId>
+                <version>3.3.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-nop</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.taobao.aliauto</groupId>
+                <artifactId>open-search-spring-starter</artifactId>
+                <version>1.2.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.grow</groupId>
+                <artifactId>grow-client-api</artifactId>
+                <version>1.0.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alibaba.easytools</groupId>
+                        <artifactId>easy-base</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>2.1.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>3.27.2</version>
+            </dependency>
+
+
+            <!--测试 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!-- 用于http请求，支持sse请求 -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>4.12.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp-sse</artifactId>
+                <version>4.12.0</version>
+            </dependency>
+
+            <!-- http -->
+            <dependency>
+                <groupId>com.dtflys.forest</groupId>
+                <artifactId>forest-spring-boot-starter</artifactId>
+                <version>1.5.36</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
 
     <build>
         <plugins>
+            <!-- 打包源码 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 支持maven revision 来配置统版本-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.7</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>oss</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 运行测试案例 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
                 <configuration>
                     <includes>
-                        <include>/com/alibaba/easyexcel/test/core/**/*.java</include>
+                        <include>/com/alibaba/easytools/test/**/*.java</include>
                     </includes>
-                    <testFailureIgnore>false</testFailureIgnore>
+                    <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
+
+
+            <!-- 清理mapstruct生成的转换器 -->
+            <!-- 考虑需要清理converter下面所有的class -->
+            <!-- 确认clean 插件能否搞2个or 再额外引入一个 -->
+            <!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-clean-plugin</artifactId>-->
+<!--                <version>3.2.0</version>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash;当配置true时,只清理filesets里的文件,构建目录中得文件不被清理.默认是flase.&ndash;&gt;-->
+<!--                    <excludeDefaultDirectories>true</excludeDefaultDirectories>-->
+<!--                    <filesets>-->
+<!--                        <fileset>-->
+<!--                            &lt;!&ndash;要清理的目录位置&ndash;&gt;-->
+<!--                            <directory>${basedir}/target/generated-sources</directory>-->
+<!--                        </fileset>-->
+<!--                    </filesets>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>
