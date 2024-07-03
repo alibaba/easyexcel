@@ -50,6 +50,7 @@ public enum CellDataTypeEnum {
 
     static {
         TYPE_ROUTING_MAP.put("s", STRING);
+        TYPE_ROUTING_MAP.put("str", DIRECT_STRING);
         TYPE_ROUTING_MAP.put("inlineStr", DIRECT_STRING);
         TYPE_ROUTING_MAP.put("e", ERROR);
         TYPE_ROUTING_MAP.put("b", BOOLEAN);
