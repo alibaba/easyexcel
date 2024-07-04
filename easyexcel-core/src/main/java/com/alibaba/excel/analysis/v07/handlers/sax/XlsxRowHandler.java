@@ -87,10 +87,10 @@ public class XlsxRowHandler extends DefaultHandler {
         if (handler == null || !handler.support(xlsxReadContext)) {
             return;
         }
-        //If the cell type is 'inLineStr', then only the content of the label <t> is read
+        //If the cell type is 'inLineStr', then the label <v> must be ignored
         if (xlsxReadContext.xlsxReadSheetHolder().getTempCellData() != null
                 && CellDataTypeEnum.DIRECT_STRING.equals(xlsxReadContext.xlsxReadSheetHolder().getTempCellData().getType())
-                && "v".equals(currentTag)) {
+                && ExcelXmlConstants.CELL_VALUE_TAG.equals(currentTag)) {
             return;
         }
         handler.characters(xlsxReadContext, ch, start, length);
