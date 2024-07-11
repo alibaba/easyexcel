@@ -1,8 +1,10 @@
 package com.alibaba.easyexcel.test.util;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import com.alibaba.excel.util.DateUtils;
@@ -20,6 +22,8 @@ public class TestUtil {
     public static final Date TEST_DATE;
     public static final LocalDate TEST_LOCAL_DATE = LocalDate.of(2020, 1, 1);
     public static final LocalDateTime TEST_LOCAL_DATE_TIME = LocalDateTime.of(2020, 1, 1, 1, 1, 1);
+    public static final Instant TEST_LOCAL_INSTANT =
+        TEST_LOCAL_DATE_TIME.atZone(ZoneOffset.systemDefault()).toInstant();
 
     static {
         try {
