@@ -123,7 +123,7 @@ public interface AnalysisContext {
      * get total row ,Data may be inaccurate
      *
      * @return
-     * @deprecated please use {@link #readRowHolder()}
+     * @deprecated please use {@link #readSheetHolder()}
      */
     @Deprecated
     Integer getTotalCount();
