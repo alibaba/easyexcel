@@ -21,11 +21,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.3.27</version>
+            <version>5.3.37</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-jcl</artifactId>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -49,7 +49,7 @@
                             <createDependencyReducedPom>true</createDependencyReducedPom>
                             <!-- Make sure the transitive dependencies are written to the generated pom under <dependencies> -->
                             <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
-                            <artifactSet combine.self="override">
+                            <artifactSet>
                                 <includes>
                                     <include>org.springframework:spring-core</include>
                                 </includes>
@@ -63,6 +63,12 @@
                                     </includes>
                                 </filter>
                             </filters>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.springframework</pattern>
+                                    <shadedPattern>com.alibaba.excel.support</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
