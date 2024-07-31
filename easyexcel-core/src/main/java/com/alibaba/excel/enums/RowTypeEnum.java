@@ -13,5 +13,5 @@ public enum RowTypeEnum {
     /**
      * empty
      */
-    EMPTY,;
+    EMPTY
 }

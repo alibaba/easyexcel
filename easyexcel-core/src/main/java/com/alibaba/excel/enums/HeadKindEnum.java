@@ -17,5 +17,5 @@ public enum HeadKindEnum {
     /**
      * String
      */
-    STRING;
+    STRING
 }

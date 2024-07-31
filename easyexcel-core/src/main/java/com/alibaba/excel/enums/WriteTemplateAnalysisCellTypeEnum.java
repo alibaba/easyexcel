@@ -13,5 +13,5 @@ public enum WriteTemplateAnalysisCellTypeEnum {
     /**
      * A collection of fields.
      */
-    COLLECTION,;
+    COLLECTION
 }
