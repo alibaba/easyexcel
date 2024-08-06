@@ -96,10 +96,9 @@ public class ReadWorkbook extends ReadBasicParameter {
      * Whether to use the default listener, which is used by default.
      * <p>
      * The {@link ModelBuildEventListener} is loaded by default to convert the object.
-     * defualt is true.
+     * default is true.
      */
     private Boolean useDefaultListener;
-
     /**
      * Read not to {@code com.alibaba.excel.metadata.BasicParameter#clazz} value, the default will return type.
      * Is only effective when set `useDefaultListener=true` or `useDefaultListener=null`.

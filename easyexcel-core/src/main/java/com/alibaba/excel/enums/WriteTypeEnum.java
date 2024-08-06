@@ -13,5 +13,5 @@ public enum WriteTypeEnum {
     /**
      * Fill.
      */
-    FILL,;
+    FILL
 }

@@ -21,5 +21,5 @@ public enum HolderEnum {
     /**
      * row
      */
-    ROW;
+    ROW
 }
