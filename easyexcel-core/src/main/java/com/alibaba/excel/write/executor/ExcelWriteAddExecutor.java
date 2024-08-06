@@ -1,18 +1,11 @@
 package com.alibaba.excel.write.executor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.FieldCache;
 import com.alibaba.excel.metadata.FieldWrapper;
 import com.alibaba.excel.metadata.Head;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
-import com.alibaba.excel.support.cglib.beans.BeanMap;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.FieldUtils;
@@ -25,10 +18,15 @@ import com.alibaba.excel.write.metadata.MapRowData;
 import com.alibaba.excel.write.metadata.RowData;
 import com.alibaba.excel.write.metadata.holder.WriteHolder;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Add the data into excel
@@ -137,7 +135,7 @@ public class ExcelWriteAddExecutor extends AbstractExcelWriteExecutor {
 
     private void addJavaObjectToExcel(Object oneRowData, Row row, int rowIndex, int relativeRowIndex) {
         WriteHolder currentWriteHolder = writeContext.currentWriteHolder();
-        BeanMap beanMap = BeanMapUtils.create(oneRowData);
+        Map<String, Object> beanMap = BeanMapUtils.create(oneRowData);
         // Bean the contains of the Map Key method with poor performance,So to create a keySet here
         Set<String> beanKeySet = new HashSet<>(beanMap.keySet());
         Set<String> beanMapHandledSet = new HashSet<>();

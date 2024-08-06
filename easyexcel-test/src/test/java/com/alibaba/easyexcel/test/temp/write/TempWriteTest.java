@@ -1,18 +1,11 @@
 package com.alibaba.easyexcel.test.temp.write;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.easyexcel.test.demo.read.CustomStringStringConverter;
 import com.alibaba.easyexcel.test.util.TestFileUtil;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.support.cglib.beans.BeanMap;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -25,6 +18,11 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class TempWriteTest {
@@ -51,7 +49,7 @@ public class TempWriteTest {
         TempWriteData tempWriteData = new TempWriteData();
         tempWriteData.setName("1");
         tempWriteData.setName1("2");
-        BeanMap beanMap = BeanMapUtils.create(tempWriteData);
+        Map<String, Object> beanMap = BeanMapUtils.create(tempWriteData);
 
         log.info("d1{}", beanMap.get("name"));
         log.info("d2{}", beanMap.get("name1"));
@@ -60,7 +58,7 @@ public class TempWriteTest {
 
         Map<String, String> map = new HashMap<>();
         map.put("name", "zs");
-        BeanMap beanMap2 = BeanMapUtils.create(tempWriteData2);
+        Map<String, Object> beanMap2 = BeanMapUtils.create(tempWriteData2);
         beanMap2.putAll(map);
         log.info("3{}", tempWriteData2.getName());
 

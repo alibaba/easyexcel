@@ -1,9 +1,5 @@
 package com.alibaba.excel.read.listener;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Map;
-
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.HeadKindEnum;
@@ -14,12 +10,15 @@ import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
-import com.alibaba.excel.support.cglib.beans.BeanMap;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.excel.util.ClassUtils;
 import com.alibaba.excel.util.ConverterUtils;
 import com.alibaba.excel.util.DateUtils;
 import com.alibaba.excel.util.MapUtils;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 
 /**
@@ -133,7 +132,7 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
                 "Can not instance class: " + excelReadHeadProperty.getHeadClazz().getName(), e);
         }
         Map<Integer, Head> headMap = excelReadHeadProperty.getHeadMap();
-        BeanMap dataMap = BeanMapUtils.create(resultModel);
+        Map<String, Object> dataMap = BeanMapUtils.create(resultModel);
         for (Map.Entry<Integer, Head> entry : headMap.entrySet()) {
             Integer index = entry.getKey();
             Head head = entry.getValue();

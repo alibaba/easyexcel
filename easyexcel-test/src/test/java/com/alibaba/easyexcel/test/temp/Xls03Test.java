@@ -1,16 +1,15 @@
 package com.alibaba.easyexcel.test.temp;
 
-import java.util.List;
-
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.support.cglib.beans.BeanMap;
 import com.alibaba.excel.support.cglib.core.DebuggingClassWriter;
 import com.alibaba.excel.util.BeanMapUtils;
 import com.alibaba.fastjson2.JSON;
-
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 临时测试
@@ -33,14 +32,14 @@ public class Xls03Test {
     public void test2() {
         System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles", "true");
         System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY,
-            "/Users/zhuangjiaju/IdeaProjects/easyexcel/target");
+                "/Users/zhuangjiaju/IdeaProjects/easyexcel/target");
 
         CamlData camlData = new CamlData();
         //camlData.setTest("test2");
         //camlData.setAEst("test3");
         //camlData.setTEST("test4");
 
-        BeanMap beanMap = BeanMapUtils.create(camlData);
+        Map<String, Object> beanMap = BeanMapUtils.create(camlData);
 
         LOGGER.info("test:{}", beanMap.get("test"));
         LOGGER.info("test:{}", beanMap.get("Test"));
