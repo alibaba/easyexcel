@@ -21,6 +21,8 @@ import com.alibaba.excel.util.StringUtils;
  **/
 public class BuiltinFormats {
 
+    private static final String RESERVED = "reserved-";
+
     public static short GENERAL = 0;
 
     public static final String[] BUILTIN_FORMATS_ALL_LANGUAGES = {
@@ -491,7 +493,7 @@ public class BuiltinFormats {
         }
 
         // In other cases, give priority to using the externally provided format
-        if (!StringUtils.isEmpty(defaultFormat) && !defaultFormat.startsWith("reserved-")) {
+        if (!StringUtils.isEmpty(defaultFormat) && !defaultFormat.startsWith(RESERVED)) {
             return defaultFormat;
         }
 
