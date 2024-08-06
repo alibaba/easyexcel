@@ -25,7 +25,7 @@ public class BeanMapUtils {
      */
     public static Map<String, Object> create(Object bean) {
         // Create a map to store the bean's property names and their corresponding values
-        Map<String, Object> propertyMap = new HashMap<>();
+        Map<String, Object> propertyMap = new HashMap<>(16);
 
         // Iterate over all declared fields of the bean
         for (Field field : bean.getClass().getDeclaredFields()) {
