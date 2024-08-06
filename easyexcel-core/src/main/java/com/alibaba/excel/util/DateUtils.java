@@ -470,31 +470,10 @@ public class DateUtils {
             case 0x14:
             case 0x15:
             case 0x16:
-                // 27-36
-            case 0x1b:
-            case 0x1c:
-            case 0x1d:
-            case 0x1e:
-            case 0x1f:
-            case 0x20:
-            case 0x21:
-            case 0x22:
-            case 0x23:
-            case 0x24:
-                // 45-47
+            // 45-47
             case 0x2d:
             case 0x2e:
             case 0x2f:
-                // 50-58
-            case 0x32:
-            case 0x33:
-            case 0x34:
-            case 0x35:
-            case 0x36:
-            case 0x37:
-            case 0x38:
-            case 0x39:
-            case 0x3a:
                 return true;
         }
         return false;

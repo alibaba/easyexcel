@@ -52,8 +52,7 @@ public class Lock2Test {
         File file = new File("/Users/zhuangjiaju/IdeaProjects/easyexcel/src/test/resources/converter/converter07.xlsx");
 
         List<Object> list = EasyExcel.read(
-                "/Users/zhuangjiaju/IdeaProjects/easyexcel/easyexcel-test/target/test-classes"
-                    + "/simpleWrite1674051907397.xlsx")
+                "/Users/zhuangjiaju/Downloads/证券投资基金估值表_外贸信托-稳盈淳享37号集合资金信托计划_2024-07-23.xls")
             //.useDefaultListener(false)
             .sheet(0)
             .headRowNumber(0).doReadSync();
