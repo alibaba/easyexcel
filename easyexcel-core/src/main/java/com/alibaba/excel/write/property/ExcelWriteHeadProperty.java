@@ -18,7 +18,6 @@ import com.alibaba.excel.enums.HeadKindEnum;
 import com.alibaba.excel.metadata.CellRange;
 import com.alibaba.excel.metadata.ConfigurationHolder;
 import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.Holder;
 import com.alibaba.excel.metadata.property.ColumnWidthProperty;
 import com.alibaba.excel.metadata.property.ExcelHeadProperty;
 import com.alibaba.excel.metadata.property.FontProperty;

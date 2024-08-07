@@ -11,7 +11,6 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.excel.enums.CacheLocationEnum;
 import com.alibaba.excel.enums.HolderEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
 import com.alibaba.excel.metadata.data.DataFormatData;

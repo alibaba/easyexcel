@@ -2,7 +2,6 @@ package com.alibaba.excel.cache;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.alibaba.excel.context.AnalysisContext;
