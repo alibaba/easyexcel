@@ -20,7 +20,7 @@
 
 
     <properties>
-        <revision>4.0.2</revision>
+        <revision>4.0.3</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <gpg.skip>true</gpg.skip>
