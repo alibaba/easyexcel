@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.util.StringUtils;
 
 /**
  * Excel's built-in format conversion.Currently only supports Chinese.
@@ -20,7 +21,115 @@ import com.alibaba.excel.util.MapUtils;
  **/
 public class BuiltinFormats {
 
+    private static final String RESERVED = "reserved-";
+
     public static short GENERAL = 0;
+
+    public static final String[] BUILTIN_FORMATS_ALL_LANGUAGES = {
+        // 0
+        "General",
+        // 1
+        "0",
+        // 2
+        "0.00",
+        // 3
+        "#,##0",
+        // 4
+        "#,##0.00",
+        // 5
+        "\"￥\"#,##0_);(\"￥\"#,##0)",
+        // 6
+        "\"￥\"#,##0_);[Red](\"￥\"#,##0)",
+        // 7
+        "\"￥\"#,##0.00_);(\"￥\"#,##0.00)",
+        // 8
+        "\"￥\"#,##0.00_);[Red](\"￥\"#,##0.00)",
+        // 9
+        "0%",
+        // 10
+        "0.00%",
+        // 11
+        "0.00E+00",
+        // 12
+        "# ?/?",
+        // 13
+        "# ??/??",
+        // 14
+        // The official documentation shows "m/d/yy", but the actual test is "yyyy/m/d".
+        "yyyy/m/d",
+        // 15
+        "d-mmm-yy",
+        // 16
+        "d-mmm",
+        // 17
+        "mmm-yy",
+        // 18
+        "h:mm AM/PM",
+        // 19
+        "h:mm:ss AM/PM",
+        // 20
+        "h:mm",
+        // 21
+        "h:mm:ss",
+        // 22
+        // The official documentation shows "m/d/yy h:mm", but the actual test is "yyyy-m-d h:mm".
+        "yyyy-m-d h:mm",
+        // 23-36 No specific correspondence found in the official documentation.
+        // 23
+        null,
+        // 24
+        null,
+        // 25
+        null,
+        // 26
+        null,
+        // 27
+        null,
+        // 28
+        null,
+        // 29
+        null,
+        // 30
+        null,
+        // 31
+        null,
+        // 32
+        null,
+        // 33
+        null,
+        // 34
+        null,
+        // 35
+        null,
+        // 36
+        null,
+        // 37
+        "#,##0_);(#,##0)",
+        // 38
+        "#,##0_);[Red](#,##0)",
+        // 39
+        "#,##0.00_);(#,##0.00)",
+        // 40
+        "#,##0.00_);[Red](#,##0.00)",
+        // 41
+        "_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)",
+        // 42
+        "_(\"￥\"* #,##0_);_(\"￥\"* (#,##0);_(\"￥\"* \"-\"_);_(@_)",
+        // 43
+        "_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)",
+        // 44
+        "_(\"￥\"* #,##0.00_);_(\"￥\"* (#,##0.00);_(\"￥\"* \"-\"??_);_(@_)",
+        // 45
+        "mm:ss",
+        // 46
+        "[h]:mm:ss",
+        // 47
+        "mm:ss.0",
+        // 48
+        "##0.0E+0",
+        // 49
+        "@",
+    };
 
     public static final String[] BUILTIN_FORMATS_CN = {
         // 0
@@ -371,8 +480,26 @@ public class BuiltinFormats {
     public static final short MIN_CUSTOM_DATA_FORMAT_INDEX = 82;
 
     public static String getBuiltinFormat(Short index, String defaultFormat, Locale locale) {
+        if (index == null || index <= 0) {
+            return defaultFormat;
+        }
+
+        // Give priority to checking if it is the default value for all languages
+        if (index < BUILTIN_FORMATS_ALL_LANGUAGES.length) {
+            String format = BUILTIN_FORMATS_ALL_LANGUAGES[index];
+            if (format != null) {
+                return format;
+            }
+        }
+
+        // In other cases, give priority to using the externally provided format
+        if (!StringUtils.isEmpty(defaultFormat) && !defaultFormat.startsWith(RESERVED)) {
+            return defaultFormat;
+        }
+
+        // Finally, try using the built-in format
         String[] builtinFormat = switchBuiltinFormats(locale);
-        if (index == null || index < 0 || index >= builtinFormat.length) {
+        if (index >= builtinFormat.length) {
             return defaultFormat;
         }
         return builtinFormat[index];
