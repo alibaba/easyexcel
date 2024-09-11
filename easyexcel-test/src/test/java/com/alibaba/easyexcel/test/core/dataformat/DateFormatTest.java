@@ -56,6 +56,9 @@ public class DateFormatTest {
         Assertions.assertEquals("2023-1-01 00:00:00", dataMap.get(1).get(0));
         Assertions.assertEquals("2023-1-01 00:00:00", dataMap.get(2).get(0));
         Assertions.assertEquals("2023-1-01 00:00:01", dataMap.get(3).get(0));
+        Assertions.assertEquals("2023-1-01 00:00:00", dataMap.get(4).get(0));
+        Assertions.assertEquals("2023-1-01 00:00:00", dataMap.get(5).get(0));
+        Assertions.assertEquals("2023-1-01 00:00:01", dataMap.get(6).get(0));
     }
 
     private void readCn(File file) {
