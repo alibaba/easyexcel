@@ -90,7 +90,9 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel-support</artifactId>
-                <version>3.3.4</version>
+                <!-- 使用统一管理版本-->
+                <!--  <version>3.3.4</version>-->
+                <version>${revision}</version>
             </dependency>
 
             <dependency>

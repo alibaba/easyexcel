@@ -1,5 +1,6 @@
 package com.alibaba.excel.read.listener;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -15,11 +16,8 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
 import com.alibaba.excel.read.metadata.property.ExcelReadHeadProperty;
 import com.alibaba.excel.support.cglib.beans.BeanMap;
-import com.alibaba.excel.util.BeanMapUtils;
-import com.alibaba.excel.util.ClassUtils;
-import com.alibaba.excel.util.ConverterUtils;
-import com.alibaba.excel.util.DateUtils;
-import com.alibaba.excel.util.MapUtils;
+import com.alibaba.excel.support.util.ReflectionUtils;
+import com.alibaba.excel.util.*;
 
 
 /**
@@ -147,7 +145,12 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
                     fieldName, readSheetHolder), readSheetHolder.converterMap(), context,
                 context.readRowHolder().getRowIndex(), index);
             if (value != null) {
-                dataMap.put(fieldName, value);
+                // dataMap.put(fieldName, value);
+                // 使用 Spring 的工具类进行属性值的填充
+                // fix: https://github.com/alibaba/easyexcel/issues/3905
+                Field field = ReflectionUtils.findField(excelReadHeadProperty.getHeadClazz(), fieldName);
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, resultModel, value);
             }
         }
         return resultModel;
