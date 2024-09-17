@@ -19,5 +19,5 @@ public enum CacheLocationEnum {
     /**
      * No caching.It may lose some of performance.
      */
-    NONE;
+    NONE
 }

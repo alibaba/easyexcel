@@ -43,8 +43,7 @@ public enum CellDataTypeEnum {
     /**
      * rich text string.Support only when writing.
      */
-    RICH_TEXT_STRING,
-    ;
+    RICH_TEXT_STRING;
 
     private static final Map<String, CellDataTypeEnum> TYPE_ROUTING_MAP = new HashMap<String, CellDataTypeEnum>(16);
 
