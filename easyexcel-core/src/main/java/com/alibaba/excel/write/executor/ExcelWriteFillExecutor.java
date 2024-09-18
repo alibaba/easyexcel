@@ -16,6 +16,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.WriteDirectionEnum;
 import com.alibaba.excel.enums.WriteTemplateAnalysisCellTypeEnum;
 import com.alibaba.excel.exception.ExcelGenerateException;
+import com.alibaba.excel.metadata.data.DataFormatData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.util.BeanMapUtils;
@@ -32,6 +33,7 @@ import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -231,8 +233,19 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
                 // Restyle
                 if (fillConfig.getAutoStyle()) {
                     Optional.ofNullable(collectionFieldStyleCache.get(currentUniqueDataFlag))
-                        .map(collectionFieldStyleMap -> collectionFieldStyleMap.get(analysisCell))
-                        .ifPresent(cellData::setOriginCellStyle);
+                            .map(collectionFieldStyleMap -> collectionFieldStyleMap.get(analysisCell))
+                            .ifPresent(originCellStyle -> {
+                                cellData.setOriginCellStyle(originCellStyle);
+                                if (CellDataTypeEnum.DATE.equals(cellData.getType())) {
+                                    WriteCellStyle writeCellStyle = new WriteCellStyle();
+                                    cellData.setWriteCellStyle(writeCellStyle);
+                                    DataFormatData dataFormatData = new DataFormatData();
+                                    writeCellStyle.setDataFormatData(dataFormatData);
+                                    // 添加日期格式
+                                    dataFormatData.setIndex(originCellStyle.getDataFormat());
+                                    dataFormatData.setFormat(originCellStyle.getDataFormatString());
+                                }
+                            });
                 }
             } else {
                 StringBuilder cellValueBuild = new StringBuilder();
@@ -323,6 +336,9 @@ public class ExcelWriteFillExecutor extends AbstractExcelWriteExecutor {
             cellWriteHandlerContext.setCell(cell);
             rowWriteHandlerContext.setRow(row);
             rowWriteHandlerContext.setRowIndex(analysisCell.getRowIndex());
+            Map<AnalysisCell, CellStyle> collectionFieldStyleMap =
+                    collectionFieldStyleCache.computeIfAbsent(currentUniqueDataFlag, key -> MapUtils.newHashMap());
+            collectionFieldStyleMap.put(analysisCell, cell.getCellStyle());
             return;
         }
         Sheet sheet = writeContext.writeSheetHolder().getSheet();
