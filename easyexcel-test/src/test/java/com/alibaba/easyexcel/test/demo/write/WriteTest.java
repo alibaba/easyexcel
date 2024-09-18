@@ -33,6 +33,7 @@ import com.alibaba.excel.util.BooleanUtils;
 import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;
+import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
@@ -768,5 +769,35 @@ public class WriteTest {
         }
         return list;
     }
+
+    /**
+     * 为指定行标记背景颜色、为指定行转化数字格式为百分比格式
+     */
+    @Test
+    public void testLineWrite() {
+        String fileName = TestFileUtil.getPath() + "handlerStyleWrite" + System.currentTimeMillis() + ".xlsx";
+        ExcelWriter excelWriter = EasyExcel.write(fileName).build();
+
+        //写入
+        WriteSheet writeSheet1 = EasyExcel.writerSheet(0).build();
+        List<WriteHandler> cellWriteHandlerList = new ArrayList<>();
+        //指定行设置背景颜色
+        cellWriteHandlerList.add(new CustomRowAddBackgroundColorHandler(IndexedColors.GREY_25_PERCENT.getIndex(),1, 9, 13, 17, 22));
+        // 指定行设置百分比格式
+        cellWriteHandlerList.add(new CustomRowSetPercentageFormatHandler(2, 10, 14, 18, 23));
+        writeSheet1.setCustomWriteHandlerList(cellWriteHandlerList);
+        // 分页去数据库查询数据 这里可以去数据库查询每一页的数据
+        List<ConverterData> data = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            ConverterData converterData = new ConverterData();
+            converterData.setString("字符串" + i);
+            converterData.setDate(new Date());
+            converterData.setDoubleData(0.56);
+            data.add(converterData);
+        }
+        excelWriter.fill(data, writeSheet1);
+    }
+
+
 
 }
