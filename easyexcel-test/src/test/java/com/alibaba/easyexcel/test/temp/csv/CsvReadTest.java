@@ -72,7 +72,7 @@ public class CsvReadTest {
         // 如果这里想使用03 则 传入excelType参数即可
         EasyExcel.write(fileName, CsvData.class).sheet().doWrite(data());
 
-        EasyExcel.read(fileName, CsvData.class, new CsvDataListeer()).sheet().doRead();
+        EasyExcel.read(fileName, CsvData.class, new CsvDataListener()).sheet().doRead();
     }
 
     @Test

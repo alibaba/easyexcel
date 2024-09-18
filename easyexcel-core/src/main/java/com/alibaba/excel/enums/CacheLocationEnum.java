@@ -1,7 +1,7 @@
 package com.alibaba.excel.enums;
 
 /**
- * cache locaciton
+ * cache location
  *
  * @author Jiaju Zhuang
  **/
