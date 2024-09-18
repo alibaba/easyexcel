@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.converters.Converter;
@@ -170,7 +171,8 @@ public class ConverterUtils {
         }
 
         if (converter == null) {
-            converter = converterMap.get(ConverterKeyBuild.buildKey(clazz, cellData.getType()));
+            ConverterKey key = ConverterKeyBuild.buildKey(clazz, cellData.getType());
+            converter = findConverter(key, converterMap);
         }
         if (converter == null) {
             throw new ExcelDataConvertException(rowIndex, columnIndex, cellData, contentProperty,
@@ -184,4 +186,37 @@ public class ConverterUtils {
                 "Convert data " + cellData + " to " + clazz + " error ", e);
         }
     }
+
+    /**
+     * 支持子级使用父级的转换器, 优先使用子级自己的
+     *
+     * @param key
+     * @param map
+     * @return
+     */
+    public static Converter<?> findConverter(ConverterKey key, Map<ConverterKey, Converter<?>> map) {
+        // 先直接获取
+        Converter<?> converter = map.get(key);
+        if (converter != null) {
+            return converter;
+        }
+
+        // 通过继承关系获取
+        for (Map.Entry<ConverterKey, Converter<?>> entry : map.entrySet()) {
+            ConverterKey converterKey = entry.getKey();
+            Converter<?> value = entry.getValue();
+
+            // 行数据类型不一致, 跳过
+            if (Objects.equals(converterKey.getCellDataTypeEnum(), key.getCellDataTypeEnum())) {
+                Class<?> converterClz = converterKey.getClazz();
+
+                // Java数据类型匹配
+                if (converterClz.isAssignableFrom(key.getClazz())) {
+                    return value;
+                }
+            }
+        }
+        return null;
+    }
+
 }
