@@ -16,7 +16,6 @@ import com.alibaba.excel.enums.ByteOrderMarkEnum;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.alibaba.excel.exception.ExcelAnalysisStopException;
 import com.alibaba.excel.exception.ExcelAnalysisStopSheetException;
 import com.alibaba.excel.metadata.Cell;
 import com.alibaba.excel.metadata.data.ReadCellData;
