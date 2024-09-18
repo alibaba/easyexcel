@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.alibaba.excel.analysis.ExcelReadExecutor;
 import com.alibaba.excel.context.csv.CsvReadContext;
@@ -54,7 +50,7 @@ public class CsvExcelReadExecutor implements ExcelReadExecutor {
 
     @Override
     public List<ReadSheet> sheetList() {
-        return sheetList;
+        return (this.sheetList != null ? Collections.unmodifiableList(this.sheetList) : Collections.emptyList());
     }
 
     @Override
