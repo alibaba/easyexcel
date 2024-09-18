@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -22,6 +23,8 @@ import lombok.Setter;
 public class ConverterReadData {
     @ExcelProperty("日期")
     private Date date;
+    @ExcelProperty("本地时间")
+    private LocalTime localTime;
     @ExcelProperty("本地日期")
     private LocalDate localDate;
     @ExcelProperty("本地日期时间")
