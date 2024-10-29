@@ -53,7 +53,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
     @Override
     public void endSheet(AnalysisContext analysisContext) {
         ReadSheetHolder readSheetHolder = analysisContext.readSheetHolder();
-        if (BooleanUtils.isTrue(readSheetHolder.getEnded())) {
+        if (readSheetHolder == null || BooleanUtils.isTrue(readSheetHolder.getEnded())) {
             return;
         }
         readSheetHolder.setEnded(Boolean.TRUE);
