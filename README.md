@@ -7,6 +7,20 @@ EasyExcel
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![](https://img.shields.io/badge/EasyExcel-%E6%9F%A5%E7%9C%8B%E8%B4%A1%E7%8C%AE%E6%8E%92%E8%A1%8C%E6%A6%9C-orange)](https://opensource.alibaba.com/contribution_leaderboard/details?projectValue=easyexcel)
 
+# 维护公告
+尊敬的EasyExcel用户们：   
+
+首先，我们想表达最深的谢意，感谢您长期以来对EasyExcel的信任与支持。在这段旅程中，EasyExcel有幸陪伴众多开发者和企业共同成长，见证了无数数据处理任务的高效完成。
+
+近期，我们注意到市场上出现了更多优秀的数据处理工具和解决方案，为用户提供了更丰富的选择。为了确保每位用户都能享受到最佳的体验和服务，我们决定采取一项重要措施：EasyExcel将逐步进入维护模式，并给予用户充足的时间评估并迁移到其他产品。同时，我们也欢迎并乐于见到社区内外分享关于同类优秀产品的使用心得和迁移经验，共同促进技术生态的健康发展。  
+
+请放心，即使进入维护模式，我们仍会确保EasyExcel的基本功能稳定运行，会进行Bug修复，但不再主动新增功能。我们相信，通过大家的共同努力，每一段代码、每一个项目都将继续在各自的领域发光发热，服务于更广泛的用户群体。
+再次感谢您对EasyExcel的支持与理解！期待在技术的广阔天地里，我们能以新的形式再度携手，共创辉煌。   
+
+祝您在未来的工作与学习中一切顺利！ 
+
+阿里巴巴EasyExcel团队敬上   
+
 # 新手必读
 
 * 官方网站：[https://easyexcel.opensource.alibaba.com/](https://easyexcel.opensource.alibaba.com/)
