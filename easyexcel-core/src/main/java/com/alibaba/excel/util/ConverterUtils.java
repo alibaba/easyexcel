@@ -48,7 +48,7 @@ public class ConverterUtils {
                 index++;
             }
             index++;
-            if (cellData.getType() == CellDataTypeEnum.EMPTY) {
+            if (cellData.getType() == null || cellData.getType() == CellDataTypeEnum.EMPTY) {
                 stringMap.put(key, null);
                 continue;
             }
