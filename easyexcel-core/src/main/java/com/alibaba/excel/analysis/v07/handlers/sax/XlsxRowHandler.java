@@ -1,8 +1,5 @@
 package com.alibaba.excel.analysis.v07.handlers.sax;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.excel.analysis.v07.handlers.CellFormulaTagHandler;
 import com.alibaba.excel.analysis.v07.handlers.CellInlineStringValueTagHandler;
 import com.alibaba.excel.analysis.v07.handlers.CellTagHandler;
@@ -14,11 +11,14 @@ import com.alibaba.excel.analysis.v07.handlers.RowTagHandler;
 import com.alibaba.excel.analysis.v07.handlers.XlsxTagHandler;
 import com.alibaba.excel.constant.ExcelXmlConstants;
 import com.alibaba.excel.context.xlsx.XlsxReadContext;
-
+import com.alibaba.excel.enums.CellDataTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author jipengfei
@@ -85,6 +85,12 @@ public class XlsxRowHandler extends DefaultHandler {
         }
         XlsxTagHandler handler = XLSX_CELL_HANDLER_MAP.get(currentTag);
         if (handler == null || !handler.support(xlsxReadContext)) {
+            return;
+        }
+        //If the cell type is 'inLineStr', then the label <v> must be ignored
+        if (xlsxReadContext.xlsxReadSheetHolder().getTempCellData() != null
+                && CellDataTypeEnum.DIRECT_STRING.equals(xlsxReadContext.xlsxReadSheetHolder().getTempCellData().getType())
+                && ExcelXmlConstants.CELL_VALUE_TAG.equals(currentTag)) {
             return;
         }
         handler.characters(xlsxReadContext, ch, start, length);
