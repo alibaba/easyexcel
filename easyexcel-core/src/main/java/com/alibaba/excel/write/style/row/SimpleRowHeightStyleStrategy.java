@@ -17,14 +17,14 @@ public class SimpleRowHeightStyleStrategy extends AbstractRowHeightStyleStrategy
     }
 
     @Override
-    protected void setHeadColumnHeight(Row row, int relativeRowIndex) {
+    protected void setHeadColumnHeight(Row row, Integer relativeRowIndex) {
         if (headRowHeight != null) {
             row.setHeightInPoints(headRowHeight);
         }
     }
 
     @Override
-    protected void setContentColumnHeight(Row row, int relativeRowIndex) {
+    protected void setContentColumnHeight(Row row, Integer relativeRowIndex) {
         if (contentRowHeight != null) {
             row.setHeightInPoints(contentRowHeight);
         }
