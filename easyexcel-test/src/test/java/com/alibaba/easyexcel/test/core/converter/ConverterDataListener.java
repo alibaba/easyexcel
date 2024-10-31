@@ -33,6 +33,7 @@ public class ConverterDataListener extends AnalysisEventListener<ConverterReadDa
         Assertions.assertEquals(TestUtil.TEST_DATE, data.getDate());
         Assertions.assertEquals(TestUtil.TEST_LOCAL_DATE, data.getLocalDate());
         Assertions.assertEquals(TestUtil.TEST_LOCAL_DATE_TIME, data.getLocalDateTime());
+        Assertions.assertEquals(TestUtil.TEST_LOCAL_INSTANT, data.getInstant());
         Assertions.assertEquals(data.getBooleanData(), Boolean.TRUE);
         Assertions.assertEquals(data.getBigDecimal().doubleValue(), BigDecimal.ONE.doubleValue(), 0.0);
         Assertions.assertEquals(data.getBigInteger().intValue(), BigInteger.ONE.intValue(), 0.0);

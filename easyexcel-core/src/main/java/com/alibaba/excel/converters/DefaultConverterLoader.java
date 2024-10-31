@@ -28,14 +28,17 @@ import com.alibaba.excel.converters.floatconverter.FloatBooleanConverter;
 import com.alibaba.excel.converters.floatconverter.FloatNumberConverter;
 import com.alibaba.excel.converters.floatconverter.FloatStringConverter;
 import com.alibaba.excel.converters.inputstream.InputStreamImageConverter;
+import com.alibaba.excel.converters.instant.InstantDateConverter;
+import com.alibaba.excel.converters.instant.InstantNumberConverter;
+import com.alibaba.excel.converters.instant.InstantStringConverter;
 import com.alibaba.excel.converters.integer.IntegerBooleanConverter;
 import com.alibaba.excel.converters.integer.IntegerNumberConverter;
 import com.alibaba.excel.converters.integer.IntegerStringConverter;
 import com.alibaba.excel.converters.localdate.LocalDateDateConverter;
 import com.alibaba.excel.converters.localdate.LocalDateNumberConverter;
 import com.alibaba.excel.converters.localdate.LocalDateStringConverter;
-import com.alibaba.excel.converters.localdatetime.LocalDateTimeNumberConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeDateConverter;
+import com.alibaba.excel.converters.localdatetime.LocalDateTimeNumberConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeStringConverter;
 import com.alibaba.excel.converters.longconverter.LongBooleanConverter;
 import com.alibaba.excel.converters.longconverter.LongNumberConverter;
@@ -88,8 +91,12 @@ public class DefaultConverterLoader {
         putAllConverter(new LocalDateNumberConverter());
         putAllConverter(new LocalDateStringConverter());
 
-        putAllConverter(new LocalDateTimeNumberConverter());
-        putAllConverter(new LocalDateTimeStringConverter());
+        LocalDateTimeNumberConverter localDateTimeNumberConverter = new LocalDateTimeNumberConverter();
+        putAllConverter(localDateTimeNumberConverter);
+        putAllConverter(new InstantNumberConverter(localDateTimeNumberConverter));
+        LocalDateTimeStringConverter localDateTimeStringConverter = new LocalDateTimeStringConverter();
+        putAllConverter(localDateTimeStringConverter);
+        putAllConverter(new InstantStringConverter(localDateTimeStringConverter));
 
         putAllConverter(new DoubleBooleanConverter());
         putAllConverter(new DoubleNumberConverter());
@@ -124,7 +131,9 @@ public class DefaultConverterLoader {
         putWriteConverter(new BooleanBooleanConverter());
         putWriteConverter(new ByteNumberConverter());
         putWriteConverter(new DateDateConverter());
-        putWriteConverter(new LocalDateTimeDateConverter());
+        LocalDateTimeDateConverter localDateTimeDateConverter = new LocalDateTimeDateConverter();
+        putWriteConverter(localDateTimeDateConverter);
+        putWriteConverter(new InstantDateConverter(localDateTimeDateConverter));
         putWriteConverter(new LocalDateDateConverter());
         putWriteConverter(new DoubleNumberConverter());
         putWriteConverter(new FloatNumberConverter());
@@ -145,7 +154,9 @@ public class DefaultConverterLoader {
         putWriteStringConverter(new ByteStringConverter());
         putWriteStringConverter(new DateStringConverter());
         putWriteStringConverter(new LocalDateStringConverter());
-        putWriteStringConverter(new LocalDateTimeStringConverter());
+        LocalDateTimeStringConverter localDateTimeStringConverter = new LocalDateTimeStringConverter();
+        putWriteStringConverter(localDateTimeStringConverter);
+        putWriteStringConverter(new InstantStringConverter(localDateTimeStringConverter));
         putWriteStringConverter(new DoubleStringConverter());
         putWriteStringConverter(new FloatStringConverter());
         putWriteStringConverter(new IntegerStringConverter());
