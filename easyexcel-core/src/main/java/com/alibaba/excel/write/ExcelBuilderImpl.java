@@ -1,6 +1,8 @@
 package com.alibaba.excel.write;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.excel.context.WriteContext;
 import com.alibaba.excel.context.WriteContextImpl;
@@ -98,6 +100,14 @@ public class ExcelBuilderImpl implements ExcelBuilder {
         if (context != null) {
             context.finish(onException);
         }
+    }
+
+    @Override
+    public void setAutoErrorField(String errorField) {
+        if (excelWriteFillExecutor == null) {
+            excelWriteFillExecutor = new ExcelWriteFillExecutor(context);
+        }
+        excelWriteFillExecutor.setFillErrorField(errorField);
     }
 
     @Override

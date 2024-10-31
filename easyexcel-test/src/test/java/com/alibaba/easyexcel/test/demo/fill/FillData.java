@@ -1,6 +1,7 @@
 package com.alibaba.easyexcel.test.demo.fill;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,5 +17,6 @@ public class FillData {
     private String name;
     private double number;
     private Date date;
-
+    private List<String> images;
+    private String error;
 }
