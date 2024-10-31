@@ -1,5 +1,6 @@
 package com.alibaba.excel.read.processor;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
 
     private void dealData(AnalysisContext analysisContext) {
         ReadRowHolder readRowHolder = analysisContext.readRowHolder();
-        Map<Integer, ReadCellData<?>> cellDataMap = (Map)readRowHolder.getCellMap();
+        Map<Integer, ReadCellData<?>> cellDataMap = (Map) readRowHolder.getCellMap();
         readRowHolder.setCurrentRowAnalysisResult(cellDataMap);
         int rowIndex = readRowHolder.getRowIndex();
         int currentHeadRowNumber = analysisContext.readSheetHolder().getHeadRowNumber();
@@ -124,9 +125,13 @@ public class DefaultAnalysisEventProcessor implements AnalysisEventProcessor {
         // Rule out empty head, and then take the largest column
         if (MapUtils.isNotEmpty(cellDataMap)) {
             cellDataMap.entrySet()
-                .stream()
-                .filter(entry -> CellDataTypeEnum.EMPTY != entry.getValue().getType())
-                .forEach(entry -> analysisContext.readSheetHolder().setMaxNotEmptyDataHeadSize(entry.getKey()));
+                    .stream()
+                    .filter(entry -> CellDataTypeEnum.EMPTY != entry.getValue().getType())
+                    // 这里的size应该要 +1,不然在 com.alibaba.excel.read.listener.ModelBuildEventListener#buildNoModel() 里面判断head size和数据index的时候会有问题，导致有头但是空cell的数据不会被设置
+                    // com/alibaba/excel/read/listener/ModelBuildEventListener.java:80
+                    // fix https://github.com/alibaba/easyexcel/issues/3515
+                    // fix https://github.com/alibaba/easyexcel/issues/2014
+                    .forEach(entry -> analysisContext.readSheetHolder().setMaxNotEmptyDataHeadSize(entry.getKey() + 1));
         }
 
         if (!HeadKindEnum.CLASS.equals(analysisContext.currentReadHolder().excelReadHeadProperty().getHeadKind())) {
