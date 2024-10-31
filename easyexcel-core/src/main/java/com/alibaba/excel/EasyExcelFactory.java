@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
+import com.alibaba.excel.read.builder.StreamingReaderBuilder;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
@@ -305,6 +306,24 @@ public class EasyExcelFactory {
             excelReaderBuilder.registerReadListener(readListener);
         }
         return excelReaderBuilder;
+    }
+
+    public static <T> StreamingReaderBuilder<T> read(File file, Class<T> head) {
+        StreamingReaderBuilder<T> reader = new StreamingReaderBuilder<>();
+        reader.file(file).head(head);
+        return reader;
+    }
+
+    public static <T> StreamingReaderBuilder<T> read(String pathName, Class<T> head) {
+        StreamingReaderBuilder<T> reader = new StreamingReaderBuilder<>();
+        reader.file(pathName).head(head);
+        return reader;
+    }
+
+    public static <T> StreamingReaderBuilder<T> read(InputStream inputStream, Class<T> head) {
+        StreamingReaderBuilder<T> reader = new StreamingReaderBuilder<>();
+        reader.file(inputStream).head(head);
+        return reader;
     }
 
     /**
