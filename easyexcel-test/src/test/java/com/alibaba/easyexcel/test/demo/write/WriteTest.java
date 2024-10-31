@@ -34,6 +34,7 @@ import com.alibaba.excel.util.FileUtils;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
+import com.alibaba.excel.write.handler.impl.CustomCsvDelimiterHandler;
 import com.alibaba.excel.write.merge.LoopMergeStrategy;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
@@ -703,6 +704,18 @@ public class WriteTest {
         String fileName = TestFileUtil.getPath() + "noModelWrite" + System.currentTimeMillis() + ".xlsx";
         // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
         EasyExcel.write(fileName).head(head()).sheet("模板").doWrite(dataList());
+    }
+
+    /**
+     *
+     * csv文件自定义分隔符
+     */
+    @Test
+    public void customHandlerDelimiterWrite() {
+        String fileName = TestFileUtil.getPath() + "customDelimiterWrite" + System.currentTimeMillis() + ".csv";
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        EasyExcel.write(fileName, DemoData.class).registerWriteHandler(new CustomCsvDelimiterHandler('|'))
+                .registerWriteHandler(new CustomCsvDelimiterHandler('|')).sheet("模板").doWrite(data());
     }
 
     private List<LongestMatchColumnWidthData> dataLong() {
