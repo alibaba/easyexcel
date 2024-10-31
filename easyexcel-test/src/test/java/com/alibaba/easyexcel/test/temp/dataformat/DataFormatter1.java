@@ -102,7 +102,7 @@ import org.slf4j.LoggerFactory;
  * and space ("_ ") in the format adds a space to the end and Excel formats this cell as <code>"12.34 "</code>, but
  * <code>DataFormatter</code> trims the formatted value and returns <code>"12.34"</code>.
  * </p>
- * You can enable spaces by passing the <code>emulateCSV=true</code> flag in the <code>DateFormatter</code> cosntructor.
+ * You can enable spaces by passing the <code>emulateCSV=true</code> flag in the <code>DateFormatter</code> constructor.
  * If set to true, then the output tries to conform to what you get when you take an xls or xlsx in Excel and Save As
  * CSV file:
  * <ul>

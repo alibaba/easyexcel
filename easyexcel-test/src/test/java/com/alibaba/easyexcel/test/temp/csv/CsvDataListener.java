@@ -7,7 +7,7 @@ import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CsvDataListeer extends AnalysisEventListener<CsvData> {
+public class CsvDataListener extends AnalysisEventListener<CsvData> {
     @Override
     public void invoke(CsvData data, AnalysisContext context) {
         log.info("data:{}", JSON.toJSONString(data));
