@@ -35,9 +35,7 @@ public enum ByteOrderMarkEnum {
     /**
      * UTF_32LE
      */
-    UTF_32LE(ByteOrderMark.UTF_32LE),
-
-    ;
+    UTF_32LE(ByteOrderMark.UTF_32LE);
 
     final ByteOrderMark byteOrderMark;
     final String stringPrefix;
