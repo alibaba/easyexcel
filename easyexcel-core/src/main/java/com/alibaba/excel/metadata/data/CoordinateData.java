@@ -43,7 +43,7 @@ public class CoordinateData {
      */
     private Integer relativeLastRowIndex;
     /**
-     *relative  last column index
+     * relative  last column index
      */
     private Integer relativeLastColumnIndex;
 }
