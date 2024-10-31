@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import com.alibaba.excel.analysis.v03.IgnorableXlsRecordHandler;
 import com.alibaba.excel.constant.BuiltinFormats;
-import com.alibaba.excel.constant.EasyExcelConstants;
 import com.alibaba.excel.context.xls.XlsReadContext;
 import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.metadata.data.DataFormatData;
