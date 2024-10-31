@@ -37,6 +37,7 @@ import com.alibaba.excel.converters.localdate.LocalDateStringConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeNumberConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeDateConverter;
 import com.alibaba.excel.converters.localdatetime.LocalDateTimeStringConverter;
+import com.alibaba.excel.converters.localtime.LocalTimeStringConverter;
 import com.alibaba.excel.converters.longconverter.LongBooleanConverter;
 import com.alibaba.excel.converters.longconverter.LongNumberConverter;
 import com.alibaba.excel.converters.longconverter.LongStringConverter;
@@ -91,6 +92,8 @@ public class DefaultConverterLoader {
         putAllConverter(new LocalDateTimeNumberConverter());
         putAllConverter(new LocalDateTimeStringConverter());
 
+        putAllConverter(new LocalTimeStringConverter());
+
         putAllConverter(new DoubleBooleanConverter());
         putAllConverter(new DoubleNumberConverter());
         putAllConverter(new DoubleStringConverter());
@@ -125,6 +128,7 @@ public class DefaultConverterLoader {
         putWriteConverter(new ByteNumberConverter());
         putWriteConverter(new DateDateConverter());
         putWriteConverter(new LocalDateTimeDateConverter());
+        putWriteConverter(new LocalTimeStringConverter());
         putWriteConverter(new LocalDateDateConverter());
         putWriteConverter(new DoubleNumberConverter());
         putWriteConverter(new FloatNumberConverter());
@@ -146,6 +150,7 @@ public class DefaultConverterLoader {
         putWriteStringConverter(new DateStringConverter());
         putWriteStringConverter(new LocalDateStringConverter());
         putWriteStringConverter(new LocalDateTimeStringConverter());
+        putWriteStringConverter(new LocalTimeStringConverter());
         putWriteStringConverter(new DoubleStringConverter());
         putWriteStringConverter(new FloatStringConverter());
         putWriteStringConverter(new IntegerStringConverter());
