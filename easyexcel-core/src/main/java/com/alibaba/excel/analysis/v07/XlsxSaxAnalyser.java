@@ -3,13 +3,7 @@ package com.alibaba.excel.analysis.v07;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -211,7 +205,7 @@ public class XlsxSaxAnalyser implements ExcelReadExecutor {
 
     @Override
     public List<ReadSheet> sheetList() {
-        return sheetList;
+        return (this.sheetList != null ? Collections.unmodifiableList(this.sheetList) : Collections.emptyList());
     }
 
     private void parseXmlSource(InputStream inputStream, ContentHandler handler) {
