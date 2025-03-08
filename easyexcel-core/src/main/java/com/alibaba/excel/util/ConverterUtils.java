@@ -17,12 +17,14 @@ import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.read.metadata.holder.ReadSheetHolder;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Converting objects
  *
  * @author Jiaju Zhuang
  **/
+@Slf4j
 public class ConverterUtils {
     public static Class<?> defaultClassGeneric = String.class;
 
@@ -81,11 +83,23 @@ public class ConverterUtils {
      * @param columnIndex
      * @return
      */
-    public static Object convertToJavaObject(ReadCellData<?> cellData, Field field,
+    public static Object _convertToJavaObject(ReadCellData<?> cellData, Field field,
         ExcelContentProperty contentProperty, Map<ConverterKey, Converter<?>> converterMap, AnalysisContext context,
         Integer rowIndex, Integer columnIndex) {
         return convertToJavaObject(cellData, field, null, null, contentProperty, converterMap, context, rowIndex,
             columnIndex);
+    }
+    //eat exception, make the workflow continue not quite~
+    public static Object convertToJavaObject(ReadCellData<?> cellData, Field field,
+                                             ExcelContentProperty contentProperty, Map<ConverterKey, Converter<?>> converterMap, AnalysisContext context,
+                                             Integer rowIndex, Integer columnIndex) {
+        try {
+            return convertToJavaObject(cellData, field, null, null, contentProperty, converterMap, context, rowIndex,
+                    columnIndex);
+        }catch (Exception ex){
+            log.error("Failed ConvertToJavaObject, error:{}",ex);
+        }
+        return null;
     }
 
     /**
@@ -181,7 +195,11 @@ public class ConverterUtils {
             return converter.convertToJavaData(new ReadConverterContext<>(cellData, contentProperty, context));
         } catch (Exception e) {
             throw new ExcelDataConvertException(rowIndex, columnIndex, cellData, contentProperty,
-                "Convert data " + cellData + " to " + clazz + " error ", e);
+                "Convert data " + toDebugString(cellData) + " to " + clazz + " error ", e);
         }
+    }
+    private static String toDebugString(ReadCellData cellData){
+       String buf = BeanMapUtils.create(cellData).toString();
+       return buf;
     }
 }

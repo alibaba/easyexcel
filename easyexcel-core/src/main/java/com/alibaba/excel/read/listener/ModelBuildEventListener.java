@@ -56,11 +56,17 @@ public class ModelBuildEventListener implements IgnoreExceptionReadListener<Map<
             ReadDefaultReturnEnum readDefaultReturn = context.readWorkbookHolder().getReadDefaultReturn();
             if (readDefaultReturn == ReadDefaultReturnEnum.STRING) {
                 // string
-                map.put(key,
-                    (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
-                        context, context.readRowHolder().getRowIndex(), key));
+//                map.put(key,
+//                    (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
+//                        context, context.readRowHolder().getRowIndex(), key));
+                String val = (String)ConverterUtils.convertToJavaObject(cellData, null, null, readSheetHolder.converterMap(),
+                        context, context.readRowHolder().getRowIndex(), key);
+                if (null != val) {
+                    map.put(key, val);
+                }
+
             } else {
-                // retrun ReadCellData
+                // return ReadCellData
                 ReadCellData<?> convertedReadCellData = convertReadCellData(cellData,
                     context.readWorkbookHolder().getReadDefaultReturn(), readSheetHolder, context, key);
                 if (readDefaultReturn == ReadDefaultReturnEnum.READ_CELL_DATA) {
