@@ -10,6 +10,7 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterTableBuilder;
+import org.apache.poi.openxml4j.opc.ZipPackage;
 
 /**
  * Reader and writer factory class
@@ -17,6 +18,15 @@ import com.alibaba.excel.write.builder.ExcelWriterTableBuilder;
  * @author jipengfei
  */
 public class EasyExcelFactory {
+
+    /**
+     * @param tempFilePackageParts whether to save package part data in temp files to save memory
+     * default is false
+     * Temporary files prevent OOM, particularly during image export operations.
+     */
+    public static void useTempFilePackageParts(boolean tempFilePackageParts) {
+        ZipPackage.setUseTempFilePackageParts(tempFilePackageParts);
+    }
 
     /**
      * Build excel the write

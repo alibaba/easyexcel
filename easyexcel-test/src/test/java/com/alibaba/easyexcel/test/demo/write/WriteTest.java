@@ -94,6 +94,12 @@ public class WriteTest {
             WriteSheet writeSheet = EasyExcel.writerSheet("模板").build();
             excelWriter.write(data(), writeSheet);
         }
+
+        // 写法4
+        fileName = TestFileUtil.getPath() + "simpleWrite" + System.currentTimeMillis() + ".xlsx";
+        // 启用临时文件，影响全局
+        EasyExcel.useTempFilePackageParts(true);
+        EasyExcel.write(fileName, DemoData.class).sheet("模板").doWrite(data());
     }
 
     /**
